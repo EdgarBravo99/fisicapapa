@@ -1,0 +1,12 @@
+# Excluir motor local/GPU del deploy Vercel
+local_cruncher.py
+short_memory_engine.py
+requirements-gpu.txt
+requirements-ml.txt
+historial.csv
+*.ipynb
+__pycache__/
+*.pyc
+.venv/
+venv/
+notebooks/
