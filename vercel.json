@@ -1,6 +1,13 @@
 {
   "version": 2,
+  "functions": {
+    "api/short_memory.py": {
+      "maxDuration": 60,
+      "excludeFiles": "{.git/**,short_memory_audit.csv,*.csv,*.ipynb,__pycache__/**,.venv/**,venv/**}"
+    }
+  },
   "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/(?!.*\\.(js|css|json|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$)(.*)", "dest": "/index.html" },
     { "src": "/(.*)", "dest": "/$1", "status": 200 }
   ]
