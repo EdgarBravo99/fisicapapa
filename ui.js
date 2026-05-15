@@ -281,8 +281,62 @@ function saveManualComboUI(nums) {
   addFavoriteCombo(nums, 'Manual');
 }
 
+function getComboStructure(nums) {
+  const decades = new Array(6).fill(0);
+  nums.forEach(n => { decades[Math.floor((n - 1) / 10)]++; });
+  return decades.join('-');
+}
+
+function validateComboVariables(nums, ev) {
+  const { numScore, lastSeen, freq30 } = computeStats();
+  const issues = [];
+  const parity = nums.filter(n => n % 2 === 0).length;
+  const decades = new Set(nums.map(n => Math.floor((n - 1) / 10)));
+  const consec = nums.filter((n, i, a) => a.includes(n + 1)).length;
+  const heavyBalls = nums.filter(n => getBallPhysicsInfo(n).bonus < -3);
+  const coldBalls = nums.filter(n => lastSeen[n] > 20);
+  const hotBalls = nums.filter(n => freq30[n] >= 2 && lastSeen[n] <= 15);
+  const structure = getComboStructure(nums);
+
+  if (parity < 2 || parity > 4) issues.push('Ajusta P/I: ideal 2-4 pares para equilibrio.');
+  if (decades.size < 3) issues.push('Amplía la distribución de décadas: al menos 3 décadas distintas.');
+  if (consec > 2) issues.push('Evita demasiados consecutivos; reducen la probabilidad combinatoria.');
+  if (heavyBalls.length) issues.push(`Bolas con desventaja física: ${heavyBalls.join(', ')}.`);
+  if (coldBalls.length >= 2) issues.push(`Números muy fríos: ${coldBalls.join(', ')} (${coldBalls.length} en ausencia prolongada).`);
+  if (hotBalls.length === 0) issues.push('Agrega al menos un número caliente o con presencia reciente.');
+  if (structure === '6-0-0-0-0-0' || structure === '0-0-0-0-0-6') issues.push('Estructura demasiado concentrada en una década.');
+
+  const scoreWarning = ev.total_score >= 72 ? null : 'El score actual es moderado; considera reequilibrar con números de mayor scoring.';
+  if (scoreWarning) issues.unshift(scoreWarning);
+
+  return { issues, summary: { parity, decades: decades.size, consec, heavyBalls, coldBalls, hotBalls, structure } };
+}
+
+async function montecarloManualValidation(nums) {
+  const sampleCount = 30;
+  const generated = runMonteCarloBatch(sampleCount);
+  const stats = generated.map(combo => {
+    const ev = evalCombo(combo);
+    return { combo, score: ev.total_score };
+  });
+
+  const currentScore = evalCombo(nums).total_score;
+  const betterCount = stats.filter(item => item.score > currentScore).length;
+  const avgScore = stats.reduce((sum, item) => sum + item.score, 0) / stats.length;
+  const topScore = Math.max(...stats.map(item => item.score));
+
+  return {
+    currentScore,
+    avgScore,
+    topScore,
+    betterCount,
+    sampleCount,
+    recommendation: betterCount === 0 ? 'Tu combinación está por encima del promedio de Monte Carlo.' : `Hay ${betterCount} de ${sampleCount} combos simulados con score mejor.`
+  };
+}
+
 // ── 2. EVALUADOR MANUAL (RAYOS X) ──
-function evalUserComboUI() {
+async function evalUserComboUI() {
   const inputs = [1, 2, 3, 4, 5, 6].map(i => parseInt(document.getElementById(`u${i}`).value));
   if (inputs.some(n => isNaN(n) || n < 1 || n > 56)) { showToast('⚠️ Ingresa 6 números válidos del 1 al 56'); return; }
   if ([...new Set(inputs)].length !== 6) { showToast('⚠️ Los 6 números deben ser distintos'); return; }
@@ -292,6 +346,8 @@ function evalUserComboUI() {
   const physicsDetails = ev.sorted.map(n => getBallPhysicsInfo(n));
   const averageEffectiveWeight = physicsDetails.reduce((sum, info) => sum + info.effectiveWeight, 0) / physicsDetails.length;
   const totalPhysicsBonus = physicsDetails.reduce((sum, info) => sum + info.bonus, 0);
+  const validation = validateComboVariables(inputs, ev);
+  const montecarlo = await montecarloManualValidation(inputs);
 
   const scoreColor = ev.total_score >= 72 ? 'var(--green)' : ev.total_score >= 55 ? 'var(--gold)' : ev.total_score >= 40 ? 'var(--blue)' : 'var(--red)';
   const levelLabel = ev.total_score >= 72 ? '⭐⭐⭐ PREMIUM' : ev.total_score >= 55 ? '⭐⭐ ALTA' : ev.total_score >= 40 ? '⭐ MEDIA' : '⚠️ BAJA';
@@ -330,6 +386,19 @@ function evalUserComboUI() {
           <div>Promedio peso efectivo: <span style="color:var(--text);font-weight:700">${averageEffectiveWeight.toFixed(4)}g</span></div>
           <div>Bonus físico total: <span style="color:var(--text);font-weight:700">${totalPhysicsBonus.toFixed(1)}</span></div>
           <div style="grid-column:1/-1;font-weight:700;color:${totalPhysicsBonus < 0 ? 'var(--red)' : totalPhysicsBonus > 10 ? 'var(--green)' : 'var(--gold)'};">${totalPhysicsBonus < 0 ? 'Peso físico desfavorable' : totalPhysicsBonus > 10 ? 'Muy favorable para este combo' : 'Físicamente aceptable'}</div>
+        </div>
+        <div style="display:grid;gap:12px;margin-bottom:20px;">
+          <div style="background:rgba(88,166,255,0.08);border:1px solid var(--blue);border-radius:10px;padding:12px;">
+            <div style="font-weight:700;color:var(--blue);margin-bottom:8px;">🔧 Sugerencias para mayor viabilidad</div>
+            <ul style="margin:0;padding-left:18px;color:var(--muted);line-height:1.6;">${validation.issues.length ? validation.issues.map(item => `<li>${item}</li>`).join('') : '<li>Tu combinación ya cumple las reglas de balance físico y estructural.</li>'}</ul>
+          </div>
+          <div style="background:rgba(57,208,194,0.08);border:1px solid var(--teal);border-radius:10px;padding:12px;">
+            <div style="font-weight:700;color:var(--teal);margin-bottom:8px;">📊 Validación Monte Carlo</div>
+            <div style="font-size:13px;color:var(--text);margin-bottom:6px;">${montecarlo.recommendation}</div>
+            <div style="font-size:12px;color:var(--muted);">Score actual: <b>${montecarlo.currentScore.toFixed(1)}</b></div>
+            <div style="font-size:12px;color:var(--muted);">Promedio simulado: <b>${montecarlo.avgScore.toFixed(1)}</b></div>
+            <div style="font-size:12px;color:var(--muted);">Mejores simulaciones: <b>${montecarlo.topScore.toFixed(1)}</b></div>
+          </div>
         </div>
         <div style="display:flex;justify-content:flex-end;margin-bottom:16px;"><button class="btn btn-teal" onclick="saveManualComboUI([${ev.sorted.join(',')}])">💾 Guardar combinación</button></div>
         <div class="tbl-wrap"><table><thead><tr><th>Núm</th><th>P/I</th><th>Década</th><th>Retraso</th><th>Estado</th><th>Score Individual</th></tr></thead><tbody>${numDetails}</tbody></table></div>
