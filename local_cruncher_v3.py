@@ -9,7 +9,7 @@ Motor secuencial local para Melate/Revancha.
 - Expertos: física web, temporal web, entropía, Fourier, Bayes, XGBoost, LSTM y Markov.
 - Optuna optimiza pesos dinámicos sobre ventanas móviles recientes.
 - Monte Carlo de 32M combinaciones con CuPy si existe CUDA; fallback NumPy.
-- Sin operational_confidence: el ranking usa net_score ponderado por Optuna.
+- El ranking usa net_score ponderado por Optuna; no se exportan métricas cosméticas.
 """
 
 from __future__ import annotations
@@ -38,12 +38,12 @@ RECENT_BUFFER_DEFAULT = 180
 RECENT_BUFFER_MIN = 150
 RECENT_BUFFER_MAX = 200
 LSTM_WINDOW = 20
-OOS_STEPS = 28
-OPTUNA_TRIALS = 80
+OOS_STEPS = 45
+OPTUNA_TRIALS = 300
 MC_TOTAL_COMBINATIONS = 32_000_000
 MC_BATCH_SIZE = 400_000
-MC_KEEP_PER_BATCH = 2500
-TOP_EXPORT = 160
+MC_KEEP_PER_BATCH = 4000
+TOP_EXPORT = 250
 TOP_FINAL = 10
 RANDOM_SEED = 73073
 EPS = 1e-12
@@ -68,6 +68,31 @@ EXPERT_NAMES = [
     "markov",
     "structural",
 ]
+
+# Calibración OOS: la física de esferas debe ganarse su peso con sorteos ocultos.
+PHYSICS_MIN_WEIGHT = 0.025
+PHYSICS_MAX_WEIGHT_WEAK = 0.08
+PHYSICS_MAX_WEIGHT_MEDIUM = 0.16
+PHYSICS_MAX_WEIGHT_STRONG = 0.26
+PHYSICS_MAX_WEIGHT_ELITE = 0.34
+PHYSICS_RANDOM_TOP10_BASELINE = 6 * 10 / 56
+PHYSICS_RANDOM_TOP6_BASELINE = 6 * 6 / 56
+
+# Guardrails de jurado: ningún experto debe monopolizar el ensemble.
+# XGBoost puede dominar si gana OOS, pero no tapar física, secuencia, Markov, Fourier, etc.
+MAX_EXPERT_WEIGHT = 0.38
+MIN_ACTIVE_EXPERTS = 4
+DIVERSITY_PENALTY_STRENGTH = 1.35
+ACTIVE_EXPERT_THRESHOLD = 0.055
+
+# Ablación física: la física conserva peso alto solo si mejora el ensemble OOS completo.
+PHYSICS_ABLATION_CONSERVATIVE_CAP = 0.08
+PHYSICS_ABLATION_MEDIUM_CAP = 0.14
+PHYSICS_ABLATION_STRONG_CAP = 0.22
+PHYSICS_ABLATION_ELITE_CAP = 0.30
+PHYSICS_ABLATION_MIN_GAIN = 0.035
+PHYSICS_ABLATION_STRONG_GAIN = 0.105
+PHYSICS_ABLATION_ELITE_GAIN = 0.180
 
 REQUIRED_LIBS = [
     ("pandas", "pandas"),
@@ -205,8 +230,26 @@ def import_runtime() -> None:
     nn = _nn
 
     try:
+        import glob as _glob
+        cuda_bins = []
+        cuda_path = os.environ.get("CUDA_PATH") or os.environ.get("CUDA_HOME")
+        if cuda_path:
+            cuda_bins.append(os.path.join(cuda_path, "bin"))
+        cuda_bins.extend([p for p in os.environ.get("PATH", "").split(os.pathsep) if p])
+        nvrtc_hits = []
+        for folder in cuda_bins:
+            nvrtc_hits.extend(_glob.glob(os.path.join(folder, "nvrtc64_*.dll")))
+            nvrtc_hits.extend(_glob.glob(os.path.join(folder, "nvrtc*.dll")))
+        if not nvrtc_hits:
+            raise RuntimeError("No encontré nvrtc64_*.dll en CUDA_PATH/PATH. Se usará NumPy CPU para Monte Carlo.")
         import cupy as _cp
         _ = _cp.cuda.runtime.getDeviceCount()
+        # Prueba real de NVRTC: fuerza compilación JIT antes de habilitar GPU_ARRAYS.
+        _x = _cp.asarray([1, 2, 3], dtype=_cp.float32)
+        _kernel = _cp.ElementwiseKernel("float32 x", "float32 y", "y = x + 1", "nvrtc_probe_kernel")
+        _y = _kernel(_x)
+        _ = float(_cp.sum(_y).get())
+        del _x, _y, _kernel
         cp = _cp
         XP = _cp
         GPU_ARRAYS = True
@@ -215,7 +258,7 @@ def import_runtime() -> None:
         cp = None
         XP = _np
         GPU_ARRAYS = False
-        print(f"CuPy no disponible; Monte Carlo usará NumPy CPU. Detalle: {exc}")
+        print(f"CuPy no disponible o CUDA/NVRTC incompleto; Monte Carlo usará NumPy CPU. Detalle: {exc}")
 
 
 def torch_device():
@@ -544,14 +587,62 @@ def temporal_scores(draws: Sequence[Draw]):
     return minmax(score)
 
 
-def structural_number_scores():
-    score = np.zeros(MAX_NUMBER + 1)
+def structural_number_scores(draws: Sequence[Draw]):
+    """Score estructural dinámico por número.
+
+    Conserva una base estructural estable (centralidad/paridad), pero ajusta por
+    frecuencia de décadas en los últimos 30 sorteos contra el buffer completo.
+    Si una década está subrepresentada recientemente, sus números reciben bonus;
+    si está sobreexpuesta, reciben penalización.
+    """
+    score = np.zeros(MAX_NUMBER + 1, dtype=np.float64)
+    if not draws:
+        return minmax(score)
+
+    mat = binary_matrix(draws)
+    total = len(draws)
+    recent_n = min(30, total)
+    recent = mat[-recent_n:, 1:]
+    full = mat[:, 1:]
+
+    decade_recent = np.zeros(6, dtype=np.float64)
+    decade_full = np.zeros(6, dtype=np.float64)
+    for n in range(1, MAX_NUMBER + 1):
+        d = int((n - 1) // 10)
+        decade_recent[d] += float(np.sum(recent[:, n - 1])) / max(1, recent_n)
+        decade_full[d] += float(np.sum(full[:, n - 1])) / max(1, total)
+
+    decade_recent_share = decade_recent / max(EPS, float(np.sum(decade_recent)))
+    decade_full_share = decade_full / max(EPS, float(np.sum(decade_full)))
+    decade_gap = decade_full_share - decade_recent_share
+
+    freq_recent = np.sum(recent, axis=0) / max(1, recent_n)
+    freq_full = np.sum(full, axis=0) / max(1, total)
+    freq_lift = np.divide(freq_recent + EPS, freq_full + EPS)
+
     for n in range(1, MAX_NUMBER + 1):
         decade = int((n - 1) // 10)
         center_bonus = 1 - abs(n - 28.5) / 28.5
-        decade_bonus = 1.0 if 1 <= decade <= 4 else 0.72
-        parity_bonus = 0.92 if n % 2 == 0 else 0.90
-        score[n] = 100 * (0.44 * center_bonus + 0.34 * decade_bonus + 0.22 * parity_bonus)
+        decade_base = 1.0 if 1 <= decade <= 4 else 0.72
+        parity_bonus = 0.93 if n % 2 == 0 else 0.90
+
+        # Positivo si la década está rezagada en los últimos 30 sorteos.
+        decade_rebalance = float(np.clip(decade_gap[decade] * 4.0, -0.35, 0.35))
+
+        # Pequeño refuerzo si el número está alineado con momentum reciente;
+        # castigo suave si está exageradamente sobreexpuesto.
+        lift = float(freq_lift[n - 1])
+        number_momentum = np.clip((lift - 1.0) * 0.18, -0.16, 0.16)
+        if lift > 2.2:
+            number_momentum -= 0.07
+
+        score[n] = 100 * (
+            0.34 * center_bonus
+            + 0.22 * decade_base
+            + 0.16 * parity_bonus
+            + 0.18 * (0.5 + decade_rebalance)
+            + 0.10 * (0.5 + number_momentum)
+        )
     return minmax(score)
 
 
@@ -600,15 +691,28 @@ def markov_scores(draws: Sequence[Draw]):
     return minmax(normalize_prob_like(score))
 
 
-class TinyLSTM(nn.Module):
-    def __init__(self, input_size=56, hidden_size=72, layers=1, dropout=0.0):
-        super().__init__()
-        self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size, num_layers=layers, batch_first=True, dropout=dropout)
-        self.head = nn.Linear(hidden_size, input_size)
+def TinyLSTM(input_size=56, hidden_size=128, layers=2, dropout=0.25):
+    """Factory que crea el módulo LSTM después de que import_runtime() cargó torch/nn."""
+    if nn is None:
+        raise RuntimeError("PyTorch no está inicializado. Ejecuta ensure_dependencies() antes de entrenar LSTM.")
 
-    def forward(self, x):
-        out, _ = self.lstm(x)
-        return self.head(out[:, -1, :])
+    class _TinyLSTM(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.lstm = nn.LSTM(
+                input_size=input_size,
+                hidden_size=hidden_size,
+                num_layers=layers,
+                batch_first=True,
+                dropout=dropout if layers > 1 else 0.0,
+            )
+            self.head = nn.Linear(hidden_size, input_size)
+
+        def forward(self, x):
+            out, _ = self.lstm(x)
+            return self.head(out[:, -1, :])
+
+    return _TinyLSTM()
 
 
 def draws_to_binary56(draws: Sequence[Draw]):
@@ -622,24 +726,47 @@ def draws_to_binary56(draws: Sequence[Draw]):
 def train_lstm_scores(draws: Sequence[Draw], epochs: int, seed: int = RANDOM_SEED):
     if len(draws) <= LSTM_WINDOW + 1:
         return minmax(probs_from_counts(counts(draws)))
+
     torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
     device = torch_device()
     arr = draws_to_binary56(draws)
     X, Y = [], []
     for i in range(LSTM_WINDOW, len(arr)):
         X.append(arr[i - LSTM_WINDOW:i])
         Y.append(arr[i])
+
     X_np = np.stack(X).astype(np.float32)
     Y_np = np.stack(Y).astype(np.float32)
+
+    if len(X_np) > 6:
+        val_count = min(3, max(1, len(X_np) // 8))
+        X_train_np, Y_train_np = X_np[:-val_count], Y_np[:-val_count]
+        X_val_np, Y_val_np = X_np[-val_count:], Y_np[-val_count:]
+    else:
+        X_train_np, Y_train_np = X_np, Y_np
+        X_val_np, Y_val_np = None, None
+
     model = TinyLSTM().to(device)
     pos_weight = torch.full((MAX_NUMBER,), (MAX_NUMBER - PICK_COUNT) / PICK_COUNT, dtype=torch.float32, device=device)
     loss_fn = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
-    opt = torch.optim.AdamW(model.parameters(), lr=0.003, weight_decay=1e-4)
-    X_t = torch.tensor(X_np, dtype=torch.float32, device=device)
-    Y_t = torch.tensor(Y_np, dtype=torch.float32, device=device)
-    model.train()
+    opt = torch.optim.AdamW(model.parameters(), lr=0.0025, weight_decay=1e-4)
+
+    X_t = torch.tensor(X_train_np, dtype=torch.float32, device=device)
+    Y_t = torch.tensor(Y_train_np, dtype=torch.float32, device=device)
+    X_val_t = torch.tensor(X_val_np, dtype=torch.float32, device=device) if X_val_np is not None else None
+    Y_val_t = torch.tensor(Y_val_np, dtype=torch.float32, device=device) if Y_val_np is not None else None
+
+    best_state = None
+    best_val = float("inf")
+    patience = 8
+    stale = 0
     batch_size = min(64, X_t.shape[0])
+
     for _ in range(max(1, epochs)):
+        model.train()
         perm = torch.randperm(X_t.shape[0], device=device)
         for start in range(0, X_t.shape[0], batch_size):
             idx = perm[start:start + batch_size]
@@ -649,13 +776,34 @@ def train_lstm_scores(draws: Sequence[Draw], epochs: int, seed: int = RANDOM_SEE
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             opt.step()
+
+        if X_val_t is not None:
+            model.eval()
+            with torch.no_grad():
+                val_loss = float(loss_fn(model(X_val_t), Y_val_t).detach().cpu())
+            if val_loss + 1e-5 < best_val:
+                best_val = val_loss
+                best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
+                stale = 0
+            else:
+                stale += 1
+                if stale >= patience:
+                    break
+
+    if best_state is not None:
+        model.load_state_dict(best_state)
+
     model.eval()
     with torch.no_grad():
         last = torch.tensor(arr[-LSTM_WINDOW:][None, :, :], dtype=torch.float32, device=device)
         prob = torch.sigmoid(model(last)).detach().cpu().numpy()[0]
+
     out = np.zeros(MAX_NUMBER + 1)
     out[1:] = prob
+
     del model, X_t, Y_t
+    if X_val_t is not None:
+        del X_val_t, Y_val_t
     cleanup_memory()
     return minmax(normalize_prob_like(out))
 
@@ -667,7 +815,7 @@ def expert_bundle(draws: Sequence[Draw], config: GameConfig, lstm_epochs: int = 
     t = temporal_scores(draws)
     e = entropy_scores(draws)
     m = markov_scores(draws)
-    s = structural_number_scores()
+    s = structural_number_scores(draws)
     if lstm_epochs > 0:
         l = train_lstm_scores(draws, epochs=lstm_epochs)
     else:
@@ -689,7 +837,13 @@ def expert_bundle(draws: Sequence[Draw], config: GameConfig, lstm_epochs: int = 
     return ExpertBundle(experts, physics, periods, d, k, hr, hw)
 
 
-def number_features(draws: Sequence[Draw], config: GameConfig, bundle: ExpertBundle):
+def number_features(
+    draws: Sequence[Draw],
+    config: GameConfig,
+    bundle: ExpertBundle,
+    exclude_experts: Optional[Sequence[str]] = None,
+):
+    exclude = set(exclude_experts or [])
     m = binary_matrix(draws)
     total = len(draws)
     freq15 = np.mean(m[-min(15, total):], axis=0)
@@ -700,9 +854,10 @@ def number_features(draws: Sequence[Draw], config: GameConfig, bundle: ExpertBun
         for n in draw.numbers:
             if gaps[n] == total + 1:
                 gaps[n] = gap
+
     nums = np.arange(1, MAX_NUMBER + 1, dtype=np.float64)
     weights = np.array(config.ball_weights, dtype=np.float64)
-    X = np.column_stack([
+    columns = [
         nums / MAX_NUMBER,
         freq15[1:],
         freq30[1:],
@@ -710,22 +865,21 @@ def number_features(draws: Sequence[Draw], config: GameConfig, bundle: ExpertBun
         probs_from_counts(counts(draws))[1:],
         np.minimum(gaps[1:], RECENT_BUFFER_MAX) / RECENT_BUFFER_MAX,
         1 / (1 + gaps[1:]),
-        bundle.experts["physical"][1:],
-        bundle.experts["temporal"][1:],
-        bundle.experts["entropy"][1:],
-        bundle.experts["fourier"][1:],
-        bundle.experts["bayes"][1:],
-        bundle.experts["lstm"][1:],
-        bundle.experts["markov"][1:],
-        bundle.experts["structural"][1:],
+    ]
+
+    for expert_name in ["physical", "temporal", "entropy", "fourier", "bayes", "lstm", "markov", "structural"]:
+        if expert_name not in exclude:
+            columns.append(bundle.experts[expert_name][1:])
+
+    columns.extend([
         bundle.physics["bonus"][1:] / 20,
         bundle.physics["effective"][1:] / BASE_WEIGHT,
         weights[1:] / BASE_WEIGHT,
         (nums % 2).astype(float),
         np.floor((nums - 1) / 10) / 5,
         (nums > 28).astype(float),
-    ]).astype(np.float32)
-    return X
+    ])
+    return np.column_stack(columns).astype(np.float32)
 
 
 def train_xgb_scores(draws: Sequence[Draw], config: GameConfig):
@@ -733,22 +887,33 @@ def train_xgb_scores(draws: Sequence[Draw], config: GameConfig):
         out = np.zeros(MAX_NUMBER + 1)
         out[1:] = 0.5
         return out
+
     X_parts, y_parts = [], []
-    start = max(LSTM_WINDOW + 1, len(draws) - 110)
+    start = max(LSTM_WINDOW + 1, len(draws) - 150)
     for target_idx in range(start, len(draws)):
         prefix = draws[:target_idx]
+        # XGBoost no usa la columna LSTM para evitar inconsistencia OOS:
+        # las mini-folds internas no deben depender de un experto costoso/no replicable.
         bundle = expert_bundle(prefix, config, lstm_epochs=0, include_xgb_placeholder=False)
-        X_parts.append(number_features(prefix, config, bundle))
+        X_parts.append(number_features(prefix, config, bundle, exclude_experts=("lstm",)))
         y = np.zeros(MAX_NUMBER, dtype=np.int32)
         for n in draws[target_idx].numbers:
             y[n - 1] = 1
         y_parts.append(y)
+
     X = np.vstack(X_parts)
     y = np.concatenate(y_parts)
+
+    split = max(1, int(len(X) * 0.85))
+    if len(X) - split < MAX_NUMBER:
+        split = max(1, len(X) - MAX_NUMBER)
+    X_train, y_train = X[:split], y[:split]
+    X_val, y_val = X[split:], y[split:]
+
     model = XGBClassifier(
-        n_estimators=220,
+        n_estimators=400,
         max_depth=4,
-        learning_rate=0.035,
+        learning_rate=0.02,
         subsample=1.0,
         colsample_bytree=1.0,
         min_child_weight=1.0,
@@ -758,22 +923,38 @@ def train_xgb_scores(draws: Sequence[Draw], config: GameConfig):
         scale_pos_weight=(MAX_NUMBER - PICK_COUNT) / PICK_COUNT,
         tree_method="hist",
         device="cuda",
+        early_stopping_rounds=20,
         random_state=RANDOM_SEED,
         n_jobs=0,
         verbosity=0,
     )
+
+    def fit_model(m):
+        if len(X_val):
+            return m.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=False)
+        return m.fit(X_train, y_train, verbose=False)
+
     try:
-        model.fit(X, y)
+        fit_model(model)
+    except TypeError:
+        model.set_params(early_stopping_rounds=None)
+        fit_model(model)
     except Exception as exc:
         print(f"XGBoost CUDA falló, reintentando CPU: {exc}")
         model.set_params(device="cpu")
-        model.fit(X, y)
+        try:
+            fit_model(model)
+        except TypeError:
+            model.set_params(early_stopping_rounds=None)
+            fit_model(model)
+
     live_bundle = expert_bundle(draws, config, lstm_epochs=0, include_xgb_placeholder=False)
-    X_live = number_features(draws, config, live_bundle)
+    X_live = number_features(draws, config, live_bundle, exclude_experts=("lstm",))
     pred = model.predict_proba(X_live)[:, 1]
+
     out = np.zeros(MAX_NUMBER + 1)
     out[1:] = pred
-    del model, X, y
+    del model, X, y, X_train, y_train, X_val, y_val
     cleanup_memory()
     return minmax(normalize_prob_like(out))
 
@@ -789,14 +970,14 @@ def build_full_experts(draws: Sequence[Draw], config: GameConfig, lstm_epochs: i
 # ═══════════════════════════════════════════════════════
 
 def build_oos_records(draws: Sequence[Draw], config: GameConfig) -> List[FoldRecord]:
-    min_start = LSTM_WINDOW + 35
+    min_start = max(LSTM_WINDOW + 45, 60)
     start = max(min_start, len(draws) - OOS_STEPS)
     records: List[FoldRecord] = []
     for target_idx in range(start, len(draws)):
         prefix = list(draws[:target_idx])
         target = draws[target_idx]
         print(f"OOS {target_idx - start + 1}/{len(draws) - start}: entrenando hasta T-1 para sorteo {target.draw_id}")
-        bundle = build_full_experts(prefix, config, lstm_epochs=12)
+        bundle = build_full_experts(prefix, config, lstm_epochs=30)
         records.append(FoldRecord(target.draw_id, target.date, target.numbers, bundle.experts, bundle.drift_detected, bundle.kl))
         cleanup_memory()
     return records
@@ -805,7 +986,46 @@ def build_oos_records(draws: Sequence[Draw], config: GameConfig) -> List[FoldRec
 def normalize_trial_weights(params: Dict[str, float]) -> Dict[str, float]:
     clean = {k: max(1e-6, float(params.get(k, 1e-6))) for k in EXPERT_NAMES}
     total = sum(clean.values()) or 1
-    return {k: v / total for k, v in clean.items()}
+    weights = {k: v / total for k, v in clean.items()}
+    return enforce_weight_diversity(weights)
+
+
+def enforce_weight_diversity(weights: Dict[str, float]) -> Dict[str, float]:
+    # Cap duro por experto + redistribución proporcional al resto.
+    w = {k: max(1e-8, float(weights.get(k, 0.0))) for k in EXPERT_NAMES}
+    total = sum(w.values()) or 1.0
+    w = {k: v / total for k, v in w.items()}
+
+    excess = 0.0
+    for k in EXPERT_NAMES:
+        if w[k] > MAX_EXPERT_WEIGHT:
+            excess += w[k] - MAX_EXPERT_WEIGHT
+            w[k] = MAX_EXPERT_WEIGHT
+
+    if excess > 0:
+        eligible = [k for k in EXPERT_NAMES if w[k] < MAX_EXPERT_WEIGHT]
+        eligible_total = sum(w[k] for k in eligible)
+        if eligible_total <= 1e-12:
+            spread = excess / len(EXPERT_NAMES)
+            for k in EXPERT_NAMES:
+                w[k] += spread
+        else:
+            for k in eligible:
+                room = MAX_EXPERT_WEIGHT - w[k]
+                add = excess * (w[k] / eligible_total)
+                w[k] += min(room, add)
+
+    total = sum(w.values()) or 1.0
+    return {k: w[k] / total for k in EXPERT_NAMES}
+
+
+def ensemble_diversity_penalty(weights: Dict[str, float]) -> float:
+    # Herfindahl alto = concentración excesiva. El mínimo ideal con 9 expertos es ~0.111.
+    hhi = sum(float(v) ** 2 for v in weights.values())
+    active = sum(1 for v in weights.values() if float(v) >= ACTIVE_EXPERT_THRESHOLD)
+    concentration_penalty = max(0.0, hhi - 0.24) * DIVERSITY_PENALTY_STRENGTH
+    active_penalty = max(0, MIN_ACTIVE_EXPERTS - active) * 0.18
+    return concentration_penalty + active_penalty
 
 
 def weighted_net_score(experts: Dict[str, object], weights: Dict[str, float]):
@@ -817,13 +1037,14 @@ def weighted_net_score(experts: Dict[str, object], weights: Dict[str, float]):
 
 
 def evaluate_weights(records: Sequence[FoldRecord], weights: Dict[str, float]):
-    hits6, hits10, hits12, mses = [], [], [], []
+    hits6, hits8, hits10, hits12, mses = [], [], [], [], []
     row_logs = []
     for rec in records:
         net = weighted_net_score(rec.experts, weights)
         order = list(map(int, np.argsort(net[1:])[::-1] + 1))
         actual = set(rec.actual)
         h6 = len(actual.intersection(order[:6]))
+        h8 = len(actual.intersection(order[:8]))
         h10 = len(actual.intersection(order[:10]))
         h12 = len(actual.intersection(order[:12]))
         y = np.zeros(MAX_NUMBER + 1)
@@ -831,6 +1052,7 @@ def evaluate_weights(records: Sequence[FoldRecord], weights: Dict[str, float]):
             y[n] = 1.0
         mse = float(np.mean((y[1:] - net[1:]) ** 2))
         hits6.append(h6)
+        hits8.append(h8)
         hits10.append(h10)
         hits12.append(h12)
         mses.append(mse)
@@ -839,8 +1061,10 @@ def evaluate_weights(records: Sequence[FoldRecord], weights: Dict[str, float]):
             "date": rec.date,
             "actual": list(rec.actual),
             "predicted_top6": order[:6],
+            "predicted_top8": order[:8],
             "predicted_top10": order[:10],
             "hits": h6,
+            "hits_top8": h8,
             "hits_top10": h10,
             "hits_top12": h12,
             "mse": round(mse, 6),
@@ -849,6 +1073,7 @@ def evaluate_weights(records: Sequence[FoldRecord], weights: Dict[str, float]):
         })
     return {
         "avg_hits": float(np.mean(hits6)) if hits6 else 0.0,
+        "avg_hits_top8": float(np.mean(hits8)) if hits8 else 0.0,
         "avg_hits_top10": float(np.mean(hits10)) if hits10 else 0.0,
         "avg_hits_top12": float(np.mean(hits12)) if hits12 else 0.0,
         "avg_mse": float(np.mean(mses)) if mses else 0.0,
@@ -856,40 +1081,264 @@ def evaluate_weights(records: Sequence[FoldRecord], weights: Dict[str, float]):
     }
 
 
+def single_expert_oos_diagnostics(records: Sequence[FoldRecord]) -> Dict[str, Dict[str, float]]:
+    diagnostics: Dict[str, Dict[str, float]] = {}
+    for expert_name in EXPERT_NAMES:
+        hits6, hits10, hits12, mses, lifts, actual_means, non_actual_means = [], [], [], [], [], [], []
+        for rec in records:
+            scores = np.asarray(rec.experts[expert_name], dtype=np.float64)
+            order = list(map(int, np.argsort(scores[1:])[::-1] + 1))
+            actual = set(rec.actual)
+            h6 = len(actual.intersection(order[:6]))
+            h10 = len(actual.intersection(order[:10]))
+            h12 = len(actual.intersection(order[:12]))
+            y = np.zeros(MAX_NUMBER + 1)
+            for n in actual:
+                y[n] = 1.0
+            mse = float(np.mean((y[1:] - scores[1:]) ** 2))
+            actual_values = [float(scores[n]) for n in actual]
+            non_actual_values = [float(scores[n]) for n in range(1, MAX_NUMBER + 1) if n not in actual]
+            actual_mean = float(np.mean(actual_values)) if actual_values else 0.0
+            non_actual_mean = float(np.mean(non_actual_values)) if non_actual_values else 0.0
+            lift = actual_mean - non_actual_mean
+            hits6.append(h6)
+            hits10.append(h10)
+            hits12.append(h12)
+            mses.append(mse)
+            lifts.append(lift)
+            actual_means.append(actual_mean)
+            non_actual_means.append(non_actual_mean)
+        diagnostics[expert_name] = {
+            "avg_hits_top6": float(np.mean(hits6)) if hits6 else 0.0,
+            "avg_hits_top10": float(np.mean(hits10)) if hits10 else 0.0,
+            "avg_hits_top12": float(np.mean(hits12)) if hits12 else 0.0,
+            "avg_mse": float(np.mean(mses)) if mses else 0.0,
+            "winner_lift": float(np.mean(lifts)) if lifts else 0.0,
+            "winner_score_mean": float(np.mean(actual_means)) if actual_means else 0.0,
+            "non_winner_score_mean": float(np.mean(non_actual_means)) if non_actual_means else 0.0,
+        }
+    return diagnostics
+
+
+def estimate_physics_weight_cap(expert_diag: Dict[str, Dict[str, float]]) -> Tuple[float, str]:
+    phys = expert_diag.get("physical", {})
+    p_top10 = float(phys.get("avg_hits_top10", 0.0))
+    p_top6 = float(phys.get("avg_hits_top6", 0.0))
+    p_lift = float(phys.get("winner_lift", 0.0))
+    p_mse = float(phys.get("avg_mse", 1.0))
+
+    utilities = {}
+    for name, row in expert_diag.items():
+        utilities[name] = (
+            float(row.get("avg_hits_top6", 0.0)) * 2.50
+            + float(row.get("avg_hits_top10", 0.0)) * 0.90
+            + float(row.get("avg_hits_top12", 0.0)) * 0.35
+            + max(0.0, float(row.get("winner_lift", 0.0))) * 1.25
+            - float(row.get("avg_mse", 1.0)) * 2.20
+        )
+    best_name = max(utilities, key=utilities.get) if utilities else "physical"
+    best_utility = utilities.get(best_name, 0.0)
+    phys_utility = utilities.get("physical", 0.0)
+    relative = phys_utility / max(abs(best_utility), 1e-9)
+
+    if p_top10 <= PHYSICS_RANDOM_TOP10_BASELINE * 1.02 and p_lift <= 0:
+        return PHYSICS_MAX_WEIGHT_WEAK, (
+            f"La física quedó en modo débil: Top10={p_top10:.2f} vs azar={PHYSICS_RANDOM_TOP10_BASELINE:.2f}, "
+            f"lift ganador={p_lift:.4f}. Se limita a {PHYSICS_MAX_WEIGHT_WEAK:.0%}."
+        )
+    if p_top10 < PHYSICS_RANDOM_TOP10_BASELINE * 1.22 or p_lift < 0.010:
+        return PHYSICS_MAX_WEIGHT_MEDIUM, (
+            f"La física mostró señal moderada: Top10={p_top10:.2f}, lift={p_lift:.4f}. "
+            f"Se limita a {PHYSICS_MAX_WEIGHT_MEDIUM:.0%}."
+        )
+    if relative >= 0.92 and p_top6 >= PHYSICS_RANDOM_TOP6_BASELINE * 1.18 and p_lift >= 0.020:
+        return PHYSICS_MAX_WEIGHT_ELITE, (
+            f"La física sí explicó ganadores OOS con fuerza: Top6={p_top6:.2f}, Top10={p_top10:.2f}, "
+            f"lift={p_lift:.4f}, utilidad relativa={relative:.2f}. Puede subir hasta {PHYSICS_MAX_WEIGHT_ELITE:.0%}."
+        )
+    return PHYSICS_MAX_WEIGHT_STRONG, (
+        f"La física fue útil pero no dominante: Top6={p_top6:.2f}, Top10={p_top10:.2f}, "
+        f"lift={p_lift:.4f}, MSE={p_mse:.4f}. Se limita a {PHYSICS_MAX_WEIGHT_STRONG:.0%}."
+    )
+
+
+def apply_physics_oos_cap(weights: Dict[str, float], physics_cap: float) -> Dict[str, float]:
+    w = {k: max(0.0, float(weights.get(k, 0.0))) for k in EXPERT_NAMES}
+    total = sum(w.values()) or 1.0
+    w = {k: v / total for k, v in w.items()}
+    cap = max(PHYSICS_MIN_WEIGHT, min(float(physics_cap), PHYSICS_MAX_WEIGHT_ELITE))
+    if w.get("physical", 0.0) <= cap:
+        return w
+    excess = w["physical"] - cap
+    w["physical"] = cap
+    receivers = [k for k in EXPERT_NAMES if k != "physical"]
+    receiver_total = sum(w[k] for k in receivers)
+    if receiver_total <= 1e-12:
+        for k in receivers:
+            w[k] += excess / len(receivers)
+    else:
+        for k in receivers:
+            w[k] += excess * (w[k] / receiver_total)
+    total = sum(w.values()) or 1.0
+    return {k: w[k] / total for k in EXPERT_NAMES}
+
+
+def metrics_utility(metrics: Dict[str, float]) -> float:
+    return (
+        float(metrics.get("avg_hits", 0.0)) * 2.50
+        + float(metrics.get("avg_hits_top8", 0.0)) * 0.65
+        + float(metrics.get("avg_hits_top10", 0.0)) * 0.90
+        + float(metrics.get("avg_hits_top12", 0.0)) * 0.35
+        - float(metrics.get("avg_mse", 1.0)) * 2.20
+    )
+
+
+def remove_physics_and_renormalize(weights: Dict[str, float]) -> Dict[str, float]:
+    w = {k: max(0.0, float(weights.get(k, 0.0))) for k in EXPERT_NAMES}
+    w["physical"] = 0.0
+    receivers = [k for k in EXPERT_NAMES if k != "physical"]
+    receiver_total = sum(w[k] for k in receivers)
+    if receiver_total <= 1e-12:
+        for k in receivers:
+            w[k] = 1.0 / len(receivers)
+    else:
+        for k in receivers:
+            w[k] /= receiver_total
+    return w
+
+
+def cap_physics_and_renormalize(weights: Dict[str, float], cap: float) -> Dict[str, float]:
+    w = {k: max(0.0, float(weights.get(k, 0.0))) for k in EXPERT_NAMES}
+    total = sum(w.values()) or 1.0
+    w = {k: v / total for k, v in w.items()}
+    cap = max(0.0, min(float(cap), 1.0))
+    if w.get("physical", 0.0) <= cap:
+        return w
+    excess = w["physical"] - cap
+    w["physical"] = cap
+    receivers = [k for k in EXPERT_NAMES if k != "physical"]
+    receiver_total = sum(w[k] for k in receivers) or 1.0
+    for k in receivers:
+        w[k] += excess * (w[k] / receiver_total)
+    total = sum(w.values()) or 1.0
+    return {k: w[k] / total for k in EXPERT_NAMES}
+
+
+def apply_physics_ablation_gate(records: Sequence[FoldRecord], weights: Dict[str, float]):
+    with_physics_metrics = evaluate_weights(records, weights)
+    without_physics_weights = remove_physics_and_renormalize(weights)
+    without_physics_metrics = evaluate_weights(records, without_physics_weights)
+
+    with_u = metrics_utility(with_physics_metrics)
+    without_u = metrics_utility(without_physics_metrics)
+    gain = with_u - without_u
+    original_physical = float(weights.get("physical", 0.0))
+
+    if gain <= 0:
+        cap, level, reason = PHYSICS_ABLATION_CONSERVATIVE_CAP, "bloqueada", "quitar la física igualó o mejoró el ensemble"
+    elif gain < PHYSICS_ABLATION_MIN_GAIN:
+        cap, level, reason = PHYSICS_ABLATION_CONSERVATIVE_CAP, "débil", "la mejora por física fue marginal"
+    elif gain < PHYSICS_ABLATION_STRONG_GAIN:
+        cap, level, reason = PHYSICS_ABLATION_MEDIUM_CAP, "media", "la física aportó, pero no debe dominar"
+    elif gain < PHYSICS_ABLATION_ELITE_GAIN:
+        cap, level, reason = PHYSICS_ABLATION_STRONG_CAP, "fuerte", "la física mejoró el ensemble con claridad"
+    else:
+        cap, level, reason = PHYSICS_ABLATION_ELITE_CAP, "élite", "la física mejoró el ensemble de forma sostenida"
+
+    gated = cap_physics_and_renormalize(weights, cap)
+    gated_metrics = evaluate_weights(records, gated)
+    gated_u = metrics_utility(gated_metrics)
+
+    payload = {
+        "utility_with_physics": round(float(with_u), 6),
+        "utility_without_physics": round(float(without_u), 6),
+        "utility_after_gate": round(float(gated_u), 6),
+        "gain_vs_without_physics": round(float(gain), 6),
+        "original_physical_weight": round(float(original_physical), 6),
+        "final_physical_weight": round(float(gated.get("physical", 0.0)), 6),
+        "applied_cap": round(float(cap), 6),
+        "level": level,
+        "reason": reason,
+    }
+    audit = (
+        f"Ablación física: utilidad con física={with_u:.4f}, sin física={without_u:.4f}, "
+        f"ganancia={gain:.4f}. Nivel={level}; {reason}. "
+        f"Peso físico original={original_physical:.1%}, cap={cap:.0%}, "
+        f"peso final={gated.get('physical', 0.0):.1%}."
+    )
+    return gated, payload, audit
+
+
 def run_optuna(records: Sequence[FoldRecord]):
     optuna.logging.set_verbosity(optuna.logging.WARNING)
+    expert_diag = single_expert_oos_diagnostics(records)
+    physics_cap, physics_audit = estimate_physics_weight_cap(expert_diag)
 
     def objective(trial):
         raw = {name: trial.suggest_float(name, 0.001, 1.0, log=True) for name in EXPERT_NAMES}
         weights = normalize_trial_weights(raw)
-        metrics = evaluate_weights(records, weights)
-        return (
-            metrics["avg_hits"] * 2.50
-            + metrics["avg_hits_top10"] * 0.90
-            + metrics["avg_hits_top12"] * 0.35
-            - metrics["avg_mse"] * 2.20
-        )
+        weights = apply_physics_oos_cap(weights, physics_cap)
+        diversity_penalty = ensemble_diversity_penalty(weights)
+
+        chunk_size = max(8, min(15, len(records)))
+        last_value = None
+        for end in range(chunk_size, len(records) + 1, chunk_size):
+            metrics = evaluate_weights(records[:end], weights)
+            last_value = metrics_utility(metrics) - diversity_penalty
+            trial.report(last_value, step=end)
+            if trial.should_prune():
+                raise optuna.TrialPruned()
+        if last_value is None or len(records) % chunk_size:
+            metrics = evaluate_weights(records, weights)
+            last_value = metrics_utility(metrics) - diversity_penalty
+        return last_value
 
     sampler = optuna.samplers.TPESampler(seed=RANDOM_SEED, multivariate=True, group=True)
-    study = optuna.create_study(direction="maximize", sampler=sampler)
+    pruner = optuna.pruners.MedianPruner(n_startup_trials=30, n_warmup_steps=15, interval_steps=10)
+    study = optuna.create_study(direction="maximize", sampler=sampler, pruner=pruner)
     study.optimize(objective, n_trials=OPTUNA_TRIALS, show_progress_bar=False)
-    weights = normalize_trial_weights(study.best_params)
+
+    weights = apply_physics_oos_cap(normalize_trial_weights(study.best_params), physics_cap)
+    weights, physics_ablation, physics_ablation_audit = apply_physics_ablation_gate(records, weights)
+
     metrics = evaluate_weights(records, weights)
     top_trials = []
     for tr in sorted(study.trials, key=lambda t: t.value if t.value is not None else -999, reverse=True)[:8]:
         if tr.value is None:
             continue
+        trial_weights = apply_physics_oos_cap(normalize_trial_weights(tr.params), physics_cap)
+        trial_weights, _, _ = apply_physics_ablation_gate(records, trial_weights)
         top_trials.append({
             "value": round(float(tr.value), 6),
-            "weights": {k: round(v, 6) for k, v in normalize_trial_weights(tr.params).items()},
+            "weights": {k: round(v, 6) for k, v in trial_weights.items()},
         })
+
     sorted_weights = sorted(weights.items(), key=lambda kv: kv[1], reverse=True)
     leader, leader_w = sorted_weights[0]
+    phys = expert_diag.get("physical", {})
+    active_experts = sum(1 for _, v in sorted_weights if v >= ACTIVE_EXPERT_THRESHOLD)
+    pruned = sum(1 for t in study.trials if t.state.name == "PRUNED")
     audit = (
-        f"Optuna ejecutó {len(study.trials)} pruebas sobre backtesting ciego secuencial. "
+        f"Optuna ejecutó {len(study.trials)} pruebas sobre backtesting ciego secuencial "
+        f"({pruned} podadas por MedianPruner). "
         f"El experto dominante fue {human_expert_name(leader)} con {leader_w:.1%} del peso neto. "
-        f"La selección se hizo maximizando aciertos OOS recientes y penalizando MSE; solo se usaron datos hasta T-1 en cada fold."
+        f"Calibración física OOS: {physics_audit} {physics_ablation_audit} "
+        f"Métricas físicas ganadoras: Top6={phys.get('avg_hits_top6', 0):.2f}, "
+        f"Top10={phys.get('avg_hits_top10', 0):.2f}, lift={phys.get('winner_lift', 0):.4f}, "
+        f"MSE={phys.get('avg_mse', 0):.4f}. "
+        f"Expertos activos: {active_experts}/{len(EXPERT_NAMES)}. "
+        f"La selección maximizó aciertos OOS recientes, penalizó MSE, diversidad insuficiente y validó la física por OOS/ablación."
     )
+    metrics["expert_diagnostics"] = {
+        name: {k: round(float(v), 6) for k, v in row.items()}
+        for name, row in expert_diag.items()
+    }
+    metrics["physics_calibration"] = {
+        "cap": round(float(physics_cap), 6),
+        "audit": physics_audit,
+        "physical_final_weight": round(float(weights.get("physical", 0.0)), 6),
+    }
+    metrics["physics_ablation"] = physics_ablation
     return weights, metrics, top_trials, audit
 
 
@@ -1060,7 +1509,7 @@ def manual_seed(final_experts: Dict[str, object], weights: Dict[str, float], bun
 def hindsight_log(draws: Sequence[Draw], config: GameConfig, weights: Dict[str, float]):
     target = draws[-1]
     prefix = draws[:-1]
-    bundle = build_full_experts(prefix, config, lstm_epochs=24)
+    bundle = build_full_experts(prefix, config, lstm_epochs=30)
     net = weighted_net_score(bundle.experts, weights)
     order = list(map(int, np.argsort(net[1:])[::-1] + 1))
     lines = [
@@ -1109,10 +1558,19 @@ def run_pipeline():
     print(hlog)
 
     print("\n[4/6] Entrenando expertos finales con todo el buffer reciente...")
-    final_bundle = build_full_experts(draws, config, lstm_epochs=64)
+    final_bundle = build_full_experts(draws, config, lstm_epochs=120)
 
     print("\n[5/6] Monte Carlo GPU de 32,000,000 combinaciones...")
-    ranked, net_cpu = monte_carlo_gpu(final_bundle.experts, weights, total=MC_TOTAL_COMBINATIONS)
+    try:
+        ranked, net_cpu = monte_carlo_gpu(final_bundle.experts, weights, total=MC_TOTAL_COMBINATIONS)
+    except Exception as exc:
+        global XP, GPU_ARRAYS, cp
+        print(f"Monte Carlo CuPy falló en runtime ({exc}). Reintentando con NumPy CPU sin detener el pipeline...")
+        cp = None
+        XP = np
+        GPU_ARRAYS = False
+        cleanup_memory()
+        ranked, net_cpu = monte_carlo_gpu(final_bundle.experts, weights, total=MC_TOTAL_COMBINATIONS)
 
     print("\n[6/6] Exportando resultados.json...")
     enriched_pool = [enrich_combo(item, final_bundle.experts, weights, final_bundle, config) for item in ranked[:TOP_EXPORT]]
@@ -1151,9 +1609,13 @@ def run_pipeline():
             "window_size": LSTM_WINDOW,
             "steps": len(oos_records),
             "avg_hits": round(float(wf_metrics["avg_hits"]), 6),
+            "avg_hits_top8": round(float(wf_metrics["avg_hits_top8"]), 6),
             "avg_hits_top10": round(float(wf_metrics["avg_hits_top10"]), 6),
             "avg_hits_top12": round(float(wf_metrics["avg_hits_top12"]), 6),
             "avg_mse": round(float(wf_metrics["avg_mse"]), 8),
+            "expert_diagnostics": wf_metrics.get("expert_diagnostics", {}),
+            "physics_calibration": wf_metrics.get("physics_calibration", {}),
+            "physics_ablation": wf_metrics.get("physics_ablation", {}),
             "rows": wf_metrics["rows"],
         },
         "physics_summary": {
