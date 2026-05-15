@@ -1,11 +1,11 @@
 // v3-generator-elite-rank.js
-// Mejora el generador V3 para no confundir net_score crudo con calidad relativa.
-// El net_score crudo suele comprimirse en 70-78 porque es promedio ponderado.
-// Este bridge añade un Índice Top Pool basado en ranking + score relativo dentro de generator_pool.
+// Generador V3 directo: usa generator_pool optimizado de resultados.json.
+// No ejecuta Monte Carlo en navegador ni usa opciones legacy.
 (function () {
   'use strict';
 
   const originalGenerateCombos = window.generateCombos;
+  const originalRenderCombosList = window.renderCombosList;
 
   function esc(value) {
     return String(value ?? '')
@@ -19,6 +19,24 @@
   function num(value, fallback = 0) {
     const n = Number(value);
     return Number.isFinite(n) ? n : fallback;
+  }
+
+  function combosRef() {
+    try {
+      if (Array.isArray(generatedCombos)) return generatedCombos;
+    } catch (_) {}
+    window.generatedCombos = window.generatedCombos || [];
+    return window.generatedCombos;
+  }
+
+  function setCombos(next) {
+    try {
+      generatedCombos = next;
+      return generatedCombos;
+    } catch (_) {
+      window.generatedCombos = next;
+      return window.generatedCombos;
+    }
   }
 
   function getV3() {
@@ -48,8 +66,8 @@
   function poolStats(data) {
     const pool = Array.isArray(data?.generator_pool) ? data.generator_pool : [];
     const scores = pool.map(rawScore).filter(v => Number.isFinite(v));
-    const max = Math.max(...scores, 0);
-    const min = Math.min(...scores, max);
+    const max = scores.length ? Math.max(...scores) : 0;
+    const min = scores.length ? Math.min(...scores) : max;
     const byKey = new Map();
     pool.forEach((c, idx) => byKey.set(keyOf(c.numbers), { idx, combo: c }));
     return { pool, max, min, byKey };
@@ -63,16 +81,10 @@
     const raw = rawScore(found?.combo || comboLike);
     const denom = Math.max(0.0001, max - min);
     const relative = ((raw - min) / denom) * 100;
-    const rankComponent = idx >= 0 && pool.length > 1 ? (1 - idx / Math.max(1, Math.min(pool.length, 250) - 1)) * 100 : relative;
+    const maxRankSpan = Math.max(1, Math.min(pool.length, 250) - 1);
+    const rankComponent = idx >= 0 && pool.length > 1 ? (1 - idx / maxRankSpan) * 100 : relative;
     const index = Math.max(0, Math.min(100, 0.58 * rankComponent + 0.42 * relative));
-    return {
-      index,
-      raw,
-      rank: idx >= 0 ? idx + 1 : null,
-      total: pool.length,
-      max,
-      min
-    };
+    return { index, raw, rank: idx >= 0 ? idx + 1 : null, total: pool.length, max, min };
   }
 
   function normalizeCombo(item, data) {
@@ -80,59 +92,59 @@
     const q = eliteIndex(item, data);
     return {
       nums,
-      name: `V3 ${item?.game_label || data?.game_label || 'Python'} · Índice Top ${q.index.toFixed(2)}/100`,
+      name: `V3 ${item?.game_label || data?.game_label || 'Python'} · Optimizada`,
       confidence: q.raw,
       elite_index: q.index,
       pool_rank: q.rank,
       pool_total: q.total,
-      procedure: item?.human_explanation || item?.procedure || item?.plain_route || 'Generado por local_cruncher_v3.py',
+      procedure: item?.human_explanation || item?.procedure || item?.plain_route || 'Generado por local_cruncher_v3.py con parámetros optimizados.',
       source: 'sequential_gpu_montecarlo_v3',
       metrics: item || {}
     };
+  }
+
+  function comboSignature(nums) {
+    const sorted = nums.slice().sort((a, b) => a - b);
+    return [
+      sorted.filter(n => n % 2 === 0).length,
+      sorted.filter(n => n <= 28).length,
+      new Set(sorted.map(n => Math.floor((n - 1) / 10))).size,
+      Math.floor(sorted.reduce((a, b) => a + b, 0) / 20)
+    ].join('|');
   }
 
   function takeEliteCombos(data, count) {
     const pool = Array.isArray(data?.generator_pool) ? data.generator_pool : [];
     if (!pool.length) return [];
 
-    // Buscar solo en la zona élite. Evita que, tras muchas generaciones,
-    // el cursor termine mostrando candidatos del fondo del TOP_EXPORT.
-    const eliteWindow = pool.slice(0, Math.min(90, pool.length));
-    const existing = new Set((window.generatedCombos || []).map(c => keyOf(c.nums || c.numbers)));
+    const list = combosRef();
+    const existing = new Set(list.map(c => keyOf(c.nums || c.numbers)));
+    const eliteWindow = pool.slice(0, Math.min(110, pool.length));
     const selected = [];
     const usedSignatures = new Set();
 
-    function signature(nums) {
-      const sorted = nums.slice().sort((a, b) => a - b);
-      return [
-        sorted.filter(n => n % 2 === 0).length,
-        sorted.filter(n => n <= 28).length,
-        new Set(sorted.map(n => Math.floor((n - 1) / 10))).size,
-        Math.floor(sorted.reduce((a, b) => a + b, 0) / 20)
-      ].join('|');
-    }
-
+    // Primer pase: alta calidad + diversidad de estructura.
     for (const item of eliteWindow) {
       if (selected.length >= count) break;
       if (!Array.isArray(item.numbers)) continue;
       const key = keyOf(item.numbers);
-      const sig = signature(item.numbers);
+      const sig = comboSignature(item.numbers);
       if (existing.has(key)) continue;
       if (usedSignatures.has(sig) && selected.length < Math.ceil(count / 2)) continue;
       selected.push(normalizeCombo(item, data));
       usedSignatures.add(sig);
     }
 
-    // Si la diversidad estructural fue muy estricta, completar con los mejores restantes.
+    // Segundo pase: completar con mejores restantes, sin duplicados.
     if (selected.length < count) {
       for (const item of eliteWindow) {
         if (selected.length >= count) break;
+        if (!Array.isArray(item.numbers)) continue;
         const key = keyOf(item.numbers);
-        if (selected.some(c => keyOf(c.nums) === key) || existing.has(key)) continue;
+        if (existing.has(key) || selected.some(c => keyOf(c.nums) === key)) continue;
         selected.push(normalizeCombo(item, data));
       }
     }
-
     return selected;
   }
 
@@ -140,39 +152,58 @@
     return nums.map(n => `<div class="ball-lg" style="background:rgba(255,255,255,.05);border:2px solid ${color};color:${color}">${esc(n)}</div>`).join('');
   }
 
-  window.generateCombos = async function generateEliteV3Combos(count) {
+  function hideLegacyGeneratorOptions() {
+    const mc = document.getElementById('strat-montecarlo');
+    const mig = document.getElementById('strat-migration');
+    const row = mc?.closest('div') || mig?.closest('div');
+    if (row) row.style.display = 'none';
+    const info = document.getElementById('combo-info');
+    if (info) info.textContent = 'V3 optimizado desde resultados.json';
+  }
+
+  window.generateCombos = async function generateOptimizedV3Combos(count) {
+    hideLegacyGeneratorOptions();
     const data = await ensureV3(true);
     if (!data) {
       if (typeof originalGenerateCombos === 'function') return originalGenerateCombos(count);
       if (typeof showToast === 'function') showToast('⚠️ Ejecuta local_cruncher_v3.py para generar resultados.json V3');
       return;
     }
+
     const combos = takeEliteCombos(data, count);
     if (!combos.length) {
-      if (typeof showToast === 'function') showToast('⚠️ No hay combinaciones élite nuevas en generator_pool');
+      if (typeof showToast === 'function') showToast('⚠️ No hay combinaciones nuevas en el pool optimizado V3');
       return;
     }
-    window.generatedCombos.unshift(...combos);
+
+    const list = combosRef();
+    list.unshift(...combos);
     window.renderCombosList();
-    if (typeof showToast === 'function') showToast(`🧬 ${combos.length} combinaciones élite V3 cargadas`);
+    if (typeof showToast === 'function') showToast(`🧬 ${combos.length} combinaciones V3 optimizadas cargadas`);
   };
 
-  window.renderCombosList = function renderCombosEliteV3() {
+  window.renderCombosList = function renderOptimizedV3CombosList() {
     const container = document.getElementById('combos-container');
     const data = getV3();
+    const list = combosRef();
     if (!container) return;
-    if (!window.generatedCombos?.length) {
+    hideLegacyGeneratorOptions();
+
+    if (!list.length) {
       container.innerHTML = '';
+      const info = document.getElementById('combo-info');
+      if (info) info.textContent = 'V3 optimizado desde resultados.json';
       if (typeof renderFavoritesPanel === 'function') renderFavoritesPanel();
       return;
     }
 
-    const hasV3 = window.generatedCombos.some(c => c.source === 'sequential_gpu_montecarlo_v3');
+    const hasV3 = list.some(c => c.source === 'sequential_gpu_montecarlo_v3');
     if (!hasV3 || !data) {
+      if (typeof originalRenderCombosList === 'function') return originalRenderCombosList();
       return;
     }
 
-    container.innerHTML = window.generatedCombos.map((cb, i) => {
+    container.innerHTML = list.map((cb, i) => {
       if (cb.source !== 'sequential_gpu_montecarlo_v3') return '';
       const q = {
         index: Number.isFinite(Number(cb.elite_index)) ? Number(cb.elite_index) : eliteIndex(cb, data).index,
@@ -193,16 +224,16 @@
 
       return `<div class="combo-card" style="border-color:${color}70">
         <div class="combo-card-header">
-          <span style="color:${color};font-weight:700">#${window.generatedCombos.length - i} · ${esc(cb.name || 'V3 Python')}</span>
+          <span style="color:${color};font-weight:700">#${list.length - i} · ${esc(cb.name || 'V3 Optimizada')}</span>
           <span style="background:${color}30;padding:4px 8px;border-radius:4px;color:${color};font-family:var(--mono)">ÍNDICE TOP: ${q.index.toFixed(2)}</span>
         </div>
         <div class="combo-balls">${ballHtml(cb.nums, color)}</div>
         <div style="font-size:12px;color:var(--muted);margin-top:8px;">${rankText} · net_score crudo: ${q.raw.toFixed(2)}/100 · Suma: ${suma} · P/I: ${pares}P/${impares}I · Décadas: ${decades}</div>
         <div style="margin-top:10px;background:rgba(188,140,255,.08);border:1px solid rgba(188,140,255,.35);border-radius:8px;padding:10px;font-size:12px;color:var(--muted);line-height:1.55;">
-          <div style="color:var(--purple);font-weight:700;margin-bottom:6px;">🧬 Explicación V3</div>
+          <div style="color:var(--purple);font-weight:700;margin-bottom:6px;">🧬 Explicación V3 optimizada</div>
           <div>${esc(cb.procedure)}</div>
           <div style="margin-top:8px;color:var(--dim);">${esc(route)}</div>
-          <div style="margin-top:8px;color:var(--gold);font-size:11px;">Nota: el Índice Top es ranking relativo del pool; el net_score crudo se conserva como dato frío, sin inflarlo.</div>
+          <div style="margin-top:8px;color:var(--gold);font-size:11px;">El botón usa directamente el pool optimizado generado por Python. No hay Monte Carlo en navegador ni toggles legacy.</div>
         </div>
         <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px;">
           <button class="btn btn-sm btn-blue" onclick="window.evalPythonComboFromGenerated(${i})">📊 Explicar</button>
@@ -211,6 +242,17 @@
       </div>`;
     }).join('');
 
+    const info = document.getElementById('combo-info');
+    if (info) info.textContent = `${list.length} jugadas V3 optimizadas`;
     if (typeof renderFavoritesPanel === 'function') renderFavoritesPanel();
   };
+
+  // Hacer que limpiar use también la referencia real de ui.js.
+  document.addEventListener('DOMContentLoaded', () => {
+    hideLegacyGeneratorOptions();
+    document.getElementById('btn-clear')?.addEventListener('click', () => {
+      setCombos([]);
+      window.renderCombosList();
+    });
+  });
 })();
