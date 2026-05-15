@@ -1,0 +1,12 @@
+# Keep Vercel deployment browser-only.
+# Python ML tooling is intentionally excluded from the static site bundle.
+short_memory_engine.py
+requirements-ml.txt
+*.csv
+short_memory_audit.csv
+__pycache__/
+*.pyc
+.venv/
+venv/
+notebooks/
+*.ipynb
