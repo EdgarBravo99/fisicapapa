@@ -146,3 +146,28 @@
     }, 80);
   });
 })();
+
+// Auto-loader: index.html todavía no carga este bridge directamente.
+// Lo inyectamos desde un archivo que ya sí se carga, con cache-bust para Vercel/navegador.
+(function () {
+  'use strict';
+  if (window.__v3EliteGeneratorRankLoader) return;
+  window.__v3EliteGeneratorRankLoader = true;
+
+  function loadEliteGeneratorRankBridge() {
+    if (window.__v3EliteGeneratorRankLoaded) return;
+    const existing = document.querySelector('script[src^="v3-generator-elite-rank.js"]');
+    if (existing) return;
+    const s = document.createElement('script');
+    s.src = `v3-generator-elite-rank.js?v=${Date.now()}`;
+    s.onload = () => { window.__v3EliteGeneratorRankLoaded = true; };
+    s.onerror = () => console.warn('No se pudo cargar v3-generator-elite-rank.js');
+    document.body.appendChild(s);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadEliteGeneratorRankBridge);
+  } else {
+    loadEliteGeneratorRankBridge();
+  }
+})();
