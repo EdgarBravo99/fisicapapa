@@ -1,2 +1,0 @@
-# Producción Vercel: sin dependencias Python pesadas.
-# El motor cuantitativo local usa requirements-ml.txt.

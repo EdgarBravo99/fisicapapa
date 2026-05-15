@@ -1,8 +1,7 @@
 {
   "version": 2,
-  "functions": {},
   "routes": [
-    { "src": "/(?!.*\\.(js|css|json|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$)(.*)", "dest": "/index.html" },
-    { "src": "/(.*)", "dest": "/$1", "status": 200 }
+    { "src": "/(.*\\.(js|css|json|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot))", "dest": "/$1" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
