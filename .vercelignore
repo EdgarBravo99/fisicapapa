@@ -1,0 +1,14 @@
+# Browser deployment only
+local_cruncher.py
+short_memory_engine.py
+requirements-gpu.txt
+requirements-ml.txt
+resultados.json
+historial.csv
+*.csv
+*.ipynb
+__pycache__/
+*.pyc
+.venv/
+venv/
+notebooks/
