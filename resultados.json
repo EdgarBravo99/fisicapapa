@@ -1,0 +1,227 @@
+{
+  "last_update": "2026-05-15T20:17:38.151300+00:00",
+  "drift_detected": true,
+  "hindsight_log": "Auditoría inversa del sorteo 4212 (2026-05-13)\nCombinación real: 9 15 22 27 47 49\nVentana usada antes del sorteo: 120 sorteos\nDrift detectado: True | KL=0.287163 | H15=5.3540 | H120=5.7626\nNúmero 9: ganador_componente=Fourier(0.3742); Fourier=0.3742; Bayes=0.0991; XGBoostRaw=0.098132; XGBoostContrast=0.0307; Ensemble=0.0260; Rank=54/56; PeriodoFFT=2.26; Resultado=NO_RASTREADO\nNúmero 15: ganador_componente=Fourier(0.7373); Fourier=0.7373; Bayes=0.3360; XGBoostRaw=0.110593; XGBoostContrast=0.6695; Ensemble=0.8643; Rank=7/56; PeriodoFFT=120.00; Resultado=RASTREADO\nNúmero 22: ganador_componente=XGBoost(0.7399); Fourier=0.0951; Bayes=0.0255; XGBoostRaw=0.111967; XGBoostContrast=0.7399; Ensemble=0.3784; Rank=38/56; PeriodoFFT=2.45; Resultado=NO_RASTREADO\nNúmero 27: ganador_componente=Fourier(0.7792); Fourier=0.7792; Bayes=0.4008; XGBoostRaw=0.100416; XGBoostContrast=0.1478; Ensemble=0.5232; Rank=27/56; PeriodoFFT=2.79; Resultado=NO_RASTREADO\nNúmero 47: ganador_componente=Fourier(0.7612); Fourier=0.7612; Bayes=0.4014; XGBoostRaw=0.111698; XGBoostContrast=0.7261; Ensemble=0.9617; Rank=5/56; PeriodoFFT=6.32; Resultado=RASTREADO\nNúmero 49: ganador_componente=Fourier(0.4634); Fourier=0.4634; Bayes=0.1448; XGBoostRaw=0.104626; XGBoostContrast=0.3636; Ensemble=0.3605; Rank=40/56; PeriodoFFT=2.55; Resultado=NO_RASTREADO\nConfianza de ruta inversa: 51.90%",
+  "max_confidence_found": 72.6087,
+  "number_scores": {
+    "1": 36.4777,
+    "2": 63.8974,
+    "3": 54.3361,
+    "4": 65.2239,
+    "5": 93.5218,
+    "6": 27.7896,
+    "7": 48.39,
+    "8": 47.5324,
+    "9": 10.8491,
+    "10": 21.3767,
+    "11": 53.9252,
+    "12": 6.0172,
+    "13": 14.2341,
+    "14": 13.0109,
+    "15": 60.6694,
+    "16": 26.1902,
+    "17": 55.7651,
+    "18": 83.7533,
+    "19": 33.5574,
+    "20": 35.8399,
+    "21": 44.6158,
+    "22": 27.5332,
+    "23": 7.3771,
+    "24": 40.4122,
+    "25": 48.3535,
+    "26": 51.4997,
+    "27": 55.1373,
+    "28": 43.1191,
+    "29": 54.2689,
+    "30": 37.0208,
+    "31": 53.4819,
+    "32": 15.7574,
+    "33": 31.401,
+    "34": 46.0386,
+    "35": 50.1649,
+    "36": 51.5193,
+    "37": 74.9378,
+    "38": 52.456,
+    "39": 74.2276,
+    "40": 63.8,
+    "41": 7.1264,
+    "42": 0.0,
+    "43": 47.8633,
+    "44": 69.7542,
+    "45": 52.1407,
+    "46": 83.1552,
+    "47": 94.1499,
+    "48": 66.1354,
+    "49": 37.4534,
+    "50": 100.0,
+    "51": 55.8158,
+    "52": 30.2209,
+    "53": 20.6103,
+    "54": 64.3663,
+    "55": 57.4134,
+    "56": 65.2935
+  },
+  "top_combinations": [
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        46,
+        47,
+        50
+      ],
+      "confidence": 72.6087,
+      "xgboost_raw_mean": 0.1101465,
+      "xgboost_contrast_mean": 0.606981,
+      "bayes_mean": 0.51885,
+      "fourier_mean": 0.78691,
+      "structure_mean": 0.815985
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        39,
+        46,
+        47,
+        50
+      ],
+      "confidence": 72.4631,
+      "xgboost_raw_mean": 0.11000122,
+      "xgboost_contrast_mean": 0.598569,
+      "bayes_mean": 0.523203,
+      "fourier_mean": 0.791587,
+      "structure_mean": 0.815985
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        47,
+        50,
+        56
+      ],
+      "confidence": 71.5841,
+      "xgboost_raw_mean": 0.11035442,
+      "xgboost_contrast_mean": 0.619022,
+      "bayes_mean": 0.482324,
+      "fourier_mean": 0.751966,
+      "structure_mean": 0.892727
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        39,
+        47,
+        50,
+        56
+      ],
+      "confidence": 71.4385,
+      "xgboost_raw_mean": 0.11020915,
+      "xgboost_contrast_mean": 0.61061,
+      "bayes_mean": 0.486677,
+      "fourier_mean": 0.756643,
+      "structure_mean": 0.892727
+    },
+    {
+      "numbers": [
+        2,
+        5,
+        18,
+        37,
+        47,
+        50
+      ],
+      "confidence": 71.4127,
+      "xgboost_raw_mean": 0.10980578,
+      "xgboost_contrast_mean": 0.587251,
+      "bayes_mean": 0.499828,
+      "fourier_mean": 0.772698,
+      "structure_mean": 0.920606
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        39,
+        47,
+        50
+      ],
+      "confidence": 71.3804,
+      "xgboost_raw_mean": 0.11024278,
+      "xgboost_contrast_mean": 0.612557,
+      "bayes_mean": 0.501,
+      "fourier_mean": 0.769612,
+      "structure_mean": 0.775152
+    },
+    {
+      "numbers": [
+        4,
+        5,
+        18,
+        37,
+        47,
+        50
+      ],
+      "confidence": 71.3623,
+      "xgboost_raw_mean": 0.11005571,
+      "xgboost_contrast_mean": 0.601724,
+      "bayes_mean": 0.496647,
+      "fourier_mean": 0.760075,
+      "structure_mean": 0.88447
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        44,
+        47,
+        50
+      ],
+      "confidence": 71.34,
+      "xgboost_raw_mean": 0.10977702,
+      "xgboost_contrast_mean": 0.585586,
+      "bayes_mean": 0.508524,
+      "fourier_mean": 0.784645,
+      "structure_mean": 0.848485
+    },
+    {
+      "numbers": [
+        2,
+        5,
+        18,
+        39,
+        47,
+        50
+      ],
+      "confidence": 71.267,
+      "xgboost_raw_mean": 0.10966051,
+      "xgboost_contrast_mean": 0.578839,
+      "bayes_mean": 0.504181,
+      "fourier_mean": 0.777375,
+      "structure_mean": 0.920606
+    },
+    {
+      "numbers": [
+        3,
+        5,
+        18,
+        46,
+        47,
+        50
+      ],
+      "confidence": 71.2636,
+      "xgboost_raw_mean": 0.11084547,
+      "xgboost_contrast_mean": 0.647457,
+      "bayes_mean": 0.480335,
+      "fourier_mean": 0.704492,
+      "structure_mean": 0.852955
+    }
+  ],
+  "capital_preservation": false
+}
