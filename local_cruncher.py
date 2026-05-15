@@ -6,6 +6,16 @@ local_cruncher.py
 Sistema local interactivo para generar resultados.json desde historial.csv.
 Diseñado para ejecución en Windows/PowerShell con Python local, RAM disponible y GPU NVIDIA.
 La web de Vercel solo consume resultados.json como archivo estático.
+
+Flujo maestro:
+1. Carga historial.csv una sola vez.
+2. Precalcula matrices y contexto de ventana en RAM.
+3. Ejecuta auditoría hindsight del último sorteo real.
+4. Imprime la auditoría inmediatamente.
+5. Entrena modelo CUDA final.
+6. Lanza Monte Carlo vectorizado.
+7. Exporta resultados.json.
+8. Sincroniza Git/Vercel si Git está disponible.
 """
 
 from __future__ import annotations
@@ -14,6 +24,7 @@ import importlib.util
 import json
 import math
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -74,6 +85,16 @@ class Draw:
 
 
 @dataclass
+class WindowContext:
+    start_idx: int
+    end_idx: int
+    rows: Sequence[Draw]
+    fourier: object
+    fourier_period: object
+    bayes: object
+
+
+@dataclass
 class ComponentState:
     fourier: object
     fourier_period: object
@@ -91,10 +112,14 @@ class ComponentState:
 class CrunchSession:
     draws: Optional[List[Draw]] = None
     prior: Optional[object] = None
+    all_matrix: Optional[object] = None
+    hindsight_context: Optional[WindowContext] = None
+    current_context: Optional[WindowContext] = None
     hindsight_log: str = ""
     final_state: Optional[ComponentState] = None
     top_combinations: Optional[List[Dict]] = None
     max_confidence_found: float = 0.0
+    last_export_path: str = "resultados.json"
 
 
 def dependency_exists(module_name: str) -> bool:
@@ -169,13 +194,14 @@ def print_menu() -> None:
     clear_screen()
     print_box(
         [
-            "MELATE LOCAL CRUNCHER · CUDA RTX 4060",
+            "MELATE LOCAL CRUNCHER · PIPELINE CUDA",
             "Fourier + Bayes Sigmoide + XGBoost + Monte Carlo",
             "",
-            "[1] Cargar Historial y Ejecutar Ingeniería Inversa",
-            "[2] Lanzar Simulación Monte Carlo (1,000,000 combinaciones)",
-            "[3] Exportar a la Web y Sincronizar con Vercel",
-            "[4] Salir del Sistema",
+            "[1] Ejecutar Pipeline Cuantitativo Completo (Flujo en Cascada)",
+            "[2] Solo Ingeniería Inversa del Último Sorteo",
+            "[3] Solo Simulación Monte Carlo (1,000,000 combinaciones)",
+            "[4] Exportar/Sincronizar resultados.json",
+            "[5] Salir del Sistema",
         ]
     )
 
@@ -454,6 +480,42 @@ def drift_detection(window: Sequence[Draw]):
     return bool(kl >= DRIFT_KL_THRESHOLD), kl, entropy_recent, entropy_window
 
 
+def make_context(draws: Sequence[Draw], prior, start_idx: int, end_idx: int) -> WindowContext:
+    rows = draws[start_idx:end_idx]
+    fourier, periods = fft_microcycle_scores(rows)
+    bayes = bayesian_sigmoid_posterior(rows, prior)
+    return WindowContext(
+        start_idx=start_idx,
+        end_idx=end_idx,
+        rows=rows,
+        fourier=fourier,
+        fourier_period=periods,
+        bayes=bayes,
+    )
+
+
+def prepare_session_contexts(session: CrunchSession) -> None:
+    ensure_session_loaded(session)
+    assert session.draws is not None
+    assert session.prior is not None
+
+    if session.all_matrix is None:
+        session.all_matrix = binary_matrix(session.draws)
+
+    hindsight_end = len(session.draws) - 1
+    hindsight_start = max(0, hindsight_end - WINDOW_SIZE)
+    current_end = len(session.draws)
+    current_start = max(0, current_end - WINDOW_SIZE)
+
+    if session.hindsight_context is None:
+        print("Precalculando Fourier/Bayes para auditoría hindsight...")
+        session.hindsight_context = make_context(session.draws, session.prior, hindsight_start, hindsight_end)
+
+    if session.current_context is None:
+        print("Precalculando Fourier/Bayes para simulación futura...")
+        session.current_context = make_context(session.draws, session.prior, current_start, current_end)
+
+
 def last_seen_gaps(window: Sequence[Draw]):
     gaps = np.full(MAX_NUMBER + 1, len(window) + 1, dtype=np.float64)
     for gap, draw in enumerate(reversed(window)):
@@ -565,10 +627,8 @@ def train_gpu_calibrated_xgb(draws: Sequence[Draw], prior, end_idx: int):
     return model
 
 
-def build_component_state(window: Sequence[Draw], prior, model) -> ComponentState:
-    fourier, periods = fft_microcycle_scores(window)
-    bayes = bayesian_sigmoid_posterior(window, prior)
-    x_live = feature_matrix(window, prior, fourier, bayes)
+def build_component_state(context: WindowContext, prior, model) -> ComponentState:
+    x_live = feature_matrix(context.rows, prior, context.fourier, context.bayes)
 
     xgb_raw = np.zeros(MAX_NUMBER + 1, dtype=np.float64)
     xgb_raw[1:] = model.predict_proba(x_live)[:, 1]
@@ -576,18 +636,18 @@ def build_component_state(window: Sequence[Draw], prior, model) -> ComponentStat
 
     ensemble = np.zeros(MAX_NUMBER + 1, dtype=np.float64)
     ensemble[1:] = (
-        ENSEMBLE_WEIGHTS["fourier"] * fourier[1:]
-        + ENSEMBLE_WEIGHTS["bayes"] * bayes[1:]
+        ENSEMBLE_WEIGHTS["fourier"] * context.fourier[1:]
+        + ENSEMBLE_WEIGHTS["bayes"] * context.bayes[1:]
         + ENSEMBLE_WEIGHTS["xgboost"] * xgb_contrast[1:]
     )
     ensemble = minmax01(ensemble)
 
-    drift_detected, kl, entropy_recent, entropy_window = drift_detection(window)
+    drift_detected, kl, entropy_recent, entropy_window = drift_detection(context.rows)
 
     return ComponentState(
-        fourier=fourier,
-        fourier_period=periods,
-        bayes=bayes,
+        fourier=context.fourier,
+        fourier_period=context.fourier_period,
+        bayes=context.bayes,
         xgb_raw=xgb_raw,
         xgb_contrast=xgb_contrast,
         ensemble=ensemble,
@@ -613,17 +673,16 @@ def rank_of_number(scores, number: int) -> int:
     return int(position[0] + 1) if len(position) else MAX_NUMBER
 
 
-def hindsight_attribution(draws: Sequence[Draw], prior):
+def hindsight_attribution(draws: Sequence[Draw], prior, context: WindowContext):
     target = draws[-1]
     end_idx = len(draws) - 1
     model = train_gpu_calibrated_xgb(draws, prior, end_idx)
-    window = draws[max(0, end_idx - WINDOW_SIZE) : end_idx]
-    state = build_component_state(window, prior, model)
+    state = build_component_state(context, prior, model)
 
     lines = [
         f"Auditoría inversa del sorteo {target.draw_id} ({target.date or 'sin fecha'})",
         f"Combinación real: {' '.join(map(str, target.numbers))}",
-        f"Ventana usada antes del sorteo: {len(window)} sorteos",
+        f"Ventana usada antes del sorteo: {len(context.rows)} sorteos",
         f"Drift detectado: {state.drift_detected} | KL={state.kl_divergence:.6f} | H15={state.entropy_recent:.4f} | H120={state.entropy_window:.4f}",
     ]
 
@@ -732,10 +791,9 @@ def generate_mc_combinations(state: ComponentState, total: int = MC_COMBINATIONS
     return sorted(top_records.values(), key=lambda item: item["confidence"], reverse=True)
 
 
-def run_final_simulation(draws: Sequence[Draw], prior, total_mc: int = MC_COMBINATIONS):
+def run_final_simulation(draws: Sequence[Draw], prior, context: WindowContext, total_mc: int = MC_COMBINATIONS):
     model = train_gpu_calibrated_xgb(draws, prior, len(draws))
-    window = draws[-WINDOW_SIZE:]
-    state = build_component_state(window, prior, model)
+    state = build_component_state(context, prior, model)
     ranked = generate_mc_combinations(state=state, total=total_mc, batch_size=BATCH_SIZE)
     max_confidence = float(ranked[0]["confidence"]) if ranked else 0.0
     top = [item for item in ranked if float(item["confidence"]) >= CONFIDENCE_THRESHOLD][:10]
@@ -744,7 +802,7 @@ def run_final_simulation(draws: Sequence[Draw], prior, total_mc: int = MC_COMBIN
 
 def build_result_json(session: CrunchSession) -> Dict:
     if session.final_state is None:
-        raise RuntimeError("No hay simulación final en memoria. Ejecuta la opción [2] primero.")
+        raise RuntimeError("No hay simulación final en memoria. Ejecuta la opción [3] o [1] primero.")
 
     top_combinations = session.top_combinations or []
 
@@ -782,55 +840,146 @@ def build_result_json(session: CrunchSession) -> Dict:
 
 def write_resultados_json(session: CrunchSession) -> None:
     result = build_result_json(session)
-    Path("resultados.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-    print("\nArchivo resultados.json generado correctamente.")
+    Path(session.last_export_path).write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"\nArchivo {session.last_export_path} generado correctamente.")
+
+
+def find_git_executable() -> Optional[str]:
+    found = shutil.which("git")
+    if found:
+        return found
+
+    common_paths = [
+        r"C:\Program Files\Git\cmd\git.exe",
+        r"C:\Program Files\Git\bin\git.exe",
+        r"C:\Program Files (x86)\Git\cmd\git.exe",
+        r"C:\Program Files (x86)\Git\bin\git.exe",
+        str(Path.home() / r"AppData\Local\Programs\Git\cmd\git.exe"),
+        str(Path.home() / r"AppData\Local\Programs\Git\bin\git.exe"),
+    ]
+
+    for path in common_paths:
+        if Path(path).exists():
+            git_dir = str(Path(path).parent)
+            os.environ["PATH"] = git_dir + os.pathsep + os.environ.get("PATH", "")
+            return path
+
+    return None
+
+
+def try_install_git_with_winget() -> Optional[str]:
+    if shutil.which("winget") is None:
+        return None
+
+    print("\nGit no está disponible en PATH. Intentando instalar Git con winget...")
+    try:
+        subprocess.run(
+            ["winget", "install", "--id", "Git.Git", "-e", "--silent", "--accept-source-agreements", "--accept-package-agreements"],
+            check=False,
+        )
+    except Exception:
+        return None
+
+    return find_git_executable()
+
+
+def run_git_command(git_exe: str, args: List[str]) -> bool:
+    try:
+        result = subprocess.run(
+            [git_exe] + args,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        if result.stdout.strip():
+            print(result.stdout.strip())
+        if result.stderr.strip():
+            print(result.stderr.strip())
+        return result.returncode == 0
+    except Exception as exc:
+        print(f"Error ejecutando Git: {exc}")
+        return False
 
 
 def git_sync() -> None:
     print("\nSincronizando con Git...")
-    os.system("git add resultados.json")
-    os.system('git commit -m "Update predictions"')
-    os.system("git push origin main")
+
+    git_exe = find_git_executable()
+    if git_exe is None:
+        git_exe = try_install_git_with_winget()
+
+    if git_exe is None:
+        print("\nNo se encontró Git en este equipo.")
+        print("resultados.json ya fue generado, pero no se pudo subir automáticamente.")
+        print("Instala Git for Windows y reinicia PowerShell:")
+        print("  winget install --id Git.Git -e")
+        print("Luego ejecuta manualmente:")
+        print("  git add resultados.json")
+        print('  git commit -m "Update predictions"')
+        print("  git push origin main")
+        return
+
+    print(f"Git detectado: {git_exe}")
+
+    if not run_git_command(git_exe, ["add", "resultados.json"]):
+        print("No se pudo ejecutar git add.")
+        return
+
+    commit_ok = run_git_command(git_exe, ["commit", "-m", "Update predictions"])
+    if not commit_ok:
+        print("No se creó commit. Puede que no haya cambios o falte configuración de usuario Git.")
+
+    if not run_git_command(git_exe, ["push", "origin", "main"]):
+        print("No se pudo ejecutar git push origin main.")
+        print("Verifica credenciales de GitHub o que el remoto origin exista.")
 
 
 def ensure_session_loaded(session: CrunchSession) -> None:
     if session.draws is None:
         session.draws = load_historial("historial.csv")
         session.prior = static_prior(session.draws)
+        session.all_matrix = binary_matrix(session.draws)
 
 
 def action_hindsight(session: CrunchSession) -> None:
     clear_screen()
-    print_box(["[1] INGENIERÍA INVERSA", "Cargando historial.csv y analizando último sorteo real"])
-    ensure_session_loaded(session)
+    print_box(["[2] INGENIERÍA INVERSA", "Cargando historial.csv y analizando último sorteo real"])
+    prepare_session_contexts(session)
     assert session.draws is not None
     assert session.prior is not None
-    log, _ = hindsight_attribution(session.draws, session.prior)
+    assert session.hindsight_context is not None
+    log, _ = hindsight_attribution(session.draws, session.prior, session.hindsight_context)
     session.hindsight_log = log
     print("\n" + log)
 
 
 def action_monte_carlo(session: CrunchSession) -> None:
     clear_screen()
-    print_box(["[2] MONTE CARLO MASIVO", "Entrenamiento CUDA + 1,000,000 combinaciones vectorizadas"])
-    ensure_session_loaded(session)
+    print_box(["[3] MONTE CARLO MASIVO", "Entrenamiento CUDA + 1,000,000 combinaciones vectorizadas"])
+    prepare_session_contexts(session)
     assert session.draws is not None
     assert session.prior is not None
-    state, top, max_confidence = run_final_simulation(session.draws, session.prior, MC_COMBINATIONS)
+    assert session.current_context is not None
+    state, top, max_confidence = run_final_simulation(session.draws, session.prior, session.current_context, MC_COMBINATIONS)
     session.final_state = state
     session.top_combinations = top
     session.max_confidence_found = max_confidence
+    print_simulation_summary(session)
 
-    print(f"\nDrift detectado: {state.drift_detected}")
-    print(f"KL: {state.kl_divergence:.6f}")
-    print(f"Confianza máxima encontrada: {format_percent(max_confidence)}")
 
-    if not top:
+def print_simulation_summary(session: CrunchSession) -> None:
+    assert session.final_state is not None
+    print(f"\nDrift detectado: {session.final_state.drift_detected}")
+    print(f"KL: {session.final_state.kl_divergence:.6f}")
+    print(f"Confianza máxima encontrada: {format_percent(session.max_confidence_found)}")
+
+    if not session.top_combinations:
         print("\nSTOP-LOSS ACTIVO: No hubo combinaciones >= 70%.")
         return
 
     print("\nTOP COMBINACIONES OPERATIVAS:")
-    for i, item in enumerate(top, start=1):
+    for i, item in enumerate(session.top_combinations, start=1):
         print(
             f"{i:02d}. {item['numbers']} | "
             f"Confianza={item['confidence']:.2f}% | "
@@ -842,12 +991,58 @@ def action_monte_carlo(session: CrunchSession) -> None:
 
 def action_export(session: CrunchSession) -> None:
     clear_screen()
-    print_box(["[3] EXPORTAR A WEB", "Generando resultados.json y sincronizando Git/Vercel"])
+    print_box(["[4] EXPORTAR A WEB", "Generando resultados.json y sincronizando Git/Vercel"])
     if session.final_state is None:
-        print("\nNo hay simulación en memoria. Ejecutando opción [2] automáticamente...")
+        print("\nNo hay simulación en memoria. Ejecutando Monte Carlo automáticamente...")
         action_monte_carlo(session)
     write_resultados_json(session)
     git_sync()
+
+
+def action_full_pipeline(session: CrunchSession) -> None:
+    clear_screen()
+    started = time.perf_counter()
+    print_box(
+        [
+            "[1] PIPELINE CUANTITATIVO COMPLETO",
+            "Carga → Fourier/Bayes → Drift → Hindsight → GPU → Monte Carlo → JSON → Git",
+        ]
+    )
+
+    print("\n[FASE 1] Cargando historial y montando matrices en RAM...")
+    prepare_session_contexts(session)
+    assert session.draws is not None
+    assert session.prior is not None
+    assert session.hindsight_context is not None
+    assert session.current_context is not None
+
+    print("\n[FASE 2] Ejecutando auditoría hindsight del último sorteo...")
+    hindsight_log, _ = hindsight_attribution(session.draws, session.prior, session.hindsight_context)
+    session.hindsight_log = hindsight_log
+
+    print("\n═══════════════════════════════════════════════════════")
+    print("AUDITORÍA HINDSIGHT DISPONIBLE PARA LECTURA")
+    print("═══════════════════════════════════════════════════════")
+    print(hindsight_log)
+    print("═══════════════════════════════════════════════════════")
+    print("\n[FASE 3] La GPU entrenará el modelo final y lanzará Monte Carlo mientras puedes revisar la auditoría anterior.")
+
+    state, top, max_confidence = run_final_simulation(session.draws, session.prior, session.current_context, MC_COMBINATIONS)
+    session.final_state = state
+    session.top_combinations = top
+    session.max_confidence_found = max_confidence
+
+    print("\n[FASE 4] Resumen de simulación final:")
+    print_simulation_summary(session)
+
+    print("\n[FASE 5] Exportando resultados.json...")
+    write_resultados_json(session)
+
+    print("\n[FASE 6] Sincronizando Git/Vercel...")
+    git_sync()
+
+    elapsed = time.perf_counter() - started
+    print(f"\nPipeline completo finalizado en {elapsed:.2f} segundos.")
 
 
 def run_menu() -> None:
@@ -859,15 +1054,18 @@ def run_menu() -> None:
 
         try:
             if choice == "1":
-                action_hindsight(session)
+                action_full_pipeline(session)
                 pause()
             elif choice == "2":
-                action_monte_carlo(session)
+                action_hindsight(session)
                 pause()
             elif choice == "3":
-                action_export(session)
+                action_monte_carlo(session)
                 pause()
             elif choice == "4":
+                action_export(session)
+                pause()
+            elif choice == "5":
                 print("\nSaliendo del sistema.")
                 break
             else:
