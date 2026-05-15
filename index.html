@@ -192,6 +192,19 @@
 
 <div class="toast" id="toast"></div>
 
+<div id="loading-modal" class="loading-modal">
+  <div class="loading-content">
+    <div class="loading-header">🔄 Simulando Combinaciones</div>
+    <div class="loading-bar-container">
+      <div id="loading-bar" class="loading-bar"></div>
+    </div>
+    <div id="loading-info" class="loading-info">Iniciando simulaciones...</div>
+    <div style="text-align: center; margin-top: 20px;">
+      <button class="btn btn-sm btn-red" onclick="cancelSimulation()">✕ Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <script src="data.js"></script>
 <script src="engine.js"></script>
 <script src="ui.js"></script>

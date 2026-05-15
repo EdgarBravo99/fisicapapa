@@ -190,6 +190,199 @@ function evalCombo(nums) {
   return { sorted, suma, pares, impares: 6 - pares, decades: decades.size, consec, total_score };
 }
 
+// ── SCORING AVANZADO MULTIFACTOR ──
+// Calcula componentes individuales del score para análisis detallado
+function computeAdvancedScore(nums) {
+  const DATA = getActiveData();
+  if (!DATA.length) return { total: 50, components: {}, breakdown: {} };
+  
+  const sorted = [...nums].sort((a, b) => a - b);
+  const stats = computeStats();
+  const { freq, lastSeen, numScore } = stats;
+  
+  // 1. SCORE FRECUENCIA: números que aparecen frecuentemente
+  const freqScores = sorted.map(n => numScore(n));
+  const frequencyScore = freqScores.reduce((a, b) => a + b, 0) / 6;
+  
+  // 2. SCORE DE RETRASO: números que llevan mucho sin salir
+  const delayScores = sorted.map(n => {
+    const delay = lastSeen[n];
+    if (delay <= 3) return 20;
+    if (delay > 25) return 60;
+    if (delay > 15) return 50;
+    return 30 + (delay * 1.5);
+  });
+  const delayScore = delayScores.reduce((a, b) => a + b, 0) / 6;
+  
+  // 3. SCORE DE BALANCE PAR/IMPAR
+  const pares = sorted.filter(n => n % 2 === 0).length;
+  const balanceScore = 80 - Math.abs(pares - 3) * 15;
+  
+  // 4. SCORE DE RANGO: distribución entre 1-28 y 29-56
+  const lowRange = sorted.filter(n => n <= 28).length;
+  const rangeScore = 100 - Math.abs(lowRange - 3) * 12;
+  
+  // 5. SCORE DE DISTRIBUCIÓN DE DÉCADAS
+  const decades = new Set(sorted.map(n => Math.floor((n - 1) / 10)));
+  const decadeScore = (decades.size / 6) * 100;
+  
+  // 6. SCORE DE SUMA
+  const suma = sorted.reduce((a, b) => a + b, 0);
+  const allSums = DATA.map(row => row.slice(2).reduce((a, b) => a + b, 0));
+  const sumMean = allSums.reduce((a, b) => a + b, 0) / allSums.length;
+  const sumStdDev = Math.sqrt(allSums.reduce((a, b) => a + Math.pow(b - sumMean, 2), 0) / allSums.length);
+  const sumZScore = Math.abs((suma - sumMean) / sumStdDev) || 0;
+  const sumScore = 100 - Math.min(50, sumZScore * 15);
+  
+  // 7. SCORE DE PARES FRECUENTES
+  const pairScore = calculateFrequentPairScore(sorted) || 50;
+  
+  // 8. SCORE FÍSICO
+  const physScore = sorted.reduce((acc, n) => acc + getPhysicsBonus(n, stats.phys) * 1.5, 0) / 6 + 50;
+  
+  // Ponderación final
+  const weights = {
+    frequency: 0.25,
+    delay: 0.20,
+    balance: 0.15,
+    range: 0.12,
+    decade: 0.08,
+    sum: 0.12,
+    pair: 0.05,
+    physics: 0.03
+  };
+  
+  const components = {
+    frequency: Math.max(0, Math.min(100, frequencyScore)),
+    delay: Math.max(0, Math.min(100, delayScore)),
+    balance: Math.max(0, Math.min(100, balanceScore)),
+    range: Math.max(0, Math.min(100, rangeScore)),
+    decade: Math.max(0, Math.min(100, decadeScore)),
+    sum: Math.max(0, Math.min(100, sumScore)),
+    pair: Math.max(0, Math.min(100, pairScore)),
+    physics: Math.max(0, Math.min(100, physScore))
+  };
+  
+  const total = Math.round(
+    components.frequency * weights.frequency +
+    components.delay * weights.delay +
+    components.balance * weights.balance +
+    components.range * weights.range +
+    components.decade * weights.decade +
+    components.sum * weights.sum +
+    components.pair * weights.pair +
+    components.physics * weights.physics
+  );
+  
+  return {
+    total: Math.max(0, Math.min(100, total)),
+    components,
+    breakdown: {
+      pares,
+      impares: 6 - pares,
+      lowRange,
+      highRange: 6 - lowRange,
+      suma,
+      decades: decades.size,
+      avgFreq: Math.round(frequencyScore),
+      avgDelay: Math.round(delayScore)
+    }
+  };
+}
+
+// Helper para calcular score de parejas frecuentes
+function calculateFrequentPairScore(nums) {
+  const DATA = getActiveData();
+  if (!DATA.length) return 50;
+  
+  const pairFreq = {};
+  DATA.forEach(row => {
+    const rowNums = row.slice(2);
+    for (let i = 0; i < rowNums.length; i++) {
+      for (let j = i + 1; j < rowNums.length; j++) {
+        const pair = [Math.min(rowNums[i], rowNums[j]), Math.max(rowNums[i], rowNums[j])].join(',');
+        pairFreq[pair] = (pairFreq[pair] || 0) + 1;
+      }
+    }
+  });
+  
+  let pairCount = 0;
+  for (let i = 0; i < nums.length; i++) {
+    for (let j = i + 1; j < nums.length; j++) {
+      const pair = [nums[i], nums[j]].join(',');
+      if (pairFreq[pair] && pairFreq[pair] >= 2) pairCount++;
+    }
+  }
+  
+  return 30 + (pairCount * 15);
+}
+
+// Generar sugerencias automáticas de combinaciones
+function generateComboSuggestions(userNums, suggestionCount = 5) {
+  const DATA = getActiveData();
+  if (!DATA.length) return [];
+  
+  const suggestions = [];
+  const stats = computeStats();
+  const poolBase = Array.from({ length: 56 }, (_, i) => i + 1);
+  
+  // Estrategia 1: Reemplazar números individuales
+  for (let replaceIdx = 0; replaceIdx < userNums.length && suggestions.length < suggestionCount; replaceIdx++) {
+    const candidates = poolBase.filter(n => !userNums.includes(n)).slice(0, 2);
+    
+    candidates.forEach(candidate => {
+      if (suggestions.length >= suggestionCount) return;
+      const testCombo = [...userNums];
+      testCombo[replaceIdx] = candidate;
+      const score = computeAdvancedScore(testCombo);
+      suggestions.push({
+        nums: [...testCombo].sort((a, b) => a - b),
+        score: score.total,
+        strategy: `Incluir ${candidate}`,
+        components: score.components
+      });
+    });
+  }
+  
+  // Estrategia 2: Números con mayor retraso
+  const delayedNums = poolBase
+    .filter(n => !userNums.includes(n))
+    .map(n => ({ n, delay: stats.lastSeen[n] }))
+    .sort((a, b) => b.delay - a.delay)
+    .slice(0, 8);
+  
+  for (let i = 0; i < Math.min(3, delayedNums.length) && suggestions.length < suggestionCount; i++) {
+    const combo = [...userNums];
+    let minDelayIdx = 0;
+    for (let j = 1; j < combo.length; j++) {
+      if (stats.lastSeen[combo[j]] < stats.lastSeen[combo[minDelayIdx]]) {
+        minDelayIdx = j;
+      }
+    }
+    combo[minDelayIdx] = delayedNums[i].n;
+    const score = computeAdvancedScore(combo);
+    suggestions.push({
+      nums: [...combo].sort((a, b) => a - b),
+      score: score.total,
+      strategy: `Atrasado: ${delayedNums[i].n}`,
+      components: score.components
+    });
+  }
+  
+  // Deduplicar y ordenar
+  const uniqueMap = new Map();
+  suggestions.forEach(s => {
+    const key = s.nums.join(',');
+    if (!uniqueMap.has(key) || uniqueMap.get(key).score < s.score) {
+      uniqueMap.set(key, s);
+    }
+  });
+  
+  return Array.from(uniqueMap.values())
+    .sort((a, b) => b.score - a.score)
+    .slice(0, suggestionCount);
+}
+
 // ── DETECTOR DE CAMBIO DE PATRÓN ESPACIAL ──
 function detectPatternShift() {
   const DATA = getActiveData();

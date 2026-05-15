@@ -93,6 +93,37 @@ function loadAllFavorites() {
   favoriteCombos.revancha = loadFavoritesFromStorage('revancha');
 }
 
+// ── LOADING MODAL ──
+let simulationCancelled = false;
+function showLoadingModal(show, message = '') {
+  const modal = document.getElementById('loading-modal');
+  if (!modal) return;
+  
+  if (show) {
+    simulationCancelled = false;
+    modal.style.display = 'flex';
+    document.getElementById('loading-info').textContent = message;
+    document.getElementById('loading-bar').style.width = '0%';
+    modal.classList.add('show');
+  } else {
+    modal.classList.remove('show');
+    setTimeout(() => { modal.style.display = 'none'; }, 300);
+  }
+}
+
+function updateLoadingProgress(percent, message = '') {
+  const bar = document.getElementById('loading-bar');
+  const info = document.getElementById('loading-info');
+  if (bar) bar.style.width = Math.min(99, percent) + '%';
+  if (info && message) info.textContent = message;
+}
+
+function cancelSimulation() {
+  simulationCancelled = true;
+  showLoadingModal(false);
+  showToast('⚠️ Simulación cancelada');
+}
+
 function renderFavoritesPanel() {
   const container = document.getElementById('favorites-container');
   if (!container) return;
@@ -341,13 +372,19 @@ async function evalUserComboUI() {
   if (inputs.some(n => isNaN(n) || n < 1 || n > 56)) { showToast('⚠️ Ingresa 6 números válidos del 1 al 56'); return; }
   if ([...new Set(inputs)].length !== 6) { showToast('⚠️ Los 6 números deben ser distintos'); return; }
 
+  showLoadingModal(true, 'Evaluando combinación y generando sugerencias...');
+
   const { numScore, lastSeen } = computeStats();
   const ev = evalCombo(inputs);
+  const advancedScore = computeAdvancedScore(inputs);
   const physicsDetails = ev.sorted.map(n => getBallPhysicsInfo(n));
   const averageEffectiveWeight = physicsDetails.reduce((sum, info) => sum + info.effectiveWeight, 0) / physicsDetails.length;
   const totalPhysicsBonus = physicsDetails.reduce((sum, info) => sum + info.bonus, 0);
   const validation = validateComboVariables(inputs, ev);
   const montecarlo = await montecarloManualValidation(inputs);
+  
+  // Generar sugerencias
+  const suggestions = generateComboSuggestions(inputs, 5);
 
   const scoreColor = ev.total_score >= 72 ? 'var(--green)' : ev.total_score >= 55 ? 'var(--gold)' : ev.total_score >= 40 ? 'var(--blue)' : 'var(--red)';
   const levelLabel = ev.total_score >= 72 ? '⭐⭐⭐ PREMIUM' : ev.total_score >= 55 ? '⭐⭐ ALTA' : ev.total_score >= 40 ? '⭐ MEDIA' : '⚠️ BAJA';
@@ -355,6 +392,22 @@ async function evalUserComboUI() {
   const balls = ev.sorted.map(n =>
     `<div class="${getBallClass(numScore(n))}" title="${n}">${n}</div>`
   ).join('');
+
+  // Advanced score breakdown
+  const componentBars = Object.entries(advancedScore.components).map(([key, val]) => {
+    const labels = {
+      frequency: 'Frecuencia',
+      delay: 'Retraso',
+      balance: 'Balance P/I',
+      range: 'Rango',
+      decade: 'Décadas',
+      sum: 'Suma',
+      pair: 'Parejas',
+      physics: 'Física'
+    };
+    const color = val >= 70 ? 'var(--green)' : val >= 50 ? 'var(--gold)' : 'var(--red)';
+    return `<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px;"><span>${labels[key]}</span><span style="color:${color};font-weight:700">${Math.round(val)}</span></div><div class="score-track" style="height:4px;"><div class="score-fill" style="width:${val}%;background:${color}"></div></div></div>`;
+  }).join('');
 
   const numDetails = ev.sorted.map(n => {
     const s = Math.round(numScore(n));
@@ -370,11 +423,29 @@ async function evalUserComboUI() {
     </tr>`;
   }).join('');
 
+  // Render suggestions
+  const suggestionsHTML = suggestions.length ? suggestions.map((sug, idx) => {
+    const isTopSuggestion = idx === 0;
+    const sugColor = sug.score >= 72 ? 'var(--green)' : sug.score >= 55 ? 'var(--gold)' : 'var(--blue)';
+    const nums = sug.nums.map(n => `<div class="suggestion-num">${n}</div>`).join('');
+    
+    return `<div class="suggestion-card ${isTopSuggestion ? 'top' : ''}">
+      <div class="suggestion-score">${Math.round(sug.score)}</div>
+      <div style="font-weight:700;color:${sugColor};margin-bottom:8px;">🎯 ${sug.strategy}</div>
+      <div class="suggestion-nums">${nums}</div>
+      <div class="suggestion-strategy" style="color:var(--gold);font-weight:600;">Suma: ${sug.nums.reduce((a,b)=>a+b)} | P/I: ${sug.nums.filter(n=>n%2===0).length}P/${6-sug.nums.filter(n=>n%2===0).length}I</div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button class="btn btn-sm btn-teal" onclick="saveManualComboUI([${sug.nums.join(',')}])">💾 Guardar</button>
+        <button class="btn btn-sm btn-blue" onclick="evalSuggestion([${sug.nums.join(',')}])" style="flex:1;">📊 Detalles</button>
+      </div>
+    </div>`;
+  }).join('') : '<div style="color:var(--muted);padding:20px;text-align:center;">No hay sugerencias disponibles con los datos actuales.</div>';
+
   document.getElementById('user-result').innerHTML = `
     <div class="card" style="margin-top:16px;border-color:${scoreColor}50;background:rgba(0,0,0,0.2);">
       <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
         <h2 style="margin:0;">Análisis (${CURRENT_MODE.toUpperCase()})</h2>
-        <span class="badge" style="background:rgba(0,0,0,.3);color:${scoreColor};border:1px solid ${scoreColor};font-size:14px;padding:6px 14px">${levelLabel} · ${Math.round(ev.total_score)}/100</span>
+        <span class="badge" style="background:rgba(0,0,0,.3);color:${scoreColor};border:1px solid ${scoreColor};font-size:14px;padding:6px 14px">${levelLabel} · ${Math.round(advancedScore.total)}/100</span>
       </div>
       <div class="card-body">
         <div class="combo-balls" style="margin-bottom:20px">${balls}</div>
@@ -386,6 +457,10 @@ async function evalUserComboUI() {
           <div>Promedio peso efectivo: <span style="color:var(--text);font-weight:700">${averageEffectiveWeight.toFixed(4)}g</span></div>
           <div>Bonus físico total: <span style="color:var(--text);font-weight:700">${totalPhysicsBonus.toFixed(1)}</span></div>
           <div style="grid-column:1/-1;font-weight:700;color:${totalPhysicsBonus < 0 ? 'var(--red)' : totalPhysicsBonus > 10 ? 'var(--green)' : 'var(--gold)'};">${totalPhysicsBonus < 0 ? 'Peso físico desfavorable' : totalPhysicsBonus > 10 ? 'Muy favorable para este combo' : 'Físicamente aceptable'}</div>
+        </div>
+        <div style="background:rgba(57,208,194,0.08);border:1px solid var(--teal);border-radius:10px;padding:12px;margin-bottom:20px;">
+          <div style="font-weight:700;color:var(--teal);margin-bottom:12px;">📊 Desglose Avanzado del Score</div>
+          ${componentBars}
         </div>
         <div style="display:grid;gap:12px;margin-bottom:20px;">
           <div style="background:rgba(88,166,255,0.08);border:1px solid var(--blue);border-radius:10px;padding:12px;">
@@ -401,9 +476,25 @@ async function evalUserComboUI() {
           </div>
         </div>
         <div style="display:flex;justify-content:flex-end;margin-bottom:16px;"><button class="btn btn-teal" onclick="saveManualComboUI([${ev.sorted.join(',')}])">💾 Guardar combinación</button></div>
-        <div class="tbl-wrap"><table><thead><tr><th>Núm</th><th>P/I</th><th>Década</th><th>Retraso</th><th>Estado</th><th>Score Individual</th></tr></thead><tbody>${numDetails}</tbody></table></div>
+        <div class="suggestion-panel">
+          <div class="suggestion-title">💡 Combinaciones Sugeridas (Score Mejorado)</div>
+          <div class="suggestions-grid">${suggestionsHTML}</div>
+        </div>
+        <div class="tbl-wrap" style="margin-top:20px;"><table><thead><tr><th>Núm</th><th>P/I</th><th>Década</th><th>Retraso</th><th>Estado</th><th>Score Individual</th></tr></thead><tbody>${numDetails}</tbody></table></div>
       </div>
     </div>`;
+  
+  showLoadingModal(false);
+}
+
+// Evaluar una sugerencia específica
+async function evalSuggestion(nums) {
+  // Llenar el form con los números sugeridos
+  for (let i = 0; i < 6; i++) {
+    document.getElementById(`u${i + 1}`).value = nums[i];
+  }
+  // Ejecutar la evaluación
+  await evalUserComboUI();
 }
 
 // ── 3. MAPA DE CALOR DINÁMICO ──
