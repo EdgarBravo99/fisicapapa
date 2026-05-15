@@ -3,9 +3,13 @@
 """
 short_memory_engine.py
 
-Motor cuantitativo determinista para análisis de ventana móvil.
-Lee CSV, calcula STFT, posterior bayesiano con desgaste sigmoide, Drift KL,
-XGBoost calibrado y búsqueda combinatoria vectorizada sin Monte Carlo aleatorio.
+Motor cuantitativo de memoria corta para Melate:
+- CSV / filas JSON.
+- Ventana móvil WINDOW_SIZE=120.
+- Fourier/STFT, Bayes sigmoide, XGBoost calibrado.
+- Drift KL.
+- Auditoría hindsight Walk-Forward.
+- Búsqueda híbrida: enumeración vectorizada + Monte Carlo ponderado.
 """
 
 from __future__ import annotations
@@ -17,7 +21,8 @@ import os
 import sys
 import time
 import warnings
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
+from io import StringIO
 from typing import Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
@@ -48,6 +53,7 @@ EPS = 1e-12
 DEFAULT_CANDIDATE_POOL = 26
 DEFAULT_BATCH_SIZE = 50000
 DEFAULT_RETRAIN_EVERY = 1
+DEFAULT_MC_ITERATIONS = 6000
 
 SIGMOID = {"L": 0.0, "K": 1.0, "r": 0.09, "n0": 35.0}
 ENSEMBLE_WEIGHTS = {"fourier": 0.27, "bayes": 0.33, "xgb": 0.40}
@@ -96,16 +102,22 @@ def sigmoid_wear(impacts: float) -> float:
     )
 
 
+def parse_int(value) -> Optional[int]:
+    try:
+        if pd.isna(value):
+            return None
+        return int(float(str(value).strip()))
+    except Exception:
+        return None
+
+
 def minmax01(values: np.ndarray) -> np.ndarray:
     values = np.asarray(values, dtype=float)
     out = np.zeros_like(values, dtype=float)
     valid = np.nan_to_num(values[1:], nan=0.0, posinf=0.0, neginf=0.0)
     lo = float(np.min(valid))
     hi = float(np.max(valid))
-    if hi - lo <= EPS:
-        out[1:] = 0.5
-    else:
-        out[1:] = (valid - lo) / (hi - lo)
+    out[1:] = 0.5 if hi - lo <= EPS else (valid - lo) / (hi - lo)
     return out
 
 
@@ -132,18 +144,10 @@ def kl_divergence(p: np.ndarray, q: np.ndarray) -> float:
     return float(np.sum(pp[mask] * np.log(pp[mask] / np.maximum(qq[mask], EPS))))
 
 
-def parse_int(value) -> Optional[int]:
-    try:
-        if pd.isna(value):
-            return None
-        return int(float(str(value).strip()))
-    except Exception:
-        return None
-
-
-def detect_csv_columns(df: pd.DataFrame, natural_cols, additional_col, draw_col, date_col):
+def detect_csv_columns(df: pd.DataFrame, natural_cols=None, additional_col=None, draw_col=None, date_col=None):
     cols = list(df.columns)
     lower = {str(c).lower().strip(): c for c in cols}
+
     if natural_cols:
         missing = [c for c in natural_cols if c not in df.columns]
         if missing:
@@ -171,6 +175,7 @@ def detect_csv_columns(df: pd.DataFrame, natural_cols, additional_col, draw_col,
             if len(numeric_like) < 6:
                 raise ValueError("No pude detectar 6 columnas naturales. Usa --natural-cols n1 n2 n3 n4 n5 n6")
             nums = numeric_like[:6]
+
     if additional_col and additional_col not in df.columns:
         raise ValueError(f"No existe la columna adicional: {additional_col}")
     if not additional_col:
@@ -178,6 +183,7 @@ def detect_csv_columns(df: pd.DataFrame, natural_cols, additional_col, draw_col,
             if c in lower:
                 additional_col = lower[c]
                 break
+
     if draw_col and draw_col not in df.columns:
         raise ValueError(f"No existe la columna de sorteo: {draw_col}")
     if not draw_col:
@@ -185,6 +191,7 @@ def detect_csv_columns(df: pd.DataFrame, natural_cols, additional_col, draw_col,
             if c in lower:
                 draw_col = lower[c]
                 break
+
     if date_col and date_col not in df.columns:
         raise ValueError(f"No existe la columna de fecha: {date_col}")
     if not date_col:
@@ -192,6 +199,7 @@ def detect_csv_columns(df: pd.DataFrame, natural_cols, additional_col, draw_col,
             if c in lower:
                 date_col = lower[c]
                 break
+
     return nums, additional_col, draw_col, date_col
 
 
@@ -201,21 +209,18 @@ def sort_draws(draws: List[Draw]) -> List[Draw]:
         ordered = [d for _, d in sorted(zip(numeric_ids, draws), key=lambda x: x[0])]
     elif all(d.date for d in draws):
         dates = pd.to_datetime([d.date for d in draws], errors="coerce", dayfirst=True)
-        if dates.notna().mean() > 0.8:
-            ordered = [d for _, d in sorted(zip(dates, draws), key=lambda x: x[0])]
-        else:
-            ordered = draws
+        ordered = [d for _, d in sorted(zip(dates, draws), key=lambda x: x[0])] if dates.notna().mean() > 0.8 else draws
     else:
         ordered = draws
     return [Draw(i, d.draw_id, d.date, d.numbers, d.additional) for i, d in enumerate(ordered)]
 
 
-def load_draws_from_csv(csv_path, natural_cols=None, additional_col=None, draw_col=None, date_col=None) -> List[Draw]:
-    if not os.path.exists(csv_path):
-        raise FileNotFoundError(csv_path)
-    df = pd.read_csv(csv_path)
-    natural_cols, additional_col, draw_col, date_col = detect_csv_columns(df, natural_cols, additional_col, draw_col, date_col)
-    draws = []
+def draws_from_dataframe(df: pd.DataFrame, natural_cols=None, additional_col=None, draw_col=None, date_col=None) -> List[Draw]:
+    natural_cols, additional_col, draw_col, date_col = detect_csv_columns(
+        df, natural_cols, additional_col, draw_col, date_col
+    )
+    draws: List[Draw] = []
+
     for _, row in df.iterrows():
         nums = []
         for c in natural_cols:
@@ -225,18 +230,58 @@ def load_draws_from_csv(csv_path, natural_cols=None, additional_col=None, draw_c
         nums = sorted(set(nums))
         if len(nums) != PICK_COUNT:
             continue
+
         add = None
         if additional_col:
             a = parse_int(row[additional_col])
             if a is not None and 1 <= a <= MAX_NUMBER:
                 add = a
+
         draw_id = str(row[draw_col]) if draw_col else str(len(draws))
         date = str(row[date_col]) if date_col else None
         draws.append(Draw(len(draws), draw_id, date, tuple(nums), add))
-    draws = sort_draws(draws)
+
+    return sort_draws(draws)
+
+
+def draws_from_csv_text(csv_text: str, natural_cols=None, additional_col=None, draw_col=None, date_col=None) -> List[Draw]:
+    return draws_from_dataframe(
+        pd.read_csv(StringIO(csv_text)),
+        natural_cols=natural_cols,
+        additional_col=additional_col,
+        draw_col=draw_col,
+        date_col=date_col,
+    )
+
+
+def draws_from_rows(rows: Sequence[Sequence]) -> List[Draw]:
+    draws: List[Draw] = []
+    for idx, row in enumerate(rows):
+        if not isinstance(row, (list, tuple)) or len(row) < PICK_COUNT:
+            continue
+        if len(row) >= 8:
+            draw_id = str(row[0])
+            date = str(row[1])
+            nums_raw = row[2:8]
+            additional_raw = row[8] if len(row) > 8 else None
+        else:
+            draw_id = str(idx)
+            date = None
+            nums_raw = row[:6]
+            additional_raw = row[6] if len(row) > 6 else None
+        nums = sorted({n for n in (parse_int(v) for v in nums_raw) if n is not None and 1 <= n <= MAX_NUMBER})
+        if len(nums) != PICK_COUNT:
+            continue
+        add = parse_int(additional_raw)
+        draws.append(Draw(len(draws), draw_id, date, tuple(nums), add if add is not None and 1 <= add <= MAX_NUMBER else None))
+    return sort_draws(draws)
+
+
+def load_draws_from_csv(csv_path, natural_cols=None, additional_col=None, draw_col=None, date_col=None) -> List[Draw]:
+    if not os.path.exists(csv_path):
+        raise FileNotFoundError(csv_path)
+    draws = draws_from_dataframe(pd.read_csv(csv_path), natural_cols, additional_col, draw_col, date_col)
     print(f"CSV cargado: {len(draws)} sorteos válidos")
-    print(f"Columnas naturales: {natural_cols}")
-    print(f"Adicional: {additional_col or 'N/A'} | Sorteo: {draw_col or 'N/A'} | Fecha: {date_col or 'N/A'}")
     return draws
 
 
@@ -248,9 +293,7 @@ def binary_matrix(draws: Sequence[Draw]) -> np.ndarray:
 
 
 def counts_from_draws(draws: Sequence[Draw]) -> np.ndarray:
-    if not draws:
-        return np.zeros(MAX_NUMBER + 1, dtype=float)
-    return np.sum(binary_matrix(draws), axis=0)
+    return np.sum(binary_matrix(draws), axis=0) if draws else np.zeros(MAX_NUMBER + 1, dtype=float)
 
 
 def static_prior(draws: Sequence[Draw]) -> np.ndarray:
@@ -321,8 +364,7 @@ def bayes_sigmoid_posterior(active_window: Sequence[Draw], prior: np.ndarray) ->
     freq_norm = minmax01(counts)
     raw = np.zeros(MAX_NUMBER + 1, dtype=float)
     raw[1:] = prior[1:] * (1.0 + 2.2 * wear_norm[1:]) * (1.0 + 0.85 * freq_norm[1:])
-    posterior = probability_from_counts(raw)
-    return minmax01(posterior)
+    return minmax01(probability_from_counts(raw))
 
 
 def last_seen_gaps(active_window: Sequence[Draw]) -> np.ndarray:
@@ -337,23 +379,32 @@ def last_seen_gaps(active_window: Sequence[Draw]) -> np.ndarray:
 def rolling_freqs(mat: np.ndarray, k: int) -> np.ndarray:
     if len(mat) == 0:
         return np.zeros(MAX_NUMBER + 1, dtype=float)
-    subset = mat[-min(k, len(mat)):]
-    return np.mean(subset, axis=0)
+    return np.mean(mat[-min(k, len(mat)):], axis=0)
 
 
 def feature_matrix_for_context(active_window: Sequence[Draw], prior: np.ndarray, fourier: np.ndarray, bayes: np.ndarray) -> np.ndarray:
     mat = binary_matrix(active_window)
     gaps = last_seen_gaps(active_window)
-    f15 = rolling_freqs(mat, 15)
-    f30 = rolling_freqs(mat, 30)
-    f120 = rolling_freqs(mat, min(WINDOW_SIZE, len(active_window)))
     nums = np.arange(1, MAX_NUMBER + 1, dtype=float)
     odd = (nums % 2).astype(float)
     decade = np.floor((nums - 1) / 10) / 5.0
     side = (nums > 28).astype(float)
     gap_scaled = np.minimum(gaps[1:], WINDOW_SIZE) / WINDOW_SIZE
     recency = 1.0 / (1.0 + gaps[1:])
-    return np.column_stack([nums / MAX_NUMBER, prior[1:], f15[1:], f30[1:], f120[1:], gap_scaled, recency, fourier[1:], bayes[1:], odd, decade, side]).astype(float)
+    return np.column_stack([
+        nums / MAX_NUMBER,
+        prior[1:],
+        rolling_freqs(mat, 15)[1:],
+        rolling_freqs(mat, 30)[1:],
+        rolling_freqs(mat, min(WINDOW_SIZE, len(active_window)))[1:],
+        gap_scaled,
+        recency,
+        fourier[1:],
+        bayes[1:],
+        odd,
+        decade,
+        side,
+    ]).astype(float)
 
 
 def build_training_dataset(draws: Sequence[Draw], prior: np.ndarray, start_idx: int, end_idx: int):
@@ -376,7 +427,20 @@ def build_training_dataset(draws: Sequence[Draw], prior: np.ndarray, start_idx: 
 
 
 def calibrated_xgb_model() -> CalibratedClassifierCV:
-    base = XGBClassifier(n_estimators=90, max_depth=3, learning_rate=0.055, subsample=0.92, colsample_bytree=0.92, min_child_weight=2.0, reg_lambda=1.15, objective="binary:logistic", eval_metric="logloss", n_jobs=-1, random_state=73, verbosity=0)
+    base = XGBClassifier(
+        n_estimators=90,
+        max_depth=3,
+        learning_rate=0.055,
+        subsample=0.92,
+        colsample_bytree=0.92,
+        min_child_weight=2.0,
+        reg_lambda=1.15,
+        objective="binary:logistic",
+        eval_metric="logloss",
+        n_jobs=-1,
+        random_state=73,
+        verbosity=0,
+    )
     try:
         return CalibratedClassifierCV(estimator=base, method="sigmoid", cv=3)
     except TypeError:
@@ -384,8 +448,7 @@ def calibrated_xgb_model() -> CalibratedClassifierCV:
 
 
 def train_xgb(draws: Sequence[Draw], prior: np.ndarray, prediction_idx: int):
-    start_idx = max(1, prediction_idx - WINDOW_SIZE)
-    X, y = build_training_dataset(draws, prior, start_idx, prediction_idx)
+    X, y = build_training_dataset(draws, prior, max(1, prediction_idx - WINDOW_SIZE), prediction_idx)
     if len(y) < 500 or int(np.sum(y)) < 18:
         return None
     model = calibrated_xgb_model()
@@ -407,7 +470,11 @@ def component_scores(active_window: Sequence[Draw], prior: np.ndarray, model) ->
         xgb = minmax01(xgb)
     drift, kl, h_recent, h_window, penalty = drift_state(active_window)
     ensemble = np.zeros(MAX_NUMBER + 1, dtype=float)
-    ensemble[1:] = ENSEMBLE_WEIGHTS["fourier"] * fourier[1:] + ENSEMBLE_WEIGHTS["bayes"] * bayes[1:] + ENSEMBLE_WEIGHTS["xgb"] * xgb[1:]
+    ensemble[1:] = (
+        ENSEMBLE_WEIGHTS["fourier"] * fourier[1:]
+        + ENSEMBLE_WEIGHTS["bayes"] * bayes[1:]
+        + ENSEMBLE_WEIGHTS["xgb"] * xgb[1:]
+    )
     if drift:
         ensemble[1:] = 0.5 + (ensemble[1:] - 0.5) * penalty
     ensemble = minmax01(ensemble)
@@ -442,7 +509,11 @@ def hindsight_audit(draw: Draw, state: ComponentState) -> float:
     if state.drift_detected:
         route_conf *= state.confidence_penalty
     route_conf = max(0.0, min(99.9, route_conf))
-    print(f"Sorteo {draw.draw_id} Explicado -> " + ". ".join(explanations) + f". Confianza de la ruta: {route_conf:.1f}% | KL={state.kl_divergence:.4f}")
+    print(
+        f"Sorteo {draw.draw_id} Explicado -> "
+        + ". ".join(explanations)
+        + f". Confianza de la ruta: {route_conf:.1f}% | KL={state.kl_divergence:.4f}"
+    )
     return route_conf
 
 
@@ -458,7 +529,7 @@ def evaluate_prediction(draw: Draw, state: ComponentState):
 
 def walk_forward(draws: Sequence[Draw], prior: np.ndarray, retrain_every: int) -> List[WalkForwardResult]:
     start = max(20, len(draws) - WINDOW_SIZE)
-    results = []
+    results: List[WalkForwardResult] = []
     model = None
     last_train_idx = -10**9
     print("\n═══════════════════════════════════════════════════════")
@@ -472,9 +543,22 @@ def walk_forward(draws: Sequence[Draw], prior: np.ndarray, retrain_every: int) -
             model = train_xgb(draws, prior, idx)
             last_train_idx = idx
         state = component_scores(active, prior, model)
-        route = hindsight_audit(draws[idx], state)
         pred6, hits6, hits10, mse = evaluate_prediction(draws[idx], state)
-        results.append(WalkForwardResult(draws[idx].draw_id, draws[idx].date, draws[idx].numbers, pred6, hits6, hits10, mse, route, state.drift_detected, state.kl_divergence))
+        route = hindsight_audit(draws[idx], state)
+        results.append(
+            WalkForwardResult(
+                draws[idx].draw_id,
+                draws[idx].date,
+                draws[idx].numbers,
+                pred6,
+                hits6,
+                hits10,
+                mse,
+                route,
+                state.drift_detected,
+                state.kl_divergence,
+            )
+        )
     return results
 
 
@@ -485,72 +569,175 @@ def structure_score(combos: np.ndarray) -> np.ndarray:
     sums = np.sum(combos, axis=1)
     consec = np.sum(np.diff(combos, axis=1) == 1, axis=1)
     decades = np.array([len(set(((row - 1) // 10).astype(int))) for row in combos], dtype=float)
-    score = (1.0 - np.abs(pares - 3) / 3.0) * 0.26 + (1.0 - np.abs(low - 3) / 3.0) * 0.20 + (decades / 6.0) * 0.20 + (1.0 - np.minimum(consec, 4) / 4.0) * 0.14 + np.where((sums >= 110) & (sums <= 240), 1.0, 0.55) * 0.20
+    score = (
+        (1.0 - np.abs(pares - 3) / 3.0) * 0.26
+        + (1.0 - np.abs(low - 3) / 3.0) * 0.20
+        + (decades / 6.0) * 0.20
+        + (1.0 - np.minimum(consec, 4) / 4.0) * 0.14
+        + np.where((sums >= 110) & (sums <= 240), 1.0, 0.55) * 0.20
+    )
     return np.clip(score, 0.0, 1.0)
+
+
+def score_combo_batch(state: ComponentState, arr: np.ndarray) -> List[Dict[str, object]]:
+    ens = np.mean(state.ensemble[arr], axis=1)
+    xgb = np.mean(state.xgb[arr], axis=1)
+    bayes = np.mean(state.bayes[arr], axis=1)
+    fourier = np.mean(state.fourier[arr], axis=1)
+    dispersion = np.std(arr, axis=1) / 20.0
+    struct = structure_score(arr)
+    confidence = (
+        0.40 * ens
+        + 0.28 * xgb
+        + 0.16 * bayes
+        + 0.08 * fourier
+        + 0.05 * struct
+        + 0.03 * np.clip(dispersion, 0.0, 1.0)
+    ) * 100.0
+    if state.drift_detected:
+        confidence *= state.confidence_penalty
+    return [
+        {
+            "combo": list(map(int, arr[i])),
+            "confidence": float(confidence[i]),
+            "ensemble": float(ens[i]),
+            "xgb": float(xgb[i]),
+            "bayes": float(bayes[i]),
+            "fourier": float(fourier[i]),
+            "structure": float(struct[i]),
+            "source": "scored",
+        }
+        for i in range(arr.shape[0])
+    ]
 
 
 def deterministic_combo_search(state: ComponentState, candidate_pool: int, batch_size: int) -> List[Dict[str, object]]:
     pool = top_numbers(state.ensemble, min(candidate_pool, MAX_NUMBER))
-    records = []
+    records: List[Dict[str, object]] = []
     combo_iter = itertools.combinations(pool, PICK_COUNT)
     while True:
         batch = list(itertools.islice(combo_iter, batch_size))
         if not batch:
             break
         arr = np.asarray(batch, dtype=int)
-        ens = np.mean(state.ensemble[arr], axis=1)
-        xgb = np.mean(state.xgb[arr], axis=1)
-        bayes = np.mean(state.bayes[arr], axis=1)
-        fourier = np.mean(state.fourier[arr], axis=1)
-        dispersion = np.std(arr, axis=1) / 20.0
-        struct = structure_score(arr)
-        confidence = (0.40 * ens + 0.28 * xgb + 0.16 * bayes + 0.08 * fourier + 0.05 * struct + 0.03 * np.clip(dispersion, 0.0, 1.0)) * 100.0
-        if state.drift_detected:
-            confidence *= state.confidence_penalty
-        order = np.argsort(confidence)[::-1][:40]
-        for i in order:
-            records.append({"combo": list(map(int, arr[i])), "confidence": float(confidence[i]), "ensemble": float(ens[i]), "xgb": float(xgb[i]), "bayes": float(bayes[i]), "fourier": float(fourier[i]), "structure": float(struct[i])})
-        records = sorted(records, key=lambda r: r["confidence"], reverse=True)[:80]
+        scored = score_combo_batch(state, arr)
+        scored.sort(key=lambda r: r["confidence"], reverse=True)
+        for item in scored[:40]:
+            item["source"] = "deterministic"
+            records.append(item)
+        records = sorted(records, key=lambda r: r["confidence"], reverse=True)[:100]
     return sorted(records, key=lambda r: r["confidence"], reverse=True)
 
 
-def final_prediction(draws: Sequence[Draw], prior: np.ndarray, candidate_pool: int, batch_size: int) -> None:
+def weighted_sample_without_replacement(rng: np.random.Generator, pool: np.ndarray, weights: np.ndarray) -> np.ndarray:
+    chosen = rng.choice(pool, size=PICK_COUNT, replace=False, p=weights / np.sum(weights))
+    return np.sort(chosen)
+
+
+def monte_carlo_search(state: ComponentState, candidate_pool: int, iterations: int, seed: int = 73073) -> List[Dict[str, object]]:
+    rng = np.random.default_rng(seed)
+    pool = np.asarray(top_numbers(state.ensemble, min(candidate_pool, MAX_NUMBER)), dtype=int)
+    weights = np.power(np.maximum(state.ensemble[pool], EPS), 1.75)
+    seen = set()
+    combos = []
+    for _ in range(max(1, iterations)):
+        combo = weighted_sample_without_replacement(rng, pool, weights)
+        key = tuple(combo.tolist())
+        if key in seen:
+            continue
+        seen.add(key)
+        combos.append(combo)
+        if len(combos) >= iterations:
+            break
+    if not combos:
+        return []
+    arr = np.asarray(combos, dtype=int)
+    scored = score_combo_batch(state, arr)
+    for item in scored:
+        item["source"] = "montecarlo"
+    return sorted(scored, key=lambda r: r["confidence"], reverse=True)[:100]
+
+
+def hybrid_combo_search(state: ComponentState, candidate_pool: int, batch_size: int, mc_iterations: int) -> List[Dict[str, object]]:
+    combined = deterministic_combo_search(state, candidate_pool, batch_size)
+    combined.extend(monte_carlo_search(state, candidate_pool, mc_iterations))
+    dedup: Dict[Tuple[int, ...], Dict[str, object]] = {}
+    for item in combined:
+        key = tuple(item["combo"])
+        if key not in dedup or item["confidence"] > dedup[key]["confidence"]:
+            dedup[key] = item
+    return sorted(dedup.values(), key=lambda r: r["confidence"], reverse=True)[:100]
+
+
+def final_prediction_result(draws: Sequence[Draw], candidate_pool: int, batch_size: int, mc_iterations: int) -> Dict[str, object]:
+    prior = static_prior(draws)
     active = draws[-WINDOW_SIZE:]
     model = train_xgb(draws, prior, len(draws))
     state = component_scores(active, prior, model)
-    ranked = deterministic_combo_search(state, candidate_pool, batch_size)
+    ranked = hybrid_combo_search(state, candidate_pool, batch_size, mc_iterations)
+    top = ranked[0] if ranked else None
+    aborted = bool(top and float(top["confidence"]) < CONFIDENCE_THRESHOLD)
+    return {
+        "window_size": min(WINDOW_SIZE, len(draws)),
+        "drift_detected": state.drift_detected,
+        "kl_divergence": state.kl_divergence,
+        "entropy_recent": state.entropy_recent,
+        "entropy_window": state.entropy_window,
+        "confidence_threshold": CONFIDENCE_THRESHOLD,
+        "aborted": aborted,
+        "top_combos": ranked[:10],
+        "algorithm_stack": ["XGBoost calibrated", "Bayesian sigmoid posterior", "STFT/Fourier", "Weighted Monte Carlo", "Vectorized deterministic search"],
+    }
+
+
+def final_prediction(draws: Sequence[Draw], candidate_pool: int, batch_size: int, mc_iterations: int) -> Dict[str, object]:
+    result = final_prediction_result(draws, candidate_pool, batch_size, mc_iterations)
     print("\n═══════════════════════════════════════════════════════")
-    print("PREDICCIÓN DETERMINISTA SHORT MEMORY")
+    print("PREDICCIÓN HÍBRIDA SHORT MEMORY")
     print("═══════════════════════════════════════════════════════")
-    print(f"Ventana activa: {len(active)} sorteos")
-    print(f"Drift detectado: {state.drift_detected} | KL={state.kl_divergence:.6f}")
-    print(f"Entropía últimos 15: {state.entropy_recent:.4f} | Entropía ventana: {state.entropy_window:.4f}")
-    print(f"Búsqueda combinatoria: C({min(candidate_pool, MAX_NUMBER)}, 6)")
-    if not ranked:
+    print(f"Ventana activa: {result['window_size']} sorteos")
+    print(f"Drift detectado: {result['drift_detected']} | KL={result['kl_divergence']:.6f}")
+    print(f"Entropía últimos 15: {result['entropy_recent']:.4f} | Entropía ventana: {result['entropy_window']:.4f}")
+    print("Algoritmos: XGBoost + Bayesian + Monte Carlo + Fourier")
+    if not result["top_combos"]:
         print("No se generaron combinaciones candidatas.")
-        return
-    top = ranked[0]
-    if float(top["confidence"]) < CONFIDENCE_THRESHOLD:
+        return result
+    top = result["top_combos"][0]
+    if result["aborted"]:
         print(f"OPERACIÓN ABORTADA: Confianza máxima del {top['confidence']:.1f}% por debajo del umbral del {CONFIDENCE_THRESHOLD:.0f}%.")
         print(f"Mejor combinación no operativa: {top['combo']}")
-        return
+        return result
     print(f"Confianza máxima calibrada: {top['confidence']:.1f}%")
-    for i, item in enumerate(ranked[:10], start=1):
-        print(f"{i:02d}. {item['combo']} | Conf={item['confidence']:.1f}% | XGB={item['xgb']:.3f} Bayes={item['bayes']:.3f} Fourier={item['fourier']:.3f} Struct={item['structure']:.3f}")
+    for i, item in enumerate(result["top_combos"], start=1):
+        print(
+            f"{i:02d}. {item['combo']} | Conf={item['confidence']:.1f}% | "
+            f"XGB={item['xgb']:.3f} Bayes={item['bayes']:.3f} Fourier={item['fourier']:.3f} "
+            f"Struct={item['structure']:.3f} Source={item['source']}"
+        )
+    return result
 
 
-def summarize(results: Sequence[WalkForwardResult]) -> None:
+def summarize(results: Sequence[WalkForwardResult]) -> Dict[str, object]:
     if not results:
-        return
+        return {}
+    summary = {
+        "walk_forward_draws": len(results),
+        "avg_hits_top6": float(np.mean([r.hits_top6 for r in results])),
+        "avg_hits_top10": float(np.mean([r.hits_top10 for r in results])),
+        "avg_mse": float(np.mean([r.mse for r in results])),
+        "avg_route_confidence": float(np.mean([r.route_confidence for r in results])),
+        "drift_rate": float(np.mean([1.0 if r.drift_detected else 0.0 for r in results])),
+    }
     print("\n═══════════════════════════════════════════════════════")
     print("RESUMEN WALK-FORWARD")
     print("═══════════════════════════════════════════════════════")
-    print(f"Sorteos auditados: {len(results)}")
-    print(f"Hits promedio Top-6: {np.mean([r.hits_top6 for r in results]):.2f}/6")
-    print(f"Hits promedio Top-10: {np.mean([r.hits_top10 for r in results]):.2f}/6")
-    print(f"MSE promedio: {np.mean([r.mse for r in results]):.5f}")
-    print(f"Confianza de ruta promedio: {np.mean([r.route_confidence for r in results]):.1f}%")
-    print(f"Drift rate: {np.mean([1.0 if r.drift_detected else 0.0 for r in results]) * 100:.1f}%")
+    print(f"Sorteos auditados: {summary['walk_forward_draws']}")
+    print(f"Hits promedio Top-6: {summary['avg_hits_top6']:.2f}/6")
+    print(f"Hits promedio Top-10: {summary['avg_hits_top10']:.2f}/6")
+    print(f"MSE promedio: {summary['avg_mse']:.5f}")
+    print(f"Confianza de ruta promedio: {summary['avg_route_confidence']:.1f}%")
+    print(f"Drift rate: {summary['drift_rate'] * 100:.1f}%")
+    return summary
 
 
 def save_audit(results: Sequence[WalkForwardResult], path: str) -> None:
@@ -558,13 +745,41 @@ def save_audit(results: Sequence[WalkForwardResult], path: str) -> None:
         return
     rows = []
     for r in results:
-        rows.append({"draw_id": r.draw_id, "date": r.date, "actual": " ".join(map(str, r.actual)), "predicted_top6": " ".join(map(str, r.predicted_top6)), "hits_top6": r.hits_top6, "hits_top10": r.hits_top10, "mse": r.mse, "route_confidence": r.route_confidence, "drift_detected": r.drift_detected, "kl_divergence": r.kl_divergence})
+        item = asdict(r)
+        item["actual"] = " ".join(map(str, r.actual))
+        item["predicted_top6"] = " ".join(map(str, r.predicted_top6))
+        rows.append(item)
     pd.DataFrame(rows).to_csv(path, index=False, encoding="utf-8-sig")
     print(f"Auditoría guardada: {path}")
 
 
+def run_engine(
+    draws: Sequence[Draw],
+    *,
+    skip_walk_forward: bool = True,
+    candidate_pool: int = DEFAULT_CANDIDATE_POOL,
+    batch_size: int = DEFAULT_BATCH_SIZE,
+    mc_iterations: int = DEFAULT_MC_ITERATIONS,
+    retrain_every: int = DEFAULT_RETRAIN_EVERY,
+) -> Dict[str, object]:
+    if len(draws) < 30:
+        raise ValueError("Se necesitan al menos 30 sorteos válidos")
+    prior = static_prior(draws)
+    wf_summary = {}
+    if not skip_walk_forward:
+        wf_results = walk_forward(draws, prior, retrain_every)
+        wf_summary = summarize(wf_results)
+    prediction = final_prediction_result(draws, candidate_pool, batch_size, mc_iterations)
+    return {
+        "draw_count": len(draws),
+        "window_size": WINDOW_SIZE,
+        "walk_forward_summary": wf_summary,
+        "prediction": prediction,
+    }
+
+
 def parse_args():
-    p = argparse.ArgumentParser(description="Motor Short Memory determinista y acelerado")
+    p = argparse.ArgumentParser(description="Motor Short Memory híbrido: XGBoost + Bayes + Fourier + Monte Carlo")
     p.add_argument("--csv", required=True, help="Ruta al CSV histórico")
     p.add_argument("--natural-cols", nargs=6, default=None, help="Columnas de los 6 números naturales")
     p.add_argument("--additional-col", default=None, help="Columna del adicional")
@@ -574,6 +789,7 @@ def parse_args():
     p.add_argument("--skip-walk-forward", action="store_true", help="Solo genera predicción final")
     p.add_argument("--candidate-pool", type=int, default=DEFAULT_CANDIDATE_POOL, help="Top números usados para enumerar combinaciones")
     p.add_argument("--batch-size", type=int, default=DEFAULT_BATCH_SIZE, help="Tamaño de lote vectorizado")
+    p.add_argument("--monte-carlo-iterations", type=int, default=DEFAULT_MC_ITERATIONS, help="Iteraciones Monte Carlo ponderadas")
     p.add_argument("--retrain-every", type=int, default=DEFAULT_RETRAIN_EVERY, help="Reentrenar XGBoost cada N pasos")
     return p.parse_args()
 
@@ -592,7 +808,7 @@ def main() -> None:
         results = walk_forward(draws, prior, args.retrain_every)
         summarize(results)
         save_audit(results, args.audit_output)
-    final_prediction(draws, prior, args.candidate_pool, args.batch_size)
+    final_prediction(draws, args.candidate_pool, args.batch_size, args.monte_carlo_iterations)
     print(f"\nTiempo total: {time.perf_counter() - t0:.2f}s")
 
 
