@@ -1,4 +1,9 @@
 pandas>=2.0
 numpy>=1.24
+scipy>=1.11
 scikit-learn>=1.3
 xgboost>=2.0
+torch>=2.1
+
+# Optional GPU acceleration for V4 Monte Carlo. Install manually only when CUDA is available.
+# cupy-cuda12x>=13.0
