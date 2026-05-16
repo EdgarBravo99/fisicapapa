@@ -87,6 +87,21 @@ if exist "patch_v4_exhaustive_search.py" (
   exit /b 1
 )
 
+if exist "hotfix_v4_graph_dict.py" (
+  echo [PRE] Aplicando hotfix de grafo para exhaustive_search...
+  %PY_CMD% -X utf8 "hotfix_v4_graph_dict.py"
+  if %ERRORLEVEL% NEQ 0 (
+    echo ERROR: No se pudo aplicar hotfix_v4_graph_dict.py
+    pause
+    exit /b 1
+  )
+) else (
+  echo ERROR: Falta hotfix_v4_graph_dict.py en esta carpeta.
+  echo Ejecuta: git pull origin main
+  pause
+  exit /b 1
+)
+
 findstr /C:"col = n if indexed_with_zero_pad else n - 1" "local_cruncher_v4_deep_stacking.py" >nul
 if %ERRORLEVEL% NEQ 0 (
   echo ERROR: V4 no tiene el fix de matriz para el numero 56.
@@ -97,6 +112,13 @@ if %ERRORLEVEL% NEQ 0 (
 findstr /C:"def exhaustive_search(" "local_cruncher_v4_deep_stacking.py" >nul
 if %ERRORLEVEL% NEQ 0 (
   echo ERROR: V4 no tiene la funcion exhaustive_search.
+  pause
+  exit /b 1
+)
+
+findstr /C:"graph_source = graph" "local_cruncher_v4_deep_stacking.py" >nul
+if %ERRORLEVEL% NEQ 0 (
+  echo ERROR: V4 no tiene el hotfix para audit[graph] como dict.
   pause
   exit /b 1
 )
