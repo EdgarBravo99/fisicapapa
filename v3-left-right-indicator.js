@@ -14,11 +14,6 @@
       .replace(/'/g, '&#39;');
   }
 
-  function num(value, fallback = 0) {
-    const n = Number(value);
-    return Number.isFinite(n) ? n : fallback;
-  }
-
   function getV3() {
     const data = typeof window.getV3Results === 'function'
       ? window.getV3Results()
@@ -147,27 +142,30 @@
   });
 })();
 
-// Auto-loader: index.html todavía no carga este bridge directamente.
-// Lo inyectamos desde un archivo que ya sí se carga, con cache-bust para Vercel/navegador.
 (function () {
   'use strict';
-  if (window.__v3EliteGeneratorRankLoader) return;
-  window.__v3EliteGeneratorRankLoader = true;
+  if (window.__v3AuxLoader) return;
+  window.__v3AuxLoader = true;
 
-  function loadEliteGeneratorRankBridge() {
-    if (window.__v3EliteGeneratorRankLoaded) return;
-    const existing = document.querySelector('script[src^="v3-generator-elite-rank.js"]');
-    if (existing) return;
+  function injectScript(src, flagName) {
+    if (window[flagName]) return;
+    const base = src.split('?')[0];
+    if (document.querySelector(`script[src^="${base}"]`)) return;
     const s = document.createElement('script');
-    s.src = `v3-generator-elite-rank.js?v=${Date.now()}`;
-    s.onload = () => { window.__v3EliteGeneratorRankLoaded = true; };
-    s.onerror = () => console.warn('No se pudo cargar v3-generator-elite-rank.js');
+    s.src = `${base}?v=${Date.now()}`;
+    s.onload = () => { window[flagName] = true; };
+    s.onerror = () => console.warn(`No se pudo cargar ${base}`);
     document.body.appendChild(s);
   }
 
+  function loadV3AuxPanels() {
+    injectScript('v3-generator-elite-rank.js', '__v3EliteGeneratorRankLoaded');
+    injectScript('v3-model-portfolio-panel.js', '__v3ModelPortfolioPanelLoaded');
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadEliteGeneratorRankBridge);
+    document.addEventListener('DOMContentLoaded', loadV3AuxPanels);
   } else {
-    loadEliteGeneratorRankBridge();
+    loadV3AuxPanels();
   }
 })();
