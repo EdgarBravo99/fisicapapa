@@ -47,6 +47,21 @@ if exist ".v4_cuda_env.bat" (
   call ".v4_cuda_env.bat"
 )
 
+if exist "hotfix_v4_cuda_runtime.py" (
+  echo [PRE] Aplicando hotfix runtime CUDA dentro del cruncher...
+  %PY_CMD% -X utf8 "hotfix_v4_cuda_runtime.py"
+  if %ERRORLEVEL% NEQ 0 (
+    echo ERROR: No se pudo aplicar hotfix_v4_cuda_runtime.py
+    pause
+    exit /b 1
+  )
+) else (
+  echo ERROR: Falta hotfix_v4_cuda_runtime.py en esta carpeta.
+  echo Ejecuta: git pull origin main
+  pause
+  exit /b 1
+)
+
 if not exist "fix_v4_deep_stacking_alignment.py" (
   echo ERROR: Falta fix_v4_deep_stacking_alignment.py en esta carpeta.
   echo Ejecuta: git pull origin main
@@ -98,6 +113,13 @@ if exist "hotfix_v4_graph_dict.py" (
 ) else (
   echo ERROR: Falta hotfix_v4_graph_dict.py en esta carpeta.
   echo Ejecuta: git pull origin main
+  pause
+  exit /b 1
+)
+
+findstr /C:"normalize_cuda_runtime_paths_v4" "local_cruncher_v4_deep_stacking.py" >nul
+if %ERRORLEVEL% NEQ 0 (
+  echo ERROR: V4 no tiene el hotfix runtime CUDA.
   pause
   exit /b 1
 )
