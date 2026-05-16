@@ -1,14 +1,14 @@
 /* python-results-v4-compat.js
  * Bridge ligero para resultados generados por local_cruncher_v4_deep_stacking.py.
- * Convive con V3: solo se activa cuando resultados.json declara
- * score_kind === "v4_deep_stacking_meta_score".
+ * Convive con V3 y se activa cuando resultados.json declara model_version === "V4"
+ * o v4_score_kind === "v4_deep_stacking_meta_score".
  */
 (function () {
   'use strict';
 
   const V4_SCORE_KIND = 'v4_deep_stacking_meta_score';
   const EXPERT_LABELS = {
-    physical: 'Fisica',
+    physical: 'Física',
     transformer: 'Transformer',
     xgboost: 'XGBoost',
     fourier: 'Fourier',
@@ -19,7 +19,12 @@
   let cachedResults = null;
 
   function isV4(data) {
-    return !!data && data.score_kind === V4_SCORE_KIND;
+    return Boolean(data && (
+      data.model_version === 'V4' ||
+      data.v4_score_kind === V4_SCORE_KIND ||
+      data.score_kind === V4_SCORE_KIND ||
+      data.source === 'local_cruncher_v4_deep_stacking'
+    ));
   }
 
   function pct(value, digits = 1) {
@@ -33,27 +38,55 @@
     return Number.isFinite(n) ? n.toFixed(digits) : '0';
   }
 
+  function esc(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function comboNumbers(item) {
+    return (item?.numbers || item?.nums || item?.combo || []).map(Number).filter(Number.isFinite);
+  }
+
   function ball(n) {
-    return `<span style="display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#111927;border:1px solid rgba(88,166,255,.45);color:#e6edf3;font-weight:800;font-family:var(--mono);">${n}</span>`;
+    return `<span style="display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#111927;border:1px solid rgba(88,166,255,.45);color:#e6edf3;font-weight:800;font-family:var(--mono);">${esc(n)}</span>`;
   }
 
   function topDrivers(item) {
+    if (item?.plain_route) return esc(item.plain_route);
+    if (Array.isArray(item?.number_explanations) && item.number_explanations.length) {
+      return item.number_explanations
+        .map(row => `${row.number}: ${row.main_driver_human || EXPERT_LABELS[row.main_driver] || row.main_driver || 'V4'}`)
+        .join(' | ');
+    }
     const drivers = item?.drivers || item?.expert_scores_v4 || {};
-    return Object.entries(drivers)
+    const txt = Object.entries(drivers)
       .filter(([, value]) => Number.isFinite(Number(value)))
       .sort((a, b) => Number(b[1]) - Number(a[1]))
       .slice(0, 3)
       .map(([key, value]) => `${EXPERT_LABELS[key] || key}: ${num(value, 3)}`)
       .join(' | ');
+    return esc(txt || item?.human_explanation || item?.procedure || 'Sin desglose V4 disponible');
   }
 
   async function loadV4Results(force = false) {
     if (cachedResults && !force) return cachedResults;
     try {
-      const res = await fetch(`resultados.json?ts=${Date.now()}`, { cache: 'no-store' });
+      const res = await fetch(`resultados.json?ts=${Date.now()}&v4=${Math.random().toString(36).slice(2)}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0'
+        }
+      });
       if (!res.ok) return null;
       const data = await res.json();
       cachedResults = isV4(data) ? data : null;
+      window.MELATE_V4_RESULTS = cachedResults;
       if (cachedResults) {
         window.dispatchEvent(new CustomEvent('melate:v4-results-loaded', { detail: cachedResults }));
       }
@@ -83,15 +116,16 @@
     const forget = data.historical_forgetting || {};
     const wf = data.walk_forward || {};
     const rows = Array.isArray(wf.rows) ? wf.rows.length : 0;
+    const buffer = forget.recent_buffer_size || forget.buffer_size || '?';
     return [
-      ['Buffer', `${forget.buffer_size || '?'} sorteos`],
+      ['Buffer', `${buffer} sorteos`],
       ['OOS', `${rows} folds`],
       ['Leakage', leak.passed ? 'OK' : 'REVISAR'],
-      ['Score', stack.score_kind || V4_SCORE_KIND],
+      ['Score', stack.score_kind || data.v4_score_kind || V4_SCORE_KIND],
       ['Meta', data.meta_model_audit?.trained ? 'MLP entrenado' : 'Fallback auditado']
     ].map(([label, value]) => (
       `<span style="display:inline-flex;gap:6px;align-items:center;padding:6px 9px;border-radius:6px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);font-size:12px;">
-        <b style="color:var(--teal);">${label}</b><span style="color:var(--muted);">${value}</span>
+        <b style="color:var(--teal);">${esc(label)}</b><span style="color:var(--muted);">${esc(value)}</span>
       </span>`
     )).join('');
   }
@@ -101,7 +135,7 @@
     if (!panel || !isV4(data)) return;
     const wf = data.walk_forward || {};
     const metrics = wf.metrics || {};
-    const top = (data.top_combinations || data.generator_pool || []).slice(0, 3);
+    const top = (data.model_portfolio?.top10 || data.top_combinations || data.generator_pool || []).slice(0, 3);
     panel.innerHTML = `
       <div class="card-header">
         <h2>V4 Deep Stacking Local</h2>
@@ -124,15 +158,16 @@
           </div>
         </div>
         <div style="display:grid;gap:8px;">
-          ${top.map((item, idx) => `
-            <div style="display:flex;gap:8px;align-items:center;justify-content:space-between;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px;">
+          ${top.map((item, idx) => {
+            const nums = comboNumbers(item);
+            return `<div style="display:flex;gap:8px;align-items:center;justify-content:space-between;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px;">
               <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
                 <b style="color:var(--teal);">#${idx + 1}</b>
-                ${(item.nums || item.combo || []).map(ball).join('')}
+                ${nums.map(ball).join('')}
               </div>
-              <div style="font-size:12px;color:var(--muted);text-align:right;">${topDrivers(item)}</div>
-            </div>
-          `).join('')}
+              <div style="font-size:12px;color:var(--muted);text-align:right;max-width:420px;">${topDrivers(item)}</div>
+            </div>`;
+          }).join('')}
         </div>
       </div>`;
     panel.querySelector('#btn-load-v4-top')?.addEventListener('click', () => renderTopCombinations(data));
@@ -142,10 +177,10 @@
     if (!isV4(data)) return false;
     const container = document.getElementById('combos-container');
     if (!container) return false;
-    const items = (data.generator_pool || data.top_combinations || []).slice(0, 10);
+    const items = (data.model_portfolio?.top10 || data.generator_pool || data.top_combinations || []).slice(0, 10);
     container.innerHTML = items.map((item, i) => {
-      const nums = item.nums || item.combo || [];
-      const score = Number(item.score_percent ?? item.net_score * 100 ?? 0);
+      const nums = comboNumbers(item);
+      const score = Number(item.score_percent ?? (Number(item.net_score || 0) * 100));
       return `<div class="combo-card" style="border-color:rgba(57,208,194,.42)">
         <div class="combo-card-header">
           <span style="color:var(--teal);font-weight:700">#${i + 1} | V4 Deep Stacking</span>
@@ -173,4 +208,5 @@
   };
 
   document.addEventListener('DOMContentLoaded', boot);
+  window.addEventListener('focus', () => loadV4Results(true).then(data => data && renderV4Panel(data)));
 })();
