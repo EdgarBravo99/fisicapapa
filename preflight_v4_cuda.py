@@ -5,7 +5,7 @@
 No entrena ni modifica resultados. Revisa dependencias y corrige lo que puede:
 - Instala cupy-cuda12x si falta CuPy.
 - Detecta CUDA Toolkit y NVRTC.
-- Genera .v4_cuda_env.bat para que run_local_cruncher_v4.bat agregue CUDA\bin al PATH.
+- Genera .v4_cuda_env.bat para que run_local_cruncher_v4.bat agregue CUDA/bin al PATH.
 - Prueba torch.cuda y cupy.ElementwiseKernel.
 """
 from __future__ import annotations
@@ -36,11 +36,12 @@ def pip_install(pkg: str) -> bool:
 
 
 def normalize_cuda_bin(value: str | None) -> str | None:
-    """Devuelve una ruta CUDA/bin válida sin duplicar \bin.
+    """Devuelve una ruta CUDA/bin válida sin duplicar el subdirectorio bin.
 
-    Acepta:
-    - C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6
-    - C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\bin
+    Acepta tanto la carpeta raíz del Toolkit como la carpeta bin del Toolkit.
+    Ejemplos válidos:
+    - CUDA/v12.6
+    - CUDA/v12.6/bin
     - entradas PATH que ya terminan en bin
     """
     if not value:
@@ -54,7 +55,7 @@ def normalize_cuda_bin(value: str | None) -> str | None:
     for c in candidates:
         try:
             if c.exists() and c.is_dir():
-                # Evita rutas tipo ...\bin\bin.
+                # Evita rutas tipo .../bin/bin.
                 if c.name.lower() == "bin" and c.parent.name.lower() == "bin":
                     c = c.parent
                 return str(c)
@@ -114,7 +115,7 @@ def write_env(cuda_bin: str | None) -> None:
         print(f"OK: entorno CUDA escrito en {ENV_BAT.name}: {bin_path}")
     else:
         ENV_BAT.write_text("@echo off\r\n", encoding="utf-8")
-        print("ADVERTENCIA: no encontré CUDA\\bin con nvrtc*.dll. Se dejará fallback CPU/CuPy inactivo.")
+        print("ADVERTENCIA: no encontré CUDA/bin con nvrtc*.dll. Se dejará fallback CPU/CuPy inactivo.")
 
 
 def main() -> int:
