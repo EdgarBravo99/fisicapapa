@@ -104,7 +104,7 @@ def import_runtime() -> None:
 '''
 
 pattern = r'def import_runtime\(\) -> None:\n(?:    .*\n)*?        print\(f"CuPy no disponible; fallback NumPy CPU\. Detalle: \{exc\}"\)\n'
-ns, count = re.subn(pattern, new_block, s, count=1)
+ns, count = re.subn(pattern, lambda _m: new_block, s, count=1)
 if count != 1:
     raise SystemExit('Could not replace import_runtime()')
 
