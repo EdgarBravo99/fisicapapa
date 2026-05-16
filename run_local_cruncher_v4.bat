@@ -80,11 +80,37 @@ if exist "patch_v4_exhaustive_search.py" (
     pause
     exit /b 1
   )
+) else (
+  echo ERROR: Falta patch_v4_exhaustive_search.py en esta carpeta.
+  echo Ejecuta: git pull origin main
+  pause
+  exit /b 1
 )
 
-%PY_CMD% -X utf8 -c "from pathlib import Path; s=Path('local_cruncher_v4_deep_stacking.py').read_text(encoding='utf-8'); ok=('col = n if indexed_with_zero_pad else n - 1' in s and 'def exhaustive_search(' in s and 'ranked = exhaustive_search(score, audit[\"graph\"])' in s); raise SystemExit(0 if ok else 1)"
+findstr /C:"col = n if indexed_with_zero_pad else n - 1" "local_cruncher_v4_deep_stacking.py" >nul
 if %ERRORLEVEL% NEQ 0 (
-  echo ERROR: V4 no quedo correctamente parchado. No se ejecutara para evitar errores o Monte Carlo viejo.
+  echo ERROR: V4 no tiene el fix de matriz para el numero 56.
+  pause
+  exit /b 1
+)
+
+findstr /C:"def exhaustive_search(" "local_cruncher_v4_deep_stacking.py" >nul
+if %ERRORLEVEL% NEQ 0 (
+  echo ERROR: V4 no tiene la funcion exhaustive_search.
+  pause
+  exit /b 1
+)
+
+findstr /C:"ranked = exhaustive_search" "local_cruncher_v4_deep_stacking.py" >nul
+if %ERRORLEVEL% NEQ 0 (
+  echo ERROR: V4 no esta llamando exhaustive_search en run_pipeline.
+  pause
+  exit /b 1
+)
+
+findstr /C:"ranked = monte_carlo" "local_cruncher_v4_deep_stacking.py" >nul
+if %ERRORLEVEL% EQU 0 (
+  echo ERROR: V4 aun contiene la llamada vieja ranked = monte_carlo.
   pause
   exit /b 1
 )
