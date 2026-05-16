@@ -173,6 +173,7 @@
     injectScript('v3-model-portfolio-panel.js', '__v3ModelPortfolioPanelLoaded');
     injectScript('v3-results-live-refresh.js', '__v3ResultsLiveRefreshLoaded');
     injectScript('v4-primary-web.js', '__v4PrimaryWebLoaded');
+    injectScript('v4-hit-aware-web.js', '__v4HitAwareWebLoaded');
   }
 
   if (document.readyState === 'loading') {
