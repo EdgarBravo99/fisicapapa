@@ -161,6 +161,7 @@
   function loadV3AuxPanels() {
     injectScript('v3-generator-elite-rank.js', '__v3EliteGeneratorRankLoaded');
     injectScript('v3-model-portfolio-panel.js', '__v3ModelPortfolioPanelLoaded');
+    injectScript('v3-results-live-refresh.js', '__v3ResultsLiveRefreshLoaded');
   }
 
   if (document.readyState === 'loading') {
