@@ -1,10 +1,10 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-title Melate Pro - Local Cruncher V4.1 Hit-Aware
+title Melate Pro - Local Cruncher V4.2 Feedback
 
 echo ================================================================
-echo   MELATE PRO - LOCAL CRUNCHER V4.1 HIT-AWARE
+echo   MELATE PRO - LOCAL CRUNCHER V4.2 FEEDBACK LOOP
 echo ================================================================
 echo.
 
@@ -132,6 +132,21 @@ if exist "patch_v4_hit_aware_meta.py" (
   exit /b 1
 )
 
+if exist "patch_v4_oos_feedback_loop.py" (
+  echo [PRE] Aplicando V4.2 feedback loop OOS fold-a-fold...
+  %PY_CMD% -X utf8 "patch_v4_oos_feedback_loop.py"
+  if %ERRORLEVEL% NEQ 0 (
+    echo ERROR: No se pudo aplicar patch_v4_oos_feedback_loop.py
+    pause
+    exit /b 1
+  )
+) else (
+  echo ERROR: Falta patch_v4_oos_feedback_loop.py en esta carpeta.
+  echo Ejecuta: git pull origin main
+  pause
+  exit /b 1
+)
+
 findstr /C:"normalize_cuda_runtime_paths_v4" "local_cruncher_v4_deep_stacking.py" >nul
 if %ERRORLEVEL% NEQ 0 (
   echo ERROR: V4 no tiene el hotfix runtime CUDA.
@@ -167,6 +182,13 @@ if %ERRORLEVEL% NEQ 0 (
   exit /b 1
 )
 
+findstr /C:"def walk_forward_oos_feedback_v42" "local_cruncher_v4_deep_stacking.py" >nul
+if %ERRORLEVEL% NEQ 0 (
+  echo ERROR: V4 no tiene el feedback loop OOS V4.2.
+  pause
+  exit /b 1
+)
+
 findstr /C:"ranked = exhaustive_search" "local_cruncher_v4_deep_stacking.py" >nul
 if %ERRORLEVEL% NEQ 0 (
   echo ERROR: V4 no esta llamando exhaustive_search en run_pipeline.
@@ -182,7 +204,7 @@ if %ERRORLEVEL% EQU 0 (
 )
 
 echo.
-echo [OK] Preflight completo. Iniciando V4.1 Hit-Aware...
+echo [OK] Preflight completo. Iniciando V4.2 Feedback Loop...
 echo.
 %PY_CMD% -X utf8 "local_cruncher_v4_deep_stacking.py"
 
