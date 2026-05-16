@@ -35,30 +35,62 @@ def pip_install(pkg: str) -> bool:
         return False
 
 
+def normalize_cuda_bin(value: str | None) -> str | None:
+    """Devuelve una ruta CUDA/bin válida sin duplicar \bin.
+
+    Acepta:
+    - C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6
+    - C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\bin
+    - entradas PATH que ya terminan en bin
+    """
+    if not value:
+        return None
+    p = Path(value.strip().strip('"'))
+    candidates = []
+    if p.name.lower() == "bin":
+        candidates.append(p)
+    candidates.append(p / "bin")
+    candidates.append(p)
+    for c in candidates:
+        try:
+            if c.exists() and c.is_dir():
+                # Evita rutas tipo ...\bin\bin.
+                if c.name.lower() == "bin" and c.parent.name.lower() == "bin":
+                    c = c.parent
+                return str(c)
+        except Exception:
+            continue
+    return None
+
+
 def find_cuda_bins() -> list[str]:
     bins: list[str] = []
+
     for key in ("CUDA_PATH", "CUDA_HOME"):
-        base = os.environ.get(key)
-        if base:
-            b = Path(base) / "bin"
-            if b.exists():
-                bins.append(str(b))
+        normalized = normalize_cuda_bin(os.environ.get(key))
+        if normalized:
+            bins.append(normalized)
+
     root = Path(r"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA")
     if root.exists():
         for folder in sorted(root.glob("v*"), reverse=True):
-            b = folder / "bin"
-            if b.exists():
-                bins.append(str(b))
+            normalized = normalize_cuda_bin(str(folder))
+            if normalized:
+                bins.append(normalized)
+
     for entry in os.environ.get("PATH", "").split(os.pathsep):
-        if entry and Path(entry).exists() and "CUDA" in entry.upper():
-            bins.append(entry)
+        if entry and "CUDA" in entry.upper():
+            normalized = normalize_cuda_bin(entry)
+            if normalized:
+                bins.append(normalized)
+
     out = []
     seen = set()
     for b in bins:
-        key = b.lower()
+        key = str(Path(b)).lower()
         if key not in seen:
             seen.add(key)
-            out.append(b)
+            out.append(str(Path(b)))
     return out
 
 
@@ -71,13 +103,15 @@ def find_nvrtc(cuda_bins: list[str]) -> str | None:
 
 
 def write_env(cuda_bin: str | None) -> None:
-    if cuda_bin:
-        cuda_path = str(Path(cuda_bin).parent)
+    normalized = normalize_cuda_bin(cuda_bin)
+    if normalized:
+        bin_path = str(Path(normalized))
+        cuda_path = str(Path(bin_path).parent)
         ENV_BAT.write_text(
-            f"@echo off\r\nset \"CUDA_PATH={cuda_path}\"\r\nset \"CUDA_HOME={cuda_path}\"\r\nset \"PATH={cuda_bin};%PATH%\"\r\n",
+            f"@echo off\r\nset \"CUDA_PATH={cuda_path}\"\r\nset \"CUDA_HOME={cuda_path}\"\r\nset \"PATH={bin_path};%PATH%\"\r\n",
             encoding="utf-8",
         )
-        print(f"OK: entorno CUDA escrito en {ENV_BAT.name}: {cuda_bin}")
+        print(f"OK: entorno CUDA escrito en {ENV_BAT.name}: {bin_path}")
     else:
         ENV_BAT.write_text("@echo off\r\n", encoding="utf-8")
         print("ADVERTENCIA: no encontré CUDA\\bin con nvrtc*.dll. Se dejará fallback CPU/CuPy inactivo.")
@@ -94,15 +128,17 @@ def main() -> int:
 
     cuda_bins = find_cuda_bins()
     nvrtc = find_nvrtc(cuda_bins)
-    write_env(str(Path(nvrtc).parent) if nvrtc else (cuda_bins[0] if cuda_bins else None))
+    cuda_bin = str(Path(nvrtc).parent) if nvrtc else (cuda_bins[0] if cuda_bins else None)
+    write_env(cuda_bin)
 
     # Actualizar PATH del proceso actual para las pruebas de import.
-    if nvrtc:
-        cuda_bin = str(Path(nvrtc).parent)
-        os.environ["PATH"] = cuda_bin + os.pathsep + os.environ.get("PATH", "")
-        os.environ.setdefault("CUDA_PATH", str(Path(cuda_bin).parent))
+    active_bin = normalize_cuda_bin(cuda_bin)
+    if active_bin:
+        os.environ["PATH"] = active_bin + os.pathsep + os.environ.get("PATH", "")
+        os.environ["CUDA_PATH"] = str(Path(active_bin).parent)
+        os.environ["CUDA_HOME"] = str(Path(active_bin).parent)
         try:
-            os.add_dll_directory(cuda_bin)
+            os.add_dll_directory(active_bin)
         except Exception:
             pass
 
