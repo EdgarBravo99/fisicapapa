@@ -52,10 +52,35 @@ if not exist "historial.csv" (
 echo Usando Python:
 %PY_CMD% --version
 echo.
-echo Aplicando hotfix de arranque V3 si hace falta...
-%PY_CMD% -X utf8 -c "from pathlib import Path; p=Path('local_cruncher_v3.py'); s=p.read_text(encoding='utf-8'); marker='class TinyLSTM(nn.Module):'; boot='''\n# Hotfix: PyTorch debe existir antes de definir TinyLSTM.\n# Este bloque evita AttributeError: NoneType has no attribute Module.\nif nn is None or torch is None:\n    try:\n        import torch as _early_torch\n        import torch.nn as _early_nn\n    except Exception:\n        print('Instalando PyTorch antes de definir TinyLSTM, por favor espere...')\n        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'torch', '--quiet', '--disable-pip-version-check'])\n        import torch as _early_torch\n        import torch.nn as _early_nn\n    torch = _early_torch\n    nn = _early_nn\n\n'''; target=boot+marker; changed=False\nif marker in s and 'Hotfix: PyTorch debe existir antes de definir TinyLSTM' not in s:\n    s=s.replace(marker,target,1); p.write_text(s,encoding='utf-8'); changed=True\nprint('Hotfix aplicado.' if changed else 'Hotfix ya presente o no necesario.')"
+
+echo Aplicando integraciones V3 antes de iniciar...
+
+if exist "fix_v3_runtime_cupy_guard.py" (
+  %PY_CMD% -X utf8 "fix_v3_runtime_cupy_guard.py"
+)
+
+if exist "fix_v3_ensemble_diversity.py" (
+  %PY_CMD% -X utf8 "fix_v3_ensemble_diversity.py"
+)
+
+if exist "fix_v3_physics_oos_calibration.py" (
+  %PY_CMD% -X utf8 "fix_v3_physics_oos_calibration.py"
+)
+
+if exist "fix_v3_physics_ablation_gate.py" (
+  %PY_CMD% -X utf8 "fix_v3_physics_ablation_gate.py"
+)
+
+if exist "fix_v3_postmortem_feedback.py" (
+  %PY_CMD% -X utf8 "fix_v3_postmortem_feedback.py"
+)
+
+if exist "fix_v3_model_portfolio.py" (
+  %PY_CMD% -X utf8 "fix_v3_model_portfolio.py"
+)
+
 if %ERRORLEVEL% NEQ 0 (
-  echo ERROR: No se pudo aplicar hotfix de PyTorch.
+  echo ERROR: No se pudieron aplicar las integraciones V3.
   pause
   exit /b 1
 )
