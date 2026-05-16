@@ -1,5 +1,5 @@
 // v3-left-right-indicator.js
-// Restaura el indicador Izquierda/Derecha en Estadísticas usando resultados V3.
+// Restaura el indicador Izquierda/Derecha en Estadísticas usando resultados V3/V4.
 (function () {
   'use strict';
 
@@ -17,8 +17,12 @@
   function getV3() {
     const data = typeof window.getV3Results === 'function'
       ? window.getV3Results()
-      : window.MELATE_V3_RESULTS;
+      : (window.MELATE_V4_RESULTS || window.MELATE_V3_RESULTS);
     return data && data.score_kind === 'optuna_weighted_net_score' ? data : null;
+  }
+
+  function modelName(data) {
+    return data?.model_version === 'V4' || data?.v4_score_kind ? 'V4' : 'V3';
   }
 
   function sideStatsFromCombos(combos) {
@@ -26,7 +30,7 @@
     let right = 0;
     let total = 0;
     (combos || []).forEach(combo => {
-      const nums = Array.isArray(combo) ? combo : combo?.numbers;
+      const nums = Array.isArray(combo) ? combo : (combo?.numbers || combo?.nums || combo?.combo);
       if (!Array.isArray(nums)) return;
       nums.forEach(n => {
         const x = Number(n);
@@ -87,6 +91,7 @@
     const data = getV3();
     const trendEl = document.getElementById('trend-chart');
     if (!data || !trendEl) return false;
+    const labelModel = modelName(data);
 
     const pool = Array.isArray(data.generator_pool) ? data.generator_pool : [];
     const wfRows = Array.isArray(data.walk_forward?.rows) ? data.walk_forward.rows : [];
@@ -96,26 +101,26 @@
     const blocks = blockRowsFromPool(pool, 20, 5);
 
     const headline = Math.abs(simulated.bias) < 0.06
-      ? 'El pool V3 está relativamente equilibrado entre izquierda y derecha.'
+      ? `El pool ${labelModel} está relativamente equilibrado entre izquierda y derecha.`
       : simulated.bias > 0
-        ? 'El pool V3 se está cargando hacia la izquierda: números 1-28.'
-        : 'El pool V3 se está cargando hacia la derecha: números 29-56.';
+        ? `El pool ${labelModel} se está cargando hacia la izquierda: números 1-28.`
+        : `El pool ${labelModel} se está cargando hacia la derecha: números 29-56.`;
 
     trendEl.innerHTML = `<div style="display:grid;gap:12px;">
       <div style="background:rgba(88,166,255,.07);border:1px solid ${simulated.color};border-radius:10px;padding:12px;">
         <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:8px;">
           <div>
-            <div style="font-family:var(--cond);font-size:17px;font-weight:800;color:${simulated.color};">🧭 Indicador Izquierda/Derecha V3</div>
+            <div style="font-family:var(--cond);font-size:17px;font-weight:800;color:${simulated.color};">🧭 Indicador Izquierda/Derecha ${labelModel}</div>
             <div style="font-size:12px;color:var(--muted);">${esc(headline)}</div>
           </div>
           <div style="font-family:var(--mono);font-weight:800;color:${simulated.color};font-size:18px;">${esc(simulated.label)}</div>
         </div>
-        ${barHtml(simulated, 'Futuro simulado · Top 120 Monte Carlo V3', `Basado en ${Math.min(pool.length, 120)} combinaciones del generator_pool`)}
+        ${barHtml(simulated, `Futuro simulado · Top 120 ${labelModel}`, `Basado en ${Math.min(pool.length, 120)} combinaciones del generator_pool`)}
         ${wfRows.length ? barHtml(realRecent, 'Backtesting real reciente · Sorteos OOS', `Últimos ${Math.min(wfRows.length, 20)} sorteos reales evaluados`) : ''}
-        ${wfRows.length ? barHtml(predictedRecent, 'Predicción Walk-Forward reciente · Top6', `Top6 propuesto en los últimos ${Math.min(wfRows.length, 20)} folds`) : ''}
+        ${wfRows.length ? barHtml(predictedRecent, `Predicción Walk-Forward reciente · Top6 ${labelModel}`, `Top6 propuesto en los últimos ${Math.min(wfRows.length, 20)} folds`) : ''}
       </div>
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;">
-        <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">Bloques de 20 combinaciones del pool V3</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">Bloques de 20 combinaciones del pool ${labelModel}</div>
         ${blocks.map(block => barHtml(block.stats, `Bloque ${block.index + 1}`, `Combinaciones ${block.index * 20 + 1}-${block.index * 20 + block.chunk.length}`)).join('') || '<div style="color:var(--muted);font-size:12px;">Sin generator_pool suficiente para bloques.</div>'}
       </div>
     </div>`;
@@ -136,6 +141,11 @@
   });
 
   document.addEventListener('melate:v3-results-loaded', () => {
+    setTimeout(() => {
+      if (document.getElementById('tab-estadisticas')?.classList.contains('active')) renderLeftRightIndicator();
+    }, 80);
+  });
+  document.addEventListener('melate:v4-primary-loaded', () => {
     setTimeout(() => {
       if (document.getElementById('tab-estadisticas')?.classList.contains('active')) renderLeftRightIndicator();
     }, 80);
@@ -162,6 +172,7 @@
     injectScript('v3-generator-elite-rank.js', '__v3EliteGeneratorRankLoaded');
     injectScript('v3-model-portfolio-panel.js', '__v3ModelPortfolioPanelLoaded');
     injectScript('v3-results-live-refresh.js', '__v3ResultsLiveRefreshLoaded');
+    injectScript('v4-primary-web.js', '__v4PrimaryWebLoaded');
   }
 
   if (document.readyState === 'loading') {
