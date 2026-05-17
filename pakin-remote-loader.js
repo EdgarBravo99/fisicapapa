@@ -20,7 +20,8 @@
     loading: false,
     melateRows: 0,
     revanchaRows: 0,
-    errors: []
+    errors: [],
+    sourceUrls: {}
   };
 
   window.PAKIN_REMOTE_STATE = STATE;
@@ -52,17 +53,95 @@
     throw lastErr || new Error('No se pudo descargar CSV remoto');
   }
 
-  function sortRowsNewestFirst(rows) {
-    return (rows || [])
-      .filter(r => Array.isArray(r) && r.length >= 8)
-      .sort((a, b) => Number(b[0]) - Number(a[0]));
+  function splitCsvLine(line, delimiter) {
+    const out = [];
+    let cur = '';
+    let quoted = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        quoted = !quoted;
+      } else if (ch === delimiter && !quoted) {
+        out.push(cur.trim().replace(/^"|"$/g, ''));
+        cur = '';
+      } else {
+        cur += ch;
+      }
+    }
+    out.push(cur.trim().replace(/^"|"$/g, ''));
+    return out;
+  }
+
+  function normalizeHeader(h) {
+    return String(h || '')
+      .trim()
+      .toUpperCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^A-Z0-9_]/g, '');
+  }
+
+  function parseDateCell(value) {
+    const s = String(value || '').trim();
+    if (!s) return '';
+    const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (iso) return `${iso[3]}/${iso[2]}/${iso[1]}`;
+    const slash = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if (slash) return `${slash[1].padStart(2, '0')}/${slash[2].padStart(2, '0')}/${slash[3]}`;
+    return s;
+  }
+
+  function validNums(nums) {
+    return nums.length === 6 && new Set(nums).size === 6 && nums.every(n => Number.isInteger(n) && n >= 1 && n <= 56);
+  }
+
+  function parsePakinHeaderCsv(mode, text) {
+    const cleaned = String(text || '').replace(/^\uFEFF/, '').replace(/\r/g, '').trim();
+    if (!cleaned) return [];
+    const lines = cleaned.split('\n').filter(Boolean);
+    if (lines.length < 2) return [];
+    const delimiter = lines[0].includes(';') && !lines[0].includes(',') ? ';' : ',';
+    const headers = splitCsvLine(lines[0], delimiter).map(normalizeHeader);
+    const col = name => headers.indexOf(normalizeHeader(name));
+    const concursoIdx = Math.max(col('CONCURSO'), col('SORTEO'), col('DRAW'));
+    const fechaIdx = Math.max(col('FECHA'), col('DATE'));
+
+    // Pakin usa:
+    // Melate:   CONCURSO,ID,R1,R2,R3,R4,R5,R6,R7,BOLSA,FECHA...
+    // Revancha: CONCURSO,ID,R1,R2,R3,R4,R5,R6,BOLSA,FECHA...
+    // Tomamos R1-R6 como naturales; R7 es adicional de Melate y se ignora aquí.
+    let numberIdxs = ['R1', 'R2', 'R3', 'R4', 'R5', 'R6'].map(col);
+    if (numberIdxs.some(i => i < 0)) {
+      numberIdxs = ['N1', 'N2', 'N3', 'N4', 'N5', 'N6'].map(col);
+    }
+    if (concursoIdx < 0 || numberIdxs.some(i => i < 0)) return [];
+
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) {
+      const cells = splitCsvLine(lines[i], delimiter);
+      const draw = parseInt(cells[concursoIdx], 10);
+      const date = fechaIdx >= 0 ? parseDateCell(cells[fechaIdx]) : '';
+      const nums = numberIdxs.map(idx => parseInt(cells[idx], 10)).filter(n => Number.isFinite(n));
+      if (!Number.isFinite(draw) || !validNums(nums)) continue;
+      rows.push([draw, date, ...nums]);
+    }
+    rows.sort((a, b) => Number(b[0]) - Number(a[0]));
+    return rows;
   }
 
   function parseRemoteCsv(mode, text) {
-    if (typeof parseCsvText !== 'function') throw new Error('parseCsvText no está disponible');
-    const parsed = parseCsvText(text, mode);
-    if (mode === 'melate') return sortRowsNewestFirst(parsed.newMelate || []);
-    return sortRowsNewestFirst(parsed.newRevancha || []);
+    const pakinRows = parsePakinHeaderCsv(mode, text);
+    if (pakinRows.length > 42) return pakinRows;
+
+    // Fallback al parser viejo para CSV dual/local.
+    if (typeof parseCsvText === 'function') {
+      const parsed = parseCsvText(text, mode);
+      const rows = mode === 'melate' ? (parsed.newMelate || []) : (parsed.newRevancha || []);
+      return (rows || [])
+        .filter(r => Array.isArray(r) && r.length >= 8)
+        .sort((a, b) => Number(b[0]) - Number(a[0]));
+    }
+    return pakinRows;
   }
 
   function applyRowsWithoutManualCsv(melateRows, revanchaRows) {
@@ -77,8 +156,6 @@
   }
 
   async function mirrorToIndexedDbForCompatibility() {
-    // Pakin sigue siendo la fuente de verdad. Esto solo mantiene compatibilidad
-    // con paneles que leen snapshots/física desde IndexedDB.
     try {
       if (typeof openLocalDatabase === 'function' && !DB_INSTANCE) await openLocalDatabase();
       if (typeof saveModeDataToDB === 'function') {
@@ -107,6 +184,23 @@
     }
   }
 
+  function forceRenderAfterRemoteLoad() {
+    try {
+      if (typeof rebuildAll === 'function') rebuildAll();
+      if (typeof renderHistoryUI === 'function') renderHistoryUI();
+      if (typeof renderDbStatusUI === 'function') renderDbStatusUI();
+      if (typeof renderHeatmapUI === 'function') renderHeatmapUI();
+      if (typeof renderStatsUI === 'function') renderStatsUI();
+    } catch (err) {
+      console.warn('Render post-Pakin incompleto:', err);
+    }
+    setTimeout(() => {
+      setStatus(`✅ Pakin remoto activo: ${STATE.revanchaRows} Revancha / ${STATE.melateRows} Melate. Últimos: R ${DATA_REVANCHA?.[0]?.[0] || 'N/A'} · M ${DATA_MELATE?.[0]?.[0] || 'N/A'}.`, 'ok');
+      const count = document.getElementById('drawCount');
+      if (count) count.textContent = `${CURRENT_MODE === 'melate' ? STATE.melateRows : STATE.revanchaRows} SORTEOS`;
+    }, 220);
+  }
+
   async function loadPakinRemoteData(force = false) {
     if (STATE.loading) return STATE;
     if (STATE.loaded && !force) return STATE;
@@ -120,24 +214,23 @@
         fetchTextWithFallback(PAKIN_SOURCES.revancha)
       ]);
 
+      STATE.sourceUrls = { melate: melate.url, revancha: revancha.url };
       const melateRows = parseRemoteCsv('melate', melate.text);
       const revanchaRows = parseRemoteCsv('revancha', revancha.text);
 
-      if (!melateRows.length && !revanchaRows.length) throw new Error('Pakin descargó, pero no se detectaron filas válidas.');
+      if (melateRows.length <= 42 && revanchaRows.length <= 42) {
+        throw new Error(`Pakin descargó, pero el parser solo detectó ${revanchaRows.length} Revancha / ${melateRows.length} Melate.`);
+      }
 
       applyRowsWithoutManualCsv(melateRows, revanchaRows);
-      await mirrorToIndexedDbForCompatibility();
       STATE.loaded = true;
       STATE.loading = false;
-
-      setStatus(`✅ Pakin remoto activo: ${STATE.revanchaRows} Revancha / ${STATE.melateRows} Melate. Fuente común para todos los dispositivos.`, 'ok');
       hideManualCsvNoise();
+      forceRenderAfterRemoteLoad();
 
-      if (typeof rebuildAll === 'function') rebuildAll();
-      if (typeof renderDbStatusUI === 'function') {
-        // Reescribir después de renderDbStatusUI para que el usuario vea la fuente remota.
-        setTimeout(() => setStatus(`✅ Pakin remoto activo: ${STATE.revanchaRows} Revancha / ${STATE.melateRows} Melate. Fuente común para todos los dispositivos.`, 'ok'), 150);
-      }
+      // Guardar en IndexedDB después de pintar; en móvil puede tardar y no debe bloquear UI.
+      setTimeout(() => mirrorToIndexedDbForCompatibility(), 50);
+
       if (typeof showToast === 'function') showToast(`🌐 Pakin cargado: ${STATE.revanchaRows} Revancha / ${STATE.melateRows} Melate`);
       document.dispatchEvent(new CustomEvent('melate:pakin-remote-loaded', { detail: STATE }));
       return STATE;
@@ -154,7 +247,11 @@
   function boot() {
     hideManualCsvNoise();
     // Dar tiempo a initLocalDatabase/ui.js. Luego Pakin sobreescribe como fuente de verdad.
-    setTimeout(() => loadPakinRemoteData(false), 350);
+    setTimeout(() => loadPakinRemoteData(true), 350);
+    // Segundo intento para móviles/Safari cuando la primera carga compite con IndexedDB.
+    setTimeout(() => {
+      if (!STATE.loaded || STATE.revanchaRows <= 42 || STATE.melateRows <= 42) loadPakinRemoteData(true);
+    }, 1800);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
