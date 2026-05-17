@@ -1,276 +1,181 @@
 # Melate Pro V7 / Fisicapapa
 
-Sistema local + web para análisis cuantitativo, simulación y visualización de combinaciones de **Melate** y **Revancha**.
+Sistema local + web para análisis cuantitativo, auditoría, simulación y visualización de combinaciones de **Melate** y **Revancha**.
 
-Este README resume el contexto del proyecto para poder continuar en otra conversación sin leer todo el historial. La versión activa es **V3**.
+Este README resume el estado real del proyecto para poder continuar en otra conversación sin leer todo el historial. La versión activa de la web es **V4**.
 
-> Uso informativo/experimental. Los scores del sistema son rankings internos del modelo, no probabilidades reales garantizadas de ganar.
+> Uso informativo/experimental. Los scores del sistema son rankings internos del modelo y métricas de auditoría; no son probabilidades reales garantizadas de ganar ni recomendación financiera.
 
 ---
 
-## Estado actual
+## Estado actual del proyecto
+
+### Versión activa
+
+```txt
+Motor local principal: local_cruncher_v3.py / flujo V4 generado por resultados.json
+Web activa: V4-only stack
+Salida principal: resultados.json
+Fuente histórica web: Pakin remoto + fallback local
+Deploy: Vercel
+Repo: EdgarBravo99/fisicapapa
+```
+
+Aunque el archivo Python histórico se llama `local_cruncher_v3.py`, la web actual debe tratar el resultado como **V4** cuando el JSON venga con campos como:
+
+```txt
+model_version = V4 / V4.1
+source = local_cruncher_v4_deep_stacking o equivalente
+v4_score_kind / score_kind
+```
 
 ### Flujo activo
 
 ```txt
-CSV histórico → local_cruncher_v3.py → resultados.json → web V3
+Pakin CSV remoto + resultados.json generado localmente
+        ↓
+Vercel sirve index.html
+        ↓
+pakin-remote-loader.js carga históricos Melate/Revancha
+        ↓
+python-results-v4-compat.js + v4-primary-web.js + v4-hit-aware-web.js + v4-manual-science.js
+        ↓
+Generador V4 + Evaluador Manual V4 + paneles estadísticos
 ```
 
-### Archivos principales
+### Corte limpio de V3 en la web
+
+El `index.html` fue actualizado para dejar de cargar los scripts V3 que estaban pisando el evaluador con `NET AVG 10.39` y `Sugerencias V3`.
+
+Actualmente debe cargar solamente:
+
+```html
+<script src="data.js"></script>
+<script src="engine.js"></script>
+<script src="ui.js"></script>
+<script src="pakin-remote-loader.js"></script>
+<script src="python-results-v4-compat.js"></script>
+<script src="v4-primary-web.js"></script>
+<script src="v4-hit-aware-web.js"></script>
+<script src="v4-manual-science.js"></script>
+```
+
+No debe cargar:
 
 ```txt
-local_cruncher_v3.py                 Motor local principal
-resultados.json                      Salida consumida por la web
-index.html                           Página principal
-engine.js                            Reglas base web / heurísticas originales
-ui.js                                UI base / legacy
-python-results-v3-compat.js          Bridge V3 generador/evaluador manual
-v3-panels-bridge.js                  Bridge V3 para mapa, stats, forense, coincidencias, física
-v3-left-right-indicator.js           Indicador Izquierda/Derecha V3
-walk-forward-ui.js                   Panel Walk-Forward V3
-heatmap-fix.js                       Capa/fallback mapa de calor
-run_local_cruncher_v3.bat            Launcher Windows
+python-results-v3-compat.js
+heatmap-fix.js
+walk-forward-ui.js
+v3-panels-bridge.js
+v3-left-right-indicator.js
+v3-manual-suggestion-diversity.js
+v3-generator-elite-rank.js
 ```
 
-### Obsoleto / legacy
+Si en el navegador todavía aparece `NET AVG`, `Sugerencias V3` o cualquier texto V3, normalmente es caché de Vercel/navegador o un `index.html` viejo.
+
+Usar en móvil:
+
+```txt
+https://tu-url.vercel.app/?v=11
+```
+
+O borrar datos del sitio / abrir incógnito.
+
+---
+
+## Archivos principales actuales
+
+```txt
+index.html                         Web principal V4-only
+styles.css                         Estilos generales
+data.js                            Dataset base, IndexedDB, parser CSV, historial local
+engine.js                          Heurísticas base legacy usadas por algunos paneles
+ui.js                              UI base: tabs, historial, favoritos, render inicial
+pakin-remote-loader.js             Carga automática de Melate/Revancha desde pakinja/pakin
+python-results-v4-compat.js        Compatibilidad resultados.json V4
+v4-primary-web.js                  Bridge/paneles V4 principales
+v4-hit-aware-web.js                Lecturas hit-aware / métricas V4
+v4-manual-science.js               Evaluador manual V4 por componentes
+resultados.json                    Salida que consume la web
+local_cruncher_v3.py               Motor local histórico que genera resultados.json
+```
+
+### Legacy / histórico
+
+Estos archivos existen por historial del proyecto, pero ya no deben guiar la web activa:
 
 ```txt
 local_cruncher_v2.py
 python-results-bridge.js
+python-results-v3-compat.js
+v3-panels-bridge.js
+v3-left-right-indicator.js
+v3-manual-suggestion-diversity.js
+v3-generator-elite-rank.js
+walk-forward-ui.js
+heatmap-fix.js
+fix_*.py
 ```
 
-V2 ya no debe guiar el proyecto. La web está orientada a V3.
+Los `fix_*.py` fueron patchers usados para aplicar cambios manuales durante el desarrollo. El objetivo final es absorber sus mejoras en el motor principal y dejar de depender de ellos.
 
 ---
 
-## Motor local V3
+## Fuente de datos histórica: Pakin
+
+La web ya no debe depender de cargar CSV manual por dispositivo.
 
 Archivo:
 
 ```txt
-local_cruncher_v3.py
+pakin-remote-loader.js
 ```
 
-Objetivo:
-
-1. Leer CSV local de Melate/Revancha.
-2. Aplicar olvido histórico y usar solo buffer reciente.
-3. Entrenar expertos sin data leakage.
-4. Optimizar pesos con Optuna.
-5. Generar Monte Carlo local.
-6. Exportar `resultados.json`.
-
-### Modos
-
-El script permite escoger:
+Carga automáticamente:
 
 ```txt
-[1] Revancha
-[2] Melate
+https://raw.githubusercontent.com/pakinja/pakin/master/Melate.csv
+https://raw.githubusercontent.com/pakinja/pakin/master/Historico-Melate.csv
+https://raw.githubusercontent.com/pakinja/pakin/master/Revancha.csv
+https://raw.githubusercontent.com/pakinja/pakin/master/Historico-Revancha.csv
 ```
 
-Busca CSV en orden aproximado:
+El parser fue corregido para formato por encabezados de Pakin:
+
+```csv
+CONCURSO,ID,R1,R2,R3,R4,R5,R6,BOLSA,FECHA,...
+```
+
+Para Melate también puede existir `R7`, que se trata como adicional y no como uno de los 6 naturales.
+
+La web debe mostrar algo similar a:
 
 ```txt
-Revancha: historial_revancha.csv, revancha.csv, historial.csv
-Melate:   historial_melate.csv, melate.csv, historial.csv
+Pakin remoto activo: XXXX Revancha / XXXX Melate
 ```
 
-### Olvido histórico
-
-V3 descarta historia antigua y usa un buffer reciente:
-
-```txt
-RECENT_BUFFER_MIN = 150
-RECENT_BUFFER_MAX = 200
-RECENT_BUFFER_DEFAULT = 180
-```
-
-Esto se exporta en:
-
-```json
-"historical_forgetting": {
-  "total_loaded_draws": 0,
-  "discarded_old_draws": 0,
-  "recent_buffer_size": 180,
-  "buffer_first_draw": "...",
-  "buffer_last_draw": "..."
-}
-```
-
-### Anti-leakage
-
-En el backtesting ciego secuencial, para predecir el sorteo `T`, todos los expertos solo pueden usar datos hasta `T-1`.
-
-Esto aplica para:
-
-```txt
-XGBoost, LSTM, Markov, Fourier, Bayes, Física, Temporal, Entropía, Estructura
-```
-
-### Expertos / jueces
-
-V3 usa un ensemble de expertos:
-
-```txt
-physical    → física de esferas
-structural  → estructura de combinación
-temporal    → inercia temporal
-entropy     → drift / estabilidad
-fourier     → micro-ciclos recientes
-bayes       → frecuencia + desgaste sigmoide
-xgboost     → clasificador tabular
-lstm        → memoria secuencial con ventana de 20 sorteos
-markov      → transición desde sorteo anterior
-```
-
-### Física de esferas
-
-V3 sí considera pesos físicos separados por juego:
-
-```txt
-DEFAULT_BALL_WEIGHTS_MELATE
-DEFAULT_BALL_WEIGHTS_REVANCHA
-```
-
-Incluye:
-
-```txt
-peso medido
-peso efectivo
-desgaste sigmoide
-bonus físico
-uso dentro del buffer reciente
-validación reglamentaria
-```
-
-Rangos:
-
-```txt
-WEIGHT_MIN = 4.25
-WEIGHT_MAX = 5.25
-WEIGHT_DIFF_MAX = 0.30
-```
-
-### Optuna
-
-Optuna ajusta pesos dinámicos del ensemble con backtesting OOS reciente:
-
-```txt
-avg_hits
-avg_hits_top10
-avg_hits_top12
-avg_mse
-```
-
-Se agregó parche para evitar monopolio de XGBoost u otro experto:
-
-```txt
-fix_v3_ensemble_diversity.py
-```
-
-Ese parche agrega guardrails:
-
-```txt
-máximo 38% por experto
-mínimo 4 expertos activos
-penalización por concentración
-```
-
-### Monte Carlo
-
-Configuración V3:
-
-```txt
-MC_TOTAL_COMBINATIONS = 32_000_000
-MC_BATCH_SIZE = 400_000
-MC_KEEP_PER_BATCH = 2500
-```
-
-Puede usar CuPy/CUDA si está disponible. Si falta NVRTC, puede caer a NumPy CPU usando el parche de fallback.
+Si móvil sigue mostrando solo 42 sorteos, revisar caché o que `pakin-remote-loader.js` sí esté cargado.
 
 ---
 
-## Parches auxiliares
+## resultados.json: contrato activo V4
 
-### PyTorch / TinyLSTM
+`resultados.json` es la fuente de verdad de predicciones y auditoría para la web.
 
-```txt
-fix_local_cruncher_v3_torch.py
-```
-
-Corrige:
-
-```txt
-AttributeError: 'NoneType' object has no attribute 'Module'
-```
-
-### CuPy / NVRTC
-
-```txt
-fix_v3_runtime_cupy_guard.py
-```
-
-Corrige o evita bloqueo por:
-
-```txt
-Failure finding "nvrtc*.dll"
-```
-
-Si CuPy falla, reintenta Monte Carlo con NumPy CPU.
-
-### Diversidad del ensemble
-
-```txt
-fix_v3_ensemble_diversity.py
-```
-
-Evita que XGBoost monopolice el resultado. El modelo debe comportarse como jurado de expertos.
-
----
-
-## Comandos recomendados
-
-Desde PowerShell dentro del repo:
-
-```powershell
-git pull origin main
-py -X utf8 .\fix_local_cruncher_v3_torch.py
-py -X utf8 .\fix_v3_runtime_cupy_guard.py
-py -X utf8 .\fix_v3_ensemble_diversity.py
-py -X utf8 .\local_cruncher_v3.py
-```
-
-Después de generar `resultados.json`:
-
-```powershell
-git add resultados.json
-git commit -m "Update predictions"
-git push origin main
-```
-
-Si el script ya hizo push automático, no hace falta repetirlo.
-
----
-
-## Contrato de `resultados.json` V3
-
-La web reconoce V3 si existe:
-
-```json
-"score_kind": "optuna_weighted_net_score"
-```
-
-Campos importantes:
+Campos esperados o útiles:
 
 ```json
 {
   "last_update": "timestamp",
-  "source": "local_cruncher_v3_sequential_gpu",
+  "source": "local_cruncher_v4_deep_stacking | local_cruncher_v3...",
+  "model_version": "V4 | V4.1-hit-aware",
   "game_mode": "melate | revancha",
   "game_label": "Melate | Revancha",
-  "historical_forgetting": {},
   "score_kind": "optuna_weighted_net_score",
+  "v4_score_kind": "...",
+  "historical_forgetting": {},
+  "data_source": {},
   "drift_detected": false,
   "procedure_log": "...",
   "optuna_audit": {},
@@ -279,264 +184,388 @@ Campos importantes:
   "expert_weights": {},
   "number_scores": {},
   "manual_suggestion_seed": [],
-  "total_mc_evaluated": 32000000,
-  "max_net_score_found": 0.8428,
   "generator_pool": [],
-  "top_combinations": []
+  "top_combinations": [],
+  "postmortem_feedback": {}
 }
 ```
 
 ### `number_scores`
 
-Score V3 por número. Lo usan mapa de calor y evaluador manual.
+Mapa por número del score calculado por el motor.
 
-### `manual_suggestion_seed`
-
-Datos por número:
+Ejemplo:
 
 ```json
-{
-  "number": 5,
-  "score": 84.2,
-  "winner_component": "lstm",
-  "winner_component_human": "memoria secuencial LSTM",
-  "reason": "...",
-  "expert_raw": {},
-  "effective_weight": 4.52,
-  "physics_bonus": 3.2,
-  "uses_in_window": 18
+"number_scores": {
+  "1": 0.134,
+  "2": 0.198,
+  "17": 0.241
 }
 ```
 
-Lo usan:
+La web convierte escalas `0-1` a `0-100` cuando aplica.
+
+### `manual_suggestion_seed`
+
+Ranking por número con explicación.
+
+Ejemplo:
+
+```json
+{
+  "number": 17,
+  "score": 74.2,
+  "winner_component": "physical",
+  "winner_component_human": "física de esferas",
+  "reason": "...",
+  "expert_raw": {
+    "physical": 0.72,
+    "xgboost": 0.51,
+    "fourier": 0.44,
+    "structural": 0.61
+  }
+}
+```
+
+Lo usa `v4-manual-science.js` para:
 
 ```txt
-Evaluador manual
-Sugerencias profundas
-Mapa de calor
-Física solo lectura
+Score por número
+Impulsor dominante
+Motivo
+Sugerencias V4
+Física de esferas si viene en expert_raw
 ```
 
 ### `generator_pool`
 
-Combinaciones candidatas Monte Carlo:
+Pool de combinaciones generado localmente por el cruncher.
+
+Ejemplo:
 
 ```json
 {
   "numbers": [5, 12, 18, 33, 41, 55],
-  "net_score": 0.8428,
-  "score_percent": 84.28,
+  "net_score": 0.2072,
+  "score_percent": 20.72,
   "human_explanation": "...",
   "plain_route": "...",
   "number_explanations": []
 }
 ```
 
-Lo usan:
+Lo usa la web para:
 
 ```txt
-Generador
+Generador V4
+Alineación pool
+Sugerencias V4
 Coincidencias
 Forense
-Estadísticas
-Indicador Izquierda/Derecha
+Indicadores de tendencia
 ```
 
 ### `walk_forward.rows`
 
-Validaciones OOS:
+Validación OOS / backtesting ciego.
+
+Ejemplo:
 
 ```json
 {
-  "draw_id": "4212",
-  "actual": [1, 2, 3, 4, 5, 6],
+  "draw_id": "4213",
+  "actual": [7, 29, 39, 43, 47, 49],
   "predicted_top6": [1, 8, 12, 20, 31, 45],
   "predicted_top10": [],
-  "hits": 2,
-  "hits_top10": 3,
+  "hits": 0,
+  "hits_top10": 1,
   "mse": 0.123,
-  "kl": 0.04,
   "drift_detected": false
 }
 ```
 
-Lo usan:
-
-```txt
-Walk-Forward panel
-Estadísticas
-Indicador Izquierda/Derecha
-```
+Debe usarse para evaluar si el modelo mejora realmente contra baseline, no solo por score visual.
 
 ---
 
-## Web V3
+## Evaluador Manual V4
 
-### Carga de scripts
-
-Orden actual importante en `index.html`:
-
-```html
-<script src="data.js"></script>
-<script src="engine.js"></script>
-<script src="ui.js"></script>
-<script src="python-results-v3-compat.js"></script>
-<script src="heatmap-fix.js"></script>
-<script src="walk-forward-ui.js"></script>
-<script src="v3-panels-bridge.js"></script>
-<script src="v3-left-right-indicator.js"></script>
-```
-
-Los scripts V3 deben ir al final porque sobreescriben renderizados legacy.
-
-### Generador
-
-Usa `generator_pool`. No genera Monte Carlo pesado en navegador.
-
-Muestra:
+Archivo activo:
 
 ```txt
-net score
-explicación humana
-ruta por número
-favoritos
+v4-manual-science.js
 ```
 
-### Evaluador manual
+Objetivo: reemplazar definitivamente el viejo `NET AVG` V3 por una lectura V4 por componentes.
 
-Usa:
+### Calificación V4
+
+La calificación manual V4 combina:
 
 ```txt
-manual_suggestion_seed
-number_scores
-generator_pool
+40% Score por números
+24% Balance estructural
+16% Física de esferas
+20% Alineación con generator_pool
 ```
 
-Analiza:
+### Componentes visibles
+
+Debe mostrar:
 
 ```txt
-score promedio V3
-score por número
-impulsor dominante
-motivo por número
-par/impar
-bajos/altos
-décadas
-suma
-cercanía con Monte Carlo V3
-```
-
-Sugerencias:
-
-```txt
-Mejora por score V3
-Alineación con Monte Carlo V3
+CALIFICACIÓN V4
+Score por números
+Física de esferas
 Balance estructural
+Alineación pool
+Paridad
+Izquierda/Derecha
+Décadas
+Suma
+Consecutivos
+Score V4 por número
+Impulsor
+Motivo
+Sugerencias V4 por componentes
 ```
 
-### Mapa de calor
+### Balance estructural
 
-Vistas:
+Se recalcula por combinación. No debe ser constante.
+
+Factores:
 
 ```txt
-Score      → number_scores V3
-Frecuencia → presencia en generator_pool
-Retraso    → bonus físico V3 / peso efectivo
+Paridad: ideal cerca de 3 pares / 3 impares
+Izquierda/Derecha: ideal cerca de 3 bajos / 3 altos, usando 1-28 y 29-56
+Décadas: cobertura de décadas
+Suma: cercanía a zona histórica media
+Consecutivos: penalización por exceso de consecutivos
 ```
 
-### Estadísticas
+### Sugerencias V4
 
-Usa:
+Las sugerencias deben ser múltiples, no una sola, y deben evaluar:
 
 ```txt
-max_net_score_found
-total_mc_evaluated
-historical_forgetting
-drift_detected
-expert_weights
-physics_summary
-manual_suggestion_seed
-generator_pool
-walk_forward.rows
+Número débil actual
+Número fuerte candidato
+Ganancia en calificación V4 total
+Score por números
+Balance estructural
+Física
+Alineación con pool
+Soporte en generator_pool top N
+Impulsor del candidato
 ```
 
-### Indicador Izquierda/Derecha
-
-Archivo:
-
-```txt
-v3-left-right-indicator.js
-```
-
-Calcula:
-
-```txt
-Izquierda: números 1-28
-Derecha: números 29-56
-```
-
-Usa:
-
-```txt
-generator_pool
-walk_forward.rows.actual
-walk_forward.rows.predicted_top6
-```
-
-Muestra:
-
-```txt
-Futuro simulado
-Backtesting real reciente
-Predicción Walk-Forward reciente
-Bloques de 20 combinaciones
-```
-
-### Forense
-
-Usa:
-
-```txt
-LSTM / Markov dominantes
-pares frecuentes en generator_pool
-terminaciones ponderadas por score V3
-patrones por impulsor dominante
-estructuras frecuentes del Monte Carlo
-```
-
-### Coincidencias
-
-Busca coincidencias dentro del `generator_pool`.
-
-### Física
-
-Mantiene el simulador original y agrega una lectura V3 de solo consulta:
-
-```txt
-peso efectivo promedio
-diferencia de peso
-reglamento OK / revisar
-mayor bonus físico
-menor bonus físico
-```
-
-No modifica pesos guardados ni inputs.
+No deben decir `Sugerencias V3`.
 
 ---
 
-## Problemas conocidos
+## Generador V4
 
-### `git no se reconoce`
+El generador web ya no debe ejecutar Monte Carlo pesado en navegador.
 
-Instalar Git y reiniciar PowerShell.
+Debe tomar combinaciones desde:
 
-Verificar:
+```txt
+generator_pool de resultados.json
+```
+
+Los botones:
+
+```txt
+Generar 5
+Generar 10
+Limpiar
+```
+
+No deben mostrar ni depender de:
+
+```txt
+Montecarlo 5000x del navegador
+Migración Cruzada legacy
+```
+
+La calificación de cada combinación generada debe usar el mismo criterio del evaluador V4:
+
+```txt
+Score por números + física + estructura + alineación pool
+```
+
+---
+
+## Motor local / cruncher
+
+El motor local sigue siendo el responsable de generar `resultados.json`.
+
+Archivo histórico:
+
+```txt
+local_cruncher_v3.py
+```
+
+Durante el desarrollo evolucionó a un flujo V4/V4.1 con:
+
+```txt
+buffer reciente
+walk-forward OOS
+Optuna
+XGBoost
+Fourier
+Bayes
+física de esferas
+estructura
+Markov
+LSTM / memoria secuencial
+Transformer / deep stacking en V4.1 si está presente
+postmortem feedback
+Monte Carlo local
+```
+
+### Principio actual
+
+El navegador solo visualiza y analiza. La generación pesada debe venir del cruncher local:
+
+```txt
+local_cruncher_v3.py → resultados.json → git push → Vercel web
+```
+
+### Git sync
+
+El script intenta subir automáticamente `resultados.json` si Git está disponible:
+
+```txt
+git add resultados.json
+git commit -m "Update predictions"
+git push origin main
+```
+
+Si aparece:
+
+```txt
+"git" no se reconoce como un comando interno o externo
+```
+
+instalar Git, reiniciar PowerShell y verificar:
 
 ```powershell
 git --version
 ```
 
+Comandos manuales:
+
+```powershell
+git add resultados.json
+git commit -m "Update predictions"
+git push origin main
+```
+
+---
+
+## Retroalimentación post-sorteo
+
+Se agregó un patcher para auditar `resultados.json` anterior contra un sorteo nuevo en CSV:
+
+```txt
+fix_v3_postmortem_feedback.py
+```
+
+Objetivo:
+
+```txt
+Leer resultados.json anterior
+Detectar sorteo nuevo
+Comparar top_combinations y generator_pool contra el resultado real
+Medir hits, fallos, números acertados y números fallidos
+Ajustar suavemente multiplicadores por experto
+Exportar postmortem_feedback
+```
+
+Debe aprender del error sin sobre-reaccionar a un solo sorteo.
+
+---
+
+## Evaluación objetiva de mejora
+
+No confiar solo en `max_net_score_found` o en scores visuales.
+
+Métricas importantes:
+
+```txt
+avg_hits_top6
+avg_hits_top8
+avg_hits_top10
+max_hits_top6
+zero_hit_rate
+calibration_r2
+brier_score
+mse
+comparación contra baseline aleatorio
+```
+
+Baseline aproximado para Melate/Revancha 6 de 56:
+
+```txt
+Top6 esperado random ≈ 6 * 6 / 56 = 0.6429 hits
+Top10 esperado random ≈ 10 * 6 / 56 = 1.0714 hits
+```
+
+Si el walk-forward está debajo de eso, la arquitectura puede ser más sofisticada pero no necesariamente más efectiva.
+
+---
+
+## Problemas conocidos y diagnóstico
+
+### Sigue apareciendo `NET AVG 10.39`
+
+Causa probable:
+
+```txt
+index.html viejo en caché
+scripts V3 todavía cargados
+Vercel no desplegó último commit
+navegador móvil con datos cacheados
+```
+
+Solución:
+
+```txt
+Verificar que index.html no cargue scripts v3-*
+Abrir con ?v=11 o superior
+Borrar datos del sitio
+Abrir incógnito
+Esperar deploy de Vercel
+```
+
+### Móvil sigue mostrando 42 sorteos
+
+Causa probable:
+
+```txt
+pakin-remote-loader.js no cargó
+parser remoto falló
+caché móvil
+```
+
+Solución:
+
+```txt
+Revisar banner Pakin remoto activo
+Abrir con cache-bust
+Borrar datos del sitio
+```
+
 ### `nvrtc*.dll`
+
+Si CuPy falla:
+
+```txt
+Failure finding "nvrtc*.dll"
+```
 
 Verificar CUDA:
 
@@ -545,47 +574,85 @@ echo $env:CUDA_PATH
 Get-ChildItem "$env:CUDA_PATH\bin\nvrtc*.dll"
 ```
 
-Aplicar fallback:
+También puede usarse fallback NumPy si el script lo tiene integrado.
 
-```powershell
-py -X utf8 .\fix_v3_runtime_cupy_guard.py
-```
+### Vercel paquete demasiado grande
 
-### La web no refleja cambios
+Evitar subir entornos Python, dependencias pesadas, `.venv`, caches, `node_modules` innecesarios o modelos pesados.
 
-Usar:
-
-```txt
-Ctrl + F5
-```
-
-Si está en Vercel, esperar el deploy.
+La web debe ser estática y ligera. El cruncher corre local.
 
 ---
 
-## Checklist para otra conversación
+## Comandos recomendados
 
-Pegar esto al iniciar una conversación nueva:
+Actualizar repo:
+
+```powershell
+git pull origin main
+```
+
+Ejecutar cruncher local:
+
+```powershell
+py -X utf8 .\local_cruncher_v3.py
+```
+
+Subir resultados manualmente si el auto-git falla:
+
+```powershell
+git add resultados.json
+git commit -m "Update predictions"
+git push origin main
+```
+
+Abrir web rompiendo caché:
+
+```txt
+https://tu-url.vercel.app/?v=11
+```
+
+---
+
+## Checklist para continuar en otra conversación
+
+Pegar este bloque si se abre una conversación nueva:
 
 ```txt
 Repo: EdgarBravo99/fisicapapa
 Proyecto: Melate Pro V7 / Fisicapapa
-Versión activa: V3
-Motor principal: local_cruncher_v3.py
+Estado actual: Web V4-only
+Motor local: local_cruncher_v3.py, pero resultados.json puede venir como V4/V4.1
 Salida principal: resultados.json
-Web V3-only: python-results-v3-compat.js + v3-panels-bridge.js + v3-left-right-indicator.js
-V2 obsoleto: no usar python-results-bridge.js ni local_cruncher_v2.py como flujo principal
-El modelo usa: buffer reciente 150-200, LSTM ventana 20, Markov, XGBoost, Fourier, Bayes, física de esferas, temporal, entropía, estructura, Optuna y Monte Carlo.
-No usar operational_confidence. Usar net_score / score_kind=optuna_weighted_net_score.
+Fuente histórica web: Pakin remoto vía pakin-remote-loader.js
+index.html debe cargar solo stack V4:
+  data.js
+  engine.js
+  ui.js
+  pakin-remote-loader.js
+  python-results-v4-compat.js
+  v4-primary-web.js
+  v4-hit-aware-web.js
+  v4-manual-science.js
+No volver a activar scripts V3:
+  python-results-v3-compat.js
+  v3-panels-bridge.js
+  v3-left-right-indicator.js
+  v3-manual-suggestion-diversity.js
+  v3-generator-elite-rank.js
+Problema histórico: NET AVG 10.39 y Sugerencias V3 venían de scripts legacy pisando el evaluador.
+Objetivo actual: que toda la web use ciencia de datos V4, calificación V4 por componentes, física de esferas, izquierda/derecha, balance estructural, alineación con generator_pool y sugerencias V4.
 ```
 
 ---
 
-## Pendientes sugeridos
+## Pendientes técnicos sugeridos
 
-- Integrar permanentemente los patchers dentro de `local_cruncher_v3.py`.
-- Agregar modo `--fast` y `--full`.
-- Mostrar `last_update` en todos los paneles.
-- Agregar indicador visible de si `resultados.json` corresponde a Melate o Revancha.
-- Compactar `resultados.json` si crece demasiado para Vercel.
-- Exportar contribuciones por experto de forma más compacta para evitar futuros `undefined`.
+- Renombrar definitivamente `local_cruncher_v3.py` a `local_cruncher_v4.py` cuando el flujo V4 esté estable.
+- Crear `v4-clean-app.js` como controlador único para generador/evaluador y reducir dependencia de `ui.js` legacy.
+- Mover scripts V3 a una carpeta `legacy/` o eliminarlos del deploy.
+- Agregar prueba automática simple que falle si `index.html` contiene `v3-` o `python-results-v3`.
+- Agregar versión visible de `resultados.json` en la web.
+- Mostrar fecha `last_update` y `game_mode` en el header.
+- Crear comparación A/B automática: V3 legacy vs V4 vs baseline random vs frecuencia reciente.
+- Validar que `manual_suggestion_seed`, `number_scores` y `generator_pool` siempre existan antes de desplegar.
