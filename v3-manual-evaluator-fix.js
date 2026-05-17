@@ -109,7 +109,7 @@
     return '<div style="background:rgba(255,255,255,.04);border:1px solid ' + color + '66;border-radius:8px;padding:9px"><div style="font-size:11px;color:var(--muted)">' + esc(t) + '</div><div style="font-size:18px;font-weight:800;color:' + color + ';font-family:var(--mono)">' + fmt(v) + '</div><div style="font-size:10px;color:var(--dim)">' + esc(detail || '') + '</div></div>';
   }
 
-  window.evalUserComboUI = async function () {
+  async function evalManualV4() {
     const el = document.getElementById('user-result');
     if (!el) return;
     let a;
@@ -118,7 +118,20 @@
     const g = grade(a, d);
     const color = g.final >= 78 ? 'var(--green)' : g.final >= 62 ? 'var(--gold)' : 'var(--purple)';
     const rows = a.map(x => d.numberMap.get(x) || { number: x, score: 0 }).map(r => '<tr><td><b style="color:var(--text)">' + r.number + '</b></td><td>' + fmt(r.score) + '</td><td>' + esc(r.winner_component_human || label(r.winner_component)) + '</td><td>' + esc(r.reason || 'Sin motivo disponible') + '</td></tr>').join('');
-    const top = (d.manual_suggestion_seed || []).filter(r => !a.includes(Number(r.number))).slice(0, 3).map(r => '<div class="suggestion-card top"><div style="font-weight:800;color:var(--teal)">Considerar ' + r.number + ' · ' + fmt(r.score) + '/100</div><div class="suggestion-strategy">Impulsor: ' + esc(r.winner_component_human || label(r.winner_component)) + '. ' + esc(r.reason || '') + '</div></div>').join('');
-    el.innerHTML = '<div class="card" style="margin-top:16px;border-color:' + color + '70;background:rgba(0,0,0,.2)"><div class="card-header" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 style="margin:0">Evaluador Manual V4 · Componentes reales</h2><span class="badge" style="background:rgba(0,0,0,.3);color:' + color + ';border:1px solid ' + color + ';font-size:14px;padding:6px 14px">CALIFICACIÓN V4 · ' + fmt(g.final) + '/100</span></div><div class="card-body"><div class="combo-balls" style="margin-bottom:12px">' + balls(a, color) + '</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px">' + box('Score por números', g.ns, 'var(--purple)', 'number_scores / ranking por número') + box('Física de esferas', g.ph, 'var(--teal)', 'patrón físico del JSON') + box('Estructura', g.st.score, 'var(--gold)', 'P/I ' + g.st.pares + '/' + g.st.impares + ', Izq/Der ' + g.st.lows + '/' + g.st.highs) + box('Alineación pool', g.al.value, 'var(--blue)', 'Rank ' + (g.al.rank || 'N/A') + ', overlap ' + g.al.overlap + '/6') + '</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:6px;font-size:11px;color:var(--muted);margin-bottom:14px"><div>Paridad<br><b style="color:var(--text)">' + fmt(g.st.parity,1) + '</b></div><div>Izq/Der<br><b style="color:var(--text)">' + fmt(g.st.side,1) + '</b></div><div>Décadas<br><b style="color:var(--text)">' + fmt(g.st.decade,1) + '</b></div><div>Suma ' + g.st.suma + '<br><b style="color:var(--text)">' + fmt(g.st.sum,1) + '</b></div><div>Consecutivos<br><b style="color:var(--text)">' + fmt(g.st.consecutive,1) + '</b></div></div><div class="tbl-wrap"><table><thead><tr><th>Núm</th><th>Score</th><th>Impulsor</th><th>Motivo</th></tr></thead><tbody>' + rows + '</tbody></table></div><div class="suggestion-panel"><div class="suggestion-title">💡 Candidatos fuertes del JSON</div><div class="suggestions-grid">' + top + '</div></div></div></div>';
-  };
+    const top = (d.manual_suggestion_seed || []).filter(r => !a.includes(Number(r.number))).slice(0, 3).map(r => '<div class="suggestion-card top"><div style="font-weight:800;color:var(--teal)">Candidato V4 ' + r.number + ' · ' + fmt(r.score) + '/100</div><div class="suggestion-strategy">Impulsor: ' + esc(r.winner_component_human || label(r.winner_component)) + '. ' + esc(r.reason || '') + '</div></div>').join('');
+    el.innerHTML = '<div class="card" style="margin-top:16px;border-color:' + color + '70;background:rgba(0,0,0,.2)"><div class="card-header" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 style="margin:0">Evaluador Manual V4 · Componentes reales</h2><span class="badge" style="background:rgba(0,0,0,.3);color:' + color + ';border:1px solid ' + color + ';font-size:14px;padding:6px 14px">CALIFICACIÓN V4 · ' + fmt(g.final) + '/100</span></div><div class="card-body"><div class="combo-balls" style="margin-bottom:12px">' + balls(a, color) + '</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px">' + box('Score por números', g.ns, 'var(--purple)', 'number_scores / ranking por número') + box('Física de esferas', g.ph, 'var(--teal)', 'patrón físico del JSON') + box('Estructura', g.st.score, 'var(--gold)', 'P/I ' + g.st.pares + '/' + g.st.impares + ', Izq/Der ' + g.st.lows + '/' + g.st.highs) + box('Alineación pool', g.al.value, 'var(--blue)', 'Rank ' + (g.al.rank || 'N/A') + ', overlap ' + g.al.overlap + '/6') + '</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:6px;font-size:11px;color:var(--muted);margin-bottom:14px"><div>Paridad<br><b style="color:var(--text)">' + fmt(g.st.parity,1) + '</b></div><div>Izq/Der<br><b style="color:var(--text)">' + fmt(g.st.side,1) + '</b></div><div>Décadas<br><b style="color:var(--text)">' + fmt(g.st.decade,1) + '</b></div><div>Suma ' + g.st.suma + '<br><b style="color:var(--text)">' + fmt(g.st.sum,1) + '</b></div><div>Consecutivos<br><b style="color:var(--text)">' + fmt(g.st.consecutive,1) + '</b></div></div><div class="tbl-wrap"><table><thead><tr><th>Núm</th><th>Score</th><th>Impulsor</th><th>Motivo</th></tr></thead><tbody>' + rows + '</tbody></table></div><div class="suggestion-panel"><div class="suggestion-title">💡 Candidatos fuertes V4 del JSON</div><div class="suggestions-grid">' + top + '</div></div></div></div>';
+  }
+
+  function installV4Evaluator() {
+    window.evalUserComboUI = evalManualV4;
+    window.__manualEvaluatorMode = 'v4-components';
+  }
+
+  installV4Evaluator();
+  setTimeout(installV4Evaluator, 250);
+  setTimeout(installV4Evaluator, 900);
+  setTimeout(installV4Evaluator, 1800);
+  document.addEventListener('DOMContentLoaded', () => setTimeout(installV4Evaluator, 400));
+  document.addEventListener('melate:v3-results-loaded', () => setTimeout(installV4Evaluator, 120));
+  document.addEventListener('melate:v4-primary-loaded', () => setTimeout(installV4Evaluator, 120));
 })();
