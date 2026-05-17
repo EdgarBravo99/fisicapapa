@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Melate & Revancha Pro — Analizador V7 (Modular)</title>
+  <title>Melate & Revancha Pro — Analizador V4</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,8 +12,8 @@
   <div class="header" id="main-header">
     <div class="header-icon">🎰</div>
     <div class="header-text">
-      <h1 id="app-title">ANALIZADOR PRO V7</h1>
-      <p>Montecarlo · Influencia · Forense · Cambio de Patrón</p>
+      <h1 id="app-title">ANALIZADOR PRO V4</h1>
+      <p>Motor V4 · Ciencia de datos · Física de esferas · Estructura · Pool optimizado</p>
     </div>
     <div class="header-controls">
       <select id="game-mode" class="mode-select">
@@ -46,8 +46,7 @@
           <span style="color:var(--gold);">🟡 Ámbar</span> = leve desventaja &nbsp;|&nbsp;
           <span style="color:var(--red);">🔴 Rojo</span> = desventaja / fuera de rango
         </p>
-        <div id="weights-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap:10px; margin-bottom: 20px;">
-          </div>
+        <div id="weights-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap:10px; margin-bottom: 20px;"></div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
           <button class="btn btn-teal" onclick="saveWeightsUI()">💾 Aplicar Pesos y Recalcular Todo</button>
           <button class="btn btn-red btn-sm" onclick="resetWeightsUI()">↩️ Restablecer a 2.70g</button>
@@ -58,21 +57,13 @@
   
   <div class="panel active" id="tab-generador">
     <div class="card">
-      <div class="card-header"><h2>⚡ GENERAR COMBINACIONES ÚNICAS</h2></div>
+      <div class="card-header"><h2>⚡ GENERADOR V4</h2></div>
       <div class="card-body">
         <div style="display:flex; gap:10px; margin-bottom:16px;">
           <button class="btn btn-gold" id="btn-gen-5">🎲 Generar 5</button>
           <button class="btn btn-green" id="btn-gen-10">🎲 Generar 10</button>
           <button class="btn btn-red btn-sm" id="btn-clear">🗑 Limpiar</button>
           <span id="combo-info" style="color:var(--muted);font-size:12px;margin-left:auto;"></span>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
-          <label style="font-size:12px;color:#fff;display:flex;align-items:center;gap:6px; background:linear-gradient(90deg, #161b22, #39d0c240); padding:4px 8px; border-radius:4px; border:1px solid var(--teal); font-weight:bold;">
-            <input type="checkbox" id="strat-montecarlo" style="accent-color:var(--teal)"> 🤖 Montecarlo (5000x)
-          </label>
-          <label style="font-size:12px;color:#fff;display:flex;align-items:center;gap:6px; background:linear-gradient(90deg, #161b22, #f0b42940); padding:4px 8px; border-radius:4px; border:1px solid var(--gold); font-weight:bold;">
-            <input type="checkbox" id="strat-migration" checked style="accent-color:var(--gold)"> 🔄 Migración Cruzada
-          </label>
         </div>
         <div id="combos-container"></div>
         <div class="saved-panel" style="margin-top:18px;">
@@ -87,7 +78,7 @@
       </div>
     </div>
     <div class="card">
-      <div class="card-header"><h2>✏️ EVALUADOR MANUAL (RAYOS X)</h2></div>
+      <div class="card-header"><h2>✏️ EVALUADOR MANUAL V4</h2></div>
       <div class="card-body">
         <div style="display:flex;gap:8px;align-items:center;">
           <input id="u1" class="inp inp-num" type="number" min="1" max="56"><input id="u2" class="inp inp-num" type="number"><input id="u3" class="inp inp-num" type="number"><input id="u4" class="inp inp-num" type="number"><input id="u5" class="inp inp-num" type="number"><input id="u6" class="inp inp-num" type="number">
@@ -100,18 +91,9 @@
 
   <div class="panel" id="tab-historial">
     <div class="card" style="border-color: rgba(57,208,194,0.4)">
-      <div class="card-header"><h2>📂 IMPORTACIÓN INTELIGENTE (CSV)</h2></div>
+      <div class="card-header"><h2>📂 HISTÓRICO REMOTO / RESPALDO CSV</h2></div>
       <div class="card-body" style="display:grid;gap:10px;">
-        <div style="display:grid;gap:6px;">
-          <label style="font-size:12px;color:var(--muted);">Carga separada por juego:</label>
-          <input type="file" id="csv-file-melate" accept=".csv" class="inp" style="background: var(--surface); color: var(--text); border: 1px dashed var(--red); cursor: pointer; padding: 12px; width: 100%;">
-          <input type="file" id="csv-file-revancha" accept=".csv" class="inp" style="background: var(--surface); color: var(--text); border: 1px dashed var(--teal); cursor: pointer; padding: 12px; width: 100%;">
-        </div>
-        <div style="display:grid;gap:6px;">
-          <label style="font-size:12px;color:var(--muted);">O carga un CSV dual con Melate + Revancha:</label>
-          <input type="file" id="csv-file" accept=".csv" class="inp" style="background: var(--surface); color: var(--text); border: 1px dashed var(--gold); cursor: pointer; padding: 12px; width: 100%;">
-        </div>
-        <div id="db-status" style="font-size:13px;color:var(--muted);margin-top:10px;">Estado de la base local: pendiente...</div>
+        <div id="db-status" style="font-size:13px;color:var(--muted);margin-top:10px;">Estado de datos: pendiente...</div>
       </div>
     </div>
     <div class="card">
@@ -166,10 +148,7 @@
   </div>
 
   <div class="panel" id="tab-laboratorio">
-    <div class="card" style="border-color: var(--red)">
-      <div class="card-header"><h2>⏳ RITMOS Y SALTOS CONSTANTES</h2></div>
-      <div class="card-body" id="ritmos-container"></div>
-    </div>
+    <div class="card" style="border-color: var(--red)"><div class="card-header"><h2>⏳ RITMOS Y SALTOS CONSTANTES</h2></div><div class="card-body" id="ritmos-container"></div></div>
     <div class="card"><div class="card-header"><h2>🧲 SECUENCIAS FORENSES</h2></div><div class="card-body" id="secuencias-container"></div></div>
     <div class="card"><div class="card-header"><h2>CONDICIONES Y TENDENCIAS</h2></div><div class="card-body" id="conditional-container"></div></div>
     <div class="card"><div class="card-header"><h2>🔢 TERMINACIONES (0-9)</h2></div><div class="card-body" id="terminaciones-container" style="display:flex;gap:10px;flex-wrap:wrap"></div></div>
@@ -194,27 +173,20 @@
 
 <div id="loading-modal" class="loading-modal">
   <div class="loading-content">
-    <div class="loading-header">🔄 Simulando Combinaciones</div>
-    <div class="loading-bar-container">
-      <div id="loading-bar" class="loading-bar"></div>
-    </div>
-    <div id="loading-info" class="loading-info">Iniciando simulaciones...</div>
-    <div style="text-align: center; margin-top: 20px;">
-      <button class="btn btn-sm btn-red" onclick="cancelSimulation()">✕ Cancelar</button>
-    </div>
+    <div class="loading-header">🔄 Procesando</div>
+    <div class="loading-bar-container"><div id="loading-bar" class="loading-bar"></div></div>
+    <div id="loading-info" class="loading-info">Iniciando...</div>
+    <div style="text-align: center; margin-top: 20px;"><button class="btn btn-sm btn-red" onclick="cancelSimulation()">✕ Cancelar</button></div>
   </div>
 </div>
 
 <script src="data.js"></script>
 <script src="engine.js"></script>
 <script src="ui.js"></script>
-<script src="python-results-v3-compat.js"></script>
-<script src="heatmap-fix.js"></script>
-<script src="walk-forward-ui.js"></script>
-<script src="v3-panels-bridge.js"></script>
-<script src="v3-left-right-indicator.js"></script>
-<script src="v3-manual-suggestion-diversity.js"></script>
-<script src="v3-generator-elite-rank.js"></script>
+<script src="pakin-remote-loader.js"></script>
 <script src="python-results-v4-compat.js"></script>
+<script src="v4-primary-web.js"></script>
+<script src="v4-hit-aware-web.js"></script>
+<script src="v4-manual-science.js"></script>
 </body>
 </html>
