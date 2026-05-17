@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Melate/Revancha Local Cruncher V4.
+Melate/Revancha Local Cruncher V4.2.
 
 State-of-the-art local lab with strict historical forgetting:
 - Every stage sees only the recent buffer, never the full history.
 - Walk-forward folds train on [0..T-1] and reveal T only for scoring.
+- V4.2 adds an OOS feedback loop: lagged residual feature, temporal decay sample weights and MLP warm-start.
 - Legacy sequence and rule-only experts from V3 are intentionally absent.
-- Output keeps the V3 JSON contract and adds V4 audit blocks.
+- Output keeps the V3 JSON contract and adds V4/V4.2 audit blocks.
 """
 
 from __future__ import annotations
@@ -56,6 +57,11 @@ META_WEIGHT_DECAY = 0.05
 META_EPOCHS = 120
 META_PATIENCE = 6
 MIN_DELTA = 1e-4
+
+# V4.2 OOS Feedback Loop knobs.
+FEEDBACK_DECAY = 0.92
+WARMSTART_LR_FACTOR = 0.35
+RESIDUAL_FEATURE_ENABLED = True
 
 pd = np = rfft = rfftfreq = XGBClassifier = torch = nn = cp = None
 GPU_ARRAYS = False
@@ -449,45 +455,106 @@ def meta_training_rows(draws, mode, max_targets=8):
     return np.asarray(X, dtype=np.float32), np.asarray(y, dtype=np.float32)
 
 
-def train_meta_model(X, y):
-    audit = {"model": "PyTorch MetaStackingMLP", "dropout": META_DROPOUT, "weight_decay": META_WEIGHT_DECAY, "patience": META_PATIENCE, "max_epochs": META_EPOCHS, "trained": False}
+def label_vector(numbers):
+    y = np.zeros(MAX_NUMBER, dtype=np.float32)
+    for n in numbers:
+        i = int(n)
+        if 1 <= i <= MAX_NUMBER:
+            y[i - 1] = 1.0
+    return y
+
+
+def residual_from_score(score, actual_numbers):
+    return (np.asarray(score[1:], dtype=np.float32) - label_vector(actual_numbers)).astype(np.float32)
+
+
+def append_residual_feature(X, residual):
+    r = np.asarray(residual, dtype=np.float32).reshape(-1, 1)
+    if X.shape[0] != MAX_NUMBER or r.shape[0] != MAX_NUMBER:
+        raise ValueError(f"Residual feature shape mismatch: X={X.shape}, residual={r.shape}")
+    return np.hstack([X.astype(np.float32), r])
+
+
+def build_feedback_batch(feedback_records, base_width):
+    if not feedback_records:
+        return None, None, None, {"feedback_folds": 0, "feedback_rows": 0, "decay": FEEDBACK_DECAY, "residual_feature": RESIDUAL_FEATURE_ENABLED}
+    X_parts, y_parts, w_parts = [], [], []
+    for rec in feedback_records:
+        x_block = rec["X_base"].astype(np.float32)
+        if x_block.shape[1] != base_width:
+            raise ValueError(f"Feedback width mismatch: {x_block.shape[1]} != {base_width}")
+        if RESIDUAL_FEATURE_ENABLED:
+            x_block = append_residual_feature(x_block, rec["residual_feature"])
+        age = int(rec.get("age", 0))
+        weight = FEEDBACK_DECAY ** age
+        X_parts.append(x_block)
+        y_parts.append(rec["y"].astype(np.float32))
+        w_parts.append(np.full(MAX_NUMBER, weight, dtype=np.float32))
+    X_fb = np.vstack(X_parts).astype(np.float32)
+    y_fb = np.concatenate(y_parts).astype(np.float32)
+    w_fb = np.concatenate(w_parts).astype(np.float32)
+    return X_fb, y_fb, w_fb, {"feedback_folds": len(feedback_records), "feedback_rows": int(len(y_fb)), "decay": FEEDBACK_DECAY, "residual_feature": RESIDUAL_FEATURE_ENABLED, "oldest_weight": round(FEEDBACK_DECAY ** (len(feedback_records) - 1), 8)}
+
+
+def split_with_weights(X, y, weights, min_val=56):
+    if len(X) <= min_val + 2:
+        return X, y, weights, None, None, None, True
+    v = min(max(min_val, len(X) // 5), len(X) - 2)
+    return X[:-v], y[:-v], weights[:-v], X[-v:], y[-v:], weights[-v:], False
+
+
+def train_meta_model(X, y, sample_weights=None, prev_state=None, lr_scale=1.0):
+    audit = {"model": "PyTorch MetaStackingMLP", "version": "V4.2-feedback-ready", "dropout": META_DROPOUT, "weight_decay": META_WEIGHT_DECAY, "patience": META_PATIENCE, "max_epochs": META_EPOCHS, "trained": False, "warm_start_requested": prev_state is not None, "warm_start_applied": False}
     if X is None or len(X) < 120:
         audit["fallback"] = "insufficient_rows"
-        return None, audit
+        return None, audit, None
     dev = device()
     MLP = build_meta()
     model = MLP(X.shape[1]).to(dev)
-    Xtr, ytr, Xv, yv, limited = train_val_split(X, y, min_val=56)
-    loss_fn = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([(MAX_NUMBER - PICK_COUNT) / PICK_COUNT], device=dev))
-    opt = torch.optim.AdamW(model.parameters(), lr=0.0018, weight_decay=META_WEIGHT_DECAY)
-    Xt, yt = torch.tensor(Xtr, device=dev), torch.tensor(ytr, device=dev)
+    if prev_state is not None:
+        try:
+            model.load_state_dict(prev_state, strict=True)
+            audit["warm_start_applied"] = True
+        except Exception as exc:
+            audit["warm_start_failed"] = str(exc)
+    if sample_weights is None:
+        sample_weights = np.ones(len(y), dtype=np.float32)
+    Xtr, ytr, wtr, Xv, yv, wv, limited = split_with_weights(X, y, sample_weights, min_val=56)
+    pos_weight = torch.tensor([(MAX_NUMBER - PICK_COUNT) / PICK_COUNT], device=dev)
+    opt = torch.optim.AdamW(model.parameters(), lr=0.0018 * lr_scale, weight_decay=META_WEIGHT_DECAY)
+    Xt, yt, wt = torch.tensor(Xtr, device=dev), torch.tensor(ytr, device=dev), torch.tensor(wtr, device=dev)
     Xvt = torch.tensor(Xv, device=dev) if Xv is not None else Xt
     yvt = torch.tensor(yv, device=dev) if yv is not None else yt
     best, state, stale = float("inf"), None, 0
     epochs = min(META_EPOCHS, 36 if limited else META_EPOCHS)
-    for epoch in range(1, epochs + 1):
-        model.train()
-        perm = torch.randperm(len(Xt), device=dev)
-        for s in range(0, len(Xt), min(256, len(Xt))):
-            idx = perm[s:s + min(256, len(Xt))]
-            opt.zero_grad(set_to_none=True)
-            loss = loss_fn(model(Xt[idx]), yt[idx])
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-            opt.step()
-        model.eval()
-        with torch.no_grad():
-            val = float(loss_fn(model(Xvt), yvt).detach().cpu())
-        if val + MIN_DELTA < best:
-            best, stale, state = val, 0, {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
-        else:
-            stale += 1
-            if stale >= META_PATIENCE:
-                break
-    if state:
-        model.load_state_dict(state)
-    audit.update({"trained": True, "validation_limited": bool(limited), "epochs_run": epoch, "best_epoch": max(1, epoch - stale), "best_val_loss": round(best, 8), "early_stopped": bool(stale >= META_PATIENCE), "architecture": [32, 16], "device": str(dev)})
-    return model, audit
+    try:
+        for epoch in range(1, epochs + 1):
+            model.train()
+            perm = torch.randperm(len(Xt), device=dev)
+            for s in range(0, len(Xt), min(256, len(Xt))):
+                idx = perm[s:s + min(256, len(Xt))]
+                opt.zero_grad(set_to_none=True)
+                raw_loss = nn.functional.binary_cross_entropy_with_logits(model(Xt[idx]), yt[idx], pos_weight=pos_weight, reduction="none")
+                loss = (raw_loss * wt[idx]).sum() / wt[idx].sum().clamp_min(1e-8)
+                loss.backward()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+                opt.step()
+            model.eval()
+            with torch.no_grad():
+                val = float(nn.functional.binary_cross_entropy_with_logits(model(Xvt), yvt, pos_weight=pos_weight, reduction="mean").detach().cpu())
+            if val + MIN_DELTA < best:
+                best, stale, state = val, 0, {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
+            else:
+                stale += 1
+                if stale >= META_PATIENCE:
+                    break
+        if state:
+            model.load_state_dict(state)
+        next_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
+        audit.update({"trained": True, "validation_limited": bool(limited), "epochs_run": epoch, "best_epoch": max(1, epoch - stale), "best_val_loss": round(best, 8), "early_stopped": bool(stale >= META_PATIENCE), "architecture": [32, 16], "input_dim": int(X.shape[1]), "lr_scale": lr_scale, "sample_weighted": bool(sample_weights is not None), "device": str(dev)})
+        return model, audit, next_state
+    finally:
+        cleanup()
 
 
 def meta_scores(model, X, experts):
@@ -506,29 +573,55 @@ def top_order(score): return list(map(int, np.argsort(np.asarray(score)[1:])[::-
 
 def walk_forward(draws, mode):
     start = max(max(70, TRANSFORMER_WINDOW + 45), len(draws) - OOS_STEPS)
-    rows, leakage_rows, mses, hits = [], [], [], []
+    rows, leakage_rows, mses, hits, hits10 = [], [], [], [], []
+    feedback_records = []
+    prev_meta_state = None
+    last_residual_feature = np.zeros(MAX_NUMBER, dtype=np.float32)
     for target in range(start, len(draws)):
-        leak = assert_no_leakage("walk_forward_oos", target - 1, target, len(draws))
+        leak = assert_no_leakage("walk_forward_oos_v42_feedback", target - 1, target, len(draws))
         leakage_rows.append(leak)
         prefix = draws[:target]
-        print(f"OOS V4 {target - start + 1}/{len(draws) - start}: train<=T-1 reveal={draws[target].draw_id}")
+        print(f"OOS V4.2 {target - start + 1}/{len(draws) - start}: train<=T-1 reveal={draws[target].draw_id} feedback_folds={len(feedback_records)}")
         experts, audit = full_experts(prefix, mode)
-        X, y = meta_training_rows(prefix, mode)
-        meta, meta_audit = train_meta_model(X, y)
-        score = meta_scores(meta, meta_features(prefix, experts, audit), experts)
+        X_raw, y = meta_training_rows(prefix, mode)
+        base_width = X_raw.shape[1]
+        if RESIDUAL_FEATURE_ENABLED:
+            X_base = np.hstack([X_raw.astype(np.float32), np.zeros((X_raw.shape[0], 1), dtype=np.float32)])
+        else:
+            X_base = X_raw.astype(np.float32)
+        X_fb, y_fb, w_fb, fb_audit = build_feedback_batch(feedback_records, base_width)
+        if X_fb is not None:
+            X_train = np.vstack([X_base, X_fb]).astype(np.float32)
+            y_train = np.concatenate([y.astype(np.float32), y_fb]).astype(np.float32)
+            w_train = np.concatenate([np.ones(len(y), dtype=np.float32), w_fb]).astype(np.float32)
+        else:
+            X_train, y_train, w_train = X_base, y.astype(np.float32), np.ones(len(y), dtype=np.float32)
+        lr_scale = WARMSTART_LR_FACTOR if prev_meta_state is not None else 1.0
+        meta, meta_audit, next_state = train_meta_model(X_train, y_train, sample_weights=w_train, prev_state=prev_meta_state, lr_scale=lr_scale)
+        prev_meta_state = next_state
+        live_X_raw = meta_features(prefix, experts, audit).astype(np.float32)
+        live_X = append_residual_feature(live_X_raw, last_residual_feature) if RESIDUAL_FEATURE_ENABLED else live_X_raw
+        score = meta_scores(meta, live_X, experts)
         order = top_order(score)
         actual = set(draws[target].numbers)
         h = len(actual.intersection(order[:6]))
+        h10 = len(actual.intersection(order[:10]))
         y_true = np.zeros(MAX_NUMBER + 1)
         for n in actual:
             y_true[n] = 1
         mse = float(np.mean((y_true[1:] - score[1:]) ** 2))
-        rows.append({"draw_id": draws[target].draw_id, "date": draws[target].date, "actual": list(draws[target].numbers), "predicted_top6": order[:6], "predicted_top10": order[:10], "hits": h, "hits_top10": len(actual.intersection(order[:10])), "mse": round(mse, 8), "meta_loss": meta_audit.get("best_val_loss"), "kl": round(audit["kl"], 6), "drift_detected": audit["drift_detected"], "leakage": leak})
+        residual_t = residual_from_score(score, draws[target].numbers)
+        for rec in feedback_records:
+            rec["age"] += 1
+        feedback_records.append({"X_base": live_X_raw, "y": label_vector(draws[target].numbers), "residual_feature": last_residual_feature.copy(), "residual_observed": residual_t.copy(), "age": 0, "draw_id": draws[target].draw_id})
+        last_residual_feature = residual_t.copy()
+        rows.append({"draw_id": draws[target].draw_id, "date": draws[target].date, "actual": list(draws[target].numbers), "predicted_top6": order[:6], "predicted_top10": order[:10], "hits": h, "hits_top10": h10, "mse": round(mse, 8), "meta_loss": meta_audit.get("best_val_loss"), "warm_start_applied": meta_audit.get("warm_start_applied", False), "feedback_folds_used": fb_audit["feedback_folds"], "feedback_rows_used": fb_audit["feedback_rows"], "residual_feature_norm": round(float(np.linalg.norm(last_residual_feature)), 8), "kl": round(audit["kl"], 6), "drift_detected": audit["drift_detected"], "leakage": leak})
         hits.append(h)
+        hits10.append(h10)
         mses.append(mse)
         del meta
         cleanup()
-    return {"rows": rows, "avg_hits": float(np.mean(hits)) if hits else 0.0, "avg_mse": float(np.mean(mses)) if mses else 0.0, "last3_error_variance": float(np.var(mses[-3:])) if len(mses) >= 3 else 0.0}, leakage_rows
+    return {"rows": rows, "avg_hits": float(np.mean(hits)) if hits else 0.0, "avg_hits_top10": float(np.mean(hits10)) if hits10 else 0.0, "avg_mse": float(np.mean(mses)) if mses else 0.0, "last3_error_variance": float(np.var(mses[-3:])) if len(mses) >= 3 else 0.0, "feedback_loop": {"enabled": True, "version": "V4.2", "type": "lagged_residual_feature_temporal_decay_warmstart", "decay": FEEDBACK_DECAY, "warmstart_lr_factor": WARMSTART_LR_FACTOR, "total_feedback_folds": len(feedback_records), "anti_leakage": "Para predecir T se usa residual_{T-1}; residual_T se calcula despues de evaluar T y entra desde T+1."}}, leakage_rows
 
 
 def structural(nums):
@@ -557,11 +650,11 @@ def monte_carlo(score, graph, total=MC_TOTAL):
         for idx in np.argpartition(vals, -min(2500, batch))[-min(2500, batch):]:
             key = tuple(int(x) for x in combos[idx])
             if key not in best or float(vals[idx]) > best[key]["net_score"]:
-                best[key] = {"numbers": list(key), "net_score": float(vals[idx]), "source": "v4_deep_stacking_montecarlo"}
+                best[key] = {"numbers": list(key), "net_score": float(vals[idx]), "source": "v4_2_deep_stacking_montecarlo"}
         if len(best) > 40000:
             best = dict(sorted(best.items(), key=lambda kv: kv[1]["net_score"], reverse=True)[:12000])
         done += batch
-        print(f"Monte Carlo V4 {done:,}/{total:,}", end="\r")
+        print(f"Monte Carlo V4.2 {done:,}/{total:,}", end="\r")
     print()
     return sorted(best.values(), key=lambda x: x["net_score"], reverse=True)
 
@@ -577,8 +670,8 @@ def enrich(item, experts, audit, score, mode):
     nums = item["numbers"]
     explanations = [explain_number(n, experts, audit, score) for n in nums]
     out = dict(item)
-    out.update({"game_mode": mode, "score_kind": "v4_deep_stacking_meta_score", "score_percent": round(float(item["net_score"] * 100), 4), "number_explanations": explanations, "plain_route": " | ".join(f"{e['number']}: {e['main_driver_human']}" for e in explanations)})
-    out["human_explanation"] = f"V4 Deep Stacking: MetaStackingMLP + expertos fisica/Transformer/XGBoost/Fourier/grafo, limitado al buffer reciente. Ranking informativo, no probabilidad real de ganar."
+    out.update({"game_mode": mode, "score_kind": "v4_2_deep_stacking_meta_score", "score_percent": round(float(item["net_score"] * 100), 4), "number_explanations": explanations, "plain_route": " | ".join(f"{e['number']}: {e['main_driver_human']}" for e in explanations)})
+    out["human_explanation"] = f"V4.2 Deep Stacking: MetaStackingMLP + expertos fisica/Transformer/XGBoost/Fourier/grafo. Walk-forward usa feedback OOS lagged residual + decay temporal + warm-start. Ranking informativo, no probabilidad real de ganar."
     return out
 
 
@@ -586,7 +679,7 @@ def manual_seed(experts, audit, score):
     return sorted([explain_number(n, experts, audit, score) for n in range(1, MAX_NUMBER + 1)], key=lambda x: x["meta_score"], reverse=True)
 
 
-def portfolio(pool): return [dict(x, portfolio_rank=i + 1, portfolio_method="v4_deep_stacking_diversified") for i, x in enumerate(pool[:10])]
+def portfolio(pool): return [dict(x, portfolio_rank=i + 1, portfolio_method="v4_2_deep_stacking_diversified") for i, x in enumerate(pool[:10])]
 
 
 def run_pipeline():
@@ -602,25 +695,30 @@ def run_pipeline():
     print(f"Buffer reciente usado: {len(draws)}; descartados por olvido historico: {discarded}")
     wf, leakage = walk_forward(draws, mode)
     experts, audit = full_experts(draws, mode)
-    X, y = meta_training_rows(draws, mode)
-    meta, meta_audit = train_meta_model(X, y)
-    score = meta_scores(meta, meta_features(draws, experts, audit), experts)
+    X_raw, y = meta_training_rows(draws, mode)
+    X_final = np.hstack([X_raw.astype(np.float32), np.zeros((X_raw.shape[0], 1), dtype=np.float32)]) if RESIDUAL_FEATURE_ENABLED else X_raw
+    meta, meta_audit, _ = train_meta_model(X_final, y)
+    live_X_raw = meta_features(draws, experts, audit)
+    live_X = append_residual_feature(live_X_raw, np.zeros(MAX_NUMBER, dtype=np.float32)) if RESIDUAL_FEATURE_ENABLED else live_X_raw
+    score = meta_scores(meta, live_X, experts)
     ranked = monte_carlo(score, audit["graph"])
     pool = [enrich(x, experts, audit, score, mode) for x in ranked[:250]]
     result = {
         "last_update": datetime.now(timezone.utc).isoformat(),
-        "source": "local_cruncher_v4_deep_stacking",
+        "source": "local_cruncher_v4_2_oos_feedback_loop",
+        "model_version": "V4.2-oos-feedback-loop",
         "game_mode": mode,
         "csv_path": csv_path,
-        "score_kind": "v4_deep_stacking_meta_score",
+        "score_kind": "v4_2_deep_stacking_meta_score",
+        "v4_score_kind": "lagged_residual_feature_temporal_decay_warmstart",
         "historical_forgetting": {"total_loaded_draws": len(all_draws), "discarded_old_draws": discarded, "recent_buffer_size": len(draws), "buffer_first_draw": draws[0].draw_id, "buffer_last_draw": draws[-1].draw_id, "principle": "solo buffer reciente truncado"},
-        "procedure_log": "V4 usa walk-forward ciego, TransformerEncoder regularizado, grafo de co-ocurrencia y MetaStackingMLP sin leer historia previa al buffer.",
-        "deep_stacking": {"experts": EXPERT_NAMES, "meta_model": "PyTorch MetaStackingMLP", "score_kind": "v4_deep_stacking_meta_score", "regularization": {"transformer_dropout": TX_DROPOUT, "transformer_weight_decay": TX_WEIGHT_DECAY, "meta_dropout": META_DROPOUT, "meta_weight_decay": META_WEIGHT_DECAY}},
+        "procedure_log": "V4.2 usa walk-forward ciego, TransformerEncoder regularizado, grafo de co-ocurrencia y MetaStackingMLP. En OOS agrega residual lagged, sample weights con decay temporal y warm-start sin mirar el sorteo target.",
+        "deep_stacking": {"experts": EXPERT_NAMES, "meta_model": "PyTorch MetaStackingMLP", "score_kind": "v4_2_deep_stacking_meta_score", "feedback_loop": wf.get("feedback_loop"), "regularization": {"transformer_dropout": TX_DROPOUT, "transformer_weight_decay": TX_WEIGHT_DECAY, "meta_dropout": META_DROPOUT, "meta_weight_decay": META_WEIGHT_DECAY}},
         "transformer_audit": audit["transformer"],
         "graph_audit": {"decay": audit["graph"]["decay"], "max_edge": round(audit["graph"]["max_edge"], 8)},
         "meta_model_audit": meta_audit,
         "leakage_audit": {"passed": all(x["passed"] for x in leakage), "rows": leakage, "buffer_size": len(draws), "max_allowed_buffer": RECENT_BUFFER_MAX},
-        "walk_forward": {"window_size": TRANSFORMER_WINDOW, "steps": len(wf["rows"]), "avg_hits": round(wf["avg_hits"], 6), "avg_mse": round(wf["avg_mse"], 8), "metrics": {"hit_rate": wf["avg_hits"] / PICK_COUNT, "mean_meta_loss": meta_audit.get("best_val_loss"), "last3_error_variance": wf["last3_error_variance"]}, "rows": wf["rows"]},
+        "walk_forward": {"window_size": TRANSFORMER_WINDOW, "steps": len(wf["rows"]), "avg_hits": round(wf["avg_hits"], 6), "avg_hits_top10": round(wf.get("avg_hits_top10", 0.0), 6), "avg_mse": round(wf["avg_mse"], 8), "feedback_loop": wf.get("feedback_loop"), "metrics": {"hit_rate": wf["avg_hits"] / PICK_COUNT, "mean_meta_loss": meta_audit.get("best_val_loss"), "last3_error_variance": wf["last3_error_variance"]}, "rows": wf["rows"]},
         "physics_summary": {"min_weight": round(audit["physics"]["min_weight"], 4), "max_weight": round(audit["physics"]["max_weight"], 4), "diff_weight": round(audit["physics"]["diff_weight"], 4), "regulatory_ok": audit["physics"]["regulatory_ok"], "avg_effective_weight": round(audit["physics"]["avg_effective"], 4)},
         "expert_scores_v4": {k: {str(n): round(float(experts[k][n] * 100), 6) for n in range(1, MAX_NUMBER + 1)} for k in EXPERT_NAMES},
         "expert_weights": {"meta": 1.0},
@@ -634,12 +732,12 @@ def run_pipeline():
         "runtime_seconds": round(time.perf_counter() - t0, 2),
     }
     Path("resultados.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-    print("resultados.json V4 generado.")
+    print("resultados.json V4.2 generado.")
 
 
 def main():
-    print("MELATE LOCAL CRUNCHER V4 - DEEP STACKING")
-    print("[1] Ejecutar pipeline V4 completo")
+    print("MELATE LOCAL CRUNCHER V4.2 - OOS FEEDBACK LOOP")
+    print("[1] Ejecutar pipeline V4.2 completo")
     print("[2] Inspeccionar resultados.json")
     choice = input("Opcion [1]: ").strip() or "1"
     if choice == "2":
