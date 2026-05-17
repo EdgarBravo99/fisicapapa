@@ -1,7 +1,6 @@
 // v3-manual-suggestion-diversity.js
 // Corrige sugerencias repetitivas del evaluador manual V3.
-// En lugar de tomar siempre el primer candidato global, enumera reemplazos,
-// calcula ganancia real, soporte Monte Carlo y balance estructural.
+// Enumera reemplazos, calcula ganancia real, soporte Monte Carlo y balance estructural por combinación.
 (function () {
   'use strict';
 
@@ -58,12 +57,56 @@
   }
 
   function comboStats(nums) {
-    const pares = nums.filter(n => n % 2 === 0).length;
-    const lows = nums.filter(n => n <= 28).length;
-    const decades = new Set(nums.map(n => Math.floor((n - 1) / 10))).size;
-    const suma = nums.reduce((a, b) => a + b, 0);
-    const consec = nums.slice(1).filter((n, i) => n - nums[i] === 1).length;
+    const sorted = nums.slice().sort((a, b) => a - b);
+    const pares = sorted.filter(n => n % 2 === 0).length;
+    const lows = sorted.filter(n => n <= 28).length;
+    const decades = new Set(sorted.map(n => Math.floor((n - 1) / 10))).size;
+    const suma = sorted.reduce((a, b) => a + b, 0);
+    const consec = sorted.slice(1).filter((n, i) => n - sorted[i] === 1).length;
     return { pares, impares: 6 - pares, lows, highs: 6 - lows, decades, suma, consec };
+  }
+
+  function getHistoricalSumStats() {
+    let sumMean = 171;
+    let sumStd = 38;
+    try {
+      const rows = typeof getActiveData === 'function' ? getActiveData() : [];
+      const sums = (rows || [])
+        .map(r => (r || []).slice(2).reduce((a, b) => a + Number(b || 0), 0))
+        .filter(Number.isFinite);
+      if (sums.length > 20) {
+        sumMean = sums.reduce((a, b) => a + b, 0) / sums.length;
+        sumStd = Math.sqrt(sums.reduce((a, b) => a + Math.pow(b - sumMean, 2), 0) / sums.length) || sumStd;
+      }
+    } catch (_) {}
+    return { sumMean, sumStd };
+  }
+
+  function structuralBalance(nums) {
+    const st = comboStats(nums);
+    const { sumMean, sumStd } = getHistoricalSumStats();
+    const parity = Math.max(0, 100 - Math.abs(st.pares - 3) * 24);
+    const side = Math.max(0, 100 - Math.abs(st.lows - 3) * 22);
+    const decade = Math.max(0, Math.min(100, (st.decades / 6) * 100));
+    const sum = Math.max(0, 100 - Math.min(65, Math.abs((st.suma - sumMean) / Math.max(1, sumStd)) * 22));
+    const consecutive = Math.max(0, 100 - st.consec * 16);
+    const balance = parity * 0.24 + side * 0.22 + decade * 0.22 + sum * 0.22 + consecutive * 0.10;
+    return {
+      ...st,
+      balance: Math.max(0, Math.min(100, balance)),
+      parity,
+      side,
+      decade,
+      sum,
+      consecutive,
+      sumMean,
+      sumStd
+    };
+  }
+
+  function structuralPenalty(nums) {
+    // Menor penalización = mejor estructura. Se deriva del balance real /100.
+    return 100 - structuralBalance(nums).balance;
   }
 
   function rowFor(data, n) {
@@ -76,18 +119,6 @@
 
   function comboScore(data, nums) {
     return nums.reduce((acc, n) => acc + scoreOf(data, n), 0) / 6;
-  }
-
-  function structuralPenalty(nums) {
-    const st = comboStats(nums);
-    let penalty = 0;
-    penalty += Math.abs(st.pares - 3) * 2.25;
-    penalty += Math.abs(st.lows - 3) * 2.25;
-    penalty += Math.max(0, 4 - st.decades) * 3.25;
-    if (st.suma < 105) penalty += (105 - st.suma) / 14;
-    if (st.suma > 245) penalty += (st.suma - 245) / 14;
-    penalty += Math.min(3, st.consec) * 1.2;
-    return penalty;
   }
 
   function supportMap(data) {
@@ -122,9 +153,9 @@
 
   function buildDeepSuggestions(nums, data) {
     const current = new Set(nums);
-    const stats = comboStats(nums);
     const baseScore = comboScore(data, nums);
     const basePenalty = structuralPenalty(nums);
+    const baseBalance = structuralBalance(nums);
     const { support, weighted } = supportMap(data);
 
     const details = nums.map(n => ({ ...rowFor(data, n), number: n, score: scoreOf(data, n) }));
@@ -145,22 +176,27 @@
         if (!Number.isFinite(add) || !Number.isFinite(remove) || add === remove || current.has(add)) continue;
         const next = nums.map(n => n === remove ? add : n).sort((a, b) => a - b);
         const nextScore = comboScore(data, next);
+        const nextBalance = structuralBalance(next);
         const gain = nextScore - baseScore;
         const penaltyGain = basePenalty - structuralPenalty(next);
+        const balanceGain = nextBalance.balance - baseBalance.balance;
         const newDriver = !currentDrivers.has(good.driver) ? 2.2 : 0;
         const supportBonus = Math.min(7.5, support[add] * 0.38 + weighted[add] * 0.55);
         const rawImprovement = scoreOf(data, add) - scoreOf(data, remove);
         const alignment = nearestPoolAlignment(data, next);
         const alignmentBonus = Math.min(5.5, alignment.overlap * 0.9 + alignment.score / 80);
-        const total = gain * 1.65 + penaltyGain * 0.85 + supportBonus + newDriver + alignmentBonus + Math.max(0, rawImprovement) * 0.12;
+        const total = gain * 1.65 + balanceGain * 0.08 + supportBonus + newDriver + alignmentBonus + Math.max(0, rawImprovement) * 0.12;
         replacements.push({
-          type: gain >= 2.0 ? 'Mejora por score V3' : penaltyGain > 1.2 ? 'Balance estructural V3' : 'Alineación Monte Carlo V3',
+          type: gain >= 2.0 ? 'Mejora por score V3' : balanceGain > 3 ? 'Balance estructural V3' : 'Alineación Monte Carlo V3',
           remove,
           add,
           next,
           nextScore,
           gain,
           penaltyGain,
+          balanceGain,
+          baseBalance: baseBalance.balance,
+          nextBalance: nextBalance.balance,
           rawImprovement,
           support: support[add],
           weightedSupport: weighted[add],
@@ -188,16 +224,13 @@
       if (usedRemoves.has(r.remove)) continue;
       const key = r.next.join('-');
       if (usedKeys.has(key)) continue;
-      // No recomendar cambios prácticamente neutros salvo que corrijan estructura o pool.
-      if (r.gain < 0.25 && r.penaltyGain < 1.25 && r.support < 4) continue;
+      if (r.gain < 0.25 && r.balanceGain < 2.5 && r.support < 4) continue;
       picked.push(r);
       usedAdds.add(r.add);
       usedRemoves.add(r.remove);
       usedKeys.add(key);
     }
 
-    // Si solo hay una recomendación fuerte, añade alternativas distintas al mismo número removido,
-    // pero nunca repite el mismo número agregado dentro de la misma evaluación.
     if (picked.length < 2) {
       for (const r of replacements) {
         if (picked.length >= 3) break;
@@ -213,12 +246,29 @@
 
     return picked.slice(0, 3).map(r => ({
       ...r,
-      reason: `Cambiar ${r.remove} (${fmt(r.removeScore, 1)}/100, ${esc(r.removeDriver)}) por ${r.add} (${fmt(r.addScore, 1)}/100, ${esc(r.driver)}). Ganancia neta ${r.gain >= 0 ? '+' : ''}${fmt(r.gain, 2)} pts; soporte MC top120: ${r.support}; alineación pool: ${r.alignment.overlap}/6. ${r.addReason}`
+      reason: `Cambiar ${r.remove} (${fmt(r.removeScore, 1)}/100, ${esc(r.removeDriver)}) por ${r.add} (${fmt(r.addScore, 1)}/100, ${esc(r.driver)}). Ganancia neta ${r.gain >= 0 ? '+' : ''}${fmt(r.gain, 2)} pts; balance ${fmt(r.baseBalance, 2)} → ${fmt(r.nextBalance, 2)} (${r.balanceGain >= 0 ? '+' : ''}${fmt(r.balanceGain, 2)}); soporte MC top120: ${r.support}; alineación pool: ${r.alignment.overlap}/6. ${r.addReason}`
     }));
   }
 
   function ballHtml(nums, color = 'var(--purple)') {
     return nums.map(n => `<div class="ball-lg" style="background:rgba(255,255,255,.05);border:2px solid ${color};color:${color}">${esc(n)}</div>`).join('');
+  }
+
+  function balanceMiniGrid(b) {
+    const color = b.balance >= 78 ? 'var(--green)' : b.balance >= 62 ? 'var(--gold)' : 'var(--red)';
+    return `<div style="background:rgba(255,255,255,.04);border:1px solid ${color};border-radius:10px;padding:12px;margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;">
+        <div style="font-weight:800;color:${color};">Balance estructural: ${fmt(b.balance, 2)}/100</div>
+        <div style="font-size:11px;color:var(--muted);">recalculado por combinación</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:6px;font-size:11px;color:var(--muted);">
+        <div>Paridad<br><b style="color:var(--text)">${fmt(b.parity, 1)}</b></div>
+        <div>Izq/Der<br><b style="color:var(--text)">${fmt(b.side, 1)}</b></div>
+        <div>Décadas<br><b style="color:var(--text)">${fmt(b.decade, 1)}</b></div>
+        <div>Suma<br><b style="color:var(--text)">${fmt(b.sum, 1)}</b></div>
+        <div>Consecutivos<br><b style="color:var(--text)">${fmt(b.consecutive, 1)}</b></div>
+      </div>
+    </div>`;
   }
 
   window.evalUserComboUI = async function evalUserComboUIDiverseV3() {
@@ -240,6 +290,7 @@
     const details = nums.map(n => ({ ...rowFor(data, n), number: n, score: scoreOf(data, n) }));
     const score = comboScore(data, nums);
     const stats = comboStats(nums);
+    const balance = structuralBalance(nums);
     const suggestions = buildDeepSuggestions(nums, data);
     const color = score >= 80 ? 'var(--green)' : score >= 65 ? 'var(--gold)' : 'var(--purple)';
     const rows = details.map(row => `<tr>
@@ -253,7 +304,7 @@
       <div style="font-weight:700;color:var(--teal);margin-bottom:8px;">${esc(s.type)} · ${s.remove} → ${s.add}</div>
       <div class="suggestion-nums">${s.next.map(n => `<div class="suggestion-num">${n}</div>`).join('')}</div>
       <div class="suggestion-strategy">${esc(s.reason)}</div>
-      <div style="font-size:11px;color:var(--muted);margin-top:6px;">Score estimado nuevo: ${fmt(s.nextScore, 2)}/100 · Cambio ${s.gain >= 0 ? '+' : ''}${fmt(s.gain, 2)} · Balance ${s.penaltyGain >= 0 ? '+' : ''}${fmt(s.penaltyGain, 2)}</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px;">Score estimado nuevo: ${fmt(s.nextScore, 2)}/100 · Cambio ${s.gain >= 0 ? '+' : ''}${fmt(s.gain, 2)} · Balance nuevo ${fmt(s.nextBalance, 2)}/100</div>
       <button class="btn btn-sm btn-blue" onclick="evalSuggestion([${s.next.join(',')}])">📊 Probar sugerencia</button>
     </div>`).join('') : '<div style="color:var(--muted);">No hay cambios recomendados con mejora clara frente a los datos V3 actuales.</div>';
 
@@ -277,6 +328,7 @@
           <div>Bajos/Altos: <b style="color:var(--text)">${stats.lows}/${stats.highs}</b></div>
           <div>Décadas: <b style="color:var(--text)">${stats.decades}/6</b></div>
         </div>
+        ${balanceMiniGrid(balance)}
         <div class="tbl-wrap"><table><thead><tr><th>Núm</th><th>Score V3</th><th>Impulsor</th><th>Motivo</th></tr></thead><tbody>${rows}</tbody></table></div>
         <div class="suggestion-panel">
           <div class="suggestion-title">💡 Sugerencias profundas V3 diversificadas</div>
