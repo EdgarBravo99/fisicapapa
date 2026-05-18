@@ -4,8 +4,8 @@
 Runner calibrado V4.2 para Melate/Revancha.
 
 Este archivo NO duplica el motor principal. Importa local_cruncher_v4_deep_stacking.py,
-inyecta la calibración física de Melate posterior al sorteo 4212 y ejecuta el pipeline
-normal V4.2.
+inyecta la calibración física observada el 17/05/2026 para el sorteo 4214 y ejecuta
+el pipeline normal V4.2.
 
 Motivo:
 - Los pesos base de las esferas cambian tras mantenimiento/pesaje.
@@ -23,9 +23,9 @@ from typing import Dict, Any
 
 engine = importlib.import_module("local_cruncher_v4_deep_stacking")
 
-# Calibración Melate capturada por el usuario, acorde al pesaje conocido después del sorteo 4212.
-# Índice 0 reservado para que bola n = MELATE_WEIGHTS_4212[n].
-MELATE_WEIGHTS_4212 = [
+# Calibración capturada por el usuario, fecha 17/05/2026, sorteo 4214.
+# Índice 0 reservado para que bola n = CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[n].
+CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214 = [
     0,
     4.53, 4.57, 4.58, 4.59, 4.58, 4.55, 4.58, 4.55,
     4.54, 4.54, 4.60, 4.59, 4.53, 4.61, 4.56, 4.58,
@@ -38,30 +38,42 @@ MELATE_WEIGHTS_4212 = [
 
 WEIGHT_CALIBRATION_METADATA: Dict[str, Any] = {
     "melate": {
-        "calibration_id": "melate_weights_after_draw_4212",
+        "calibration_id": "weights_2026_05_17_draw_4214",
         "game_mode": "melate",
-        "basis": "Pesaje proporcionado por usuario, posterior al sorteo 4212 y usado para entorno actual 4214.",
+        "draw_id": "4214",
+        "calibration_date": "2026-05-17",
+        "basis": "Pesaje proporcionado por usuario para el sorteo 4214, fecha 17/05/2026.",
         "maintenance_note": "El usuario reporta posible mantenimiento reciente de tómbola/esferas; se reinicia la base física con pesos observados.",
         "weights_count": 56,
-        "min_weight": min(MELATE_WEIGHTS_4212[1:]),
-        "max_weight": max(MELATE_WEIGHTS_4212[1:]),
-        "diff_weight": max(MELATE_WEIGHTS_4212[1:]) - min(MELATE_WEIGHTS_4212[1:]),
+        "min_weight": min(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]),
+        "max_weight": max(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]),
+        "diff_weight": max(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]) - min(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]),
     },
     "revancha": {
-        "calibration_id": "legacy_revancha_weights_in_main_engine",
+        "calibration_id": "weights_2026_05_17_draw_4214",
         "game_mode": "revancha",
-        "basis": "No se recibió tabla completa de 56 pesos actualizados para Revancha en este cambio.",
-        "maintenance_note": "Pendiente actualizar cuando se tenga la lista completa 1-56.",
+        "draw_id": "4214",
+        "calibration_date": "2026-05-17",
+        "basis": "Pesaje proporcionado por usuario para el sorteo 4214, fecha 17/05/2026. Se aplica a Revancha porque el usuario confirmó mantenimiento/estado actual de máquina.",
+        "maintenance_note": "El usuario reporta posible mantenimiento reciente de tómbola/esferas; se reinicia la base física con pesos observados.",
+        "weights_count": 56,
+        "min_weight": min(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]),
+        "max_weight": max(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]),
+        "diff_weight": max(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]) - min(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]),
     },
 }
 
 
 def apply_weight_calibration() -> None:
     """Inyecta pesos calibrados en el motor principal antes de correr el pipeline."""
-    if len(MELATE_WEIGHTS_4212) != engine.MAX_NUMBER + 1:
-        raise RuntimeError(f"MELATE_WEIGHTS_4212 debe tener {engine.MAX_NUMBER + 1} entradas incluyendo índice 0.")
+    if len(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214) != engine.MAX_NUMBER + 1:
+        raise RuntimeError(
+            f"CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214 debe tener {engine.MAX_NUMBER + 1} entradas incluyendo índice 0."
+        )
 
-    engine.BALL_WEIGHTS["melate"] = MELATE_WEIGHTS_4212[:]
+    # El usuario confirmó que esta calibración corresponde al estado actual observado al 17/05/2026.
+    engine.BALL_WEIGHTS["melate"] = CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[:]
+    engine.BALL_WEIGHTS["revancha"] = CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[:]
     engine.WEIGHT_CALIBRATION_METADATA = WEIGHT_CALIBRATION_METADATA
 
     original_physical_scores = engine.physical_scores
@@ -89,6 +101,7 @@ def apply_weight_calibration() -> None:
         real_weight = float(physics.get("real_weight", physics.get("base_weight"))[n])
         effective_weight = float(physics["effective"][n])
         uses = int(physics["uses"][n])
+        calibration = physics.get("calibration", {})
         return {
             "number": n,
             "main_driver": driver,
@@ -103,7 +116,9 @@ def apply_weight_calibration() -> None:
             "weight_delta_from_wear": round(real_weight - effective_weight, 6),
             "physics_bonus": round(float(physics["bonus"][n]), 4),
             "uses_in_window": uses,
-            "weight_calibration_id": physics.get("calibration", {}).get("calibration_id"),
+            "weight_calibration_id": calibration.get("calibration_id"),
+            "weight_calibration_date": calibration.get("calibration_date"),
+            "weight_calibration_draw_id": calibration.get("draw_id"),
         }
 
     original_run_pipeline = engine.run_pipeline
@@ -120,9 +135,9 @@ def apply_weight_calibration() -> None:
 def main() -> None:
     apply_weight_calibration()
     print("Calibración física V4.2 aplicada:")
-    print("  Melate -> melate_weights_after_draw_4212")
-    print(f"  min={min(MELATE_WEIGHTS_4212[1:]):.4f}g max={max(MELATE_WEIGHTS_4212[1:]):.4f}g diff={max(MELATE_WEIGHTS_4212[1:]) - min(MELATE_WEIGHTS_4212[1:]):.4f}g")
-    print("  Nota: Revancha no se actualizó porque falta tabla completa 1-56.")
+    print("  Melate/Revancha -> weights_2026_05_17_draw_4214")
+    print(f"  min={min(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]):.4f}g max={max(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]):.4f}g diff={max(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]) - min(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]):.4f}g")
+    print("  Fecha calibración: 2026-05-17 | Sorteo: 4214")
     engine.main()
 
 
