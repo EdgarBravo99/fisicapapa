@@ -14,14 +14,22 @@ Motivo:
 
 Uso recomendado:
     py -X utf8 .\local_cruncher_v4_2_calibrated.py
+
+Si lo abres con doble clic y ocurre un error, este runner NO cierra la consola:
+- imprime el traceback completo
+- guarda cruncher_error.log
+- espera Enter antes de salir
 """
 
 from __future__ import annotations
 
 import importlib
+import sys
+import traceback
+from pathlib import Path
 from typing import Dict, Any
 
-engine = importlib.import_module("local_cruncher_v4_deep_stacking")
+engine = None
 
 # Calibración capturada por el usuario, fecha 17/05/2026, sorteo 4214.
 # Índice 0 reservado para que bola n = CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[n].
@@ -64,23 +72,33 @@ WEIGHT_CALIBRATION_METADATA: Dict[str, Any] = {
 }
 
 
+def load_engine():
+    """Importa el motor principal dentro de try/except para que errores de import no cierren la consola."""
+    global engine
+    if engine is None:
+        engine = importlib.import_module("local_cruncher_v4_deep_stacking")
+    return engine
+
+
 def apply_weight_calibration() -> None:
     """Inyecta pesos calibrados en el motor principal antes de correr el pipeline."""
-    if len(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214) != engine.MAX_NUMBER + 1:
+    eng = load_engine()
+
+    if len(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214) != eng.MAX_NUMBER + 1:
         raise RuntimeError(
-            f"CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214 debe tener {engine.MAX_NUMBER + 1} entradas incluyendo índice 0."
+            f"CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214 debe tener {eng.MAX_NUMBER + 1} entradas incluyendo índice 0."
         )
 
     # El usuario confirmó que esta calibración corresponde al estado actual observado al 17/05/2026.
-    engine.BALL_WEIGHTS["melate"] = CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[:]
-    engine.BALL_WEIGHTS["revancha"] = CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[:]
-    engine.WEIGHT_CALIBRATION_METADATA = WEIGHT_CALIBRATION_METADATA
+    eng.BALL_WEIGHTS["melate"] = CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[:]
+    eng.BALL_WEIGHTS["revancha"] = CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[:]
+    eng.WEIGHT_CALIBRATION_METADATA = WEIGHT_CALIBRATION_METADATA
 
-    original_physical_scores = engine.physical_scores
+    original_physical_scores = eng.physical_scores
 
     def calibrated_physical_scores(draws, mode):
         scores, audit = original_physical_scores(draws, mode)
-        weights = engine.np.asarray(engine.BALL_WEIGHTS[mode], dtype=engine.np.float64)
+        weights = eng.np.asarray(eng.BALL_WEIGHTS[mode], dtype=eng.np.float64)
         audit["real_weight"] = weights
         audit["base_weight"] = weights
         audit["raw_weight"] = weights
@@ -88,7 +106,7 @@ def apply_weight_calibration() -> None:
         return scores, audit
 
     def calibrated_explain_number(n, experts, audit, score):
-        raw = {k: float(experts[k][n]) for k in engine.EXPERT_NAMES}
+        raw = {k: float(experts[k][n]) for k in eng.EXPERT_NAMES}
         driver = max(raw.items(), key=lambda kv: kv[1])[0]
         labels = {
             "physical": "fisica de esferas",
@@ -98,15 +116,18 @@ def apply_weight_calibration() -> None:
             "graph": "grafo de co-ocurrencia",
         }
         physics = audit["physics"]
-        real_weight = float(physics.get("real_weight", physics.get("base_weight"))[n])
+        real_source = physics.get("real_weight", physics.get("base_weight"))
+        if real_source is None:
+            raise RuntimeError("physics audit no contiene real_weight/base_weight; no se puede exportar calibración física.")
+        real_weight = float(real_source[n])
         effective_weight = float(physics["effective"][n])
         uses = int(physics["uses"][n])
         calibration = physics.get("calibration", {})
         return {
             "number": n,
             "main_driver": driver,
-            "main_driver_human": labels[driver],
-            "reason": f"{labels[driver]} domina el score local dentro del buffer reciente",
+            "main_driver_human": labels.get(driver, driver),
+            "reason": f"{labels.get(driver, driver)} domina el score local dentro del buffer reciente",
             "meta_score": round(float(score[n] * 100), 6),
             "expert_raw": {k: round(v, 6) for k, v in raw.items()},
             "real_weight": round(real_weight, 4),
@@ -121,24 +142,52 @@ def apply_weight_calibration() -> None:
             "weight_calibration_draw_id": calibration.get("draw_id"),
         }
 
-    original_run_pipeline = engine.run_pipeline
+    original_run_pipeline = eng.run_pipeline
 
     def calibrated_run_pipeline():
         # Ejecuta el pipeline normal; los hooks anteriores hacen que audit/seed/pool exporten pesos reales.
         return original_run_pipeline()
 
-    engine.physical_scores = calibrated_physical_scores
-    engine.explain_number = calibrated_explain_number
-    engine.run_pipeline = calibrated_run_pipeline
+    eng.physical_scores = calibrated_physical_scores
+    eng.explain_number = calibrated_explain_number
+    eng.run_pipeline = calibrated_run_pipeline
 
 
-def main() -> None:
+def run() -> None:
+    eng = load_engine()
     apply_weight_calibration()
     print("Calibración física V4.2 aplicada:")
     print("  Melate/Revancha -> weights_2026_05_17_draw_4214")
-    print(f"  min={min(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]):.4f}g max={max(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]):.4f}g diff={max(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]) - min(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]):.4f}g")
+    print(
+        f"  min={min(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]):.4f}g "
+        f"max={max(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]):.4f}g "
+        f"diff={max(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]) - min(CALIBRATED_WEIGHTS_2026_05_17_DRAW_4214[1:]):.4f}g"
+    )
     print("  Fecha calibración: 2026-05-17 | Sorteo: 4214")
-    engine.main()
+    eng.main()
+
+
+def main() -> None:
+    try:
+        run()
+    except KeyboardInterrupt:
+        print("\nEjecución cancelada por el usuario.")
+    except Exception:
+        error_text = traceback.format_exc()
+        print("\n" + "=" * 80)
+        print("ERROR EN local_cruncher_v4_2_calibrated.py")
+        print("=" * 80)
+        print(error_text)
+        log_path = Path("cruncher_error.log")
+        log_path.write_text(error_text, encoding="utf-8")
+        print(f"\nSe guardó el detalle en: {log_path.resolve()}")
+        print("Copia ese archivo o pega aquí el traceback para corregir la causa exacta.")
+    finally:
+        # Pausa solo si se está ejecutando en consola interactiva/doble clic.
+        try:
+            input("\nPresiona ENTER para cerrar...")
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":
