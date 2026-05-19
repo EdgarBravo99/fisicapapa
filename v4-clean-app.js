@@ -106,7 +106,7 @@
     const physics = jsonData?.physics_summary || {};
     const realWeight = Number(row.real_weight ?? row.raw_weight ?? row.base_weight ?? row.ball_weight ?? row.weight ?? row.measured_weight);
     const effectiveWeight = Number(row.effective_weight ?? row.effectiveWeight ?? row.weight_effective ?? row.sigmoid_weight ?? row.w_eff);
-    const usesInWindow = Number(row.uses_in_window ?? row.uses ?? row.hits_in_window);
+    const usesInWindow = Number(row.uses_since_calibration ?? row.uses_in_window ?? row.uses ?? row.hits_in_window);
     const physicsBonus = Number(row.physics_bonus ?? row.physical_bonus ?? row.bonus_physics);
     const avgEffectiveWeight = Number(physics.avg_effective_weight ?? physics.average_effective_weight ?? physics.mean_effective_weight ?? physics.avgEffectiveWeight);
     return {
@@ -358,15 +358,12 @@
     const catalog = physicalCatalog(jsonData);
     text('physics-summary-label', Number.isFinite(catalog.avg) ? `Promedio efectivo ${fmt(catalog.avg, 4)}g` : 'Sin datos físicos');
     grid.innerHTML = catalog.rows.map(row => {
-      const has = Number.isFinite(row.effectiveWeight) && Number.isFinite(catalog.minEff) && Number.isFinite(catalog.maxEff) && catalog.maxEff !== catalog.minEff;
-      const life = has ? clamp(100 - ((row.effectiveWeight - catalog.minEff) / (catalog.maxEff - catalog.minEff)) * 100) : 0;
       const tone = !row.hasEffectiveWeight ? 'border-red-500/30' : row.effectiveWeight < catalog.avg ? 'border-emerald-400/30' : 'border-amber-400/30';
       const real = row.hasRealWeight ? `${fmt(row.realWeight, 4)}g` : 'N/D';
       const eff = row.hasEffectiveWeight ? `${fmt(row.effectiveWeight, 4)}g` : 'N/D';
       const uses = Number.isFinite(row.usesInWindow) ? row.usesInWindow : 'N/D';
       return `<article class="rounded-2xl border ${tone} bg-slate-900/60 p-4">
-        <div class="flex items-center justify-between"><span class="text-2xl font-black text-white">${row.number}</span><span class="text-xs text-slate-500">vida ${fmt(life, 0)}%</span></div>
-        <div class="mt-3 h-2 overflow-hidden rounded-full bg-slate-800"><div class="h-full rounded-full bg-emerald-400" style="width:${life}%"></div></div>
+        <div class="flex items-center justify-between"><span class="text-2xl font-black text-white">${row.number}</span><span class="text-xs text-slate-500">${uses} salidas</span></div>
         <p class="mt-3 text-xs leading-5 text-slate-300">La bola ${row.number} pesa <b>${real}</b>, pero tras salir <b>${uses}</b> veces, su peso efectivo bajó a <b>${eff}</b>.</p>
       </article>`;
     }).join('');
@@ -378,7 +375,7 @@
 
   function renderPreview(jsonData, feedback) {
     const preview = { accepted_contract: 'Web V2 / V4.2-only', source: jsonData.source, model_version: jsonData.model_version, score_kind: jsonData.score_kind, v4_score_kind: jsonData.v4_score_kind, feedback_loop: feedback, evaluator: { function: 'evaluateManualComboV4(numbersArray, jsonData)', weights: COMPONENT_WEIGHTS, gravity_source: 'manual_suggestion_seed.effective_weight + physics_summary.avg_effective_weight' }, walk_forward_summary: { steps: jsonData.walk_forward?.steps, avg_hits: jsonData.walk_forward?.avg_hits, avg_hits_top10: jsonData.walk_forward?.avg_hits_top10, avg_mse: jsonData.walk_forward?.avg_mse }, generator_pool_size: Array.isArray(jsonData.generator_pool) ? jsonData.generator_pool.length : 0, top_combinations_size: Array.isArray(jsonData.top_combinations) ? jsonData.top_combinations.length : 0 };
-    const el = $('contract-preview'); if (el) el.textContent = JSON.stringify(preview, null, 2);
+    const el = $('contract-preview'); if (el) el.textContent = JSON.stringify(preview, (_key, raw) => raw === null ? 'N/D' : raw, 2);
   }
 
   function initApp(jsonData) {
@@ -387,6 +384,7 @@
     hide($('fatal-error')); hide($('loading-panel')); show($('dashboard'));
     renderHeader(jsonData); renderKpis(jsonData, feedback); renderPreview(jsonData, feedback); renderPhysicsPanel(jsonData);
     window.FISICAPAPA_WEB_V2 = { version: 'Web V2 validator + physics UI', requiredFeedbackVersion: REQUIRED_FEEDBACK_VERSION, componentWeights: COMPONENT_WEIGHTS, jsonData, feedback, state, evaluateManualComboV4: numbers => evaluateManualComboV4(numbers, jsonData), suggestReplacement: numbers => suggestReplacement(normalizeNumbers(numbers), jsonData, evaluateManualComboV4(numbers, jsonData)) };
+    document.dispatchEvent(new CustomEvent('fisicapapa:v42-ready', { detail: { jsonData, feedback } }));
   }
 
   async function loadJsonAndInit() {

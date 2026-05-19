@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+legacy/__pycache__/
+legacy/Revancha.csv
