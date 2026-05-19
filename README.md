@@ -1,5 +1,39 @@
 # Melate Pro V7 / Fisicapapa
 
+## Estado activo V4.2
+
+Esta rama deja como flujo vigente **Web V2 + Cruncher V4.2**. Las secciones historicas de este README siguen como contexto, pero la referencia operativa actual es:
+
+```txt
+Runner oficial: local_cruncher_v4_2_calibrated.py
+Motor base: local_cruncher_v4_deep_stacking.py
+Salida principal: resultados.json
+Web activa: index.html + v4-clean-app.js + v4-results-panels.js + v4-under40-verifier.js + v4-system-diagnostics.js + v4-combo-comparator.js
+```
+
+La web valida estrictamente `feedback_loop.version = V4.2` y no debe cargar scripts V3. El verificador `<40` es solo auditoria visual: no modifica el cruncher ni la formula oficial del Score Neto V4.
+
+Flujo personal recomendado:
+
+```txt
+Abrir index.html con ?v=20
+Revisar Centro Personal V4.2
+Evaluar una combinacion manual
+Guardar la manual al comparador
+Guardar una top combination
+Comparar score web vs score cruncher, estructura, fisica, pool y macro <40
+Revisar Auditor V4.2 solo si aparece OK/Revisar/Critico fuera de lo esperado
+```
+
+Nuevos modulos Web V2:
+
+```txt
+v4-system-diagnostics.js   Centro Personal V4.2, validateV42DataQuality, compareCruncherVsWebScore, getComboProfileV4 y Auditor V4.2
+v4-combo-comparator.js     Comparador local temporal de 2 a 5 combinaciones con reporte copiable
+```
+
+No se debe usar el campo legacy de confianza operativa. Si hay diferencia entre `score_percent`, `net_score`, `confidence` o `score`, la web debe etiquetar claramente si el valor viene del cruncher o del recalculo web.
+
 Sistema local + web para análisis cuantitativo, auditoría, simulación y visualización de combinaciones de **Melate** y **Revancha**.
 
 Este README resume el estado real del proyecto para poder continuar en otra conversación sin leer todo el historial. La versión activa de la web es **V4**.
