@@ -58,6 +58,39 @@
     return pct(combo?.score_percent ?? combo?.net_score ?? combo?.confidence ?? combo?.score ?? 0);
   }
 
+  function badgeHtml(label, tone) {
+    const cls = {
+      emerald: 'border-emerald-400/30 bg-emerald-400/10 text-emerald-100',
+      cyan: 'border-cyan-400/30 bg-cyan-400/10 text-cyan-100',
+      violet: 'border-violet-400/30 bg-violet-400/10 text-violet-100',
+      amber: 'border-amber-400/30 bg-amber-400/10 text-amber-100',
+      red: 'border-red-400/40 bg-red-500/10 text-red-100',
+    }[tone] || 'border-slate-700 bg-slate-900 text-slate-200';
+    return `<span class="rounded-full border ${cls} px-2 py-1 text-[10px] font-bold uppercase tracking-[0.14em]">${esc(label)}</span>`;
+  }
+
+  function comboBadges(combo, nums, data) {
+    const score = comboScore(combo);
+    const parity = nums.filter(n => n % 2 === 0).length;
+    const left = nums.filter(n => n <= 28).length;
+    const decades = new Set(nums.map(n => Math.floor((n - 1) / 10))).size;
+    const map = seedMap(data);
+    const weights = nums.map(n => physicalOf(map.get(n) || { number: n }, data).effectiveWeight).filter(Number.isFinite);
+    const avg = weights.length ? weights.reduce((a, b) => a + b, 0) / weights.length : null;
+    const systemAvg = Number(data?.physics_summary?.avg_effective_weight);
+    const badges = [];
+    if (Math.abs(parity - 3) <= 1 && Math.abs(left - 3) <= 1 && decades >= 4) badges.push(['balanceada', 'emerald']);
+    else badges.push(['revisar estructura', 'amber']);
+    if (score >= 70) badges.push(['fuerte por modelo', 'cyan']);
+    if (Number(combo?.portfolio_rank ?? combo?.rank ?? 1) <= 10) badges.push(['fuerte por pool', 'violet']);
+    if (avg != null && Number.isFinite(systemAvg)) {
+      const delta = avg - systemAvg;
+      if (Math.abs(delta) <= 0.025) badges.push(['fuerte por fisica', 'emerald']);
+      if (Math.abs(delta) >= 0.06) badges.push(['extrema en peso', 'red']);
+    }
+    return badges.map(([label, tone]) => badgeHtml(label, tone)).join('');
+  }
+
   function renderTopCombinations(data) {
     const panel = $('top-combinations-panel');
     if (!panel) return;
@@ -82,8 +115,12 @@
           <div>
             <p class="text-xs uppercase tracking-[0.22em] text-amber-300">#${idx + 1} · score ${fmt(score)}</p>
             <div class="mt-2 flex flex-wrap gap-2">${nums.map(n => `<span class="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-sm font-black text-cyan-100">${n}</span>`).join('')}</div>
+            <div class="mt-3 flex flex-wrap gap-2">${comboBadges(combo, nums, data)}</div>
           </div>
-          <button class="rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 text-xs font-bold text-cyan-100" data-fill-combo="${nums.join(',')}">Evaluar</button>
+          <div class="flex flex-wrap gap-2">
+            <button class="min-h-[44px] rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 text-xs font-bold text-cyan-100 transition hover:bg-cyan-400/20 focus:outline-none focus:ring-2 focus:ring-cyan-300" data-fill-combo="${nums.join(',')}">Evaluar esta combinacion</button>
+            <button class="min-h-[44px] rounded-xl border border-slate-600 bg-slate-800/70 px-3 py-2 text-xs font-bold text-slate-100 transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300" data-copy-combo="${nums.join(' ')}">Copiar</button>
+          </div>
         </div>
         <p class="mt-3 text-xs leading-5 text-slate-400">${esc(explanation).slice(0, 420)}</p>
       </article>`;
@@ -98,6 +135,21 @@
         });
         document.getElementById('btn-evaluate-manual')?.click();
         document.getElementById('manual-result')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    panel.querySelectorAll('[data-copy-combo]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const value = btn.getAttribute('data-copy-combo');
+        try { await navigator.clipboard.writeText(value); } catch (_) {
+          const area = document.createElement('textarea');
+          area.value = value;
+          document.body.appendChild(area);
+          area.select();
+          document.execCommand('copy');
+          area.remove();
+        }
+        btn.textContent = 'Copiada';
       });
     });
   }
@@ -122,12 +174,19 @@
       const eff = item.phys.effectiveWeight == null ? 'N/D' : `${fmt(item.phys.effectiveWeight, 4)}g`;
       const uses = item.phys.uses == null ? 'N/D' : item.phys.uses;
       const wear = item.phys.wearMg == null ? 'N/D' : `${fmt(item.phys.wearMg, 2)} mg`;
+      const raw = item.row?.expert_raw || item.row?.expert_scores || item.row?.experts || {};
+      const transformer = pct(raw.transformer);
+      const xgboost = pct(raw.xgboost);
+      const graph = pct(raw.graph);
+      const physicsBadge = !item.phys.hasEffective ? badgeHtml('sin datos fisicos', 'red') : item.phys.effectiveWeight < item.phys.avgEffective ? badgeHtml('fisica ligera', 'emerald') : badgeHtml('fisica pesada', 'amber');
       return `<article class="rounded-2xl border border-violet-400/20 bg-slate-900/70 p-4">
         <div class="flex items-center justify-between gap-3">
           <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-full border border-violet-300/40 bg-violet-400/10 text-lg font-black text-violet-100">${item.number}</span><div><p class="text-xs text-slate-500">Rank #${idx + 1}</p><p class="text-sm font-black text-white">${fmt(item.score)} pts</p></div></div>
           <span class="text-xs font-bold text-cyan-200">${esc(driver)}</span>
         </div>
         <p class="mt-3 text-xs leading-5 text-slate-400">${esc(reason).slice(0, 180)}</p>
+        <div class="mt-3 flex flex-wrap gap-2">${physicsBadge}</div>
+        <p class="mt-2 text-xs text-slate-300">Transformer: <b>${fmt(transformer)}</b> Â· XGBoost: <b>${fmt(xgboost)}</b> Â· Graph: <b>${fmt(graph)}</b></p>
         <p class="mt-2 text-xs text-slate-300">Peso real: <b>${real}</b> · efectivo: <b>${eff}</b> · salidas desde calibración: <b>${uses}</b> · desgaste: <b>${wear}</b></p>
       </article>`;
     }).join('');
@@ -156,11 +215,17 @@
       const wearWidth = phys.wearMg == null ? 0 : Math.min(100, (phys.wearMg / maxWear) * 100);
       const tone = !phys.hasEffective ? 'border-red-500/30' : phys.effectiveWeight < phys.avgEffective ? 'border-emerald-400/30' : 'border-amber-400/30';
       const badge = phys.uses == null ? 'sin usos' : `${phys.uses} salidas`;
+      const alerts = [];
+      if (!phys.hasEffective || !phys.hasReal) alerts.push(['esfera sin datos', 'red']);
+      if (phys.avgEffective != null && phys.effectiveWeight != null && phys.effectiveWeight - phys.avgEffective >= 0.055) alerts.push(['extremadamente pesada', 'amber']);
+      if (phys.avgEffective != null && phys.effectiveWeight != null && phys.avgEffective - phys.effectiveWeight >= 0.055) alerts.push(['extremadamente ligera', 'cyan']);
+      if (phys.uses != null && phys.uses >= Math.max(3, Math.ceil(maxUses * 0.8))) alerts.push(['muy usada', 'violet']);
       return `<article class="rounded-2xl border ${tone} bg-slate-900/60 p-4">
         <div class="flex items-center justify-between gap-3">
           <span class="text-2xl font-black text-white">${number}</span>
           <span class="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2 py-1 text-xs font-bold text-cyan-100">${esc(badge)}</span>
         </div>
+        <div class="mt-3 flex flex-wrap gap-2">${alerts.map(([label, alertTone]) => badgeHtml(label, alertTone)).join('') || badgeHtml('fisica nominal', 'emerald')}</div>
         <div class="mt-3 space-y-2">
           <div><div class="flex justify-between text-[10px] uppercase tracking-[0.18em] text-slate-500"><span>Salidas reales</span><span>${uses}</span></div><div class="mt-1 h-2 overflow-hidden rounded-full bg-slate-800"><div class="h-full rounded-full bg-cyan-400" style="width:${useWidth}%"></div></div></div>
           <div><div class="flex justify-between text-[10px] uppercase tracking-[0.18em] text-slate-500"><span>Desgaste estimado</span><span>${wear}</span></div><div class="mt-1 h-2 overflow-hidden rounded-full bg-slate-800"><div class="h-full rounded-full bg-emerald-400" style="width:${wearWidth}%"></div></div></div>

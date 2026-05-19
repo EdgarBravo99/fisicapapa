@@ -365,8 +365,7 @@
       const eff = row.hasEffectiveWeight ? `${fmt(row.effectiveWeight, 4)}g` : 'N/D';
       const uses = Number.isFinite(row.usesInWindow) ? row.usesInWindow : 'N/D';
       return `<article class="rounded-2xl border ${tone} bg-slate-900/60 p-4">
-        <div class="flex items-center justify-between"><span class="text-2xl font-black text-white">${row.number}</span><span class="text-xs text-slate-500">vida ${fmt(life, 0)}%</span></div>
-        <div class="mt-3 h-2 overflow-hidden rounded-full bg-slate-800"><div class="h-full rounded-full bg-emerald-400" style="width:${life}%"></div></div>
+        <div class="flex items-center justify-between"><span class="text-2xl font-black text-white">${row.number}</span><span class="text-xs text-slate-500">${uses} salidas</span></div>
         <p class="mt-3 text-xs leading-5 text-slate-300">La bola ${row.number} pesa <b>${real}</b>, pero tras salir <b>${uses}</b> veces, su peso efectivo bajó a <b>${eff}</b>.</p>
       </article>`;
     }).join('');

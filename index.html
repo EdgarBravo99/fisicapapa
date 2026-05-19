@@ -94,6 +94,14 @@
         <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between"><div><p class="text-xs uppercase tracking-[0.24em] text-slate-500">Contrato V4.2 validado</p><h2 class="mt-2 text-2xl font-black text-white">Panel base listo para módulos científicos</h2></div><button id="btn-reload-json" class="rounded-2xl border border-cyan-400/30 bg-cyan-400/10 px-4 py-2 text-sm font-bold text-cyan-200 transition hover:bg-cyan-400/20">Recargar JSON</button></div>
         <pre id="contract-preview" class="mt-5 max-h-80 overflow-auto rounded-2xl border border-slate-800 bg-slate-900/80 p-4 text-xs leading-5 text-slate-300"></pre>
       </section>
+
+      <section class="rounded-3xl border border-cyan-400/20 bg-slate-950/80 p-5 shadow-xl shadow-cyan-950/20">
+        <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+          <div><p class="text-xs uppercase tracking-[0.24em] text-cyan-300">Diagnostico de Datos</p><h2 class="mt-2 text-2xl font-black text-white">Estado del Sistema V4.2</h2><p class="mt-2 text-sm text-slate-400">Valida contrato, conteos fisicos, pool, walk-forward y metadata cargada en resultados.json.</p></div>
+          <span id="system-diagnostics-status" class="rounded-2xl border border-slate-700 bg-slate-900/80 px-4 py-2 text-sm font-bold text-slate-200">Esperando JSON</span>
+        </div>
+        <div id="system-diagnostics-panel" class="mt-5 grid gap-3"></div>
+      </section>
     </section>
   </main>
 
@@ -102,5 +110,6 @@
   <script src="v4-clean-app.js"></script>
   <script src="v4-results-panels.js"></script>
   <script src="v4-under40-verifier.js"></script>
+  <script src="v4-system-diagnostics.js"></script>
 </body>
 </html>
