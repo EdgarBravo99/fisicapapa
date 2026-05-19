@@ -300,6 +300,37 @@
       </details>`;
   }
 
+  function renderSystemDiagnostics(jsonData) {
+    const panel = $('system-diagnostics-panel');
+    if (!panel) return;
+    const quality = validateV42DataQuality(jsonData);
+    const feedback = getFeedbackLoop(jsonData);
+    const physics = jsonData?.physics_summary || {};
+    const status = $('system-diagnostics-status');
+    const state = quality.ok ? (quality.warnings.length ? 'Revisar' : 'OK V4.2') : `${quality.errors.length} errores`;
+    if (status) {
+      status.textContent = state;
+      status.className = `rounded-2xl border px-4 py-2 text-sm font-bold ${quality.ok ? (quality.warnings.length ? 'border-amber-400/40 bg-amber-400/10 text-amber-100' : 'border-emerald-400/30 bg-emerald-400/10 text-emerald-100') : 'border-red-400/40 bg-red-500/10 text-red-100'}`;
+    }
+    const messages = quality.errors.concat(quality.warnings);
+    panel.innerHTML = `
+      <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        ${card('Modelo', jsonData?.model_version || jsonData?.source || 'N/D', feedback.version === 'V4.2' ? 'OK' : 'Critico', jsonData?.last_update || 'Sin timestamp')}
+        ${card('Modo', jsonData?.game_mode || jsonData?.game_label || 'N/D', jsonData?.game_mode || jsonData?.game_label ? 'OK' : 'Revisar', `feedback ${feedback.version || 'N/D'}`)}
+        ${card('Pool', `${quality.counts.generatorPool} combos`, quality.counts.generatorPool ? 'OK' : 'Critico', `${quality.counts.topCombinations} top_combinations`)}
+        ${card('Walk-forward', `${quality.counts.walkForwardRows} folds`, quality.counts.walkForwardRows ? 'OK' : 'Revisar', 'rows disponibles para auditoria')}
+        ${card('manual_suggestion_seed', `${quality.counts.manualSeed}/56`, quality.counts.manualSeed === 56 ? 'OK' : 'Critico')}
+        ${card('Pesos reales', `${quality.counts.realWeights}/56`, quality.counts.realWeights === 56 ? 'OK' : 'Revisar')}
+        ${card('Pesos efectivos', `${quality.counts.effectiveWeights}/56`, quality.counts.effectiveWeights === 56 ? 'OK' : 'Critico')}
+        ${card('Usos calibracion', `${quality.counts.usesSinceCalibration}/56`, quality.counts.usesSinceCalibration === 56 ? 'OK' : 'Revisar')}
+      </div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 text-sm text-slate-300">
+        <p class="font-black text-white">Calibracion fisica</p>
+        <p class="mt-2 leading-6">Fecha 2026-05-17 / sorteo 4214. Reset de vida util despues del sorteo 4213. Promedio efectivo: ${fmt(physics.avg_effective_weight, 4)}g.</p>
+      </div>
+      ${messages.length ? `<div class="grid gap-2">${messages.map(item => `<p class="rounded-xl border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-100">${esc(item)}</p>`).join('')}</div>` : '<p class="rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm font-bold text-emerald-100">Contrato y conteos principales completos.</p>'}`;
+  }
+
   function enhanceTopCombinationCards(jsonData) {
     const panel = $('top-combinations-panel');
     if (!panel) return;
@@ -384,6 +415,67 @@
     });
   }
 
+  function componentDelta(before, after, key) {
+    return Number(after?.summary?.[key] ?? 0) - Number(before?.summary?.[key] ?? 0);
+  }
+
+  function weakestNumber(evaluation) {
+    const gravityRows = evaluation?.components?.gravityPhysics?.physicalRows || [];
+    const rows = (evaluation?.components?.modelScore?.rows || []).map(row => {
+      const phys = gravityRows.find(item => item.number === row.number) || {};
+      const physicsScore = Number.isFinite(Number(phys.effectiveWeight)) ? Number(evaluation?.components?.gravityPhysics?.score || 0) : 0;
+      const localScore = clamp((row.expertAverage || row.modelScore || 0) * 0.68 + physicsScore * 0.16 + Number(evaluation?.components?.structuralBalance?.score || 0) * 0.16);
+      return { number: row.number, localScore };
+    });
+    return rows.sort((a, b) => a.localScore - b.localScore)[0] || null;
+  }
+
+  function replacementReasons(current, evaluated, beforeNums, afterNums) {
+    const reasons = [];
+    const model = componentDelta(current, evaluated, 'modelScore');
+    const physics = componentDelta(current, evaluated, 'gravityPhysics');
+    const structure = componentDelta(current, evaluated, 'structuralBalance');
+    const pool = componentDelta(current, evaluated, 'poolAlignment');
+    const under = afterNums.filter(n => n < 40).length - beforeNums.filter(n => n < 40).length;
+    if (model > 0.1) reasons.push(`modelo +${fmt(model)}`);
+    if (physics > 0.1) reasons.push(`fisica +${fmt(physics)}`);
+    if (structure > 0.1) reasons.push(`estructura +${fmt(structure)}`);
+    if (pool > 0.1) reasons.push(`pool +${fmt(pool)}`);
+    if (under !== 0) reasons.push(`<40 ${under > 0 ? '+' : ''}${under}`);
+    return reasons.length ? reasons : ['mejora ranking compuesto sin cambiar formula oficial'];
+  }
+
+  function topReplacementSuggestions(numbers, jsonData, currentEvaluation) {
+    const weak = weakestNumber(currentEvaluation);
+    if (!weak || typeof window.evaluateManualComboV4 !== 'function') return [];
+    const current = new Set(numbers);
+    const suggestions = [];
+    for (let candidate = 1; candidate <= MAX_NUMBER; candidate += 1) {
+      if (current.has(candidate)) continue;
+      const next = numbers.map(n => n === weak.number ? candidate : n).sort((a, b) => a - b);
+      let evaluated;
+      try {
+        evaluated = window.evaluateManualComboV4(next, jsonData);
+      } catch (_) {
+        continue;
+      }
+      const gain = evaluated.netScoreV4 - currentEvaluation.netScoreV4;
+      const componentLift = Math.max(0, componentDelta(currentEvaluation, evaluated, 'modelScore')) * 0.40
+        + Math.max(0, componentDelta(currentEvaluation, evaluated, 'structuralBalance')) * 0.24
+        + Math.max(0, componentDelta(currentEvaluation, evaluated, 'poolAlignment')) * 0.20
+        + Math.max(0, componentDelta(currentEvaluation, evaluated, 'gravityPhysics')) * 0.16;
+      suggestions.push({
+        remove: weak.number,
+        add: candidate,
+        next,
+        gain,
+        ranking: gain + componentLift,
+        reasons: replacementReasons(currentEvaluation, evaluated, numbers, next),
+      });
+    }
+    return suggestions.sort((a, b) => b.ranking - a.ranking).slice(0, 3);
+  }
+
   function renderManualDiagnostics(jsonData) {
     const manual = $('manual-result');
     if (!manual || manual.classList.contains('hidden')) return;
@@ -397,6 +489,16 @@
     }
     const compare = compareCruncherVsWebScore(evaluation.numbers, jsonData);
     const badges = getComboProfileV4(evaluation, jsonData);
+    const weak = weakestNumber(evaluation);
+    const replacements = topReplacementSuggestions(evaluation.numbers, jsonData, evaluation);
+    const replacementHtml = replacements.map((item, index) => `<article class="rounded-xl border border-violet-400/20 bg-violet-400/10 p-3">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <p class="font-black text-violet-100">#${index + 1}: ${item.remove} -&gt; ${item.add}</p>
+        <p class="text-xs font-bold text-emerald-200">neto ${item.gain >= 0 ? '+' : ''}${fmt(item.gain)}</p>
+      </div>
+      <p class="mt-2 text-xs leading-5 text-slate-300">${esc(item.next.join(' | '))}</p>
+      <p class="mt-2 text-xs leading-5 text-slate-400">${item.reasons.map(esc).join(' | ')}</p>
+    </article>`).join('');
     const existing = $('manual-score-compare-card');
     if (existing) existing.remove();
     const cardNode = document.createElement('div');
@@ -411,7 +513,12 @@
         </div>
         <button class="min-h-[44px] rounded-xl border border-violet-300/40 bg-violet-400/10 px-3 py-2 text-sm font-bold text-violet-100" data-save-manual-combo="${evaluation.numbers.join(',')}">Guardar al comparador</button>
       </div>
-      <div class="flex flex-wrap gap-2">${badges.map(badgeHtml).join('')}</div>`;
+      <div class="flex flex-wrap gap-2">${badges.map(badgeHtml).join('')}</div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-950/50 p-4">
+        <p class="text-xs uppercase tracking-[0.22em] text-slate-500">Explicabilidad y reemplazos</p>
+        <p class="mt-2 text-sm text-slate-300">Numero mas debil: <b class="text-red-200">${weak?.number ?? 'N/D'}</b>. Top 3 reemplazos sugeridos sin cambiar la formula oficial:</p>
+        <div class="mt-3 grid gap-3">${replacementHtml || '<p class="text-sm text-slate-400">No se encontraron reemplazos superiores.</p>'}</div>
+      </div>`;
     manual.appendChild(cardNode);
     cardNode.querySelector('[data-save-manual-combo]')?.addEventListener('click', event => {
       const nums = event.currentTarget.getAttribute('data-save-manual-combo').split(',').map(Number);
@@ -424,6 +531,7 @@
     if (!jsonData) return;
     renderPersonalCenter(jsonData);
     renderAuditor(jsonData);
+    renderSystemDiagnostics(jsonData);
     setTimeout(() => enhanceTopCombinationCards(jsonData), 450);
     setTimeout(() => enhanceTopNumberCards(jsonData), 450);
     setTimeout(() => renderManualDiagnostics(jsonData), 0);
@@ -444,4 +552,5 @@
   window.getComboProfileV4 = getComboProfileV4;
   window.normalizeComboV4 = comboNumbers;
   window.renderV42PersonalCenter = renderPersonalCenter;
+  window.renderV42SystemDiagnostics = renderSystemDiagnostics;
 })();

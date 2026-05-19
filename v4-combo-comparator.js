@@ -112,6 +112,21 @@
     </div>`;
   }
 
+  function showNotice(message, tone = 'amber') {
+    const panel = $('combo-comparator-panel');
+    if (!panel) return;
+    const existing = $('combo-comparator-notice');
+    if (existing) existing.remove();
+    const cls = tone === 'red'
+      ? 'border-red-400/40 bg-red-500/10 text-red-100'
+      : 'border-amber-400/40 bg-amber-500/10 text-amber-100';
+    const node = document.createElement('div');
+    node.id = 'combo-comparator-notice';
+    node.className = `rounded-2xl border ${cls} p-4 text-sm font-bold`;
+    node.textContent = message;
+    panel.prepend(node);
+  }
+
   function render() {
     const panel = $('combo-comparator-panel');
     if (!panel) return;
@@ -152,7 +167,7 @@
               ${renderMetric('Estructura', s.structuralBalance, 'text-violet-200')}
               ${renderMetric('Fisica', s.gravityPhysics, 'text-emerald-200')}
               ${renderMetric('Pool', s.poolAlignment, 'text-amber-200')}
-              ${renderMetric('Macro <40', result.under40?.userUnder40, 'text-slate-200')}
+              ${renderMetric('Conteo <40', result.under40?.userUnder40, 'text-slate-200')}
               ${renderMetric('Delta web/cruncher', result.compare.delta, 'text-slate-200')}
             </div>
             <p class="mt-3 text-xs text-slate-400">${esc(result.compare.interpretation)}</p>
@@ -171,7 +186,7 @@
 
   function saveCombo(nums, label) {
     const numbers = comboNumbers(nums);
-    if (numbers.length !== 6) return false;
+    if (numbers.length !== 6 || new Set(numbers).size !== 6 || numbers.some(n => n < 1 || n > 56)) return false;
     const key = numbers.join('-');
     items = items.filter(item => item.key !== key);
     items.unshift({
@@ -223,7 +238,9 @@
 
   function bind() {
     $('btn-save-current-combo')?.addEventListener('click', () => {
-      saveCombo(currentManualNumbers(), 'Manual actual');
+      if (!saveCombo(currentManualNumbers(), 'Manual actual')) {
+        showNotice('Ingresa 6 numeros validos y sin repetir antes de guardar la combinacion actual.', 'red');
+      }
     });
     $('btn-clear-comparator')?.addEventListener('click', clear);
     $('btn-copy-comparator-report')?.addEventListener('click', () => {
