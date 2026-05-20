@@ -4,6 +4,8 @@
   'use strict';
 
   const MAX_NUMBER = 56;
+  let physicsExpanded = false;
+  let physicsMode = 'review';
   const $ = id => document.getElementById(id);
   const num = (v, f = 0) => Number.isFinite(Number(v)) ? Number(v) : f;
   const pct = v => { const x = num(v, 0); return x > 0 && x <= 1 ? x * 100 : x; };
@@ -79,7 +81,7 @@
       amber: 'border-amber-400/30 bg-amber-400/10 text-amber-100',
       red: 'border-red-400/40 bg-red-500/10 text-red-100',
     }[tone] || 'border-slate-700 bg-slate-900 text-slate-200';
-    return `<span class="quant-pill rounded-full border ${cls} px-2 py-1 text-[10px] font-bold uppercase tracking-[0.14em]">${esc(label)}</span>`;
+    return `<span class="taste-chip quant-pill rounded-full border ${cls} px-2 py-1 text-[10px] font-bold uppercase tracking-[0.14em]">${esc(label)}</span>`;
   }
 
   function comboBadges(combo, nums, data) {
@@ -127,12 +129,12 @@
       const cruncherScore = Number.isFinite(Number(scoreCompare.cruncherScore)) ? fmt(scoreCompare.cruncherScore) : fmt(score);
       const delta = Number.isFinite(Number(scoreCompare.delta)) ? fmt(scoreCompare.delta) : 'N/D';
       const explanation = combo?.plain_route || combo?.human_explanation || combo?.source || 'Sin ruta explicativa exportada.';
-      return `<article class="combo-ticket quant-card rounded-2xl border border-amber-400/20 bg-slate-900/70 p-4">
+      return `<article class="combo-ticket taste-motion-in rounded-2xl border border-cyan-400/20 bg-slate-900/70 p-4" style="animation-delay:${idx * 55}ms">
         <div class="combo-ticket-rank">#${idx + 1}</div>
         <div class="combo-ticket-main flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <p class="text-xs uppercase tracking-[0.22em] text-amber-300">#${idx + 1} · score ${fmt(score)}</p>
-            <div class="combo-ball-row mt-2">${nums.map(n => `<span class="quant-number-ball rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-sm font-black text-cyan-100">${n}</span>`).join('')}</div>
+            <div class="combo-ball-row mt-3">${nums.map(n => `<span class="taste-ball quant-number-ball rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-sm font-black text-cyan-100">${n}</span>`).join('')}</div>
             <div class="mt-3 flex flex-wrap gap-2">${comboBadges(combo, nums, data)}</div>
             <div class="metric-strip mt-3">
               <div class="quant-metric"><p>Score web</p><b>${webScore}</b></div>
@@ -140,9 +142,9 @@
               <div class="quant-metric"><p>Delta</p><b>${delta}</b></div>
             </div>
           </div>
-          <div class="flex flex-wrap gap-2">
-            <button class="quant-ghost-button min-h-[44px] rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 text-xs font-bold text-cyan-100 transition hover:bg-cyan-400/20 focus:outline-none focus:ring-2 focus:ring-cyan-300" data-fill-combo="${nums.join(',')}">Evaluar esta combinacion</button>
-            <button class="quant-ghost-button min-h-[44px] rounded-xl border border-slate-600 bg-slate-800/70 px-3 py-2 text-xs font-bold text-slate-100 transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300" data-copy-combo="${nums.join(' ')}">Copiar</button>
+          <div class="combo-ticket-actions">
+            <button class="taste-ghost quant-ghost-button" data-fill-combo="${nums.join(',')}">Evaluar</button>
+            <button class="taste-ghost quant-ghost-button" data-copy-combo="${nums.join(' ')}">Copiar</button>
           </div>
         </div>
         <p class="combo-ticket-score mt-3 text-xs leading-5 text-slate-400">${esc(explanation).slice(0, 420)}</p>
@@ -202,9 +204,9 @@
       const xgboost = pct(raw.xgboost);
       const graph = pct(raw.graph);
       const physicsBadge = !item.phys.hasEffective ? badgeHtml('sin datos fisicos', 'red') : item.phys.effectiveWeight < item.phys.avgEffective ? badgeHtml('fisica ligera', 'emerald') : badgeHtml('fisica pesada', 'amber');
-      return `<article class="number-rank-card quant-card rounded-2xl border border-violet-400/20 bg-slate-900/70 p-4">
+      return `<article class="number-rank-card taste-motion-in rounded-2xl border border-violet-400/20 bg-slate-900/70 p-4" style="animation-delay:${idx * 45}ms">
         <div class="flex items-center justify-between gap-3">
-          <div class="flex items-center gap-3"><span class="quant-number-ball flex h-10 w-10 items-center justify-center rounded-full border border-violet-300/40 bg-violet-400/10 text-lg font-black text-violet-100">${item.number}</span><div><p class="text-xs text-slate-500">Rank #${idx + 1}</p><p class="text-sm font-black text-white">${fmt(item.score)} pts</p></div></div>
+          <div class="flex items-center gap-3"><span class="taste-ball quant-number-ball flex h-10 w-10 items-center justify-center rounded-full border border-violet-300/40 bg-violet-400/10 text-lg font-black text-violet-100">${item.number}</span><div><p class="text-xs text-slate-500">Rank #${idx + 1}</p><p class="text-sm font-black text-white">${fmt(item.score)} pts</p></div></div>
           <span class="driver-chip text-xs font-bold text-cyan-200">${esc(driver)}</span>
         </div>
         <p class="mt-3 text-xs leading-5 text-slate-400">${esc(reason).slice(0, 180)}</p>
@@ -217,6 +219,15 @@
         <p class="mt-2 text-xs text-slate-300">Peso real: <b>${real}</b> · efectivo: <b>${eff}</b> · salidas desde calibración: <b>${uses}</b> · desgaste: <b>${wear}</b></p>
       </article>`;
     }).join('');
+  }
+
+  function physicsAlerts(phys, maxUses) {
+    const alerts = [];
+    if (!phys.hasEffective || !phys.hasReal) alerts.push(['esfera sin datos', 'red']);
+    if (phys.avgEffective != null && phys.effectiveWeight != null && phys.effectiveWeight - phys.avgEffective >= 0.055) alerts.push(['extremadamente pesada', 'amber']);
+    if (phys.avgEffective != null && phys.effectiveWeight != null && phys.avgEffective - phys.effectiveWeight >= 0.055) alerts.push(['extremadamente ligera', 'cyan']);
+    if (phys.uses != null && phys.uses >= Math.max(3, Math.ceil(maxUses * 0.8))) alerts.push(['muy usada', 'violet']);
+    return alerts;
   }
 
   function renderPhysicsGrid(data) {
@@ -232,8 +243,29 @@
     const maxWear = Math.max(0.0001, ...rows.map(r => r.phys.wearMg ?? 0));
     const resetAfter = rows.find(r => r.phys.resetAfter)?.phys.resetAfter ?? '4213';
     const calibrationDate = rows.find(r => r.phys.calibrationDate)?.phys.calibrationDate ?? '2026-05-17';
+    const rowsWithAlerts = rows.map(row => ({ ...row, alerts: physicsAlerts(row.phys, maxUses) }));
+    const reviewRows = rowsWithAlerts
+      .filter(row => row.alerts.length)
+      .concat(rowsWithAlerts.slice().sort((a, b) => (b.phys.uses ?? 0) - (a.phys.uses ?? 0)).slice(0, 10))
+      .filter((row, index, list) => list.findIndex(item => item.number === row.number) === index);
+    const selectedRows = physicsExpanded
+      ? rowsWithAlerts
+      : physicsMode === 'alerts'
+        ? rowsWithAlerts.filter(row => row.alerts.length).slice(0, 24)
+        : reviewRows.slice(0, 18);
+    const controls = `<div class="taste-panel-muted physics-lab-control">
+      <div>
+        <p class="taste-eyebrow">Vista fisica</p>
+        <p>${selectedRows.length}/56 esferas visibles. Usa filtros para no saturar movil.</p>
+      </div>
+      <div class="taste-action-row">
+        <button class="taste-ghost" data-physics-mode="review">Revisar primero</button>
+        <button class="taste-ghost" data-physics-mode="alerts">Solo alertas</button>
+        <button class="taste-ghost" data-physics-expanded="${physicsExpanded ? '0' : '1'}">${physicsExpanded ? 'Compactar' : 'Mostrar 56'}</button>
+      </div>
+    </div>`;
 
-    grid.innerHTML = rows.map(({ number, phys }) => {
+    grid.innerHTML = controls + selectedRows.map(({ number, phys, alerts }, idx) => {
       const real = phys.realWeight == null ? 'N/D' : `${fmt(phys.realWeight, 4)}g`;
       const eff = phys.effectiveWeight == null ? 'N/D' : `${fmt(phys.effectiveWeight, 4)}g`;
       const uses = phys.uses == null ? 'N/D' : phys.uses;
@@ -242,15 +274,10 @@
       const wearWidth = phys.wearMg == null ? 0 : Math.min(100, (phys.wearMg / maxWear) * 100);
       const tone = !phys.hasEffective ? 'border-red-500/30' : phys.effectiveWeight < phys.avgEffective ? 'border-emerald-400/30' : 'border-amber-400/30';
       const badge = phys.uses == null ? 'sin usos' : `${phys.uses} salidas`;
-      const alerts = [];
-      if (!phys.hasEffective || !phys.hasReal) alerts.push(['esfera sin datos', 'red']);
-      if (phys.avgEffective != null && phys.effectiveWeight != null && phys.effectiveWeight - phys.avgEffective >= 0.055) alerts.push(['extremadamente pesada', 'amber']);
-      if (phys.avgEffective != null && phys.effectiveWeight != null && phys.avgEffective - phys.effectiveWeight >= 0.055) alerts.push(['extremadamente ligera', 'cyan']);
-      if (phys.uses != null && phys.uses >= Math.max(3, Math.ceil(maxUses * 0.8))) alerts.push(['muy usada', 'violet']);
-      return `<article class="physics-lab-card quant-card rounded-2xl border ${tone} bg-slate-900/60 p-4">
+      return `<article class="physics-lab-card taste-motion-in rounded-2xl border ${tone} bg-slate-900/60 p-4" style="animation-delay:${idx * 24}ms">
         <div class="flex items-center justify-between gap-3">
-          <span class="quant-number-ball">${number}</span>
-          <span class="quant-pill rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2 py-1 text-xs font-bold text-cyan-100">${esc(badge)}</span>
+          <span class="taste-ball quant-number-ball">${number}</span>
+          <span class="taste-chip quant-pill rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2 py-1 text-xs font-bold text-cyan-100">${esc(badge)}</span>
         </div>
         <div class="mt-3 flex flex-wrap gap-2">${alerts.map(([label, alertTone]) => badgeHtml(label, alertTone)).join('') || badgeHtml('fisica nominal', 'emerald')}</div>
         <div class="mt-3 space-y-2">
@@ -260,6 +287,18 @@
         <p class="mt-3 text-xs leading-5 text-slate-300">Bola ${number}: peso real <b>${real}</b>; desde el reset post-sorteo <b>${esc(resetAfter)}</b> ha salido <b>${uses}</b> veces y su peso efectivo actual es <b>${eff}</b>.</p>
       </article>`;
     }).join('');
+
+    grid.querySelectorAll('[data-physics-mode]').forEach(button => {
+      button.addEventListener('click', () => {
+        physicsMode = button.getAttribute('data-physics-mode');
+        physicsExpanded = false;
+        renderPhysicsGrid(data);
+      });
+    });
+    grid.querySelector('[data-physics-expanded]')?.addEventListener('click', event => {
+      physicsExpanded = event.currentTarget.getAttribute('data-physics-expanded') === '1';
+      renderPhysicsGrid(data);
+    });
 
     const label = $('physics-summary-label');
     if (label) {

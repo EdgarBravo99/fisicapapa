@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
+r"""
 Runner calibrado V4.2 para Melate/Revancha.
 
 Este archivo NO duplica el motor principal. Importa local_cruncher_v4_deep_stacking.py,
@@ -23,11 +23,38 @@ Si lo abres con doble clic y ocurre un error, este runner NO cierra la consola:
 from __future__ import annotations
 
 import importlib
+import json
+import shutil
 import traceback
 from pathlib import Path
 from typing import Dict, Any, Optional
 
+from v4_feedback_memory import (
+    annotate_results_with_memory,
+    infer_game_mode,
+    infer_prediction_draw,
+    update_feedback_memory_from_snapshot,
+)
+from v4_github_sync import GitSyncError, sync_outputs_to_github
+
 engine = None
+
+SYNC_PATHS = [
+    "resultados.json",
+    "v4_feedback_memory.json",
+    "resultados_archive",
+    "v4_feedback_memory.py",
+    "v4_github_sync.py",
+    "v4-feedback-memory-panel.js",
+    "README.md",
+    "resultados_archive/README.md",
+    "index.html",
+    "v4-visual-system.css",
+    "v4-clean-app.js",
+    "v4-results-panels.js",
+    "v4-system-diagnostics.js",
+    "v4-combo-comparator.js",
+]
 
 # Punto de reset físico: la calibración/mantenimiento deja las bolas en una nueva línea base.
 # Para predecir después del 4213, el desgaste solo debe contar sorteos con draw_id > 4213.
@@ -215,9 +242,29 @@ def apply_weight_calibration() -> None:
     eng.explain_number = calibrated_explain_number
 
 
-def run() -> None:
-    eng = load_engine()
-    apply_weight_calibration()
+def archive_current_results() -> Optional[Path]:
+    """Guarda un snapshot del resultados.json actual antes de sobrescribirlo."""
+    source = Path("resultados.json")
+    if not source.exists():
+        return None
+    try:
+        data = json.loads(source.read_text(encoding="utf-8"))
+        draw_id = infer_prediction_draw(data) or "unknown"
+    except Exception:
+        draw_id = "unknown"
+    archive_dir = Path("resultados_archive")
+    archive_dir.mkdir(exist_ok=True)
+    target = archive_dir / f"resultados_{draw_id}.json"
+    if target.exists():
+        suffix = 2
+        while (archive_dir / f"resultados_{draw_id}_{suffix}.json").exists():
+            suffix += 1
+        target = archive_dir / f"resultados_{draw_id}_{suffix}.json"
+    shutil.copy2(source, target)
+    return target
+
+
+def print_calibration_banner() -> None:
     print("Calibración física V4.2 aplicada:")
     print("  Melate/Revancha -> weights_2026_05_17_reset_after_draw_4213")
     print(
@@ -226,7 +273,123 @@ def run() -> None:
         f"diff={max(CALIBRATED_WEIGHTS_2026_05_17[1:]) - min(CALIBRATED_WEIGHTS_2026_05_17[1:]):.4f}g"
     )
     print("  Vida útil/desgaste: RESET después del sorteo 4213; solo cuenta draw_id > 4213")
-    eng.main()
+
+
+def run_pipeline_calibrated(archive_before: bool = True) -> None:
+    eng = load_engine()
+    apply_weight_calibration()
+    if archive_before:
+        archived = archive_current_results()
+        if archived:
+            print(f"Snapshot previo guardado en: {archived}")
+    eng.run_pipeline()
+    summary = annotate_results_with_memory()
+    if summary:
+        print(
+            "feedback_memory exportado en resultados.json "
+            f"(records={summary.get('records_used')}, modo={summary.get('adjustment_mode')})."
+        )
+    else:
+        print("feedback_memory: sin memoria real calificada; resultados.json queda sin ajustes de memoria.")
+
+
+def sync_with_github() -> None:
+    try:
+        result = sync_outputs_to_github(SYNC_PATHS, "Update V4.3 results, memory, and dashboard")
+    except GitSyncError as exc:
+        print(f"GitHub sync no completado: {exc}")
+        return
+    print(f"GitHub sync: {result.get('reason')}")
+
+
+def inspect_results() -> None:
+    path = Path("resultados.json")
+    if not path.exists():
+        print("No existe resultados.json para inspeccionar.")
+        return
+    data = json.loads(path.read_text(encoding="utf-8"))
+    print("score_kind:", data.get("score_kind"))
+    print("source:", data.get("source"))
+    print("model_version:", data.get("model_version"))
+    print("game_mode:", data.get("game_mode"))
+    print("prediction_draw:", infer_prediction_draw(data))
+    print("top_combinations:", len(data.get("top_combinations", []) or []))
+    print("generator_pool:", len(data.get("generator_pool", []) or []))
+    print("feedback_memory:", data.get("feedback_memory", {}).get("adjustment_mode", "N/D"))
+
+
+def update_memory_prompt() -> None:
+    default_results = "resultados.json"
+    raw_results = input(f"Snapshot resultados.json a calificar [{default_results}]: ").strip() or default_results
+    results_path = Path(raw_results)
+    if not results_path.exists():
+        print(f"No existe snapshot: {results_path}")
+        return
+    try:
+        snapshot = json.loads(results_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        print(f"No se pudo leer snapshot JSON: {exc}")
+        return
+    default_csv = str(snapshot.get("csv_path") or "")
+    raw_csv = input(f"CSV historico actualizado [{default_csv or 'requerido'}]: ").strip() or default_csv
+    if not raw_csv:
+        print("CSV requerido. La memoria no usa resultados.json como verdad.")
+        return
+    mode = input(f"Modo [{infer_game_mode(snapshot)}]: ").strip() or infer_game_mode(snapshot)
+    dry_raw = input("Dry-run sin escribir memoria? [s/N]: ").strip().lower()
+    dry_run = dry_raw in {"s", "si", "y", "yes"}
+    try:
+        result = update_feedback_memory_from_snapshot(
+            results_path=results_path,
+            csv_path=raw_csv,
+            mode=mode,
+            dry_run=dry_run,
+        )
+    except Exception as exc:
+        print(f"No se pudo calificar memoria: {exc}")
+        return
+    for warning in result.get("warnings", []):
+        print("warning:", warning)
+    if not result.get("changed"):
+        print("Memoria sin cambios.")
+        return
+    record = result.get("record") or {}
+    print(
+        "Examen calificado: "
+        f"prediccion {record.get('prediction_draw')} -> real {record.get('target_draw')} "
+        f"best_hits={record.get('exam_grade', {}).get('best_hits')}"
+    )
+    if dry_run:
+        print("Dry-run activo: no se escribio v4_feedback_memory.json.")
+    else:
+        print("v4_feedback_memory.json actualizado con al menos un record real.")
+
+
+def run() -> None:
+    load_engine()
+    apply_weight_calibration()
+    print_calibration_banner()
+    print("\nMELATE LOCAL CRUNCHER V4.3 - RUNNER V4.2 CALIBRADO")
+    print("[1] Ejecutar pipeline V4.2 completo")
+    print("[2] Inspeccionar resultados.json")
+    print("[3] Actualizar memoria de predicciones / calificar examenes")
+    print("[4] Sincronizar resultados con GitHub")
+    print("[5] Pipeline + memoria + GitHub sync")
+    choice = input("Opcion [1]: ").strip() or "1"
+    if choice == "2":
+        inspect_results()
+    elif choice == "3":
+        update_memory_prompt()
+    elif choice == "4":
+        sync_with_github()
+    elif choice == "5":
+        run_pipeline_calibrated(archive_before=True)
+        sync_with_github()
+    else:
+        run_pipeline_calibrated(archive_before=True)
+        upload = input("Subir resultados.json, memoria y snapshot a GitHub? [s/N]: ").strip().lower()
+        if upload in {"s", "si", "y", "yes"}:
+            sync_with_github()
 
 
 def main() -> None:

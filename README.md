@@ -51,11 +51,14 @@ v4-results-panels.js
 v4-under40-verifier.js
 v4-system-diagnostics.js
 v4-combo-comparator.js
+v4-feedback-memory-panel.js
 v4-visual-system.css
 data.js
 pakin-remote-loader.js
 local_cruncher_v4_2_calibrated.py
 local_cruncher_v4_deep_stacking.py
+v4_feedback_memory.py
+v4_github_sync.py
 resultados.json
 CODEX_HANDOFF_V4_2.md
 README.md
@@ -94,6 +97,7 @@ Si `walk_forward.feedback_loop.version` no es `"V4.2"`, la web debe detenerse co
 <script src="v4-under40-verifier.js"></script>
 <script src="v4-system-diagnostics.js"></script>
 <script src="v4-combo-comparator.js"></script>
+<script src="v4-feedback-memory-panel.js"></script>
 ```
 
 Responsabilidades:
@@ -103,7 +107,8 @@ Responsabilidades:
 - `v4-under40-verifier.js`: agrega auditoria visual de macroestructura `<40`; no modifica score ni cruncher.
 - `v4-system-diagnostics.js`: valida calidad de `resultados.json`, muestra estado del sistema y agrega explicabilidad manual visual.
 - `v4-combo-comparator.js`: mantiene el comparador personal temporal en localStorage.
-- `v4-visual-system.css`: aplica el sistema visual Quant Control Room sin tocar logica matematica.
+- `v4-feedback-memory-panel.js`: muestra memoria tipo examen y el historial GitHub de `resultados.json`.
+- `v4-visual-system.css`: aplica el sistema visual Personal Quant Desk sin tocar logica matematica.
 - `pakin-remote-loader.js`: carga historicos remotos de Pakin para Melate/Revancha.
 - `data.js`: dataset y utilidades base para la web.
 
@@ -175,7 +180,19 @@ Actualizar predicciones:
 py -X utf8 .\local_cruncher_v4_2_calibrated.py
 ```
 
-Subir resultados:
+Menu del runner calibrado:
+
+```txt
+[1] Ejecutar pipeline V4.2 completo
+[2] Inspeccionar resultados.json
+[3] Actualizar memoria de predicciones / calificar examenes
+[4] Sincronizar resultados con GitHub
+[5] Pipeline + memoria + GitHub sync
+```
+
+La opcion `[1]` pregunta al final si quieres subir resultados a GitHub. La opcion `[5]` ejecuta pipeline y sync porque fue elegida explicitamente.
+
+Subir resultados manualmente:
 
 ```powershell
 git add resultados.json
@@ -198,3 +215,88 @@ CODEX_HANDOFF_V4_2.md
 ```
 
 Ese archivo manda sobre notas historicas: V4.2-only, no V3, no reglas nuevas dentro del cruncher sin validacion OOS.
+
+## Pipeline V4.3 de memoria tipo examen
+
+V4.3 no cambia el runner oficial ni crea otro programa principal. El flujo sigue entrando por:
+
+```powershell
+py -X utf8 .\local_cruncher_v4_2_calibrated.py
+```
+
+La memoria persistente vive en `v4_feedback_memory.py` y, cuando existe al menos un examen real calificado, en `v4_feedback_memory.json`.
+
+Modelo mental:
+
+```txt
+resultados.json historico = prediccion pasada del cruncher
+CSV historico actualizado = verdad revelada
+v4_feedback_memory.json = libreta de calificaciones
+```
+
+Reglas anti-leakage:
+
+- Nunca usar `resultados.json` como verdad.
+- Para calificar una prediccion 4214 contra un target 4215, el CSV ya debe contener 4215 como sorteo revelado.
+- Nunca usar 4215 para generar la prediccion 4215.
+- Si no hay sorteo target posterior en el CSV, la memoria muestra warning y no inventa resultados.
+- Si hay menos de 3 records reales calificados, la memoria queda en modo diagnostico y no altera ranking ni score.
+
+## GitHub sync local
+
+`v4_github_sync.py` usa solo git CLI local. No guarda tokens, no contiene credenciales y depende de la autenticacion que ya tenga configurada tu maquina.
+
+Flujo de sync:
+
+```txt
+git pull --rebase origin main
+git add outputs permitidos
+git commit -m "Update V4.3 results, memory, and dashboard"
+git push origin rama-actual
+```
+
+Si no hay cambios, evita commit vacio. Si `git` no existe o el directorio no es repo, muestra error claro y no rompe el pipeline.
+
+## Historial real de resultados.json
+
+GitHub conserva las versiones anteriores de `resultados.json` por commit:
+
+```txt
+https://github.com/EdgarBravo99/fisicapapa/commits/main/resultados.json
+```
+
+Para recuperar manualmente un snapshot:
+
+```powershell
+git log -- resultados.json
+git show COMMIT_SHA:resultados.json > resultados_archive/resultados_manual_COMMIT.json
+```
+
+Luego, con el CSV ya actualizado con el sorteo posterior, usa la opcion `[3]` del runner para calificar ese snapshot.
+
+## Pruebas recomendadas
+
+Web:
+
+```txt
+Abrir index.html con ?v=43
+Evaluar 16 19 25 29 45 50
+Guardar al comparador
+Revisar Top combinaciones, Top numeros, Fisica, Memoria y Auditor
+```
+
+Memoria:
+
+```txt
+Guardar o recuperar un resultados.json historico en resultados_archive/
+Actualizar el CSV con el sorteo posterior real
+Ejecutar opcion [3] del runner calibrado
+Confirmar que v4_feedback_memory.json se crea solo si se califico un record real
+```
+
+Sync:
+
+```txt
+Ejecutar opcion [4] para subir cambios ya generados
+Ejecutar opcion [5] para pipeline + memoria + sync
+```

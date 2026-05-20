@@ -7,7 +7,7 @@
   const PICK_COUNT = 6;
   const $ = id => document.getElementById(id);
   const number = value => Number(value);
-  const finite = value => Number.isFinite(number(value));
+  const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(number(value));
   const fmt = (value, digits = 2) => finite(value) ? number(value).toFixed(digits) : 'N/D';
   const esc = value => String(value ?? 'N/D').replace(/[&<>"']/g, mark => ({
     '&': '&amp;',
