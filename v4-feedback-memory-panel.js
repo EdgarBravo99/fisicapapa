@@ -60,6 +60,28 @@
       </div>`).join('')}</div>`;
   }
 
+  function weightedList(items, emptyText) {
+    if (!Array.isArray(items) || !items.length) {
+      return `<p class="text-sm text-slate-400">${esc(emptyText)}</p>`;
+    }
+    return `<div class="grid gap-2">${items.slice(0, 5).map(([number, value]) => `
+      <div class="taste-panel-muted flex items-center justify-between gap-3">
+        <span class="taste-ball quant-number-ball">${esc(number)}</span>
+        <span class="font-mono text-sm text-slate-200">peso ${fmt(value, 3)}</span>
+      </div>`).join('')}</div>`;
+  }
+
+  function miniPerfGrid(performance, emptyText) {
+    const entries = Object.entries(performance || {});
+    if (!entries.length) return `<p class="text-sm text-slate-400">${esc(emptyText)}</p>`;
+    return `<div class="grid gap-2 sm:grid-cols-2">${entries.map(([name, row]) => `
+      <div class="taste-panel-muted">
+        <p class="text-xs uppercase tracking-[0.18em] text-slate-500">${esc(name)}</p>
+        <p class="mt-1 font-mono text-sm text-slate-200">${fmt(row?.hit_rate, 4)} hit</p>
+        <p class="text-xs text-slate-500">${fmt(row?.appeared_count, 0)}/${fmt(row?.predicted_count, 0)}</p>
+      </div>`).join('')}</div>`;
+  }
+
   function latestRecord(memory) {
     const records = Array.isArray(memory?.records) ? memory.records : [];
     return records.length ? records[records.length - 1] : null;
@@ -81,13 +103,20 @@
   function renderReplayAndLegacy(replayMemory, replayAnalysis, legacyReport) {
     const replayAggregate = replayMemory?.aggregate || {};
     const replayAudit = replayAnalysis?.replay_prior_audit || {};
+    const calibration = replayAggregate.calibration_summary || {};
     const legacyRows = Array.isArray(legacyReport?.snapshots) ? legacyReport.snapshots : [];
     const legacyHindsight = legacyRows.filter(row => row?.classification === 'legacy_hindsight_snapshot');
     const sampleLegacy = legacyHindsight.find(row => String(row?.detected_draw) === '4212') || legacyHindsight[0] || null;
     const replayRecords = finite(replayAggregate.records_count) ? replayAggregate.records_count : (Array.isArray(replayMemory?.records) ? replayMemory.records.length : 0);
-    const replayStatus = replayRecords > 0
-      ? 'Replay prior calculado, no aplicado'
+    const priorQuality = calibration.prior_quality || (replayRecords > 0 ? 'diagnostico pendiente' : 'sin replay');
+    const signalQuality = calibration.ranking_signal_quality || 'N/D';
+    const replayStatus = priorQuality === 'usable_shadow'
+      ? 'Replay prior calculado como shadow prior, no aplicado'
+      : replayRecords > 0
+        ? 'Replay prior calculado, pero no confiable todavia'
       : 'Replay pendiente; ejecuta el lab historico para generar examenes anti-leakage.';
+    const weightedDown = Object.entries(replayAggregate.overestimated_weighted || {});
+    const weightedUp = Object.entries(replayAggregate.underestimated_weighted || {});
     return `
       <div class="grid gap-3 mt-4 lg:grid-cols-2">
         <article class="taste-panel-muted">
@@ -98,6 +127,8 @@
             <article class="taste-metric"><span>Leakage OK</span><b>${fmt(replayAggregate.leakage_passed_count, 0)}</b></article>
             <article class="taste-metric"><span>Fuerza shadow</span><b>${fmt(replayAudit.max_number_adjustment, 3)}</b></article>
             <article class="taste-metric"><span>Aplicado</span><b>No</b></article>
+            <article class="taste-metric"><span>Prior quality</span><b>${esc(priorQuality)}</b></article>
+            <article class="taste-metric"><span>Ranking signal</span><b>${esc(signalQuality)}</b></article>
           </div>
           <p class="mt-3 text-xs leading-5 text-slate-400">El replay usa CSV temporal truncado y motor principal. Por defecto solo calcula shadow prior.</p>
         </article>
@@ -110,7 +141,29 @@
           </div>
           <p class="mt-3 text-xs leading-5 text-slate-400">${sampleLegacy ? 'No elegible por contener auditoria inversa / combinacion real.' : 'Los snapshots legacy se muestran solo como diagnostico.'}</p>
         </article>
-      </div>`;
+      </div>
+      <details class="taste-accordion mt-3">
+        <summary>Calidad estadistica del replay prior</summary>
+        <div class="grid gap-3 mt-3 lg:grid-cols-2">
+          <article class="taste-panel-muted">
+            <p class="taste-eyebrow">Top down ponderado</p>
+            <div class="mt-3">${weightedList(weightedDown, 'Sin sobreestimados ponderados.')}</div>
+          </article>
+          <article class="taste-panel-muted">
+            <p class="taste-eyebrow">Top up ponderado</p>
+            <div class="mt-3">${weightedList(weightedUp, 'Sin subestimados ponderados.')}</div>
+          </article>
+          <article class="taste-panel-muted">
+            <p class="taste-eyebrow">Buckets por percentil</p>
+            <div class="mt-3">${miniPerfGrid(replayAggregate.score_bucket_performance, 'Sin buckets replay.')}</div>
+          </article>
+          <article class="taste-panel-muted">
+            <p class="taste-eyebrow">Bandas por ranking</p>
+            <div class="mt-3">${miniPerfGrid(replayAggregate.rank_band_performance, 'Sin bandas replay.')}</div>
+          </article>
+        </div>
+        <p class="mt-3 text-xs text-slate-400">${esc(calibration.reason || 'Replay prior no aplicado automaticamente.')}</p>
+      </details>`;
   }
 
   function renderEmpty(jsonData, archiveIndex, analysis, replayMemory, replayAnalysis, legacyReport) {
