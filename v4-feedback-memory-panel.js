@@ -15,14 +15,26 @@
     "'": '&#39;',
   }[mark]));
 
-  async function loadMemory() {
+  async function loadJson(path, cacheKey) {
     try {
-      const response = await fetch(`v4_feedback_memory.json?memory=${Date.now()}`, { cache: 'no-store' });
+      const response = await fetch(`${path}?${cacheKey}=${Date.now()}`, { cache: 'no-store' });
       if (!response.ok) return null;
       return response.json();
     } catch (_) {
       return null;
     }
+  }
+
+  async function loadMemory() {
+    return loadJson('v4_feedback_memory.json', 'memory');
+  }
+
+  async function loadArchiveIndex() {
+    return loadJson('resultados_archive/index.json', 'archive');
+  }
+
+  async function loadHistoryAnalysis() {
+    return loadJson('v4_history_analysis.json', 'analysis');
   }
 
   function topList(items, emptyText) {
@@ -41,21 +53,38 @@
     return records.length ? records[records.length - 1] : null;
   }
 
-  function renderEmpty(jsonData) {
+  function statusChip(exported, analysis) {
+    if (exported?.memory_prior_applied === true) {
+      return '<span class="taste-chip taste-chip-ok">prior aplicado antes de Monte Carlo</span>';
+    }
+    if (exported?.adjustment_mode === 'pre_monte_carlo_memory_prior') {
+      return '<span class="taste-chip taste-chip-warn">prior elegible</span>';
+    }
+    if (analysis?.summary?.snapshots_imported) {
+      return '<span class="taste-chip taste-chip-warn">prior no aplicado</span>';
+    }
+    return '<span class="taste-chip taste-chip-warn">Sin historico importado</span>';
+  }
+
+  function renderEmpty(jsonData, archiveIndex, analysis) {
     const node = $('feedback-memory-panel');
     if (!node) return;
     const exported = jsonData?.feedback_memory;
+    const entries = Array.isArray(archiveIndex?.entries) ? archiveIndex.entries : [];
+    const summary = analysis?.summary || {};
     node.innerHTML = `
       <div class="taste-card-heading">
         <div>
-          <p class="taste-eyebrow">Memoria de predicciones</p>
-          <h3>Aun no hay examenes calificados</h3>
+          <p class="taste-eyebrow">Memoria inteligente</p>
+          <h3>Prior no aplicado</h3>
         </div>
-        <span class="taste-chip taste-chip-warn">Pendiente</span>
+        ${statusChip(exported, analysis)}
       </div>
-      <p class="mt-3 text-sm leading-6 text-slate-300">Se generara cuando el runner califique un resultados.json anterior contra un sorteo real ya revelado en el CSV.</p>
+      <p class="mt-3 text-sm leading-6 text-slate-300">El runner puede importar historico Git y calificarlo contra CSV revelado. Si falta evidencia real suficiente, solo se muestra diagnostico.</p>
       <div class="bento-status-grid mt-4">
-        <article class="taste-metric"><span>Records usados</span><b>${fmt(exported?.records_used, 0)}</b></article>
+        <article class="taste-metric"><span>Snapshots indexados</span><b>${fmt(entries.length, 0)}</b></article>
+        <article class="taste-metric"><span>Records reales</span><b>${fmt(summary.records_real_used ?? exported?.valid_real_records_used, 0)}</b></article>
+        <article class="taste-metric"><span>Omitidos</span><b>${fmt(summary.snapshots_omitted, 0)}</b></article>
         <article class="taste-metric"><span>Ajuste</span><b>${esc(exported?.adjustment_mode || 'diagnostico pendiente')}</b></article>
       </div>
       <div class="taste-panel-muted mt-4">
@@ -65,15 +94,18 @@
       <a class="taste-ghost mt-4" href="${HISTORY_URL}" target="_blank" rel="noopener">Ver historial resultados.json</a>`;
   }
 
-  function renderMemory(memory, jsonData) {
+  function renderMemory(memory, jsonData, archiveIndex, analysis) {
     const node = $('feedback-memory-panel');
     if (!node) return;
     if (!memory || !Array.isArray(memory.records) || !memory.records.length) {
-      renderEmpty(jsonData);
+      renderEmpty(jsonData, archiveIndex, analysis);
       return;
     }
     const aggregate = memory.aggregate || {};
     const exported = jsonData?.feedback_memory || {};
+    const audit = jsonData?.memory_prior_audit || {};
+    const summary = analysis?.summary || jsonData?.history_analysis_summary || {};
+    const entries = Array.isArray(archiveIndex?.entries) ? archiveIndex.entries : [];
     const last = latestRecord(memory) || {};
     const over = Object.entries(aggregate.overestimated_numbers || {});
     const under = Object.entries(aggregate.underestimated_numbers || {});
@@ -83,13 +115,17 @@
           <p class="taste-eyebrow">Memoria de predicciones</p>
           <h3>Examenes calificados contra CSV real</h3>
         </div>
-        <span class="taste-chip taste-chip-ok">${esc(exported.adjustment_mode || 'diagnostico')}</span>
+        ${statusChip(exported, analysis)}
       </div>
       <div class="bento-status-grid mt-4">
         <article class="taste-metric"><span>Records</span><b>${fmt(aggregate.records_count, 0)}</b></article>
+        <article class="taste-metric"><span>Records reales</span><b>${fmt(aggregate.valid_real_records_count ?? exported.valid_real_records_used, 0)}</b></article>
+        <article class="taste-metric"><span>Snapshots</span><b>${fmt(entries.length, 0)}</b></article>
+        <article class="taste-metric"><span>Fuerza</span><b>${fmt(exported.memory_strength ?? audit.memory_strength, 2)}</b></article>
         <article class="taste-metric"><span>Ultima prediccion</span><b>${esc(last.prediction_draw)}</b></article>
         <article class="taste-metric"><span>Ultimo real</span><b>${esc(last.target_draw)}</b></article>
         <article class="taste-metric"><span>Best hits</span><b>${fmt(aggregate.best_hits_seen, 0)}</b></article>
+        <article class="taste-metric"><span>Omitidos</span><b>${fmt(summary.snapshots_omitted, 0)}</b></article>
       </div>
       <div class="grid gap-3 mt-4 lg:grid-cols-2">
         <article class="taste-panel-muted">
@@ -102,6 +138,11 @@
         </article>
       </div>
       <div class="taste-panel-muted mt-4">
+        <p class="taste-eyebrow">Impacto del prior</p>
+        <p>${exported.memory_prior_applied === true ? 'Prior aplicado antes de Monte Carlo.' : 'Prior no aplicado; la memoria quedo en diagnostico.'}</p>
+        <p class="mt-2 text-xs text-slate-400">Cambios por numero: ${fmt(exported.before_after_summary?.number_scores_changed ?? audit.number_prior?.length, 0)} · max delta ${fmt(exported.before_after_summary?.max_delta_seen, 6)}</p>
+      </div>
+      <div class="taste-panel-muted mt-4">
         <p class="taste-eyebrow">Nota anti-leakage</p>
         <p>${esc(exported.note || 'Esta memoria mide errores de predicciones pasadas; no es probabilidad garantizada.')}</p>
       </div>
@@ -109,8 +150,8 @@
   }
 
   async function render(jsonData) {
-    const memory = await loadMemory();
-    renderMemory(memory, jsonData || window.FISICAPAPA_WEB_V2?.jsonData || null);
+    const [memory, archiveIndex, analysis] = await Promise.all([loadMemory(), loadArchiveIndex(), loadHistoryAnalysis()]);
+    renderMemory(memory, jsonData || window.FISICAPAPA_WEB_V2?.jsonData || null, archiveIndex, analysis);
   }
 
   document.addEventListener('fisicapapa:v42-ready', event => render(event.detail?.jsonData));

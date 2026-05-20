@@ -183,14 +183,13 @@ py -X utf8 .\local_cruncher_v4_2_calibrated.py
 Menu del runner calibrado:
 
 ```txt
-[1] Ejecutar pipeline V4.2 completo
+[1] Ejecutar pipeline V4.3 completo
 [2] Inspeccionar resultados.json
-[3] Actualizar memoria de predicciones / calificar examenes
-[4] Sincronizar resultados con GitHub
-[5] Pipeline + memoria + GitHub sync
+[3] Sincronizar resultados con GitHub
+[4] Salir
 ```
 
-La opcion `[1]` pregunta al final si quieres subir resultados a GitHub. La opcion `[5]` ejecuta pipeline y sync porque fue elegida explicitamente.
+La opcion `[1]` intenta importar historico, calificar memoria y correr el pipeline normal. Al final pregunta si quieres subir resultados a GitHub.
 
 Subir resultados manualmente:
 
@@ -216,15 +215,40 @@ CODEX_HANDOFF_V4_2.md
 
 Ese archivo manda sobre notas historicas: V4.2-only, no V3, no reglas nuevas dentro del cruncher sin validacion OOS.
 
-## Pipeline V4.3 de memoria tipo examen
+## Pipeline V4.3.1 de memoria tipo examen
 
-V4.3 no cambia el runner oficial ni crea otro programa principal. El flujo sigue entrando por:
+V4.3.1 no cambia el runner oficial ni crea otro programa principal. El flujo sigue entrando por:
 
 ```powershell
 py -X utf8 .\local_cruncher_v4_2_calibrated.py
 ```
 
-La memoria persistente vive en `v4_feedback_memory.py` y, cuando existe al menos un examen real calificado, en `v4_feedback_memory.json`.
+Menu activo:
+
+```txt
+[1] Ejecutar pipeline V4.3 completo
+[2] Inspeccionar resultados.json
+[3] Sincronizar resultados con GitHub
+[4] Salir
+```
+
+La opcion `[1]` hace automaticamente:
+
+```txt
+git pull seguro si aplica
+importacion historica de resultados.json con git log/git show
+archivo local pre-run en resultados_archive/
+deteccion de CSV revelado
+calificacion de snapshots posibles
+analisis historico crudo
+construccion de memory_prior
+hook pre-Monte-Carlo si hay evidencia suficiente
+pipeline normal
+auditoria en resultados.json
+pregunta de sync a GitHub
+```
+
+La memoria persistente vive en `v4_feedback_memory.py` y, cuando existe al menos un examen real calificado, en `v4_feedback_memory.json`. El analisis crudo vive en `v4_history_analysis.json` cuando puede generarse.
 
 Modelo mental:
 
@@ -232,6 +256,8 @@ Modelo mental:
 resultados.json historico = prediccion pasada del cruncher
 CSV historico actualizado = verdad revelada
 v4_feedback_memory.json = libreta de calificaciones
+v4_history_analysis.json = diagnostico de errores historicos
+memory_prior = sesgo suave pre-Monte-Carlo
 ```
 
 Reglas anti-leakage:
@@ -240,7 +266,27 @@ Reglas anti-leakage:
 - Para calificar una prediccion 4214 contra un target 4215, el CSV ya debe contener 4215 como sorteo revelado.
 - Nunca usar 4215 para generar la prediccion 4215.
 - Si no hay sorteo target posterior en el CSV, la memoria muestra warning y no inventa resultados.
-- Si hay menos de 3 records reales calificados, la memoria queda en modo diagnostico y no altera ranking ni score.
+- Si hay menos de 3 records reales unicos calificados, la memoria queda en modo diagnostico y no altera simulacion.
+- Records mock solo sirven para pruebas y nunca activan memoria aplicada en uso normal.
+- `resultados_archive/index.json` es inventario tecnico: no es verdad, no es scoring y no activa aprendizaje.
+
+Modos:
+
+```txt
+diagnostic_only                 sin prior aplicado
+pre_monte_carlo_memory_prior    prior instalado antes de Monte Carlo
+```
+
+Fuerza progresiva del prior:
+
+```txt
+3-4 records reales: 25%
+5-7 records reales: 50%
+8-10 records reales: 75%
+10+ records reales: 100%
+```
+
+El ajuste maximo absoluto por numero es +/-5%. El prior no elimina numeros, no fuerza numeros, no toca el entrenamiento profundo y no reemplaza el modelo base.
 
 ## GitHub sync local
 
@@ -255,7 +301,11 @@ git commit -m "Update V4.3 results, memory, and dashboard"
 git push origin rama-actual
 ```
 
-Si no hay cambios, evita commit vacio. Si `git` no existe o el directorio no es repo, muestra error claro y no rompe el pipeline.
+Si no hay cambios, evita commit vacio. Si `git` no existe, no hay autenticacion o el directorio no es repo, muestra warning claro y no rompe el pipeline.
+
+### GitHub Desktop como fallback
+
+El runner no guarda tokens, no pide contrasenas y no intenta login web. Si Git CLI no puede pushear, deja los archivos generados en el working tree para abrir GitHub Desktop, revisar cambios, commitear y hacer push manual.
 
 ## Historial real de resultados.json
 
@@ -265,14 +315,20 @@ GitHub conserva las versiones anteriores de `resultados.json` por commit:
 https://github.com/EdgarBravo99/fisicapapa/commits/main/resultados.json
 ```
 
-Para recuperar manualmente un snapshot:
+El runner importa automaticamente snapshots con:
 
 ```powershell
-git log -- resultados.json
+git log --format=%H -- resultados.json
+git show COMMIT_SHA:resultados.json
+```
+
+Tambien puedes recuperar manualmente un snapshot si necesitas auditar un commit especifico:
+
+```powershell
 git show COMMIT_SHA:resultados.json > resultados_archive/resultados_manual_COMMIT.json
 ```
 
-Luego, con el CSV ya actualizado con el sorteo posterior, usa la opcion `[3]` del runner para calificar ese snapshot.
+Los snapshots duplicados se deduplican por `prediction_draw`, `target_draw`, `game_mode`, `snapshot_source` y `commit_sha` o hash de contenido. Duplicados no cuentan doble para activar memoria.
 
 ## Pruebas recomendadas
 
@@ -288,15 +344,16 @@ Revisar Top combinaciones, Top numeros, Fisica, Memoria y Auditor
 Memoria:
 
 ```txt
-Guardar o recuperar un resultados.json historico en resultados_archive/
 Actualizar el CSV con el sorteo posterior real
-Ejecutar opcion [3] del runner calibrado
+Ejecutar opcion [1] del runner calibrado
 Confirmar que v4_feedback_memory.json se crea solo si se califico un record real
+Confirmar que con 0-2 records el modo es diagnostic_only
+Confirmar que con 3+ records reales el prior se instala antes de Monte Carlo
 ```
 
 Sync:
 
 ```txt
-Ejecutar opcion [4] para subir cambios ya generados
-Ejecutar opcion [5] para pipeline + memoria + sync
+Ejecutar opcion [3] para subir cambios ya generados
+O aceptar la pregunta de sync al final de opcion [1]
 ```
