@@ -197,7 +197,7 @@
       : status === 'Revisar'
         ? 'border-amber-400/40 bg-amber-400/10 text-amber-100'
         : 'border-emerald-400/40 bg-emerald-400/10 text-emerald-100';
-    return `<article class="rounded-2xl border ${tone} p-4">
+    return `<article class="quant-metric rounded-2xl border ${tone} p-4">
       <p class="text-[10px] uppercase tracking-[0.22em] opacity-75">${esc(label)}</p>
       <p class="mt-2 text-lg font-black">${esc(value)}</p>
       ${detail ? `<p class="mt-1 text-xs opacity-80">${esc(detail)}</p>` : ''}
