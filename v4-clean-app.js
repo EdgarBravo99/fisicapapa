@@ -215,9 +215,9 @@
 
   function bar(label, value, colorClass) {
     const width = clamp(value);
-    return `<div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+    return `<div class="component-meter rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
       <div class="flex items-center justify-between gap-3"><span class="text-xs uppercase tracking-[0.2em] text-slate-500">${esc(label)}</span><span class="font-black ${colorClass}">${fmt(value)}</span></div>
-      <div class="mt-3 h-3 overflow-hidden rounded-full bg-slate-800"><div class="h-full rounded-full ${colorClass.replace('text-', 'bg-')}" style="width:${width}%"></div></div>
+      <div class="quant-progress mt-3"><div class="${colorClass.replace('text-', 'bg-')}" style="width:${width}%"></div></div>
     </div>`;
   }
 
@@ -272,20 +272,20 @@
     if (!el) return;
     const gravity = result.components.gravityPhysics;
     const structural = result.components.structuralBalance;
-    const suggestionHtml = suggestion ? `<div class="rounded-2xl border border-violet-400/40 bg-violet-500/10 p-4">
+    const suggestionHtml = suggestion ? `<div class="decision-card rounded-2xl border border-violet-400/40 bg-violet-500/10 p-4">
       <p class="text-xs uppercase tracking-[0.22em] text-violet-300">Asistente de reemplazo</p>
       <p class="mt-2 text-sm text-slate-200">Cambiar <b class="text-red-300">${suggestion.remove}</b> por <b class="text-emerald-300">${suggestion.add}</b> mejora ${fmt(suggestion.gain)} puntos netos. Transformer candidato: ${fmt(suggestion.transformer)}. Nueva combinación: <span class="text-cyan-200">${suggestion.next.join(' · ')}</span></p>
-      <button class="mt-3 rounded-xl border border-violet-300/30 bg-violet-400/10 px-3 py-2 text-xs font-bold text-violet-100" id="btn-apply-suggestion">Aplicar sugerencia</button>
+      <button class="quant-ghost-button mt-3 rounded-xl border border-violet-300/30 bg-violet-400/10 px-3 py-2 text-xs font-bold text-violet-100" id="btn-apply-suggestion">Aplicar sugerencia</button>
     </div>` : '';
 
-    el.innerHTML = `<div class="grid gap-4">
-      <div class="rounded-3xl border border-slate-800 bg-slate-900/70 p-5">
-        <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div><p class="text-xs uppercase tracking-[0.22em] text-slate-500">Score Neto V4</p><p class="mt-1 text-4xl font-black text-cyan-200">${fmt(result.netScoreV4)}</p></div>
-          <div class="text-sm text-slate-400">${result.numbers.join(' · ')}</div>
+    el.innerHTML = `<div class="manual-result-board grid gap-4">
+      <div class="decision-card manual-score-panel rounded-3xl border border-slate-800 bg-slate-900/70 p-5">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div><p class="text-xs uppercase tracking-[0.22em] text-slate-500">Score Neto V4</p><p class="score-orb mt-3 text-4xl font-black text-cyan-200">${fmt(result.netScoreV4)}</p></div>
+          <div><p class="text-xs uppercase tracking-[0.22em] text-slate-500">Combinacion evaluada</p><div class="combo-ball-row mt-3">${result.numbers.map(n => `<span class="quant-number-ball">${n}</span>`).join('')}</div></div>
         </div>
       </div>
-      <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+      <div class="component-meter-grid grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         ${bar('Modelo', result.summary.modelScore, 'text-cyan-300')}
         ${bar('Estructura', result.summary.structuralBalance, 'text-violet-300')}
         ${bar('Física', result.summary.gravityPhysics, 'text-emerald-300')}
@@ -293,12 +293,12 @@
       </div>
       ${gravityAlert(result.gravityProfile)}
       <div class="grid gap-4 lg:grid-cols-2">
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 text-sm text-slate-300">
+        <div class="decision-card rounded-2xl border border-slate-800 bg-slate-900/60 p-4 text-sm text-slate-300">
           <p class="font-black text-white">Balance estructural</p>
           <p class="mt-2">${esc(structural.profile)}</p>
           <p class="mt-1">Suma: ${structural.sum} · Consecutivos: ${structural.consecutivePairs}</p>
         </div>
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 text-sm text-slate-300">
+        <div class="decision-card rounded-2xl border border-slate-800 bg-slate-900/60 p-4 text-sm text-slate-300">
           <p class="font-black text-white">Física de gravedad</p>
           <p class="mt-2">Perfil: <b>${esc(result.gravityProfile)}</b></p>
           <p class="mt-1">Peso efectivo combo: ${fmt(gravity.avgComboEffectiveWeight, 4)}g · Promedio sistema: ${fmt(gravity.avgEffectiveWeight, 4)}g</p>
