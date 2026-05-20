@@ -20,6 +20,7 @@ from v4_feedback_memory import (  # noqa: E402
     memory_strength_from_records,
     rebuild_aggregate,
 )
+from tools.v4_history_analyzer import analyze_history  # noqa: E402
 
 
 def _record(index: int, source: str = "git_history") -> dict:
@@ -61,6 +62,58 @@ def run_smoke() -> dict:
         temp_path = Path(tmp) / "empty.json"
         temp_path.write_text("", encoding="utf-8")
         results["empty_snapshot_fixture"] = temp_path.exists()
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        archive = root / "resultados_archive"
+        archive.mkdir()
+        csv_path = root / "historial.csv"
+        csv_path.write_text(
+            "sorteo,n1,n2,n3,n4,n5,n6\n"
+            "4215,1,8,16,22,33,44\n"
+            "4216,2,9,17,23,34,45\n",
+            encoding="utf-8",
+        )
+        seed = [
+            {"number": number, "score": 85 if number in {16, 22, 33} else 35, "main_driver": ["physical", "transformer", "xgboost", "fourier", "graph"][number % 5]}
+            for number in range(1, 57)
+        ]
+        for index in range(3):
+            snapshot = {
+                "prediction_draw": "4214",
+                "game_mode": "revancha",
+                "model_version": "V4.2-oos-feedback-loop",
+                "score_kind": "v4_2_deep_stacking_meta_score",
+                "csv_path": str(csv_path),
+                "snapshot_metadata": {"source": "git_history", "commit_sha": f"sha-{index}", "short_sha": f"sha-{index}"},
+                "top_combinations": [
+                    {"numbers": [16, 19, 25, 29, 45, 50], "score_percent": 88},
+                    {"numbers": [1, 8, 16, 22, 33, 44], "score_percent": 45},
+                ],
+                "generator_pool": [
+                    {"numbers": [16, 19, 25, 29, 45, 50], "score_percent": 88},
+                    {"numbers": [16, 19, 25, 29, 45, 50], "score_percent": 84},
+                    {"numbers": [1, 8, 16, 22, 33, 44], "score_percent": 45},
+                ],
+                "number_scores": {"16": 90, "22": 20, "50": 95, "1": 25},
+                "manual_suggestion_seed": seed,
+                "walk_forward": {"avg_hits": 2.4, "avg_hits_top10": 2.2},
+            }
+            (archive / f"resultados_git_4214_sha-{index}.json").write_text(json.dumps(snapshot), encoding="utf-8")
+        analysis_path = root / "analysis.json"
+        analysis = analyze_history(archive, csv_path=csv_path, output_path=analysis_path)
+        mistakes = analysis["mistakes_summary"]
+        required = [
+            "bad_score_buckets",
+            "top_combo_failure_patterns",
+            "expert_miscalibration",
+            "monte_carlo_diversity_issues",
+            "walk_forward_gap",
+        ]
+        results["history_analysis_non_empty"] = all(bool(mistakes.get(key)) for key in required)
+        stale_prior = compute_memory_prior(memory, None)
+        results["stale_analysis_failure_forces_diagnostic"] = (
+            stale_prior["mode"] == "diagnostic_only" and not stale_prior["eligible"]
+        )
     return results
 
 
@@ -74,6 +127,8 @@ def main() -> int:
         and result["3"]["eligible"]
         and result["max_delta_ok"]
         and result["mock_blocked"]
+        and result["history_analysis_non_empty"]
+        and result["stale_analysis_failure_forces_diagnostic"]
     )
     return 0 if expected else 1
 

@@ -347,6 +347,8 @@ def prepare_history_memory_prior() -> tuple[dict[str, Any], dict[str, Any]]:
     for warning in csv_warnings:
         print("warning:", warning)
         status["warnings"].append(warning)
+    analysis_data = None
+    analysis_generated = False
     if csv_path:
         status["csv_path"] = str(csv_path)
         memory_update = update_feedback_memory_from_archive(
@@ -366,22 +368,19 @@ def prepare_history_memory_prior() -> tuple[dict[str, Any], dict[str, Any]]:
         )
         try:
             analysis = analyze_history("resultados_archive", csv_path=csv_path, output_path="v4_history_analysis.json")
+            analysis_data = analysis
+            analysis_generated = True
             status["history_analysis"] = analysis.get("summary", {})
         except Exception as exc:
             warning = f"No se pudo generar v4_history_analysis.json: {exc}"
             print("warning:", warning)
             status["warnings"].append(warning)
+            status["history_analysis_failed"] = True
     else:
         print("feedback_memory: sin CSV revelado; queda diagnostic_only.")
+        status["history_analysis_failed"] = True
 
     memory = load_feedback_memory("v4_feedback_memory.json")
-    analysis_data = None
-    history_path = Path("v4_history_analysis.json")
-    if history_path.exists():
-        try:
-            analysis_data = json.loads(history_path.read_text(encoding="utf-8"))
-        except Exception as exc:
-            status["warnings"].append(f"Analisis historico ilegible: {exc}")
     prior = compute_memory_prior(memory, analysis_data)
     prior["history_import"] = {
         "attempted": True,
@@ -393,6 +392,11 @@ def prepare_history_memory_prior() -> tuple[dict[str, Any], dict[str, Any]]:
         prior["eligible"] = False
         prior["mode"] = "diagnostic_only"
         prior["reason"] = "Sin CSV revelado; no se instala prior."
+    elif not analysis_generated:
+        prior["eligible"] = False
+        prior["mode"] = "diagnostic_only"
+        prior["reason"] = "Analisis historico no generado en esta corrida; no se instala prior."
+        prior["history_analysis_failed"] = True
     print(f"Memory prior: mode={prior.get('mode')} eligible={prior.get('eligible')} reason={prior.get('reason')}")
     return prior, status
 

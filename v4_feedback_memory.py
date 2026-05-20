@@ -657,6 +657,8 @@ def compute_memory_prior(
 ) -> dict[str, Any]:
     aggregate = rebuild_aggregate(memory)
     valid_count = int(aggregate.get("valid_real_records_count") or 0)
+    if history_analysis is None:
+        return {"eligible": False, "mode": "diagnostic_only", "reason": "Analisis historico no disponible; no se instala prior.", "adjustments": {}, "records_used": valid_count}
     analysis = history_analysis or {}
     overfit = analysis.get("mistakes_summary", {}).get("overfitting_risk", {})
     insufficient = bool(analysis.get("evidence_insufficient") or overfit.get("level") == "high")
