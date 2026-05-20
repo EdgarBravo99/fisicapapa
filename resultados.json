@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-05-18T07:40:18.547406+00:00",
+  "last_update": "2026-05-20T19:44:32.912068+00:00",
   "source": "local_cruncher_v4_2_oos_feedback_loop",
   "model_version": "V4.2-oos-feedback-loop",
   "game_mode": "revancha",
@@ -53504,5 +53504,104 @@
   ],
   "total_mc_evaluated": 4000000,
   "max_net_score_found": 0.82475992,
-  "runtime_seconds": 653.04
+  "runtime_seconds": 770.18,
+  "feedback_memory": {
+    "enabled": false,
+    "version": "V4.3-persistent-exam-memory",
+    "records_used": 0,
+    "valid_real_records_used": 0,
+    "adjustment_mode": "diagnostic_only",
+    "memory_strength": 0,
+    "max_number_adjustment": 0.05,
+    "max_combo_adjustment": 0.05,
+    "last_graded_prediction_draw": null,
+    "last_graded_target_draw": null,
+    "overestimated_numbers_top": [],
+    "underestimated_numbers_top": [],
+    "applied_adjustments": {},
+    "memory_prior_applied": false,
+    "note": "Memoria basada en calificacion de predicciones pasadas contra sorteos reales ya revelados. No usa resultados.json como verdad y no mira el futuro.",
+    "before_after_summary": {
+      "number_scores_changed": 0,
+      "max_delta_seen": 0,
+      "numbers_up": [],
+      "numbers_down": []
+    }
+  },
+  "history_analysis_summary": {
+    "snapshots_imported": 4,
+    "snapshots_omitted": 4,
+    "records_real_used": 0,
+    "records_duplicates_ignored": 0,
+    "evidence_insufficient": true,
+    "overfitting_risk_level": "high"
+  },
+  "memory_prior_audit": {
+    "mode": "diagnostic_only",
+    "memory_prior_applied": false,
+    "eligible": false,
+    "records_used": 0,
+    "memory_strength": 0,
+    "max_number_adjustment": 0.05,
+    "number_prior": [],
+    "reason": "Se requieren 3 records reales unicos; hay 0.",
+    "workflow_status": {
+      "git_pull": {
+        "attempted": false,
+        "ok": false,
+        "branch": "main",
+        "warnings": [
+          "Working tree con cambios locales; se omite pull --rebase para no pisar trabajo."
+        ]
+      },
+      "history_import": {
+        "attempted": true,
+        "snapshots_imported": 1,
+        "snapshots_existing": 13,
+        "snapshots_omitted": 0,
+        "imported_paths": [
+          "resultados_archive\\resultados_git_4214_65385d728faa.json"
+        ],
+        "warnings": []
+      },
+      "archive": "resultados_archive\\resultados_4214_20260520_133142.json",
+      "csv_path": "revancha.csv",
+      "memory_update": {
+        "changed": false,
+        "records_new": 0,
+        "csv_path": "revancha.csv",
+        "warnings": [],
+        "omitted": [
+          {
+            "path": "resultados_archive\\resultados_4214_20260520_132155.json",
+            "reason": "sin target posterior para 4214"
+          },
+          {
+            "path": "resultados_archive\\resultados_4214_20260520_132734.json",
+            "reason": "sin target posterior para 4214"
+          },
+          {
+            "path": "resultados_archive\\resultados_4214_20260520_133142.json",
+            "reason": "sin target posterior para 4214"
+          },
+          {
+            "path": "resultados_archive\\resultados_git_4214_65385d728faa.json",
+            "reason": "sin target posterior para 4214"
+          }
+        ],
+        "duplicates": []
+      },
+      "history_analysis": {
+        "snapshots_imported": 4,
+        "snapshots_omitted": 4,
+        "records_real_used": 0,
+        "records_duplicates_ignored": 0,
+        "evidence_insufficient": true,
+        "overfitting_risk_level": "high"
+      },
+      "warnings": [
+        "Working tree con cambios locales; se omite pull --rebase para no pisar trabajo."
+      ]
+    }
+  }
 }
