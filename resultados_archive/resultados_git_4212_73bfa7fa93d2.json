@@ -1,0 +1,3354 @@
+{
+  "last_update": "2026-05-15T20:35:35.395193+00:00",
+  "source": "local_cruncher_python_gpu",
+  "drift_detected": true,
+  "hindsight_log": "Auditoría inversa del sorteo 4212 (2026-05-13)\nCombinación real: 9 15 22 27 47 49\nVentana usada antes del sorteo: 120 sorteos\nDrift detectado: True | KL=0.287163 | H15=5.3540 | H120=5.7626\nNúmero 9: ganador_componente=Fourier(0.3742); Fourier=0.3742; Bayes=0.0991; XGBoostRaw=0.098132; XGBoostContrast=0.0307; Ensemble=0.0260; Rank=54/56; PeriodoFFT=2.26; Resultado=NO_RASTREADO\nNúmero 15: ganador_componente=Fourier(0.7373); Fourier=0.7373; Bayes=0.3360; XGBoostRaw=0.110593; XGBoostContrast=0.6695; Ensemble=0.8643; Rank=7/56; PeriodoFFT=120.00; Resultado=RASTREADO\nNúmero 22: ganador_componente=XGBoost(0.7399); Fourier=0.0951; Bayes=0.0255; XGBoostRaw=0.111967; XGBoostContrast=0.7399; Ensemble=0.3784; Rank=38/56; PeriodoFFT=2.45; Resultado=NO_RASTREADO\nNúmero 27: ganador_componente=Fourier(0.7792); Fourier=0.7792; Bayes=0.4008; XGBoostRaw=0.100416; XGBoostContrast=0.1478; Ensemble=0.5232; Rank=27/56; PeriodoFFT=2.79; Resultado=NO_RASTREADO\nNúmero 47: ganador_componente=Fourier(0.7612); Fourier=0.7612; Bayes=0.4014; XGBoostRaw=0.111698; XGBoostContrast=0.7261; Ensemble=0.9617; Rank=5/56; PeriodoFFT=6.32; Resultado=RASTREADO\nNúmero 49: ganador_componente=Fourier(0.4634); Fourier=0.4634; Bayes=0.1448; XGBoostRaw=0.104626; XGBoostContrast=0.3636; Ensemble=0.3605; Rank=40/56; PeriodoFFT=2.55; Resultado=NO_RASTREADO\nConfianza de ruta inversa: 51.90%",
+  "procedure_log": "Walk-Forward: 36 pasos, avg_hits=0.6389, avg_mse=0.252542. Monte Carlo: 1,000,000 combinaciones evaluadas; objetivo=10 combos >= 70%. La web no recalcula: consume generator_pool, top_combinations, number_scores y manual_suggestion_seed desde este JSON.",
+  "max_confidence_found": 72.6087,
+  "total_mc_evaluated": 1000000,
+  "number_scores": {
+    "1": 36.4777,
+    "2": 63.8974,
+    "3": 54.3361,
+    "4": 65.2239,
+    "5": 93.5218,
+    "6": 27.7896,
+    "7": 48.39,
+    "8": 47.5324,
+    "9": 10.8491,
+    "10": 21.3767,
+    "11": 53.9252,
+    "12": 6.0172,
+    "13": 14.2341,
+    "14": 13.0109,
+    "15": 60.6694,
+    "16": 26.1902,
+    "17": 55.7651,
+    "18": 83.7533,
+    "19": 33.5574,
+    "20": 35.8399,
+    "21": 44.6158,
+    "22": 27.5332,
+    "23": 7.3771,
+    "24": 40.4122,
+    "25": 48.3535,
+    "26": 51.4997,
+    "27": 55.1373,
+    "28": 43.1191,
+    "29": 54.2689,
+    "30": 37.0208,
+    "31": 53.4819,
+    "32": 15.7574,
+    "33": 31.401,
+    "34": 46.0386,
+    "35": 50.1649,
+    "36": 51.5193,
+    "37": 74.9378,
+    "38": 52.456,
+    "39": 74.2276,
+    "40": 63.8,
+    "41": 7.1264,
+    "42": 0.0,
+    "43": 47.8633,
+    "44": 69.7542,
+    "45": 52.1407,
+    "46": 83.1552,
+    "47": 94.1499,
+    "48": 66.1354,
+    "49": 37.4534,
+    "50": 100.0,
+    "51": 55.8158,
+    "52": 30.2209,
+    "53": 20.6103,
+    "54": 64.3663,
+    "55": 57.4134,
+    "56": 65.2935
+  },
+  "manual_suggestion_seed": [
+    {
+      "number": 50,
+      "score": 100.0,
+      "winner_component": "Fourier",
+      "winner_component_score": 1.0,
+      "fourier": 1.0,
+      "bayes": 1.0,
+      "xgboost": 0.237214,
+      "xgboost_raw": 0.10376097,
+      "period_fft": 2.6667
+    },
+    {
+      "number": 47,
+      "score": 94.1499,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.801251,
+      "fourier": 0.801251,
+      "bayes": 0.462388,
+      "xgboost": 0.724599,
+      "xgboost_raw": 0.11217763,
+      "period_fft": 3.5294
+    },
+    {
+      "number": 5,
+      "score": 93.5218,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.762244,
+      "fourier": 0.762244,
+      "bayes": 0.48794,
+      "xgboost": 0.722675,
+      "xgboost_raw": 0.11214442,
+      "period_fft": 5.4545
+    },
+    {
+      "number": 18,
+      "score": 83.7533,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.819031,
+      "fourier": 0.819031,
+      "bayes": 0.511999,
+      "xgboost": 0.527036,
+      "xgboost_raw": 0.10876591,
+      "period_fft": 5.4545
+    },
+    {
+      "number": 46,
+      "score": 83.1552,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.735391,
+      "fourier": 0.735391,
+      "bayes": 0.391997,
+      "xgboost": 0.673219,
+      "xgboost_raw": 0.11129035,
+      "period_fft": 2.6667
+    },
+    {
+      "number": 37,
+      "score": 74.9378,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.757145,
+      "fourier": 0.603541,
+      "bayes": 0.258778,
+      "xgboost": 0.757145,
+      "xgboost_raw": 0.11273969,
+      "period_fft": 6.0
+    },
+    {
+      "number": 39,
+      "score": 74.2276,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.706672,
+      "fourier": 0.631604,
+      "bayes": 0.284897,
+      "xgboost": 0.706672,
+      "xgboost_raw": 0.11186806,
+      "period_fft": 2.6667
+    },
+    {
+      "number": 44,
+      "score": 69.7542,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.721803,
+      "fourier": 0.721803,
+      "bayes": 0.330038,
+      "xgboost": 0.544846,
+      "xgboost_raw": 0.10907347,
+      "period_fft": 2.7273
+    },
+    {
+      "number": 48,
+      "score": 66.1354,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.641951,
+      "fourier": 0.641951,
+      "bayes": 0.277861,
+      "xgboost": 0.591864,
+      "xgboost_raw": 0.10988544,
+      "period_fft": 2.0339
+    },
+    {
+      "number": 56,
+      "score": 65.2935,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.745461,
+      "fourier": 0.52573,
+      "bayes": 0.172837,
+      "xgboost": 0.745461,
+      "xgboost_raw": 0.11253791,
+      "period_fft": 2.3077
+    },
+    {
+      "number": 4,
+      "score": 65.2239,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.641677,
+      "fourier": 0.574386,
+      "bayes": 0.258778,
+      "xgboost": 0.641677,
+      "xgboost_raw": 0.11074565,
+      "period_fft": 2.5
+    },
+    {
+      "number": 54,
+      "score": 64.3663,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.643562,
+      "fourier": 0.643562,
+      "bayes": 0.254996,
+      "xgboost": 0.584283,
+      "xgboost_raw": 0.10975451,
+      "period_fft": 3.3333
+    },
+    {
+      "number": 2,
+      "score": 63.8974,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.650123,
+      "fourier": 0.650123,
+      "bayes": 0.277861,
+      "xgboost": 0.554839,
+      "xgboost_raw": 0.10924604,
+      "period_fft": 2.1053
+    },
+    {
+      "number": 40,
+      "score": 63.8,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.640156,
+      "fourier": 0.557031,
+      "bayes": 0.250967,
+      "xgboost": 0.640156,
+      "xgboost_raw": 0.11071939,
+      "period_fft": 2.3529
+    },
+    {
+      "number": 15,
+      "score": 60.6694,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.737255,
+      "fourier": 0.737255,
+      "bayes": 0.335964,
+      "xgboost": 0.402212,
+      "xgboost_raw": 0.10661032,
+      "period_fft": 120.0
+    },
+    {
+      "number": 55,
+      "score": 57.4134,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.86422,
+      "fourier": 0.295435,
+      "bayes": 0.088115,
+      "xgboost": 0.86422,
+      "xgboost_raw": 0.11458876,
+      "period_fft": 3.0
+    },
+    {
+      "number": 51,
+      "score": 55.8158,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.638872,
+      "fourier": 0.638872,
+      "bayes": 0.260272,
+      "xgboost": 0.463741,
+      "xgboost_raw": 0.10767287,
+      "period_fft": 2.2222
+    },
+    {
+      "number": 17,
+      "score": 55.7651,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.593679,
+      "fourier": 0.51895,
+      "bayes": 0.201895,
+      "xgboost": 0.593679,
+      "xgboost_raw": 0.10991678,
+      "period_fft": 2.1818
+    },
+    {
+      "number": 27,
+      "score": 55.1373,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.813897,
+      "fourier": 0.813897,
+      "bayes": 0.463214,
+      "xgboost": 0.169378,
+      "xgboost_raw": 0.1025895,
+      "period_fft": 2.7907
+    },
+    {
+      "number": 3,
+      "score": 54.3361,
+      "winner_component": "XGBoost",
+      "winner_component_score": 1.0,
+      "fourier": 0.109035,
+      "bayes": 0.027684,
+      "xgboost": 1.0,
+      "xgboost_raw": 0.11693355,
+      "period_fft": 30.0
+    },
+    {
+      "number": 29,
+      "score": 54.2689,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.554345,
+      "fourier": 0.542079,
+      "bayes": 0.204663,
+      "xgboost": 0.554345,
+      "xgboost_raw": 0.10923752,
+      "period_fft": 2.3529
+    },
+    {
+      "number": 11,
+      "score": 53.9252,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.669412,
+      "fourier": 0.669412,
+      "bayes": 0.272755,
+      "xgboost": 0.405931,
+      "xgboost_raw": 0.10667455,
+      "period_fft": 4.0
+    },
+    {
+      "number": 31,
+      "score": 53.4819,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.868629,
+      "fourier": 0.239871,
+      "bayes": 0.06248,
+      "xgboost": 0.868629,
+      "xgboost_raw": 0.11466491,
+      "period_fft": 2.5
+    },
+    {
+      "number": 38,
+      "score": 52.456,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.567432,
+      "fourier": 0.51404,
+      "bayes": 0.18114,
+      "xgboost": 0.567432,
+      "xgboost_raw": 0.10946352,
+      "period_fft": 10.0
+    },
+    {
+      "number": 45,
+      "score": 52.1407,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.556662,
+      "fourier": 0.518382,
+      "bayes": 0.185291,
+      "xgboost": 0.556662,
+      "xgboost_raw": 0.10927753,
+      "period_fft": 4.4444
+    },
+    {
+      "number": 36,
+      "score": 51.5193,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.602292,
+      "fourier": 0.463297,
+      "bayes": 0.165588,
+      "xgboost": 0.602292,
+      "xgboost_raw": 0.11006551,
+      "period_fft": 4.4444
+    },
+    {
+      "number": 26,
+      "score": 51.4997,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.655807,
+      "fourier": 0.655807,
+      "bayes": 0.300727,
+      "xgboost": 0.359149,
+      "xgboost_raw": 0.10586667,
+      "period_fft": 2.9268
+    },
+    {
+      "number": 35,
+      "score": 50.1649,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.699201,
+      "fourier": 0.699201,
+      "bayes": 0.333988,
+      "xgboost": 0.283492,
+      "xgboost_raw": 0.10456015,
+      "period_fft": 4.8
+    },
+    {
+      "number": 7,
+      "score": 48.39,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.627615,
+      "fourier": 0.627615,
+      "bayes": 0.272585,
+      "xgboost": 0.3579,
+      "xgboost_raw": 0.10584509,
+      "period_fft": 3.6364
+    },
+    {
+      "number": 25,
+      "score": 48.3535,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.744772,
+      "fourier": 0.294753,
+      "bayes": 0.07961,
+      "xgboost": 0.744772,
+      "xgboost_raw": 0.112526,
+      "period_fft": 2.1053
+    },
+    {
+      "number": 43,
+      "score": 47.8633,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.513284,
+      "fourier": 0.512271,
+      "bayes": 0.17007,
+      "xgboost": 0.513284,
+      "xgboost_raw": 0.10852844,
+      "period_fft": 4.2857
+    },
+    {
+      "number": 8,
+      "score": 47.5324,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.551577,
+      "fourier": 0.551577,
+      "bayes": 0.182523,
+      "xgboost": 0.471179,
+      "xgboost_raw": 0.10780131,
+      "period_fft": 120.0
+    },
+    {
+      "number": 34,
+      "score": 46.0386,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.615948,
+      "fourier": 0.615948,
+      "bayes": 0.260272,
+      "xgboost": 0.343025,
+      "xgboost_raw": 0.10558823,
+      "period_fft": 7.5
+    },
+    {
+      "number": 21,
+      "score": 44.6158,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.678994,
+      "fourier": 0.314033,
+      "bayes": 0.07961,
+      "xgboost": 0.678994,
+      "xgboost_raw": 0.11139009,
+      "period_fft": 17.1429
+    },
+    {
+      "number": 28,
+      "score": 43.1191,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.750643,
+      "fourier": 0.207961,
+      "bayes": 0.056691,
+      "xgboost": 0.750643,
+      "xgboost_raw": 0.11262739,
+      "period_fft": 20.0
+    },
+    {
+      "number": 24,
+      "score": 40.4122,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.509507,
+      "fourier": 0.40561,
+      "bayes": 0.137839,
+      "xgboost": 0.509507,
+      "xgboost_raw": 0.1084632,
+      "period_fft": 9.2308
+    },
+    {
+      "number": 49,
+      "score": 37.4534,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.530256,
+      "fourier": 0.530256,
+      "bayes": 0.18114,
+      "xgboost": 0.346227,
+      "xgboost_raw": 0.10564351,
+      "period_fft": 2.8571
+    },
+    {
+      "number": 30,
+      "score": 37.0208,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.560531,
+      "fourier": 0.307733,
+      "bayes": 0.100401,
+      "xgboost": 0.560531,
+      "xgboost_raw": 0.10934435,
+      "period_fft": 15.0
+    },
+    {
+      "number": 1,
+      "score": 36.4777,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.570825,
+      "fourier": 0.312418,
+      "bayes": 0.073939,
+      "xgboost": 0.570825,
+      "xgboost_raw": 0.10952211,
+      "period_fft": 8.5714
+    },
+    {
+      "number": 20,
+      "score": 35.8399,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.518519,
+      "fourier": 0.518519,
+      "bayes": 0.157616,
+      "xgboost": 0.350691,
+      "xgboost_raw": 0.1057206,
+      "period_fft": 3.2432
+    },
+    {
+      "number": 19,
+      "score": 33.5574,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.526534,
+      "fourier": 0.304373,
+      "bayes": 0.08528,
+      "xgboost": 0.526534,
+      "xgboost_raw": 0.10875725,
+      "period_fft": 2.7273
+    },
+    {
+      "number": 33,
+      "score": 31.401,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.491645,
+      "fourier": 0.308965,
+      "bayes": 0.08717,
+      "xgboost": 0.491645,
+      "xgboost_raw": 0.10815474,
+      "period_fft": 4.1379
+    },
+    {
+      "number": 52,
+      "score": 30.2209,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.453975,
+      "fourier": 0.453975,
+      "bayes": 0.131364,
+      "xgboost": 0.338275,
+      "xgboost_raw": 0.10550619,
+      "period_fft": 10.0
+    },
+    {
+      "number": 6,
+      "score": 27.7896,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.473887,
+      "fourier": 0.473887,
+      "bayes": 0.13992,
+      "xgboost": 0.283483,
+      "xgboost_raw": 0.10455998,
+      "period_fft": 24.0
+    },
+    {
+      "number": 22,
+      "score": 27.5332,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.538153,
+      "fourier": 0.20952,
+      "bayes": 0.048422,
+      "xgboost": 0.538153,
+      "xgboost_raw": 0.10895789,
+      "period_fft": 2.449
+    },
+    {
+      "number": 16,
+      "score": 26.1902,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.439251,
+      "fourier": 0.439251,
+      "bayes": 0.146031,
+      "xgboost": 0.280467,
+      "xgboost_raw": 0.10450791,
+      "period_fft": 2.8571
+    },
+    {
+      "number": 10,
+      "score": 21.3767,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.448936,
+      "fourier": 0.220565,
+      "bayes": 0.042633,
+      "xgboost": 0.448936,
+      "xgboost_raw": 0.10741719,
+      "period_fft": 3.0
+    },
+    {
+      "number": 53,
+      "score": 20.6103,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.433043,
+      "fourier": 0.209052,
+      "bayes": 0.059172,
+      "xgboost": 0.433043,
+      "xgboost_raw": 0.10714274,
+      "period_fft": 4.8
+    },
+    {
+      "number": 32,
+      "score": 15.7574,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.527159,
+      "fourier": 0.028082,
+      "bayes": 0.015023,
+      "xgboost": 0.527159,
+      "xgboost_raw": 0.10876803,
+      "period_fft": 2.3077
+    },
+    {
+      "number": 13,
+      "score": 14.2341,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.380836,
+      "fourier": 0.380836,
+      "bayes": 0.122769,
+      "xgboost": 0.172727,
+      "xgboost_raw": 0.10264733,
+      "period_fft": 7.5
+    },
+    {
+      "number": 14,
+      "score": 13.0109,
+      "winner_component": "XGBoost",
+      "winner_component_score": 0.520418,
+      "fourier": 0.0,
+      "bayes": 0.0,
+      "xgboost": 0.520418,
+      "xgboost_raw": 0.10865162,
+      "period_fft": 60.0
+    },
+    {
+      "number": 9,
+      "score": 10.8491,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.374155,
+      "fourier": 0.374155,
+      "bayes": 0.099087,
+      "xgboost": 0.149,
+      "xgboost_raw": 0.10223759,
+      "period_fft": 2.2642
+    },
+    {
+      "number": 23,
+      "score": 7.3771,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.368532,
+      "fourier": 0.368532,
+      "bayes": 0.118463,
+      "xgboost": 0.088869,
+      "xgboost_raw": 0.10119919,
+      "period_fft": 5.2174
+    },
+    {
+      "number": 41,
+      "score": 7.1264,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.409318,
+      "fourier": 0.409318,
+      "bayes": 0.099087,
+      "xgboost": 0.072313,
+      "xgboost_raw": 0.10091327,
+      "period_fft": 7.0588
+    },
+    {
+      "number": 12,
+      "score": 6.0172,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.37621,
+      "fourier": 0.37621,
+      "bayes": 0.093704,
+      "xgboost": 0.084279,
+      "xgboost_raw": 0.10111991,
+      "period_fft": 6.0
+    },
+    {
+      "number": 42,
+      "score": 0.0,
+      "winner_component": "Fourier",
+      "winner_component_score": 0.377599,
+      "fourier": 0.377599,
+      "bayes": 0.092628,
+      "xgboost": 0.0,
+      "xgboost_raw": 0.0996645,
+      "period_fft": 8.0
+    }
+  ],
+  "walk_forward": {
+    "window_size": 120,
+    "steps": 36,
+    "avg_hits": 0.6389,
+    "avg_mse": 0.252542,
+    "rows": [
+      {
+        "draw_id": "4177",
+        "date": "2026-02-20",
+        "actual": [
+          1,
+          6,
+          15,
+          24,
+          36,
+          44
+        ],
+        "predicted_top6": [
+          5,
+          54,
+          47,
+          50,
+          18,
+          35
+        ],
+        "hits": 0,
+        "mse": 0.229582,
+        "kl": 0.37132,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4178",
+        "date": "2026-02-22",
+        "actual": [
+          4,
+          8,
+          19,
+          30,
+          44,
+          49
+        ],
+        "predicted_top6": [
+          47,
+          50,
+          18,
+          11,
+          35,
+          5
+        ],
+        "hits": 0,
+        "mse": 0.283766,
+        "kl": 0.35006,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4179",
+        "date": "2026-02-25",
+        "actual": [
+          6,
+          15,
+          26,
+          35,
+          50,
+          53
+        ],
+        "predicted_top6": [
+          47,
+          18,
+          11,
+          39,
+          50,
+          5
+        ],
+        "hits": 1,
+        "mse": 0.291203,
+        "kl": 0.318425,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4180",
+        "date": "2026-02-27",
+        "actual": [
+          13,
+          14,
+          18,
+          21,
+          37,
+          40
+        ],
+        "predicted_top6": [
+          50,
+          47,
+          5,
+          54,
+          18,
+          15
+        ],
+        "hits": 1,
+        "mse": 0.175959,
+        "kl": 0.325476,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4181",
+        "date": "2026-03-01",
+        "actual": [
+          7,
+          15,
+          23,
+          36,
+          43,
+          46
+        ],
+        "predicted_top6": [
+          50,
+          47,
+          5,
+          54,
+          37,
+          18
+        ],
+        "hits": 0,
+        "mse": 0.198027,
+        "kl": 0.363105,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4182",
+        "date": "2026-03-04",
+        "actual": [
+          2,
+          9,
+          17,
+          18,
+          47,
+          51
+        ],
+        "predicted_top6": [
+          47,
+          50,
+          5,
+          18,
+          54,
+          37
+        ],
+        "hits": 2,
+        "mse": 0.200367,
+        "kl": 0.331356,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4183",
+        "date": "2026-03-06",
+        "actual": [
+          4,
+          20,
+          22,
+          27,
+          31,
+          48
+        ],
+        "predicted_top6": [
+          47,
+          5,
+          50,
+          35,
+          18,
+          37
+        ],
+        "hits": 0,
+        "mse": 0.277007,
+        "kl": 0.327419,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4184",
+        "date": "2026-03-08",
+        "actual": [
+          9,
+          15,
+          43,
+          44,
+          45,
+          47
+        ],
+        "predicted_top6": [
+          47,
+          50,
+          5,
+          18,
+          35,
+          37
+        ],
+        "hits": 1,
+        "mse": 0.260696,
+        "kl": 0.250282,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4185",
+        "date": "2026-03-11",
+        "actual": [
+          2,
+          17,
+          20,
+          34,
+          40,
+          43
+        ],
+        "predicted_top6": [
+          50,
+          47,
+          18,
+          35,
+          46,
+          5
+        ],
+        "hits": 0,
+        "mse": 0.179756,
+        "kl": 0.224462,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4186",
+        "date": "2026-03-13",
+        "actual": [
+          4,
+          7,
+          23,
+          34,
+          37,
+          55
+        ],
+        "predicted_top6": [
+          50,
+          18,
+          47,
+          35,
+          46,
+          5
+        ],
+        "hits": 0,
+        "mse": 0.217359,
+        "kl": 0.254898,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4187",
+        "date": "2026-03-15",
+        "actual": [
+          4,
+          5,
+          19,
+          50,
+          52,
+          53
+        ],
+        "predicted_top6": [
+          47,
+          5,
+          50,
+          18,
+          15,
+          46
+        ],
+        "hits": 2,
+        "mse": 0.261532,
+        "kl": 0.226681,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4188",
+        "date": "2026-03-18",
+        "actual": [
+          2,
+          29,
+          31,
+          43,
+          45,
+          52
+        ],
+        "predicted_top6": [
+          5,
+          50,
+          47,
+          15,
+          18,
+          6
+        ],
+        "hits": 0,
+        "mse": 0.264098,
+        "kl": 0.222338,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4189",
+        "date": "2026-03-20",
+        "actual": [
+          13,
+          15,
+          16,
+          18,
+          28,
+          40
+        ],
+        "predicted_top6": [
+          5,
+          47,
+          50,
+          18,
+          15,
+          46
+        ],
+        "hits": 2,
+        "mse": 0.234403,
+        "kl": 0.22768,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4190",
+        "date": "2026-03-22",
+        "actual": [
+          15,
+          19,
+          25,
+          33,
+          52,
+          54
+        ],
+        "predicted_top6": [
+          5,
+          47,
+          50,
+          37,
+          18,
+          30
+        ],
+        "hits": 0,
+        "mse": 0.237316,
+        "kl": 0.242851,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4191",
+        "date": "2026-03-25",
+        "actual": [
+          5,
+          9,
+          23,
+          25,
+          35,
+          45
+        ],
+        "predicted_top6": [
+          47,
+          5,
+          50,
+          15,
+          56,
+          46
+        ],
+        "hits": 1,
+        "mse": 0.219533,
+        "kl": 0.24679,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4192",
+        "date": "2026-03-27",
+        "actual": [
+          7,
+          16,
+          27,
+          29,
+          34,
+          37
+        ],
+        "predicted_top6": [
+          47,
+          18,
+          50,
+          35,
+          17,
+          46
+        ],
+        "hits": 0,
+        "mse": 0.257847,
+        "kl": 0.297242,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4193",
+        "date": "2026-03-29",
+        "actual": [
+          4,
+          34,
+          35,
+          39,
+          51,
+          56
+        ],
+        "predicted_top6": [
+          47,
+          18,
+          5,
+          50,
+          17,
+          35
+        ],
+        "hits": 1,
+        "mse": 0.250589,
+        "kl": 0.31148,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4194",
+        "date": "2026-04-01",
+        "actual": [
+          8,
+          13,
+          15,
+          25,
+          35,
+          42
+        ],
+        "predicted_top6": [
+          50,
+          47,
+          17,
+          5,
+          44,
+          37
+        ],
+        "hits": 0,
+        "mse": 0.360979,
+        "kl": 0.329721,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4195",
+        "date": "2026-04-03",
+        "actual": [
+          1,
+          16,
+          18,
+          21,
+          24,
+          50
+        ],
+        "predicted_top6": [
+          47,
+          50,
+          46,
+          40,
+          44,
+          5
+        ],
+        "hits": 1,
+        "mse": 0.271377,
+        "kl": 0.341433,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4196",
+        "date": "2026-04-05",
+        "actual": [
+          13,
+          23,
+          26,
+          39,
+          41,
+          44
+        ],
+        "predicted_top6": [
+          50,
+          47,
+          40,
+          18,
+          46,
+          11
+        ],
+        "hits": 0,
+        "mse": 0.312352,
+        "kl": 0.314104,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4197",
+        "date": "2026-04-08",
+        "actual": [
+          15,
+          27,
+          41,
+          43,
+          46,
+          53
+        ],
+        "predicted_top6": [
+          47,
+          15,
+          50,
+          5,
+          27,
+          18
+        ],
+        "hits": 2,
+        "mse": 0.296675,
+        "kl": 0.299181,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4198",
+        "date": "2026-04-10",
+        "actual": [
+          9,
+          12,
+          19,
+          26,
+          36,
+          49
+        ],
+        "predicted_top6": [
+          47,
+          11,
+          18,
+          50,
+          29,
+          39
+        ],
+        "hits": 0,
+        "mse": 0.266543,
+        "kl": 0.301728,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4199",
+        "date": "2026-04-12",
+        "actual": [
+          11,
+          34,
+          38,
+          47,
+          48,
+          52
+        ],
+        "predicted_top6": [
+          5,
+          47,
+          18,
+          39,
+          44,
+          50
+        ],
+        "hits": 1,
+        "mse": 0.170711,
+        "kl": 0.279035,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4200",
+        "date": "2026-04-15",
+        "actual": [
+          7,
+          15,
+          17,
+          22,
+          45,
+          51
+        ],
+        "predicted_top6": [
+          5,
+          47,
+          50,
+          18,
+          15,
+          46
+        ],
+        "hits": 1,
+        "mse": 0.192475,
+        "kl": 0.216101,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4201",
+        "date": "2026-04-17",
+        "actual": [
+          23,
+          42,
+          48,
+          49,
+          50,
+          53
+        ],
+        "predicted_top6": [
+          47,
+          50,
+          5,
+          18,
+          46,
+          39
+        ],
+        "hits": 1,
+        "mse": 0.209539,
+        "kl": 0.226709,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4202",
+        "date": "2026-04-19",
+        "actual": [
+          6,
+          15,
+          17,
+          23,
+          27,
+          51
+        ],
+        "predicted_top6": [
+          47,
+          5,
+          18,
+          50,
+          46,
+          40
+        ],
+        "hits": 0,
+        "mse": 0.216555,
+        "kl": 0.232931,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4203",
+        "date": "2026-04-22",
+        "actual": [
+          11,
+          13,
+          16,
+          24,
+          32,
+          41
+        ],
+        "predicted_top6": [
+          47,
+          5,
+          18,
+          50,
+          49,
+          48
+        ],
+        "hits": 0,
+        "mse": 0.217887,
+        "kl": 0.225883,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4204",
+        "date": "2026-04-24",
+        "actual": [
+          4,
+          15,
+          29,
+          43,
+          44,
+          46
+        ],
+        "predicted_top6": [
+          50,
+          47,
+          5,
+          39,
+          11,
+          18
+        ],
+        "hits": 0,
+        "mse": 0.271277,
+        "kl": 0.265879,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4205",
+        "date": "2026-04-26",
+        "actual": [
+          6,
+          20,
+          39,
+          41,
+          42,
+          48
+        ],
+        "predicted_top6": [
+          50,
+          15,
+          46,
+          11,
+          44,
+          39
+        ],
+        "hits": 1,
+        "mse": 0.224239,
+        "kl": 0.272924,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4206",
+        "date": "2026-04-29",
+        "actual": [
+          4,
+          18,
+          24,
+          27,
+          45,
+          53
+        ],
+        "predicted_top6": [
+          47,
+          46,
+          48,
+          39,
+          50,
+          44
+        ],
+        "hits": 0,
+        "mse": 0.277409,
+        "kl": 0.29376,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4207",
+        "date": "2026-05-01",
+        "actual": [
+          11,
+          30,
+          33,
+          35,
+          46,
+          48
+        ],
+        "predicted_top6": [
+          47,
+          46,
+          5,
+          50,
+          40,
+          48
+        ],
+        "hits": 2,
+        "mse": 0.27872,
+        "kl": 0.318696,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4208",
+        "date": "2026-05-03",
+        "actual": [
+          6,
+          7,
+          26,
+          27,
+          30,
+          40
+        ],
+        "predicted_top6": [
+          50,
+          47,
+          5,
+          48,
+          15,
+          40
+        ],
+        "hits": 1,
+        "mse": 0.288954,
+        "kl": 0.306158,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4209",
+        "date": "2026-05-06",
+        "actual": [
+          2,
+          8,
+          20,
+          26,
+          38,
+          54
+        ],
+        "predicted_top6": [
+          50,
+          5,
+          47,
+          44,
+          18,
+          39
+        ],
+        "hits": 0,
+        "mse": 0.198815,
+        "kl": 0.309955,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4210",
+        "date": "2026-05-08",
+        "actual": [
+          1,
+          32,
+          41,
+          45,
+          55,
+          56
+        ],
+        "predicted_top6": [
+          50,
+          18,
+          5,
+          48,
+          15,
+          2
+        ],
+        "hits": 0,
+        "mse": 0.311601,
+        "kl": 0.280588,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4211",
+        "date": "2026-05-10",
+        "actual": [
+          7,
+          16,
+          18,
+          20,
+          27,
+          42
+        ],
+        "predicted_top6": [
+          47,
+          17,
+          50,
+          18,
+          37,
+          5
+        ],
+        "hits": 1,
+        "mse": 0.348885,
+        "kl": 0.292512,
+        "drift_detected": true
+      },
+      {
+        "draw_id": "4212",
+        "date": "2026-05-13",
+        "actual": [
+          9,
+          15,
+          22,
+          27,
+          47,
+          49
+        ],
+        "predicted_top6": [
+          37,
+          50,
+          46,
+          5,
+          47,
+          18
+        ],
+        "hits": 1,
+        "mse": 0.337484,
+        "kl": 0.287163,
+        "drift_detected": true
+      }
+    ]
+  },
+  "generator_pool": [
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        46,
+        47,
+        50
+      ],
+      "confidence": 72.60873543743068,
+      "ensemble": 0.8825300729983754,
+      "xgboost_raw_mean": 0.11014649596638525,
+      "xgboost_contrast_mean": 0.606981442899333,
+      "bayes_mean": 0.5188502165266433,
+      "fourier_mean": 0.7869096030823354,
+      "structure_mean": 0.8159848484848485,
+      "source": "python_gpu_montecarlo",
+      "rank": 1,
+      "procedure": "Combo [5, 18, 37, 46, 47, 50] priorizado por ensemble Python. Confianza=72.61%. Componentes: XGB=0.607, Bayes=0.519, Fourier=0.787, Estructura=0.816. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        39,
+        46,
+        47,
+        50
+      ],
+      "confidence": 72.46307751015367,
+      "ensemble": 0.88134640003438,
+      "xgboost_raw_mean": 0.11000122493630249,
+      "xgboost_contrast_mean": 0.5985692257598986,
+      "bayes_mean": 0.5232033801480728,
+      "fourier_mean": 0.7915867074022266,
+      "structure_mean": 0.8159848484848485,
+      "source": "python_gpu_montecarlo",
+      "rank": 2,
+      "procedure": "Combo [5, 18, 39, 46, 47, 50] priorizado por ensemble Python. Confianza=72.46%. Componentes: XGB=0.599, Bayes=0.523, Fourier=0.792, Estructura=0.816. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 39:XGBoost(0.71) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        47,
+        50,
+        56
+      ],
+      "confidence": 71.58411271402221,
+      "ensemble": 0.8527606023179753,
+      "xgboost_raw_mean": 0.11035442287871168,
+      "xgboost_contrast_mean": 0.6190218774899444,
+      "bayes_mean": 0.4823235968713635,
+      "fourier_mean": 0.7519660886778311,
+      "structure_mean": 0.8927272727272728,
+      "source": "python_gpu_montecarlo",
+      "rank": 3,
+      "procedure": "Combo [5, 18, 37, 47, 50, 56] priorizado por ensemble Python. Confianza=71.58%. Componentes: XGB=0.619, Bayes=0.482, Fourier=0.752, Estructura=0.893. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 47:Fourier(0.80) | 50:Fourier(1.00) | 56:XGBoost(0.75)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        39,
+        47,
+        50,
+        56
+      ],
+      "confidence": 71.4384547867452,
+      "ensemble": 0.85157692935398,
+      "xgboost_raw_mean": 0.11020915184862891,
+      "xgboost_contrast_mean": 0.61060966035051,
+      "bayes_mean": 0.48667676049279285,
+      "fourier_mean": 0.7566431929977223,
+      "structure_mean": 0.8927272727272728,
+      "source": "python_gpu_montecarlo",
+      "rank": 4,
+      "procedure": "Combo [5, 18, 39, 47, 50, 56] priorizado por ensemble Python. Confianza=71.44%. Componentes: XGB=0.611, Bayes=0.487, Fourier=0.757, Estructura=0.893. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 39:XGBoost(0.71) | 47:Fourier(0.80) | 50:Fourier(1.00) | 56:XGBoost(0.75)."
+    },
+    {
+      "numbers": [
+        2,
+        5,
+        18,
+        37,
+        47,
+        50
+      ],
+      "confidence": 71.41268983138089,
+      "ensemble": 0.8504337561818182,
+      "xgboost_raw_mean": 0.1098057775101462,
+      "xgboost_contrast_mean": 0.5872514414278567,
+      "bayes_mean": 0.4998275873330236,
+      "fourier_mean": 0.772698185925262,
+      "structure_mean": 0.9206060606060606,
+      "source": "python_gpu_montecarlo",
+      "rank": 5,
+      "procedure": "Combo [2, 5, 18, 37, 47, 50] priorizado por ensemble Python. Confianza=71.41%. Componentes: XGB=0.587, Bayes=0.500, Fourier=0.773, Estructura=0.921. Ruta por número: 2:Fourier(0.65) | 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        39,
+        47,
+        50
+      ],
+      "confidence": 71.38042874601031,
+      "ensemble": 0.8676507812768123,
+      "xgboost_raw_mean": 0.110242780299157,
+      "xgboost_contrast_mean": 0.6125569847946447,
+      "bayes_mean": 0.5010001704138403,
+      "fourier_mean": 0.769611672912475,
+      "structure_mean": 0.7751515151515151,
+      "source": "python_gpu_montecarlo",
+      "rank": 6,
+      "procedure": "Combo [5, 18, 37, 39, 47, 50] priorizado por ensemble Python. Confianza=71.38%. Componentes: XGB=0.613, Bayes=0.501, Fourier=0.770, Estructura=0.775. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 39:XGBoost(0.71) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        4,
+        5,
+        18,
+        37,
+        47,
+        50
+      ],
+      "confidence": 71.36233185261133,
+      "ensemble": 0.8526446224518386,
+      "xgboost_raw_mean": 0.11005571229348622,
+      "xgboost_contrast_mean": 0.6017244280030604,
+      "bayes_mean": 0.49664700679241086,
+      "fourier_mean": 0.7600753597470723,
+      "structure_mean": 0.884469696969697,
+      "source": "python_gpu_montecarlo",
+      "rank": 7,
+      "procedure": "Combo [4, 5, 18, 37, 47, 50] priorizado por ensemble Python. Confianza=71.36%. Componentes: XGB=0.602, Bayes=0.497, Fourier=0.760, Estructura=0.884. Ruta por número: 4:XGBoost(0.64) | 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        44,
+        47,
+        50
+      ],
+      "confidence": 71.34004391729228,
+      "ensemble": 0.8601950773505735,
+      "xgboost_raw_mean": 0.10977701596383312,
+      "xgboost_contrast_mean": 0.5855859450607308,
+      "bayes_mean": 0.5085236899262447,
+      "fourier_mean": 0.7846448717135418,
+      "structure_mean": 0.8484848484848485,
+      "source": "python_gpu_montecarlo",
+      "rank": 8,
+      "procedure": "Combo [5, 18, 37, 44, 47, 50] priorizado por ensemble Python. Confianza=71.34%. Componentes: XGB=0.586, Bayes=0.509, Fourier=0.785, Estructura=0.848. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 44:Fourier(0.72) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        2,
+        5,
+        18,
+        39,
+        47,
+        50
+      ],
+      "confidence": 71.2670319041039,
+      "ensemble": 0.8492500832178228,
+      "xgboost_raw_mean": 0.10966050648006342,
+      "xgboost_contrast_mean": 0.5788392242884223,
+      "bayes_mean": 0.504180750954453,
+      "fourier_mean": 0.7773752902451531,
+      "structure_mean": 0.9206060606060606,
+      "source": "python_gpu_montecarlo",
+      "rank": 9,
+      "procedure": "Combo [2, 5, 18, 39, 47, 50] priorizado por ensemble Python. Confianza=71.27%. Componentes: XGB=0.579, Bayes=0.504, Fourier=0.777, Estructura=0.921. Ruta por número: 2:Fourier(0.65) | 5:Fourier(0.76) | 18:Fourier(0.82) | 39:XGBoost(0.71) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        3,
+        5,
+        18,
+        46,
+        47,
+        50
+      ],
+      "confidence": 71.26357683526474,
+      "ensemble": 0.8481939317902213,
+      "xgboost_raw_mean": 0.11084547413694401,
+      "xgboost_contrast_mean": 0.647457208391703,
+      "bayes_mean": 0.4803345623447501,
+      "fourier_mean": 0.7044919042064895,
+      "structure_mean": 0.8529545454545455,
+      "source": "python_gpu_montecarlo",
+      "rank": 10,
+      "procedure": "Combo [3, 5, 18, 46, 47, 50] priorizado por ensemble Python. Confianza=71.26%. Componentes: XGB=0.647, Bayes=0.480, Fourier=0.704, Estructura=0.853. Ruta por número: 3:XGBoost(1.00) | 5:Fourier(0.76) | 18:Fourier(0.82) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        4,
+        5,
+        18,
+        39,
+        47,
+        50
+      ],
+      "confidence": 71.21667392533432,
+      "ensemble": 0.8514609494878432,
+      "xgboost_raw_mean": 0.10991044126340345,
+      "xgboost_contrast_mean": 0.593312210863626,
+      "bayes_mean": 0.5010001704138403,
+      "fourier_mean": 0.7647524640669635,
+      "structure_mean": 0.884469696969697,
+      "source": "python_gpu_montecarlo",
+      "rank": 11,
+      "procedure": "Combo [4, 5, 18, 39, 47, 50] priorizado por ensemble Python. Confianza=71.22%. Componentes: XGB=0.593, Bayes=0.501, Fourier=0.765, Estructura=0.884. Ruta por número: 4:XGBoost(0.64) | 5:Fourier(0.76) | 18:Fourier(0.82) | 39:XGBoost(0.71) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        46,
+        47,
+        50,
+        55
+      ],
+      "confidence": 71.09742993071433,
+      "ensemble": 0.8533227648635334,
+      "xgboost_raw_mean": 0.11045467497256373,
+      "xgboost_contrast_mean": 0.6248271807337206,
+      "bayes_mean": 0.4904064824605558,
+      "fourier_mean": 0.7355585703998955,
+      "structure_mean": 0.8250757575757577,
+      "source": "python_gpu_montecarlo",
+      "rank": 12,
+      "procedure": "Combo [5, 18, 46, 47, 50, 55] priorizado por ensemble Python. Confianza=71.10%. Componentes: XGB=0.625, Bayes=0.490, Fourier=0.736, Estructura=0.825. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00) | 55:XGBoost(0.86)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        39,
+        47,
+        50,
+        54
+      ],
+      "confidence": 71.06946465625614,
+      "ensemble": 0.8500315937454997,
+      "xgboost_raw_mean": 0.10974525080182267,
+      "xgboost_contrast_mean": 0.5837465181622716,
+      "bayes_mean": 0.500369855941799,
+      "fourier_mean": 0.7762818522947307,
+      "structure_mean": 0.8890909090909092,
+      "source": "python_gpu_montecarlo",
+      "rank": 13,
+      "procedure": "Combo [5, 18, 39, 47, 50, 54] priorizado por ensemble Python. Confianza=71.07%. Componentes: XGB=0.584, Bayes=0.500, Fourier=0.776, Estructura=0.889. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 39:XGBoost(0.71) | 47:Fourier(0.80) | 50:Fourier(1.00) | 54:Fourier(0.64)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        46,
+        47,
+        50,
+        56
+      ],
+      "confidence": 71.04676147816559,
+      "ensemble": 0.8664562210755431,
+      "xgboost_raw_mean": 0.11011286751585718,
+      "xgboost_contrast_mean": 0.6050341184551983,
+      "bayes_mean": 0.504526806605596,
+      "fourier_mean": 0.7739411231675827,
+      "structure_mean": 0.7535606060606062,
+      "source": "python_gpu_montecarlo",
+      "rank": 14,
+      "procedure": "Combo [5, 18, 46, 47, 50, 56] priorizado por ensemble Python. Confianza=71.05%. Componentes: XGB=0.605, Bayes=0.505, Fourier=0.774, Estructura=0.754. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00) | 56:XGBoost(0.75)."
+    },
+    {
+      "numbers": [
+        5,
+        15,
+        18,
+        46,
+        47,
+        50
+      ],
+      "confidence": 70.92995925595821,
+      "ensemble": 0.858749453663628,
+      "xgboost_raw_mean": 0.10912493464334931,
+      "xgboost_contrast_mean": 0.5478258379192458,
+      "bayes_mean": 0.5317145295482101,
+      "fourier_mean": 0.8091953109143977,
+      "structure_mean": 0.8493181818181819,
+      "source": "python_gpu_montecarlo",
+      "rank": 15,
+      "procedure": "Combo [5, 15, 18, 46, 47, 50] priorizado por ensemble Python. Confianza=70.93%. Componentes: XGB=0.548, Bayes=0.532, Fourier=0.809, Estructura=0.849. Ruta por número: 5:Fourier(0.76) | 15:Fourier(0.74) | 18:Fourier(0.82) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        40,
+        47,
+        50
+      ],
+      "confidence": 70.89384282701798,
+      "ensemble": 0.8502714232704583,
+      "xgboost_raw_mean": 0.11005133562586657,
+      "xgboost_contrast_mean": 0.6014709880822268,
+      "bayes_mean": 0.4953452148617532,
+      "fourier_mean": 0.7571828733755493,
+      "structure_mean": 0.8484848484848485,
+      "source": "python_gpu_montecarlo",
+      "rank": 16,
+      "procedure": "Combo [5, 18, 37, 40, 47, 50] priorizado por ensemble Python. Confianza=70.89%. Componentes: XGB=0.601, Bayes=0.495, Fourier=0.757, Estructura=0.848. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 40:XGBoost(0.64) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        2,
+        5,
+        18,
+        46,
+        47,
+        50
+      ],
+      "confidence": 70.87533859552428,
+      "ensemble": 0.8641293749393859,
+      "xgboost_raw_mean": 0.10956422214729168,
+      "xgboost_contrast_mean": 0.5732636823931105,
+      "bayes_mean": 0.5220307970672561,
+      "fourier_mean": 0.7946732204150136,
+      "structure_mean": 0.781439393939394,
+      "source": "python_gpu_montecarlo",
+      "rank": 17,
+      "procedure": "Combo [2, 5, 18, 46, 47, 50] priorizado por ensemble Python. Confianza=70.88%. Componentes: XGB=0.573, Bayes=0.522, Fourier=0.795, Estructura=0.781. Ruta por número: 2:Fourier(0.65) | 5:Fourier(0.76) | 18:Fourier(0.82) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        39,
+        46,
+        50
+      ],
+      "confidence": 70.84646074036137,
+      "ensemble": 0.8493261759027831,
+      "xgboost_raw_mean": 0.11009490040269963,
+      "xgboost_contrast_mean": 0.6039936958935629,
+      "bayes_mean": 0.48926839306115505,
+      "fourier_mean": 0.7586350796869734,
+      "structure_mean": 0.8484848484848485,
+      "source": "python_gpu_montecarlo",
+      "rank": 18,
+      "procedure": "Combo [5, 18, 37, 39, 46, 50] priorizado por ensemble Python. Confianza=70.85%. Componentes: XGB=0.604, Bayes=0.489, Fourier=0.759, Estructura=0.848. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 39:XGBoost(0.71) | 46:Fourier(0.74) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        4,
+        5,
+        18,
+        46,
+        47,
+        50
+      ],
+      "confidence": 70.8249806167547,
+      "ensemble": 0.8663402412094063,
+      "xgboost_raw_mean": 0.10981415693063172,
+      "xgboost_contrast_mean": 0.5877366689683142,
+      "bayes_mean": 0.5188502165266433,
+      "fourier_mean": 0.7820503942368239,
+      "structure_mean": 0.7453030303030304,
+      "source": "python_gpu_montecarlo",
+      "rank": 19,
+      "procedure": "Combo [4, 5, 18, 46, 47, 50] priorizado por ensemble Python. Confianza=70.82%. Componentes: XGB=0.588, Bayes=0.519, Fourier=0.782, Estructura=0.745. Ruta por número: 4:XGBoost(0.64) | 5:Fourier(0.76) | 18:Fourier(0.82) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        44,
+        46,
+        47,
+        50
+      ],
+      "confidence": 70.80269268143566,
+      "ensemble": 0.8738906961081413,
+      "xgboost_raw_mean": 0.10953546060097862,
+      "xgboost_contrast_mean": 0.5715981860259848,
+      "bayes_mean": 0.5307268996604773,
+      "fourier_mean": 0.8066199062032934,
+      "structure_mean": 0.7093181818181818,
+      "source": "python_gpu_montecarlo",
+      "rank": 20,
+      "procedure": "Combo [5, 18, 44, 46, 47, 50] priorizado por ensemble Python. Confianza=70.80%. Componentes: XGB=0.572, Bayes=0.531, Fourier=0.807, Estructura=0.709. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 44:Fourier(0.72) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        46,
+        47,
+        50,
+        54
+      ],
+      "confidence": 70.67777134767653,
+      "ensemble": 0.8649108854670627,
+      "xgboost_raw_mean": 0.10964896646905092,
+      "xgboost_contrast_mean": 0.5781709762669599,
+      "bayes_mean": 0.5182199020546021,
+      "fourier_mean": 0.793579782464591,
+      "structure_mean": 0.7499242424242425,
+      "source": "python_gpu_montecarlo",
+      "rank": 21,
+      "procedure": "Combo [5, 18, 46, 47, 50, 54] priorizado por ensemble Python. Confianza=70.68%. Componentes: XGB=0.578, Bayes=0.518, Fourier=0.794, Estructura=0.750. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00) | 54:Fourier(0.64)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        31,
+        46,
+        47,
+        50
+      ],
+      "confidence": 70.62964421888468,
+      "ensemble": 0.8467702823347745,
+      "xgboost_raw_mean": 0.11046736668306484,
+      "xgboost_contrast_mean": 0.6255621202777256,
+      "bayes_mean": 0.48613389861748035,
+      "fourier_mean": 0.7262979449054358,
+      "structure_mean": 0.8159848484848485,
+      "source": "python_gpu_montecarlo",
+      "rank": 22,
+      "procedure": "Combo [5, 18, 31, 46, 47, 50] priorizado por ensemble Python. Confianza=70.63%. Componentes: XGB=0.626, Bayes=0.486, Fourier=0.726, Estructura=0.816. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 31:XGBoost(0.87) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        39,
+        47,
+        48,
+        50
+      ],
+      "confidence": 70.60870268142075,
+      "ensemble": 0.8529800917210153,
+      "xgboost_raw_mean": 0.10976707215143532,
+      "xgboost_contrast_mean": 0.5850101281959613,
+      "bayes_mean": 0.504180750954453,
+      "fourier_mean": 0.7760132975691643,
+      "structure_mean": 0.8159848484848485,
+      "source": "python_gpu_montecarlo",
+      "rank": 23,
+      "procedure": "Combo [5, 18, 39, 47, 48, 50] priorizado por ensemble Python. Confianza=70.61%. Componentes: XGB=0.585, Bayes=0.504, Fourier=0.776, Estructura=0.816. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 39:XGBoost(0.71) | 47:Fourier(0.80) | 48:Fourier(0.64) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        25,
+        46,
+        47,
+        50
+      ],
+      "confidence": 70.51932780959247,
+      "ensemble": 0.8382228611081842,
+      "xgboost_raw_mean": 0.11011088244729526,
+      "xgboost_contrast_mean": 0.6049191689861261,
+      "bayes_mean": 0.48898886541845193,
+      "fourier_mean": 0.7354449543187798,
+      "structure_mean": 0.8826515151515152,
+      "source": "python_gpu_montecarlo",
+      "rank": 24,
+      "procedure": "Combo [5, 18, 25, 46, 47, 50] priorizado por ensemble Python. Confianza=70.52%. Componentes: XGB=0.605, Bayes=0.489, Fourier=0.735, Estructura=0.883. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 25:XGBoost(0.74) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        3,
+        5,
+        18,
+        37,
+        47,
+        50
+      ],
+      "confidence": 70.48092807112137,
+      "ensemble": 0.8344983130326535,
+      "xgboost_raw_mean": 0.11108702949979853,
+      "xgboost_contrast_mean": 0.6614449674264491,
+      "bayes_mean": 0.4581313526105175,
+      "fourier_mean": 0.6825168697167378,
+      "structure_mean": 0.8454545454545455,
+      "source": "python_gpu_montecarlo",
+      "rank": 25,
+      "procedure": "Combo [3, 5, 18, 37, 47, 50] priorizado por ensemble Python. Confianza=70.48%. Componentes: XGB=0.661, Bayes=0.458, Fourier=0.683, Estructura=0.845. Ruta por número: 3:XGBoost(1.00) | 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        17,
+        18,
+        46,
+        47,
+        50
+      ],
+      "confidence": 70.43659383566987,
+      "ensemble": 0.8505756429685848,
+      "xgboost_raw_mean": 0.10967601131945952,
+      "xgboost_contrast_mean": 0.5797370638345283,
+      "bayes_mean": 0.5093698312299786,
+      "fourier_mean": 0.7728111183414933,
+      "structure_mean": 0.8168181818181818,
+      "source": "python_gpu_montecarlo",
+      "rank": 26,
+      "procedure": "Combo [5, 17, 18, 46, 47, 50] priorizado por ensemble Python. Confianza=70.44%. Componentes: XGB=0.580, Bayes=0.509, Fourier=0.773, Estructura=0.817. Ruta por número: 5:Fourier(0.76) | 17:XGBoost(0.59) | 18:Fourier(0.82) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        3,
+        5,
+        18,
+        39,
+        47,
+        50
+      ],
+      "confidence": 70.33527014384435,
+      "ensemble": 0.8333146400686582,
+      "xgboost_raw_mean": 0.11094175846971577,
+      "xgboost_contrast_mean": 0.6530327502870147,
+      "bayes_mean": 0.4624845162319469,
+      "fourier_mean": 0.6871939740366289,
+      "structure_mean": 0.8454545454545455,
+      "source": "python_gpu_montecarlo",
+      "rank": 27,
+      "procedure": "Combo [3, 5, 18, 39, 47, 50] priorizado por ensemble Python. Confianza=70.34%. Componentes: XGB=0.653, Bayes=0.462, Fourier=0.687, Estructura=0.845. Ruta por número: 3:XGBoost(1.00) | 5:Fourier(0.76) | 18:Fourier(0.82) | 39:XGBoost(0.71) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        37,
+        39,
+        46,
+        47,
+        50
+      ],
+      "confidence": 70.32893441269621,
+      "ensemble": 0.8666538694820333,
+      "xgboost_raw_mean": 0.11066352054224875,
+      "xgboost_contrast_mean": 0.6369208120640578,
+      "bayes_mean": 0.48099976025089436,
+      "fourier_mean": 0.7556717126570501,
+      "structure_mean": 0.6426515151515152,
+      "source": "python_gpu_montecarlo",
+      "rank": 28,
+      "procedure": "Combo [5, 37, 39, 46, 47, 50] priorizado por ensemble Python. Confianza=70.33%. Componentes: XGB=0.637, Bayes=0.481, Fourier=0.756, Estructura=0.643. Ruta por número: 5:Fourier(0.76) | 37:XGBoost(0.76) | 39:XGBoost(0.71) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        4,
+        5,
+        37,
+        46,
+        47,
+        50
+      ],
+      "confidence": 70.31083751929724,
+      "ensemble": 0.8516477106570594,
+      "xgboost_raw_mean": 0.11047645253657797,
+      "xgboost_contrast_mean": 0.6260882552724735,
+      "bayes_mean": 0.4766465966294649,
+      "fourier_mean": 0.7461353994916475,
+      "structure_mean": 0.751969696969697,
+      "source": "python_gpu_montecarlo",
+      "rank": 29,
+      "procedure": "Combo [4, 5, 37, 46, 47, 50] priorizado por ensemble Python. Confianza=70.31%. Componentes: XGB=0.626, Bayes=0.477, Fourier=0.746, Estructura=0.752. Ruta por número: 4:XGBoost(0.64) | 5:Fourier(0.76) | 37:XGBoost(0.76) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        11,
+        18,
+        46,
+        47,
+        50
+      ],
+      "confidence": 70.25036953343886,
+      "ensemble": 0.8475091258004231,
+      "xgboost_raw_mean": 0.10913564038123925,
+      "xgboost_contrast_mean": 0.5484457756433526,
+      "bayes_mean": 0.5211798107457263,
+      "fourier_mean": 0.7978880932641337,
+      "structure_mean": 0.8493181818181819,
+      "source": "python_gpu_montecarlo",
+      "rank": 30,
+      "procedure": "Combo [5, 11, 18, 46, 47, 50] priorizado por ensemble Python. Confianza=70.25%. Componentes: XGB=0.548, Bayes=0.521, Fourier=0.798, Estructura=0.849. Ruta por número: 5:Fourier(0.76) | 11:Fourier(0.67) | 18:Fourier(0.82) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        3,
+        5,
+        18,
+        47,
+        50,
+        56
+      ],
+      "confidence": 70.23895411185627,
+      "ensemble": 0.8184244611098213,
+      "xgboost_raw_mean": 0.11105340104927046,
+      "xgboost_contrast_mean": 0.6594976429823144,
+      "bayes_mean": 0.44380794268947027,
+      "fourier_mean": 0.6695483898019852,
+      "structure_mean": 0.9296969696969697,
+      "source": "python_gpu_montecarlo",
+      "rank": 31,
+      "procedure": "Combo [3, 5, 18, 47, 50, 56] priorizado por ensemble Python. Confianza=70.24%. Componentes: XGB=0.659, Bayes=0.444, Fourier=0.670, Estructura=0.930. Ruta por número: 3:XGBoost(1.00) | 5:Fourier(0.76) | 18:Fourier(0.82) | 47:Fourier(0.80) | 50:Fourier(1.00) | 56:XGBoost(0.75)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        46,
+        47,
+        48,
+        50
+      ],
+      "confidence": 70.21700937284115,
+      "ensemble": 0.8678593834425784,
+      "xgboost_raw_mean": 0.10967078781866357,
+      "xgboost_contrast_mean": 0.5794345863006496,
+      "bayes_mean": 0.5220307970672561,
+      "fourier_mean": 0.7933112277390247,
+      "structure_mean": 0.6768181818181818,
+      "source": "python_gpu_montecarlo",
+      "rank": 32,
+      "procedure": "Combo [5, 18, 46, 47, 48, 50] priorizado por ensemble Python. Confianza=70.22%. Componentes: XGB=0.579, Bayes=0.522, Fourier=0.793, Estructura=0.677. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 46:Fourier(0.74) | 47:Fourier(0.80) | 48:Fourier(0.64) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        2,
+        5,
+        39,
+        46,
+        47,
+        50
+      ],
+      "confidence": 70.21553757078979,
+      "ensemble": 0.8482531714230438,
+      "xgboost_raw_mean": 0.11008124672315517,
+      "xgboost_contrast_mean": 0.6032030515578354,
+      "bayes_mean": 0.4841803407915071,
+      "fourier_mean": 0.7634353299897284,
+      "structure_mean": 0.7881060606060607,
+      "source": "python_gpu_montecarlo",
+      "rank": 33,
+      "procedure": "Combo [2, 5, 39, 46, 47, 50] priorizado por ensemble Python. Confianza=70.22%. Componentes: XGB=0.603, Bayes=0.484, Fourier=0.763, Estructura=0.788. Ruta por número: 2:Fourier(0.65) | 5:Fourier(0.76) | 39:XGBoost(0.71) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        39,
+        47,
+        50,
+        55
+      ],
+      "confidence": 70.16912323929392,
+      "ensemble": 0.8384434731419703,
+      "xgboost_raw_mean": 0.11055095930533547,
+      "xgboost_contrast_mean": 0.6304027226290323,
+      "bayes_mean": 0.4725564363477526,
+      "fourier_mean": 0.7182606402300351,
+      "structure_mean": 0.8175757575757576,
+      "source": "python_gpu_montecarlo",
+      "rank": 34,
+      "procedure": "Combo [5, 18, 39, 47, 50, 55] priorizado por ensemble Python. Confianza=70.17%. Componentes: XGB=0.630, Bayes=0.473, Fourier=0.718, Estructura=0.818. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 39:XGBoost(0.71) | 47:Fourier(0.80) | 50:Fourier(1.00) | 55:XGBoost(0.86)."
+    },
+    {
+      "numbers": [
+        5,
+        37,
+        46,
+        47,
+        50,
+        54
+      ],
+      "confidence": 70.16362825021905,
+      "ensemble": 0.8502183549147159,
+      "xgboost_raw_mean": 0.11031126207499718,
+      "xgboost_contrast_mean": 0.6165225625711191,
+      "bayes_mean": 0.4760162821574237,
+      "fourier_mean": 0.7576647877194147,
+      "structure_mean": 0.7565909090909092,
+      "source": "python_gpu_montecarlo",
+      "rank": 35,
+      "procedure": "Combo [5, 37, 46, 47, 50, 54] priorizado por ensemble Python. Confianza=70.16%. Componentes: XGB=0.617, Bayes=0.476, Fourier=0.758, Estructura=0.757. Ruta por número: 5:Fourier(0.76) | 37:XGBoost(0.76) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00) | 54:Fourier(0.64)."
+    },
+    {
+      "numbers": [
+        5,
+        15,
+        18,
+        37,
+        47,
+        50
+      ],
+      "confidence": 70.14731049181484,
+      "ensemble": 0.8450538349060602,
+      "xgboost_raw_mean": 0.10936649000620381,
+      "xgboost_contrast_mean": 0.5618135969539918,
+      "bayes_mean": 0.5095113198139776,
+      "fourier_mean": 0.787220276424646,
+      "structure_mean": 0.8418181818181818,
+      "source": "python_gpu_montecarlo",
+      "rank": 36,
+      "procedure": "Combo [5, 15, 18, 37, 47, 50] priorizado por ensemble Python. Confianza=70.15%. Componentes: XGB=0.562, Bayes=0.510, Fourier=0.787, Estructura=0.842. Ruta por número: 5:Fourier(0.76) | 15:Fourier(0.74) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        26,
+        37,
+        47,
+        50
+      ],
+      "confidence": 70.12399899033099,
+      "ensemble": 0.8297709249013145,
+      "xgboost_raw_mean": 0.10924254870485213,
+      "xgboost_contrast_mean": 0.5546365215321377,
+      "bayes_mean": 0.5036384823456777,
+      "fourier_mean": 0.7736455920455235,
+      "structure_mean": 0.9484848484848485,
+      "source": "python_gpu_montecarlo",
+      "rank": 37,
+      "procedure": "Combo [5, 18, 26, 37, 47, 50] priorizado por ensemble Python. Confianza=70.12%. Componentes: XGB=0.555, Bayes=0.504, Fourier=0.774, Estructura=0.948. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 26:Fourier(0.66) | 37:XGBoost(0.76) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        46,
+        47,
+        56
+      ],
+      "confidence": 70.11986693017717,
+      "ensemble": 0.8246858932507325,
+      "xgboost_raw_mean": 0.11160932019292369,
+      "xgboost_contrast_mean": 0.691689281918964,
+      "bayes_mean": 0.38098975511663014,
+      "fourier_mean": 0.7078646145327592,
+      "structure_mean": 0.8602272727272728,
+      "source": "python_gpu_montecarlo",
+      "rank": 38,
+      "procedure": "Combo [5, 18, 37, 46, 47, 56] priorizado por ensemble Python. Confianza=70.12%. Componentes: XGB=0.692, Bayes=0.381, Fourier=0.708, Estructura=0.860. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 46:Fourier(0.74) | 47:Fourier(0.80) | 56:XGBoost(0.75)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        21,
+        46,
+        47,
+        50
+      ],
+      "confidence": 70.03912613509958,
+      "ensemble": 0.8319934682610212,
+      "xgboost_raw_mean": 0.10992156348297986,
+      "xgboost_contrast_mean": 0.5939562658145391,
+      "bayes_mean": 0.48898886541845193,
+      "fourier_mean": 0.7386582019117037,
+      "structure_mean": 0.8826515151515152,
+      "source": "python_gpu_montecarlo",
+      "rank": 39,
+      "procedure": "Combo [5, 18, 21, 46, 47, 50] priorizado por ensemble Python. Confianza=70.04%. Componentes: XGB=0.594, Bayes=0.489, Fourier=0.739, Estructura=0.883. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 21:XGBoost(0.68) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        3,
+        5,
+        18,
+        44,
+        47,
+        50
+      ],
+      "confidence": 69.99488531512633,
+      "ensemble": 0.8258589361424195,
+      "xgboost_raw_mean": 0.1104759941343919,
+      "xgboost_contrast_mean": 0.6260617105531009,
+      "bayes_mean": 0.47000803574435146,
+      "fourier_mean": 0.7022271728376959,
+      "structure_mean": 0.8854545454545455,
+      "source": "python_gpu_montecarlo",
+      "rank": 40,
+      "procedure": "Combo [3, 5, 18, 44, 47, 50] priorizado por ensemble Python. Confianza=69.99%. Componentes: XGB=0.626, Bayes=0.470, Fourier=0.702, Estructura=0.885. Ruta por número: 3:XGBoost(1.00) | 5:Fourier(0.76) | 18:Fourier(0.82) | 44:Fourier(0.72) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        26,
+        39,
+        47,
+        50
+      ],
+      "confidence": 69.97834106305396,
+      "ensemble": 0.8285872519373191,
+      "xgboost_raw_mean": 0.10909727767476936,
+      "xgboost_contrast_mean": 0.5462243043927033,
+      "bayes_mean": 0.507991645967107,
+      "fourier_mean": 0.7783226963654147,
+      "structure_mean": 0.9484848484848485,
+      "source": "python_gpu_montecarlo",
+      "rank": 41,
+      "procedure": "Combo [5, 18, 26, 39, 47, 50] priorizado por ensemble Python. Confianza=69.98%. Componentes: XGB=0.546, Bayes=0.508, Fourier=0.778, Estructura=0.948. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 26:Fourier(0.66) | 39:XGBoost(0.71) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        46,
+        47,
+        50,
+        51
+      ],
+      "confidence": 69.95469565086586,
+      "ensemble": 0.8506600846021408,
+      "xgboost_raw_mean": 0.10930202666827861,
+      "xgboost_contrast_mean": 0.5580807150721014,
+      "bayes_mean": 0.5190993393652146,
+      "fourier_mean": 0.7927980592031921,
+      "structure_mean": 0.7853030303030304,
+      "source": "python_gpu_montecarlo",
+      "rank": 42,
+      "procedure": "Combo [5, 18, 46, 47, 50, 51] priorizado por ensemble Python. Confianza=69.95%. Componentes: XGB=0.558, Bayes=0.519, Fourier=0.793, Estructura=0.785. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00) | 51:Fourier(0.64)."
+    },
+    {
+      "numbers": [
+        5,
+        37,
+        46,
+        47,
+        50,
+        56
+      ],
+      "confidence": 69.92511838070811,
+      "ensemble": 0.8517636905231961,
+      "xgboost_raw_mean": 0.11077516312180342,
+      "xgboost_contrast_mean": 0.6433857047593574,
+      "bayes_mean": 0.46232318670841765,
+      "fourier_mean": 0.7380261284224062,
+      "structure_mean": 0.6927272727272729,
+      "source": "python_gpu_montecarlo",
+      "rank": 43,
+      "procedure": "Combo [5, 37, 46, 47, 50, 56] priorizado por ensemble Python. Confianza=69.93%. Componentes: XGB=0.643, Bayes=0.462, Fourier=0.738, Estructura=0.693. Ruta por número: 5:Fourier(0.76) | 37:XGBoost(0.76) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00) | 56:XGBoost(0.75)."
+    },
+    {
+      "numbers": [
+        5,
+        15,
+        18,
+        47,
+        50,
+        56
+      ],
+      "confidence": 69.90533653254974,
+      "ensemble": 0.828979982983228,
+      "xgboost_raw_mean": 0.10933286155567573,
+      "xgboost_contrast_mean": 0.5598662725098572,
+      "bayes_mean": 0.4951879098929302,
+      "fourier_mean": 0.7742517965098933,
+      "structure_mean": 0.9260606060606061,
+      "source": "python_gpu_montecarlo",
+      "rank": 44,
+      "procedure": "Combo [5, 15, 18, 47, 50, 56] priorizado por ensemble Python. Confianza=69.91%. Componentes: XGB=0.560, Bayes=0.495, Fourier=0.774, Estructura=0.926. Ruta por número: 5:Fourier(0.76) | 15:Fourier(0.74) | 18:Fourier(0.82) | 47:Fourier(0.80) | 50:Fourier(1.00) | 56:XGBoost(0.75)."
+    },
+    {
+      "numbers": [
+        2,
+        5,
+        18,
+        47,
+        50,
+        55
+      ],
+      "confidence": 69.90138432466453,
+      "ensemble": 0.8212264480469762,
+      "xgboost_raw_mean": 0.11011395651632468,
+      "xgboost_contrast_mean": 0.6050971792622443,
+      "bayes_mean": 0.47138385326693594,
+      "fourier_mean": 0.7213471532428221,
+      "structure_mean": 0.9296969696969697,
+      "source": "python_gpu_montecarlo",
+      "rank": 45,
+      "procedure": "Combo [2, 5, 18, 47, 50, 55] priorizado por ensemble Python. Confianza=69.90%. Componentes: XGB=0.605, Bayes=0.471, Fourier=0.721, Estructura=0.930. Ruta por número: 2:Fourier(0.65) | 5:Fourier(0.76) | 18:Fourier(0.82) | 47:Fourier(0.80) | 50:Fourier(1.00) | 55:XGBoost(0.86)."
+    },
+    {
+      "numbers": [
+        2,
+        5,
+        18,
+        37,
+        46,
+        47
+      ],
+      "confidence": 69.89935313844495,
+      "ensemble": 0.8223590471145753,
+      "xgboost_raw_mean": 0.1110606748243582,
+      "xgboost_contrast_mean": 0.6599188458568762,
+      "bayes_mean": 0.39849374557829026,
+      "fourier_mean": 0.72859671178019,
+      "structure_mean": 0.8826515151515152,
+      "source": "python_gpu_montecarlo",
+      "rank": 46,
+      "procedure": "Combo [2, 5, 18, 37, 46, 47] priorizado por ensemble Python. Confianza=69.90%. Componentes: XGB=0.660, Bayes=0.398, Fourier=0.729, Estructura=0.883. Ruta por número: 2:Fourier(0.65) | 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 46:Fourier(0.74) | 47:Fourier(0.80)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        28,
+        37,
+        47,
+        50
+      ],
+      "confidence": 69.88894365241973,
+      "ensemble": 0.8158032959739829,
+      "xgboost_raw_mean": 0.11036933524789798,
+      "xgboost_contrast_mean": 0.6198854088326143,
+      "bayes_mean": 0.4629659230392001,
+      "fourier_mean": 0.6990046511634214,
+      "structure_mean": 0.9484848484848485,
+      "source": "python_gpu_montecarlo",
+      "rank": 47,
+      "procedure": "Combo [5, 18, 28, 37, 47, 50] priorizado por ensemble Python. Confianza=69.89%. Componentes: XGB=0.620, Bayes=0.463, Fourier=0.699, Estructura=0.948. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 28:XGBoost(0.75) | 37:XGBoost(0.76) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        39,
+        46,
+        47
+      ],
+      "confidence": 69.86709205307434,
+      "ensemble": 0.8395760722095695,
+      "xgboost_raw_mean": 0.111497677613369,
+      "xgboost_contrast_mean": 0.6852243892236641,
+      "bayes_mean": 0.3996663286591069,
+      "fourier_mean": 0.725510198767403,
+      "structure_mean": 0.7371969696969698,
+      "source": "python_gpu_montecarlo",
+      "rank": 48,
+      "procedure": "Combo [5, 18, 37, 39, 46, 47] priorizado por ensemble Python. Confianza=69.87%. Componentes: XGB=0.685, Bayes=0.400, Fourier=0.726, Estructura=0.737. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 39:XGBoost(0.71) | 46:Fourier(0.74) | 47:Fourier(0.80)."
+    },
+    {
+      "numbers": [
+        3,
+        5,
+        18,
+        40,
+        47,
+        50
+      ],
+      "confidence": 69.84868422485202,
+      "ensemble": 0.8159352820623043,
+      "xgboost_raw_mean": 0.11075031379642535,
+      "xgboost_contrast_mean": 0.6419467535745967,
+      "bayes_mean": 0.45682956067985986,
+      "fourier_mean": 0.6747651744997033,
+      "structure_mean": 0.9187878787878788,
+      "source": "python_gpu_montecarlo",
+      "rank": 49,
+      "procedure": "Combo [3, 5, 18, 40, 47, 50] priorizado por ensemble Python. Confianza=69.85%. Componentes: XGB=0.642, Bayes=0.457, Fourier=0.675, Estructura=0.919. Ruta por número: 3:XGBoost(1.00) | 5:Fourier(0.76) | 18:Fourier(0.82) | 40:XGBoost(0.64) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        37,
+        40,
+        46,
+        47,
+        50
+      ],
+      "confidence": 69.84234849370387,
+      "ensemble": 0.8492745114756793,
+      "xgboost_raw_mean": 0.11047207586895831,
+      "xgboost_contrast_mean": 0.6258348153516399,
+      "bayes_mean": 0.4753448046988073,
+      "fourier_mean": 0.7432429131201245,
+      "structure_mean": 0.7159848484848486,
+      "source": "python_gpu_montecarlo",
+      "rank": 50,
+      "procedure": "Combo [5, 37, 40, 46, 47, 50] priorizado por ensemble Python. Confianza=69.84%. Componentes: XGB=0.626, Bayes=0.475, Fourier=0.743, Estructura=0.716. Ruta por número: 5:Fourier(0.76) | 37:XGBoost(0.76) | 40:XGBoost(0.64) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        44,
+        46,
+        47
+      ],
+      "confidence": 69.82670722435633,
+      "ensemble": 0.8321203682833308,
+      "xgboost_raw_mean": 0.11103191327804512,
+      "xgboost_contrast_mean": 0.6582533494897503,
+      "bayes_mean": 0.4071898481715113,
+      "fourier_mean": 0.7405433975684699,
+      "structure_mean": 0.8105303030303032,
+      "source": "python_gpu_montecarlo",
+      "rank": 51,
+      "procedure": "Combo [5, 18, 37, 44, 46, 47] priorizado por ensemble Python. Confianza=69.83%. Componentes: XGB=0.658, Bayes=0.407, Fourier=0.741, Estructura=0.811. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 44:Fourier(0.72) | 46:Fourier(0.74) | 47:Fourier(0.80)."
+    },
+    {
+      "numbers": [
+        3,
+        5,
+        18,
+        39,
+        46,
+        50
+      ],
+      "confidence": 69.8013021381954,
+      "ensemble": 0.8149900346946289,
+      "xgboost_raw_mean": 0.1107938785732584,
+      "xgboost_contrast_mean": 0.644469461385933,
+      "bayes_mean": 0.45075273887926176,
+      "fourier_mean": 0.6762173808111275,
+      "structure_mean": 0.9187878787878788,
+      "source": "python_gpu_montecarlo",
+      "rank": 52,
+      "procedure": "Combo [3, 5, 18, 39, 46, 50] priorizado por ensemble Python. Confianza=69.80%. Componentes: XGB=0.644, Bayes=0.451, Fourier=0.676, Estructura=0.919. Ruta por número: 3:XGBoost(1.00) | 5:Fourier(0.76) | 18:Fourier(0.82) | 39:XGBoost(0.71) | 46:Fourier(0.74) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        39,
+        46,
+        47,
+        50,
+        56
+      ],
+      "confidence": 69.77946045343111,
+      "ensemble": 0.850580017559201,
+      "xgboost_raw_mean": 0.11062989209172068,
+      "xgboost_contrast_mean": 0.6349734876199231,
+      "bayes_mean": 0.466676350329847,
+      "fourier_mean": 0.7427032327422974,
+      "structure_mean": 0.6927272727272729,
+      "source": "python_gpu_montecarlo",
+      "rank": 53,
+      "procedure": "Combo [5, 39, 46, 47, 50, 56] priorizado por ensemble Python. Confianza=69.78%. Componentes: XGB=0.635, Bayes=0.467, Fourier=0.743, Estructura=0.693. Ruta por número: 5:Fourier(0.76) | 39:XGBoost(0.71) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00) | 56:XGBoost(0.75)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        28,
+        39,
+        47,
+        50
+      ],
+      "confidence": 69.7432857251427,
+      "ensemble": 0.8146196230099876,
+      "xgboost_raw_mean": 0.11022406421781522,
+      "xgboost_contrast_mean": 0.6114731916931799,
+      "bayes_mean": 0.46731908666062943,
+      "fourier_mean": 0.7036817554833125,
+      "structure_mean": 0.9484848484848485,
+      "source": "python_gpu_montecarlo",
+      "rank": 54,
+      "procedure": "Combo [5, 18, 28, 39, 47, 50] priorizado por ensemble Python. Confianza=69.74%. Componentes: XGB=0.611, Bayes=0.467, Fourier=0.704, Estructura=0.948. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 28:XGBoost(0.75) | 39:XGBoost(0.71) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        37,
+        46,
+        47,
+        48,
+        50
+      ],
+      "confidence": 69.70286627538367,
+      "ensemble": 0.8531668528902316,
+      "xgboost_raw_mean": 0.11033308342460983,
+      "xgboost_contrast_mean": 0.6177861726048087,
+      "bayes_mean": 0.4798271771700777,
+      "fourier_mean": 0.7573962329938483,
+      "structure_mean": 0.6834848484848485,
+      "source": "python_gpu_montecarlo",
+      "rank": 55,
+      "procedure": "Combo [5, 37, 46, 47, 48, 50] priorizado por ensemble Python. Confianza=69.70%. Componentes: XGB=0.618, Bayes=0.480, Fourier=0.757, Estructura=0.683. Ruta por número: 5:Fourier(0.76) | 37:XGBoost(0.76) | 46:Fourier(0.74) | 47:Fourier(0.80) | 48:Fourier(0.64) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        40,
+        47,
+        50,
+        55
+      ],
+      "confidence": 69.6825373203016,
+      "ensemble": 0.8210641151356164,
+      "xgboost_raw_mean": 0.11035951463204506,
+      "xgboost_contrast_mean": 0.6193167259166145,
+      "bayes_mean": 0.4669014807956655,
+      "fourier_mean": 0.7058318406931092,
+      "structure_mean": 0.890909090909091,
+      "source": "python_gpu_montecarlo",
+      "rank": 56,
+      "procedure": "Combo [5, 18, 40, 47, 50, 55] priorizado por ensemble Python. Confianza=69.68%. Componentes: XGB=0.619, Bayes=0.467, Fourier=0.706, Estructura=0.891. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 40:XGBoost(0.64) | 47:Fourier(0.80) | 50:Fourier(1.00) | 55:XGBoost(0.86)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        39,
+        44,
+        46,
+        47
+      ],
+      "confidence": 69.6810492970793,
+      "ensemble": 0.8309366953193354,
+      "xgboost_raw_mean": 0.11088664224796235,
+      "xgboost_contrast_mean": 0.6498411323503159,
+      "bayes_mean": 0.41154301179294067,
+      "fourier_mean": 0.745220501888361,
+      "structure_mean": 0.8105303030303032,
+      "source": "python_gpu_montecarlo",
+      "rank": 57,
+      "procedure": "Combo [5, 18, 39, 44, 46, 47] priorizado por ensemble Python. Confianza=69.68%. Componentes: XGB=0.650, Bayes=0.412, Fourier=0.745, Estructura=0.811. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 39:XGBoost(0.71) | 44:Fourier(0.72) | 46:Fourier(0.74) | 47:Fourier(0.80)."
+    },
+    {
+      "numbers": [
+        5,
+        15,
+        18,
+        44,
+        47,
+        50
+      ],
+      "confidence": 69.66126773581979,
+      "ensemble": 0.8364144580158261,
+      "xgboost_raw_mean": 0.10875545464079717,
+      "xgboost_contrast_mean": 0.5264303400806436,
+      "bayes_mean": 0.5213880029478114,
+      "fourier_mean": 0.8069305795456042,
+      "structure_mean": 0.8818181818181818,
+      "source": "python_gpu_montecarlo",
+      "rank": 58,
+      "procedure": "Combo [5, 15, 18, 44, 47, 50] priorizado por ensemble Python. Confianza=69.66%. Componentes: XGB=0.526, Bayes=0.521, Fourier=0.807, Estructura=0.882. Ruta por número: 5:Fourier(0.76) | 15:Fourier(0.74) | 18:Fourier(0.82) | 44:Fourier(0.72) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        17,
+        18,
+        37,
+        47,
+        50
+      ],
+      "confidence": 69.6539450715265,
+      "ensemble": 0.836880024211017,
+      "xgboost_raw_mean": 0.10991756668231402,
+      "xgboost_contrast_mean": 0.5937248228692744,
+      "bayes_mean": 0.487166621495746,
+      "fourier_mean": 0.7508360838517417,
+      "structure_mean": 0.8093181818181818,
+      "source": "python_gpu_montecarlo",
+      "rank": 59,
+      "procedure": "Combo [5, 17, 18, 37, 47, 50] priorizado por ensemble Python. Confianza=69.65%. Componentes: XGB=0.594, Bayes=0.487, Fourier=0.751, Estructura=0.809. Ruta por número: 5:Fourier(0.76) | 17:XGBoost(0.59) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        39,
+        46,
+        50,
+        55
+      ],
+      "confidence": 69.63515523364498,
+      "ensemble": 0.8201188677679411,
+      "xgboost_raw_mean": 0.11040307940887811,
+      "xgboost_contrast_mean": 0.6218394337279506,
+      "bayes_mean": 0.46082465899506736,
+      "fourier_mean": 0.7072840470045335,
+      "structure_mean": 0.890909090909091,
+      "source": "python_gpu_montecarlo",
+      "rank": 60,
+      "procedure": "Combo [5, 18, 39, 46, 50, 55] priorizado por ensemble Python. Confianza=69.64%. Componentes: XGB=0.622, Bayes=0.461, Fourier=0.707, Estructura=0.891. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 39:XGBoost(0.71) | 46:Fourier(0.74) | 50:Fourier(1.00) | 55:XGBoost(0.86)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        40,
+        47,
+        50,
+        56
+      ],
+      "confidence": 69.63186886775289,
+      "ensemble": 0.8341975713476261,
+      "xgboost_raw_mean": 0.1100177071753385,
+      "xgboost_contrast_mean": 0.5995236636380921,
+      "bayes_mean": 0.4810218049407058,
+      "fourier_mean": 0.7442143934607964,
+      "structure_mean": 0.8193939393939395,
+      "source": "python_gpu_montecarlo",
+      "rank": 61,
+      "procedure": "Combo [5, 18, 40, 47, 50, 56] priorizado por ensemble Python. Confianza=69.63%. Componentes: XGB=0.600, Bayes=0.481, Fourier=0.744, Estructura=0.819. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 40:XGBoost(0.64) | 47:Fourier(0.80) | 50:Fourier(1.00) | 56:XGBoost(0.75)."
+    },
+    {
+      "numbers": [
+        5,
+        7,
+        18,
+        46,
+        47,
+        50
+      ],
+      "confidence": 69.62848314967496,
+      "ensemble": 0.838283786964274,
+      "xgboost_raw_mean": 0.10899739725067879,
+      "xgboost_contrast_mean": 0.5404405234492483,
+      "bayes_mean": 0.5211513597566436,
+      "fourier_mean": 0.7909219153403422,
+      "structure_mean": 0.8493181818181819,
+      "source": "python_gpu_montecarlo",
+      "rank": 62,
+      "procedure": "Combo [5, 7, 18, 46, 47, 50] priorizado por ensemble Python. Confianza=69.63%. Componentes: XGB=0.540, Bayes=0.521, Fourier=0.791, Estructura=0.849. Ruta por número: 5:Fourier(0.76) | 7:Fourier(0.63) | 18:Fourier(0.82) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        8,
+        18,
+        37,
+        47,
+        50
+      ],
+      "confidence": 69.57862040283851,
+      "ensemble": 0.8231587649038449,
+      "xgboost_raw_mean": 0.1095649895446814,
+      "xgboost_contrast_mean": 0.5733081201139061,
+      "bayes_mean": 0.4839379384128244,
+      "fourier_mean": 0.7562738702947298,
+      "structure_mean": 0.9151515151515152,
+      "source": "python_gpu_montecarlo",
+      "rank": 63,
+      "procedure": "Combo [5, 8, 18, 37, 47, 50] priorizado por ensemble Python. Confianza=69.58%. Componentes: XGB=0.573, Bayes=0.484, Fourier=0.756, Estructura=0.915. Ruta por número: 5:Fourier(0.76) | 8:Fourier(0.55) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        27,
+        37,
+        47,
+        50
+      ],
+      "confidence": 69.5610907830916,
+      "ensemble": 0.835833537103805,
+      "xgboost_raw_mean": 0.10869635378672882,
+      "xgboost_contrast_mean": 0.5230079838320113,
+      "bayes_mean": 0.530719748229559,
+      "fourier_mean": 0.7999939681666479,
+      "structure_mean": 0.8751515151515152,
+      "source": "python_gpu_montecarlo",
+      "rank": 64,
+      "procedure": "Combo [5, 18, 27, 37, 47, 50] priorizado por ensemble Python. Confianza=69.56%. Componentes: XGB=0.523, Bayes=0.531, Fourier=0.800, Estructura=0.875. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 27:Fourier(0.81) | 37:XGBoost(0.76) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        2,
+        5,
+        18,
+        37,
+        46,
+        50
+      ],
+      "confidence": 69.55872182573196,
+      "ensemble": 0.832109150807789,
+      "xgboost_raw_mean": 0.10965789761368883,
+      "xgboost_contrast_mean": 0.578688152526775,
+      "bayes_mean": 0.48809580998033847,
+      "fourier_mean": 0.7617215926997606,
+      "structure_mean": 0.8472727272727273,
+      "source": "python_gpu_montecarlo",
+      "rank": 65,
+      "procedure": "Combo [2, 5, 18, 37, 46, 50] priorizado por ensemble Python. Confianza=69.56%. Componentes: XGB=0.579, Bayes=0.488, Fourier=0.762, Estructura=0.847. Ruta por número: 2:Fourier(0.65) | 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 46:Fourier(0.74) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        39,
+        46,
+        47,
+        48,
+        50
+      ],
+      "confidence": 69.55720834810664,
+      "ensemble": 0.8519831799262363,
+      "xgboost_raw_mean": 0.11018781239452706,
+      "xgboost_contrast_mean": 0.6093739554653744,
+      "bayes_mean": 0.48418034079150707,
+      "fourier_mean": 0.7620733373137395,
+      "structure_mean": 0.6834848484848485,
+      "source": "python_gpu_montecarlo",
+      "rank": 66,
+      "procedure": "Combo [5, 39, 46, 47, 48, 50] priorizado por ensemble Python. Confianza=69.56%. Componentes: XGB=0.609, Bayes=0.484, Fourier=0.762, Estructura=0.683. Ruta por número: 5:Fourier(0.76) | 39:XGBoost(0.71) | 46:Fourier(0.74) | 47:Fourier(0.80) | 48:Fourier(0.64) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        4,
+        5,
+        18,
+        44,
+        47,
+        50
+      ],
+      "confidence": 69.5562890966163,
+      "ensemble": 0.8440052455616045,
+      "xgboost_raw_mean": 0.10944467692807958,
+      "xgboost_contrast_mean": 0.566341171129712,
+      "bayes_mean": 0.5085236899262447,
+      "fourier_mean": 0.7797856628680302,
+      "structure_mean": 0.7778030303030303,
+      "source": "python_gpu_montecarlo",
+      "rank": 67,
+      "procedure": "Combo [4, 5, 18, 44, 47, 50] priorizado por ensemble Python. Confianza=69.56%. Componentes: XGB=0.566, Bayes=0.509, Fourier=0.780, Estructura=0.778. Ruta por número: 4:XGBoost(0.64) | 5:Fourier(0.76) | 18:Fourier(0.82) | 44:Fourier(0.72) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        31,
+        37,
+        47,
+        50
+      ],
+      "confidence": 69.5469954547413,
+      "ensemble": 0.8330746635772067,
+      "xgboost_raw_mean": 0.11070892204591935,
+      "xgboost_contrast_mean": 0.6395498793124718,
+      "bayes_mean": 0.4639306888832479,
+      "fourier_mean": 0.7043229104156842,
+      "structure_mean": 0.7751515151515151,
+      "source": "python_gpu_montecarlo",
+      "rank": 68,
+      "procedure": "Combo [5, 18, 31, 37, 47, 50] priorizado por ensemble Python. Confianza=69.55%. Componentes: XGB=0.640, Bayes=0.464, Fourier=0.704, Estructura=0.775. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 31:XGBoost(0.87) | 37:XGBoost(0.76) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        15,
+        18,
+        40,
+        47,
+        50
+      ],
+      "confidence": 69.5150666455455,
+      "ensemble": 0.826490803935711,
+      "xgboost_raw_mean": 0.10902977430283063,
+      "xgboost_contrast_mean": 0.5423153831021396,
+      "bayes_mean": 0.50820952788332,
+      "fourier_mean": 0.7794685812076114,
+      "structure_mean": 0.9151515151515152,
+      "source": "python_gpu_montecarlo",
+      "rank": 69,
+      "procedure": "Combo [5, 15, 18, 40, 47, 50] priorizado por ensemble Python. Confianza=69.52%. Componentes: XGB=0.542, Bayes=0.508, Fourier=0.779, Estructura=0.915. Ruta por número: 5:Fourier(0.76) | 15:Fourier(0.74) | 18:Fourier(0.82) | 40:XGBoost(0.64) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        17,
+        18,
+        39,
+        47,
+        50
+      ],
+      "confidence": 69.50828714424948,
+      "ensemble": 0.8356963512470217,
+      "xgboost_raw_mean": 0.10977229565223125,
+      "xgboost_contrast_mean": 0.58531260572984,
+      "bayes_mean": 0.4915197851171755,
+      "fourier_mean": 0.7555131881716329,
+      "structure_mean": 0.8093181818181818,
+      "source": "python_gpu_montecarlo",
+      "rank": 70,
+      "procedure": "Combo [5, 17, 18, 39, 47, 50] priorizado por ensemble Python. Confianza=69.51%. Componentes: XGB=0.585, Bayes=0.492, Fourier=0.756, Estructura=0.809. Ruta por número: 5:Fourier(0.76) | 17:XGBoost(0.59) | 18:Fourier(0.82) | 39:XGBoost(0.71) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        18,
+        37,
+        39,
+        46,
+        47,
+        50
+      ],
+      "confidence": 69.49141826317964,
+      "ensemble": 0.850373061353463,
+      "xgboost_raw_mean": 0.11010043539478802,
+      "xgboost_contrast_mean": 0.6043142109700103,
+      "bayes_mean": 0.4850097228949288,
+      "fourier_mean": 0.7651362180959543,
+      "structure_mean": 0.692348484848485,
+      "source": "python_gpu_montecarlo",
+      "rank": 71,
+      "procedure": "Combo [18, 37, 39, 46, 47, 50] priorizado por ensemble Python. Confianza=69.49%. Componentes: XGB=0.604, Bayes=0.485, Fourier=0.765, Estructura=0.692. Ruta por número: 18:Fourier(0.82) | 37:XGBoost(0.76) | 39:XGBoost(0.71) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        11,
+        18,
+        37,
+        47,
+        50
+      ],
+      "confidence": 69.46772076929547,
+      "ensemble": 0.8338135070428554,
+      "xgboost_raw_mean": 0.10937719574409377,
+      "xgboost_contrast_mean": 0.5624335346780988,
+      "bayes_mean": 0.49897660101149377,
+      "fourier_mean": 0.7759130587743822,
+      "structure_mean": 0.8418181818181818,
+      "source": "python_gpu_montecarlo",
+      "rank": 72,
+      "procedure": "Combo [5, 11, 18, 37, 47, 50] priorizado por ensemble Python. Confianza=69.47%. Componentes: XGB=0.562, Bayes=0.499, Fourier=0.776, Estructura=0.842. Ruta por número: 5:Fourier(0.76) | 11:Fourier(0.67) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        2,
+        5,
+        18,
+        40,
+        47,
+        50
+      ],
+      "confidence": 69.46044598511156,
+      "ensemble": 0.8318707252114689,
+      "xgboost_raw_mean": 0.10946906180677302,
+      "xgboost_contrast_mean": 0.5677532275760044,
+      "bayes_mean": 0.4985257954023659,
+      "fourier_mean": 0.7649464907082274,
+      "structure_mean": 0.8472727272727273,
+      "source": "python_gpu_montecarlo",
+      "rank": 73,
+      "procedure": "Combo [2, 5, 18, 40, 47, 50] priorizado por ensemble Python. Confianza=69.46%. Componentes: XGB=0.568, Bayes=0.499, Fourier=0.765, Estructura=0.847. Ruta por número: 2:Fourier(0.65) | 5:Fourier(0.76) | 18:Fourier(0.82) | 40:XGBoost(0.64) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        2,
+        5,
+        18,
+        31,
+        47,
+        50
+      ],
+      "confidence": 69.43359861283488,
+      "ensemble": 0.814673965518217,
+      "xgboost_raw_mean": 0.11012664822682577,
+      "xgboost_contrast_mean": 0.6058321188062493,
+      "bayes_mean": 0.4671112694238606,
+      "fourier_mean": 0.7120865277483625,
+      "structure_mean": 0.9206060606060606,
+      "source": "python_gpu_montecarlo",
+      "rank": 74,
+      "procedure": "Combo [2, 5, 18, 31, 47, 50] priorizado por ensemble Python. Confianza=69.43%. Componentes: XGB=0.606, Bayes=0.467, Fourier=0.712, Estructura=0.921. Ruta por número: 2:Fourier(0.65) | 5:Fourier(0.76) | 18:Fourier(0.82) | 31:XGBoost(0.87) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        3,
+        5,
+        37,
+        46,
+        47,
+        50
+      ],
+      "confidence": 69.42943373780727,
+      "ensemble": 0.8335014012378745,
+      "xgboost_raw_mean": 0.11150776974289027,
+      "xgboost_contrast_mean": 0.6858087946958621,
+      "bayes_mean": 0.43813094244757167,
+      "fourier_mean": 0.6685769094613131,
+      "structure_mean": 0.7129545454545455,
+      "source": "python_gpu_montecarlo",
+      "rank": 75,
+      "procedure": "Combo [3, 5, 37, 46, 47, 50] priorizado por ensemble Python. Confianza=69.43%. Componentes: XGB=0.686, Bayes=0.438, Fourier=0.669, Estructura=0.713. Ruta por número: 3:XGBoost(1.00) | 5:Fourier(0.76) | 37:XGBoost(0.76) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        27,
+        39,
+        47,
+        50
+      ],
+      "confidence": 69.4154328558146,
+      "ensemble": 0.8346498641398097,
+      "xgboost_raw_mean": 0.10855108275664606,
+      "xgboost_contrast_mean": 0.514595766692577,
+      "bayes_mean": 0.5350729118509884,
+      "fourier_mean": 0.804671072486539,
+      "structure_mean": 0.8751515151515152,
+      "source": "python_gpu_montecarlo",
+      "rank": 76,
+      "procedure": "Combo [5, 18, 27, 39, 47, 50] priorizado por ensemble Python. Confianza=69.42%. Componentes: XGB=0.515, Bayes=0.535, Fourier=0.805, Estructura=0.875. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 27:Fourier(0.81) | 39:XGBoost(0.71) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        2,
+        5,
+        18,
+        39,
+        46,
+        50
+      ],
+      "confidence": 69.41306389845494,
+      "ensemble": 0.8309254778437936,
+      "xgboost_raw_mean": 0.10951262658360605,
+      "xgboost_contrast_mean": 0.5702759353873406,
+      "bayes_mean": 0.4924489736017678,
+      "fourier_mean": 0.7663986970196518,
+      "structure_mean": 0.8472727272727273,
+      "source": "python_gpu_montecarlo",
+      "rank": 77,
+      "procedure": "Combo [2, 5, 18, 39, 46, 50] priorizado por ensemble Python. Confianza=69.41%. Componentes: XGB=0.570, Bayes=0.492, Fourier=0.766, Estructura=0.847. Ruta por número: 2:Fourier(0.65) | 5:Fourier(0.76) | 18:Fourier(0.82) | 39:XGBoost(0.71) | 46:Fourier(0.74) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        5,
+        17,
+        18,
+        47,
+        50,
+        56
+      ],
+      "confidence": 69.4119711122614,
+      "ensemble": 0.8208061722881846,
+      "xgboost_raw_mean": 0.10988393823178594,
+      "xgboost_contrast_mean": 0.5917774984251397,
+      "bayes_mean": 0.4728432115746988,
+      "fourier_mean": 0.737867603936989,
+      "structure_mean": 0.8935606060606062,
+      "source": "python_gpu_montecarlo",
+      "rank": 78,
+      "procedure": "Combo [5, 17, 18, 47, 50, 56] priorizado por ensemble Python. Confianza=69.41%. Componentes: XGB=0.592, Bayes=0.473, Fourier=0.738, Estructura=0.894. Ruta por número: 5:Fourier(0.76) | 17:XGBoost(0.59) | 18:Fourier(0.82) | 47:Fourier(0.80) | 50:Fourier(1.00) | 56:XGBoost(0.75)."
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        45,
+        46,
+        47,
+        50
+      ],
+      "confidence": 69.41027879395708,
+      "ensemble": 0.8445348930051185,
+      "xgboost_raw_mean": 0.10956946927555605,
+      "xgboost_contrast_mean": 0.57356752812404,
+      "bayes_mean": 0.5066023885874742,
+      "fourier_mean": 0.7727164501632684,
+      "structure_mean": 0.7501515151515151,
+      "source": "python_gpu_montecarlo",
+      "rank": 79,
+      "procedure": "Combo [5, 18, 45, 46, 47, 50] priorizado por ensemble Python. Confianza=69.41%. Componentes: XGB=0.574, Bayes=0.507, Fourier=0.773, Estructura=0.750. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 45:XGBoost(0.56) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    },
+    {
+      "numbers": [
+        4,
+        5,
+        18,
+        40,
+        47,
+        50
+      ],
+      "confidence": 69.41008800634198,
+      "ensemble": 0.8340815914814893,
+      "xgboost_raw_mean": 0.10971899659011304,
+      "xgboost_contrast_mean": 0.5822262141512081,
+      "bayes_mean": 0.4953452148617532,
+      "fourier_mean": 0.7523236645300377,
+      "structure_mean": 0.8111363636363637,
+      "source": "python_gpu_montecarlo",
+      "rank": 80,
+      "procedure": "Combo [4, 5, 18, 40, 47, 50] priorizado por ensemble Python. Confianza=69.41%. Componentes: XGB=0.582, Bayes=0.495, Fourier=0.752, Estructura=0.811. Ruta por número: 4:XGBoost(0.64) | 5:Fourier(0.76) | 18:Fourier(0.82) | 40:XGBoost(0.64) | 47:Fourier(0.80) | 50:Fourier(1.00)."
+    }
+  ],
+  "top_combinations": [
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        46,
+        47,
+        50
+      ],
+      "confidence": 72.6087,
+      "xgboost_raw_mean": 0.1101465,
+      "xgboost_contrast_mean": 0.606981,
+      "bayes_mean": 0.51885,
+      "fourier_mean": 0.78691,
+      "structure_mean": 0.815985,
+      "procedure": "Combo [5, 18, 37, 46, 47, 50] priorizado por ensemble Python. Confianza=72.61%. Componentes: XGB=0.607, Bayes=0.519, Fourier=0.787, Estructura=0.816. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00).",
+      "source": "python_gpu_montecarlo"
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        39,
+        46,
+        47,
+        50
+      ],
+      "confidence": 72.4631,
+      "xgboost_raw_mean": 0.11000122,
+      "xgboost_contrast_mean": 0.598569,
+      "bayes_mean": 0.523203,
+      "fourier_mean": 0.791587,
+      "structure_mean": 0.815985,
+      "procedure": "Combo [5, 18, 39, 46, 47, 50] priorizado por ensemble Python. Confianza=72.46%. Componentes: XGB=0.599, Bayes=0.523, Fourier=0.792, Estructura=0.816. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 39:XGBoost(0.71) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00).",
+      "source": "python_gpu_montecarlo"
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        47,
+        50,
+        56
+      ],
+      "confidence": 71.5841,
+      "xgboost_raw_mean": 0.11035442,
+      "xgboost_contrast_mean": 0.619022,
+      "bayes_mean": 0.482324,
+      "fourier_mean": 0.751966,
+      "structure_mean": 0.892727,
+      "procedure": "Combo [5, 18, 37, 47, 50, 56] priorizado por ensemble Python. Confianza=71.58%. Componentes: XGB=0.619, Bayes=0.482, Fourier=0.752, Estructura=0.893. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 47:Fourier(0.80) | 50:Fourier(1.00) | 56:XGBoost(0.75).",
+      "source": "python_gpu_montecarlo"
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        39,
+        47,
+        50,
+        56
+      ],
+      "confidence": 71.4385,
+      "xgboost_raw_mean": 0.11020915,
+      "xgboost_contrast_mean": 0.61061,
+      "bayes_mean": 0.486677,
+      "fourier_mean": 0.756643,
+      "structure_mean": 0.892727,
+      "procedure": "Combo [5, 18, 39, 47, 50, 56] priorizado por ensemble Python. Confianza=71.44%. Componentes: XGB=0.611, Bayes=0.487, Fourier=0.757, Estructura=0.893. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 39:XGBoost(0.71) | 47:Fourier(0.80) | 50:Fourier(1.00) | 56:XGBoost(0.75).",
+      "source": "python_gpu_montecarlo"
+    },
+    {
+      "numbers": [
+        2,
+        5,
+        18,
+        37,
+        47,
+        50
+      ],
+      "confidence": 71.4127,
+      "xgboost_raw_mean": 0.10980578,
+      "xgboost_contrast_mean": 0.587251,
+      "bayes_mean": 0.499828,
+      "fourier_mean": 0.772698,
+      "structure_mean": 0.920606,
+      "procedure": "Combo [2, 5, 18, 37, 47, 50] priorizado por ensemble Python. Confianza=71.41%. Componentes: XGB=0.587, Bayes=0.500, Fourier=0.773, Estructura=0.921. Ruta por número: 2:Fourier(0.65) | 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 47:Fourier(0.80) | 50:Fourier(1.00).",
+      "source": "python_gpu_montecarlo"
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        39,
+        47,
+        50
+      ],
+      "confidence": 71.3804,
+      "xgboost_raw_mean": 0.11024278,
+      "xgboost_contrast_mean": 0.612557,
+      "bayes_mean": 0.501,
+      "fourier_mean": 0.769612,
+      "structure_mean": 0.775152,
+      "procedure": "Combo [5, 18, 37, 39, 47, 50] priorizado por ensemble Python. Confianza=71.38%. Componentes: XGB=0.613, Bayes=0.501, Fourier=0.770, Estructura=0.775. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 39:XGBoost(0.71) | 47:Fourier(0.80) | 50:Fourier(1.00).",
+      "source": "python_gpu_montecarlo"
+    },
+    {
+      "numbers": [
+        4,
+        5,
+        18,
+        37,
+        47,
+        50
+      ],
+      "confidence": 71.3623,
+      "xgboost_raw_mean": 0.11005571,
+      "xgboost_contrast_mean": 0.601724,
+      "bayes_mean": 0.496647,
+      "fourier_mean": 0.760075,
+      "structure_mean": 0.88447,
+      "procedure": "Combo [4, 5, 18, 37, 47, 50] priorizado por ensemble Python. Confianza=71.36%. Componentes: XGB=0.602, Bayes=0.497, Fourier=0.760, Estructura=0.884. Ruta por número: 4:XGBoost(0.64) | 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 47:Fourier(0.80) | 50:Fourier(1.00).",
+      "source": "python_gpu_montecarlo"
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        37,
+        44,
+        47,
+        50
+      ],
+      "confidence": 71.34,
+      "xgboost_raw_mean": 0.10977702,
+      "xgboost_contrast_mean": 0.585586,
+      "bayes_mean": 0.508524,
+      "fourier_mean": 0.784645,
+      "structure_mean": 0.848485,
+      "procedure": "Combo [5, 18, 37, 44, 47, 50] priorizado por ensemble Python. Confianza=71.34%. Componentes: XGB=0.586, Bayes=0.509, Fourier=0.785, Estructura=0.848. Ruta por número: 5:Fourier(0.76) | 18:Fourier(0.82) | 37:XGBoost(0.76) | 44:Fourier(0.72) | 47:Fourier(0.80) | 50:Fourier(1.00).",
+      "source": "python_gpu_montecarlo"
+    },
+    {
+      "numbers": [
+        2,
+        5,
+        18,
+        39,
+        47,
+        50
+      ],
+      "confidence": 71.267,
+      "xgboost_raw_mean": 0.10966051,
+      "xgboost_contrast_mean": 0.578839,
+      "bayes_mean": 0.504181,
+      "fourier_mean": 0.777375,
+      "structure_mean": 0.920606,
+      "procedure": "Combo [2, 5, 18, 39, 47, 50] priorizado por ensemble Python. Confianza=71.27%. Componentes: XGB=0.579, Bayes=0.504, Fourier=0.777, Estructura=0.921. Ruta por número: 2:Fourier(0.65) | 5:Fourier(0.76) | 18:Fourier(0.82) | 39:XGBoost(0.71) | 47:Fourier(0.80) | 50:Fourier(1.00).",
+      "source": "python_gpu_montecarlo"
+    },
+    {
+      "numbers": [
+        3,
+        5,
+        18,
+        46,
+        47,
+        50
+      ],
+      "confidence": 71.2636,
+      "xgboost_raw_mean": 0.11084547,
+      "xgboost_contrast_mean": 0.647457,
+      "bayes_mean": 0.480335,
+      "fourier_mean": 0.704492,
+      "structure_mean": 0.852955,
+      "procedure": "Combo [3, 5, 18, 46, 47, 50] priorizado por ensemble Python. Confianza=71.26%. Componentes: XGB=0.647, Bayes=0.480, Fourier=0.704, Estructura=0.853. Ruta por número: 3:XGBoost(1.00) | 5:Fourier(0.76) | 18:Fourier(0.82) | 46:Fourier(0.74) | 47:Fourier(0.80) | 50:Fourier(1.00).",
+      "source": "python_gpu_montecarlo"
+    }
+  ],
+  "capital_preservation": false,
+  "snapshot_metadata": {
+    "source": "git_history",
+    "commit_sha": "73bfa7fa93d209b2ea0bdae1da97ff2e46555bf4",
+    "short_sha": "73bfa7fa93d2",
+    "imported_at": "2026-05-20T19:20:23.132124+00:00",
+    "original_path": "resultados.json",
+    "content_sha256": "810393e60e39dba4831b67bf98fa3502ead4f9e46f44781892063c5b070c12cd",
+    "prediction_draw": "4212",
+    "game_mode": null,
+    "model_version": null,
+    "score_kind": null
+  }
+}
