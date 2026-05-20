@@ -1,0 +1,495 @@
+{
+  "version": "V4.3.2-legacy-snapshot-classifier",
+  "generated_at": "2026-05-20T21:03:03.429779+00:00",
+  "summary": {
+    "total": 5,
+    "legacy_hindsight": 1,
+    "eligible_for_prior": 4
+  },
+  "snapshots": [
+    {
+      "commit_sha": null,
+      "filename": "resultados_4214_20260520_132155.json",
+      "path": "resultados_archive\\resultados_4214_20260520_132155.json",
+      "detected_draw": "4214",
+      "classification": "clean_prediction_snapshot",
+      "eligible_for_prior": true,
+      "reason": "prediction-shaped snapshot without hindsight markers",
+      "extracted_actual_numbers": [],
+      "extracted_top_combinations": [
+        [
+          14,
+          19,
+          21,
+          25,
+          31,
+          33
+        ],
+        [
+          9,
+          14,
+          19,
+          21,
+          25,
+          31
+        ],
+        [
+          9,
+          14,
+          19,
+          25,
+          31,
+          33
+        ],
+        [
+          14,
+          19,
+          21,
+          25,
+          31,
+          32
+        ],
+        [
+          1,
+          14,
+          19,
+          21,
+          25,
+          31
+        ],
+        [
+          9,
+          14,
+          19,
+          21,
+          25,
+          33
+        ],
+        [
+          14,
+          19,
+          25,
+          31,
+          32,
+          33
+        ],
+        [
+          14,
+          19,
+          21,
+          31,
+          32,
+          33
+        ],
+        [
+          9,
+          14,
+          19,
+          25,
+          31,
+          32
+        ],
+        [
+          1,
+          14,
+          19,
+          25,
+          31,
+          33
+        ]
+      ],
+      "snapshot_source": "local_pre_run_archive",
+      "safety_flags": []
+    },
+    {
+      "commit_sha": null,
+      "filename": "resultados_4214_20260520_132734.json",
+      "path": "resultados_archive\\resultados_4214_20260520_132734.json",
+      "detected_draw": "4214",
+      "classification": "clean_prediction_snapshot",
+      "eligible_for_prior": true,
+      "reason": "prediction-shaped snapshot without hindsight markers",
+      "extracted_actual_numbers": [],
+      "extracted_top_combinations": [
+        [
+          14,
+          19,
+          21,
+          25,
+          31,
+          33
+        ],
+        [
+          9,
+          14,
+          19,
+          21,
+          25,
+          31
+        ],
+        [
+          9,
+          14,
+          19,
+          25,
+          31,
+          33
+        ],
+        [
+          14,
+          19,
+          21,
+          25,
+          31,
+          32
+        ],
+        [
+          1,
+          14,
+          19,
+          21,
+          25,
+          31
+        ],
+        [
+          9,
+          14,
+          19,
+          21,
+          25,
+          33
+        ],
+        [
+          14,
+          19,
+          25,
+          31,
+          32,
+          33
+        ],
+        [
+          14,
+          19,
+          21,
+          31,
+          32,
+          33
+        ],
+        [
+          9,
+          14,
+          19,
+          25,
+          31,
+          32
+        ],
+        [
+          1,
+          14,
+          19,
+          25,
+          31,
+          33
+        ]
+      ],
+      "snapshot_source": "local_pre_run_archive",
+      "safety_flags": []
+    },
+    {
+      "commit_sha": null,
+      "filename": "resultados_4214_20260520_133142.json",
+      "path": "resultados_archive\\resultados_4214_20260520_133142.json",
+      "detected_draw": "4214",
+      "classification": "clean_prediction_snapshot",
+      "eligible_for_prior": true,
+      "reason": "prediction-shaped snapshot without hindsight markers",
+      "extracted_actual_numbers": [],
+      "extracted_top_combinations": [
+        [
+          14,
+          19,
+          21,
+          25,
+          31,
+          33
+        ],
+        [
+          9,
+          14,
+          19,
+          21,
+          25,
+          31
+        ],
+        [
+          9,
+          14,
+          19,
+          25,
+          31,
+          33
+        ],
+        [
+          14,
+          19,
+          21,
+          25,
+          31,
+          32
+        ],
+        [
+          1,
+          14,
+          19,
+          21,
+          25,
+          31
+        ],
+        [
+          9,
+          14,
+          19,
+          21,
+          25,
+          33
+        ],
+        [
+          14,
+          19,
+          25,
+          31,
+          32,
+          33
+        ],
+        [
+          14,
+          19,
+          21,
+          31,
+          32,
+          33
+        ],
+        [
+          9,
+          14,
+          19,
+          25,
+          31,
+          32
+        ],
+        [
+          1,
+          14,
+          19,
+          25,
+          31,
+          33
+        ]
+      ],
+      "snapshot_source": "local_pre_run_archive",
+      "safety_flags": []
+    },
+    {
+      "commit_sha": "65385d728faae7dcc7bcd494c2d32e62864821e3",
+      "filename": "resultados_git_4214_65385d728faa.json",
+      "path": "resultados_archive\\resultados_git_4214_65385d728faa.json",
+      "detected_draw": "4214",
+      "classification": "clean_prediction_snapshot",
+      "eligible_for_prior": true,
+      "reason": "prediction-shaped snapshot without hindsight markers",
+      "extracted_actual_numbers": [],
+      "extracted_top_combinations": [
+        [
+          14,
+          19,
+          21,
+          25,
+          31,
+          33
+        ],
+        [
+          9,
+          14,
+          19,
+          21,
+          25,
+          31
+        ],
+        [
+          9,
+          14,
+          19,
+          25,
+          31,
+          33
+        ],
+        [
+          14,
+          19,
+          21,
+          25,
+          31,
+          32
+        ],
+        [
+          1,
+          14,
+          19,
+          21,
+          25,
+          31
+        ],
+        [
+          9,
+          14,
+          19,
+          21,
+          25,
+          33
+        ],
+        [
+          14,
+          19,
+          25,
+          31,
+          32,
+          33
+        ],
+        [
+          14,
+          19,
+          21,
+          31,
+          32,
+          33
+        ],
+        [
+          9,
+          14,
+          19,
+          25,
+          31,
+          32
+        ],
+        [
+          1,
+          14,
+          19,
+          25,
+          31,
+          33
+        ]
+      ],
+      "snapshot_source": "git_history",
+      "safety_flags": []
+    },
+    {
+      "commit_sha": "c5d4a18594c4c4b70833f62b70db694964a2aa12",
+      "filename": null,
+      "path": null,
+      "detected_draw": "4212",
+      "classification": "legacy_hindsight_snapshot",
+      "eligible_for_prior": false,
+      "reason": "contains hindsight_log, auditoria inversa, combinacion real",
+      "extracted_actual_numbers": [
+        9,
+        15,
+        22,
+        27,
+        47,
+        49
+      ],
+      "extracted_top_combinations": [
+        [
+          5,
+          18,
+          37,
+          46,
+          47,
+          50
+        ],
+        [
+          5,
+          18,
+          39,
+          46,
+          47,
+          50
+        ],
+        [
+          5,
+          18,
+          37,
+          47,
+          50,
+          56
+        ],
+        [
+          5,
+          18,
+          39,
+          47,
+          50,
+          56
+        ],
+        [
+          2,
+          5,
+          18,
+          37,
+          47,
+          50
+        ],
+        [
+          5,
+          18,
+          37,
+          39,
+          47,
+          50
+        ],
+        [
+          4,
+          5,
+          18,
+          37,
+          47,
+          50
+        ],
+        [
+          5,
+          18,
+          37,
+          44,
+          47,
+          50
+        ],
+        [
+          2,
+          5,
+          18,
+          39,
+          47,
+          50
+        ],
+        [
+          3,
+          5,
+          18,
+          46,
+          47,
+          50
+        ]
+      ],
+      "snapshot_source": "git_history",
+      "safety_flags": [
+        "hindsight_detected",
+        "hindsight_log",
+        "auditoria inversa",
+        "combinacion real",
+        "resultado=rastreado",
+        "resultado=no_rastreado"
+      ]
+    }
+  ]
+}

@@ -288,6 +288,80 @@ Fuerza progresiva del prior:
 
 El ajuste maximo absoluto por numero es +/-5%. El prior no elimina numeros, no fuerza numeros, no toca el entrenamiento profundo y no reemplaza el modelo base.
 
+## Replay historico V4.3.2
+
+PR #19 agrega un laboratorio de replay anti-leakage para generar mas examenes sin esperar nuevos sorteos reales. No crea otro motor y no reemplaza el runner oficial.
+
+Modelo mental:
+
+```txt
+Live memory:
+predicciones reales guardadas antes del sorteo.
+
+Replay memory:
+predicciones generadas hoy simulando el pasado con CSV truncado.
+
+Legacy hindsight:
+snapshots viejos con resultado real embebido; solo diagnostico.
+```
+
+El replay usa el motor principal asi:
+
+```txt
+CSV completo -> CSV temporal con sorteos < target_draw
+CSV temporal -> load_draws(path) del motor principal
+motor principal -> resultados.json temporal
+replay lab -> califica contra target_draw real del CSV completo
+```
+
+Ejemplo de replay pequeno:
+
+```powershell
+py .\tools\v4_historical_replay_lab.py --csv revancha.csv --game-mode revancha --start-draw 4210 --end-draw 4214 --max-targets 3 --intensity replay_fast
+```
+
+Dry-run seguro:
+
+```powershell
+py .\tools\v4_historical_replay_lab.py --csv revancha.csv --game-mode revancha --start-draw 4210 --end-draw 4214 --max-targets 3 --intensity replay_fast --dry-run
+```
+
+Intensidad:
+
+- `replay_fast`: setea variables de entorno antes de cargar el engine para bajar costo.
+- `replay_medium`: costo intermedio.
+- `replay_full`: no reduce parametros.
+
+Importante: `local_cruncher_v4_deep_stacking.py` lee `MELATE_V4_MC_TOTAL`, `MELATE_V4_MC_BATCH` y `MELATE_V4_OOS_STEPS` al importarse. Por eso el replay lab setea esas variables antes de llamar `load_engine()` y restaura el entorno en `finally`.
+
+El replay siempre corre en un `TemporaryDirectory`, porque el motor escribe `resultados.json` en el working directory actual. El lab captura ese archivo, lo copia a `replay_archive/` y restaura el `cwd`.
+
+Replay memory vive en `v4_replay_memory.py`. Si existen records replay reales, puede escribir `v4_replay_memory.json` y `v4_replay_analysis.json`. Por default el replay prior es `shadow_replay_prior`: se calcula y se muestra, pero no se aplica. `ENABLE_REPLAY_PRIOR = False`.
+
+Reglas replay:
+
+- minimo 30 records replay limpios para shadow prior;
+- maximo +/-2% con 30-59 records;
+- maximo +/-3% con 60+ records;
+- no cuenta como live memory;
+- no incrementa `valid_real_records_used`;
+- no fuerza numeros;
+- no elimina numeros;
+- no cambia `score_kind`;
+- no se presenta como garantia.
+
+## Legacy Snapshot Classifier
+
+`tools/v4_legacy_snapshot_classifier.py` clasifica snapshots antiguos para conservar diagnostico sin contaminar memoria aplicada.
+
+Ejemplo:
+
+```powershell
+py .\tools\v4_legacy_snapshot_classifier.py --commit c5d4a18594c4c4b70833f62b70db694964a2aa12
+```
+
+El commit legacy del sorteo 4212 debe clasificarse como `legacy_hindsight_snapshot` porque contiene auditoria inversa y combinacion real embebida. No activa prior.
+
 ## GitHub sync local
 
 `v4_github_sync.py` usa solo git CLI local. No guarda tokens, no contiene credenciales y depende de la autenticacion que ya tenga configurada tu maquina.
@@ -349,6 +423,15 @@ Ejecutar opcion [1] del runner calibrado
 Confirmar que v4_feedback_memory.json se crea solo si se califico un record real
 Confirmar que con 0-2 records el modo es diagnostic_only
 Confirmar que con 3+ records reales el prior se instala antes de Monte Carlo
+```
+
+Replay:
+
+```txt
+Ejecutar classifier contra commit c5d4a185...
+Ejecutar replay dry-run con max-targets 3
+Ejecutar tools/v4_replay_smoke_test.py
+Confirmar que v4_replay_memory.json no se crea en dry-run ni sin records reales
 ```
 
 Sync:
