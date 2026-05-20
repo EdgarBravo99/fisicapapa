@@ -395,6 +395,358 @@ pre,
   font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
+.hud-command-bar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(34, 211, 238, .20);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(3, 7, 18, .94), rgba(8, 17, 31, .86));
+  box-shadow: 0 18px 54px rgba(0, 0, 0, .40), inset 0 1px 0 rgba(255, 255, 255, .04);
+  padding: 8px;
+  backdrop-filter: blur(18px);
+}
+
+.hud-command-status {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(34, 197, 94, .28);
+  border-radius: 12px;
+  background: rgba(34, 197, 94, .08);
+  padding: 0 12px;
+  color: #bbf7d0;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.hud-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--quant-green);
+  box-shadow: 0 0 18px rgba(34, 197, 94, .65);
+}
+
+.hud-command-links {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 1px;
+}
+
+.hud-command-links a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border: 1px solid rgba(148, 163, 184, .14);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, .72);
+  padding: 0 14px;
+  color: #dbeafe;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.control-room-header {
+  display: grid;
+  gap: 16px;
+}
+
+.control-room-hero {
+  min-height: 280px;
+  border-color: rgba(34, 211, 238, .34) !important;
+}
+
+.control-room-hero::after {
+  position: absolute;
+  right: -120px;
+  bottom: -180px;
+  width: 420px;
+  height: 420px;
+  border: 1px solid rgba(34, 211, 238, .12);
+  border-radius: 999px;
+  content: "";
+  pointer-events: none;
+}
+
+.control-room-hero-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.control-room-hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.hero-primary-decision {
+  min-height: 180px;
+  border-color: rgba(34, 211, 238, .26) !important;
+}
+
+.hero-number {
+  min-width: 58px !important;
+  min-height: 58px !important;
+  font-size: 22px;
+}
+
+.hero-side-panel {
+  min-height: 132px;
+}
+
+.status-radar,
+.decision-card,
+.combo-ticket,
+.number-rank-card,
+.physics-lab-card,
+.comparator-combo-card,
+.technical-terminal-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.status-radar::before,
+.decision-card::before,
+.combo-ticket::before,
+.number-rank-card::before,
+.physics-lab-card::before,
+.comparator-combo-card::before,
+.technical-terminal-panel::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(90deg, rgba(34, 211, 238, .08), transparent 38%, rgba(245, 158, 11, .06));
+}
+
+.bento-status-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.metric-strip {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+}
+
+.metric-strip .quant-metric {
+  min-width: 0;
+  padding: 10px !important;
+}
+
+.metric-strip .quant-metric p {
+  color: var(--quant-muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.metric-strip .quant-metric b {
+  display: block;
+  margin-top: 4px;
+  color: var(--quant-text);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 14px;
+}
+
+.combo-ticket {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  border: 1px solid rgba(245, 158, 11, .22) !important;
+  border-radius: 18px !important;
+  background: linear-gradient(135deg, rgba(15, 23, 42, .92), rgba(8, 17, 31, .88)) !important;
+  padding: 16px !important;
+}
+
+.combo-ticket-rank {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid rgba(245, 158, 11, .34);
+  border-radius: 14px;
+  background: rgba(245, 158, 11, .10);
+  color: #fde68a;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 900;
+}
+
+.combo-ticket-main {
+  min-width: 0;
+}
+
+.combo-ball-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.combo-ticket .metric-strip {
+  margin-top: 12px;
+}
+
+.combo-ticket-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.number-rank-card {
+  border-color: rgba(139, 92, 246, .22) !important;
+}
+
+#top-numbers-panel .number-rank-card:first-child {
+  border-color: rgba(34, 211, 238, .34) !important;
+  background: linear-gradient(135deg, rgba(34, 211, 238, .12), rgba(15, 23, 42, .90)) !important;
+  padding: 18px !important;
+}
+
+#top-numbers-panel .number-rank-card:first-child .quant-number-ball {
+  min-width: 58px !important;
+  min-height: 58px !important;
+  font-size: 24px;
+}
+
+.driver-chip {
+  max-width: 46%;
+  border: 1px solid rgba(34, 211, 238, .18);
+  border-radius: 999px;
+  background: rgba(34, 211, 238, .08);
+  padding: 6px 10px;
+  text-align: right;
+}
+
+.manual-evaluator-stage {
+  border-color: rgba(34, 211, 238, .30) !important;
+}
+
+.manual-score-panel {
+  border-color: rgba(34, 211, 238, .26) !important;
+}
+
+.score-orb {
+  display: inline-grid !important;
+  width: 116px !important;
+  height: 116px !important;
+  place-items: center !important;
+  border: 1px solid rgba(34, 211, 238, .42) !important;
+  border-radius: 999px !important;
+  background: radial-gradient(circle at 50% 45%, rgba(34, 211, 238, .24), transparent 58%), rgba(3, 7, 18, .72) !important;
+  box-shadow: inset 0 0 28px rgba(34, 211, 238, .14), 0 18px 48px rgba(0, 0, 0, .36) !important;
+}
+
+.component-meter {
+  border-color: rgba(148, 163, 184, .12) !important;
+}
+
+.component-meter .quant-progress > div,
+.quant-progress > div {
+  background: linear-gradient(90deg, var(--quant-cyan), var(--quant-green));
+}
+
+.comparator-board {
+  border-color: rgba(139, 92, 246, .26) !important;
+}
+
+.winner-ribbon {
+  position: relative;
+  border-color: rgba(139, 92, 246, .36) !important;
+  background: linear-gradient(135deg, rgba(139, 92, 246, .18), rgba(8, 17, 31, .86)) !important;
+}
+
+.comparator-card-grid {
+  align-items: stretch;
+}
+
+.comparator-combo-card {
+  display: grid;
+  gap: 12px;
+}
+
+.physics-lab {
+  border-color: rgba(34, 197, 94, .24) !important;
+}
+
+.physics-lab-card {
+  display: grid;
+  gap: 10px;
+  border-color: rgba(34, 197, 94, .18) !important;
+}
+
+.technical-terminal {
+  border-color: rgba(148, 163, 184, .18) !important;
+  background: linear-gradient(180deg, rgba(2, 6, 23, .92), rgba(3, 7, 18, .86)) !important;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+
+.technical-terminal summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.technical-terminal summary::after {
+  content: "abrir";
+  color: var(--quant-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.technical-terminal[open] summary::after {
+  content: "cerrar";
+}
+
+.technical-terminal-panel,
+.technical-terminal pre,
+#contract-preview {
+  font-family: "JetBrains Mono", ui-monospace, monospace !important;
+}
+
+@media (min-width: 768px) {
+  .control-room-hero-header {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .control-room-hero-grid {
+    grid-template-columns: minmax(0, 1.35fr) minmax(220px, .65fr) minmax(220px, .75fr);
+  }
+
+  .bento-status-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .bento-status-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .combo-ticket {
+    grid-template-columns: auto minmax(0, 1fr) minmax(250px, .42fr);
+  }
+}
+
 @media (max-width: 640px) {
   #app-root {
     gap: 18px;
@@ -403,6 +755,14 @@ pre,
 
   .quant-sticky-nav {
     border-radius: 16px;
+  }
+
+  .hud-command-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .hud-command-status {
+    width: fit-content;
   }
 
   #dashboard {
@@ -417,6 +777,28 @@ pre,
 
   #manual-result .grid {
     grid-template-columns: 1fr !important;
+  }
+
+  .control-room-hero {
+    min-height: 0;
+  }
+
+  .combo-ticket {
+    grid-template-columns: 1fr !important;
+  }
+
+  .combo-ticket-rank {
+    width: fit-content;
+    min-width: 48px;
+  }
+
+  .driver-chip {
+    max-width: 100%;
+  }
+
+  .score-orb {
+    width: 96px !important;
+    height: 96px !important;
   }
 }
 

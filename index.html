@@ -23,17 +23,21 @@
   </div>
 
   <main id="app-root" class="quant-shell mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
-    <nav class="quant-sticky-nav sticky top-3 z-20 px-3 py-3 backdrop-blur" aria-label="Navegacion rapida">
-      <div class="mx-auto flex max-w-7xl gap-2 overflow-x-auto text-xs font-bold text-slate-200">
-        <a class="min-h-[44px] whitespace-nowrap rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-3 py-3 text-cyan-100" href="#personal-center">Centro V4.2</a>
-        <a class="min-h-[44px] whitespace-nowrap rounded-xl border border-amber-400/30 bg-amber-400/10 px-3 py-3 text-amber-100" href="#top-combinations-section">Top combos</a>
-        <a class="min-h-[44px] whitespace-nowrap rounded-xl border border-cyan-400/30 bg-slate-900 px-3 py-3" href="#manual-evaluator-section">Evaluar</a>
-        <a class="min-h-[44px] whitespace-nowrap rounded-xl border border-violet-400/30 bg-violet-400/10 px-3 py-3 text-violet-100" href="#combo-comparator-section">Comparar</a>
-        <a class="min-h-[44px] whitespace-nowrap rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-3 py-3 text-emerald-100" href="#physics-section">Fisica</a>
-        <a class="min-h-[44px] whitespace-nowrap rounded-xl border border-slate-700 bg-slate-900 px-3 py-3" href="#auditor-section">Auditor</a>
+    <nav class="hud-command-bar sticky top-3 z-20" aria-label="Navegacion rapida">
+      <div class="hud-command-status">
+        <span class="hud-dot" aria-hidden="true"></span>
+        <span>V4.2</span>
+      </div>
+      <div class="hud-command-links" role="list">
+        <a role="listitem" href="#personal-center">Centro</a>
+        <a role="listitem" href="#top-combinations-section">Top</a>
+        <a role="listitem" href="#manual-evaluator-section">Evaluar</a>
+        <a role="listitem" href="#combo-comparator-section">Comparar</a>
+        <a role="listitem" href="#physics-section">Fisica</a>
+        <a role="listitem" href="#auditor-section">Auditor</a>
       </div>
     </nav>
-    <header class="quant-card-strong quant-control-header p-5 md:p-6">
+    <header class="quant-card-strong quant-control-header control-room-header p-5 md:p-6">
       <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <div class="quant-pill-ok mb-3">Web V2 / V4.2 Only</div>
@@ -52,23 +56,23 @@
       <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between"><div><p class="text-xs font-bold uppercase tracking-[0.28em] text-red-300">Ejecución detenida</p><h2 class="mt-2 text-2xl font-black text-red-100">JSON incompatible con Web V2</h2><p id="fatal-error-message" class="mt-3 max-w-4xl text-sm leading-6 text-red-100/90"></p></div><div class="rounded-2xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm font-bold text-red-100">V4.2 requerido</div></div>
     </section>
 
-    <section id="loading-panel" class="rounded-3xl border border-slate-800 bg-slate-950/70 p-6 text-slate-300">
+    <section id="loading-panel" class="status-radar rounded-3xl border border-slate-800 bg-slate-950/70 p-6 text-slate-300">
       <div class="flex items-center gap-3"><div class="h-3 w-3 animate-pulse rounded-full bg-cyan-300"></div><p class="text-sm">Cargando resultados.json y validando contrato V4.2…</p></div>
     </section>
 
     <section id="dashboard" class="hidden grid gap-6">
-      <section id="personal-center" class="quant-card-strong p-5">
-        <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+      <section id="personal-center" class="quant-card-strong control-room-hero p-5">
+        <div class="control-room-hero-header">
           <div>
             <p class="text-xs uppercase tracking-[0.24em] text-cyan-300">Centro Personal V4.2</p>
-            <h2 class="mt-2 text-2xl font-black text-white">Decision rapida del dia</h2>
-            <p class="mt-2 text-sm text-slate-400">Resumen operativo para decidir que revisar primero sin interpretar el score como probabilidad real.</p>
+            <h2 class="mt-2 text-3xl font-black text-white md:text-4xl">Decision rapida del dia</h2>
+            <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-400">Resumen operativo para decidir que revisar primero sin interpretar el score como probabilidad real.</p>
           </div>
-          <span id="personal-center-status" class="rounded-2xl border border-slate-700 bg-slate-900/80 px-4 py-2 text-sm font-bold text-slate-200">Esperando JSON</span>
+          <span id="personal-center-status" class="status-radar rounded-2xl border border-slate-700 bg-slate-900/80 px-4 py-2 text-sm font-bold text-slate-200">Esperando JSON</span>
         </div>
         <div id="personal-center-panel" class="mt-5 grid gap-3"></div>
       </section>
-      <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section class="bento-status-grid">
         <article class="quant-metric"><p class="text-xs uppercase tracking-[0.24em] text-slate-500">Score Kind</p><p id="kpi-score-kind" class="mt-3 break-words text-lg font-black text-cyan-200">N/D</p></article>
         <article class="quant-metric"><p class="text-xs uppercase tracking-[0.24em] text-slate-500">Feedback Loop</p><p id="kpi-feedback-loop" class="mt-3 text-lg font-black text-emerald-300">N/D</p></article>
         <article class="quant-metric"><p class="text-xs uppercase tracking-[0.24em] text-slate-500">Walk-Forward</p><p id="kpi-walk-forward" class="mt-3 text-lg font-black text-violet-300">N/D</p></article>
@@ -76,7 +80,7 @@
       </section>
 
       <section class="grid gap-6 xl:grid-cols-[1.15fr_.85fr]">
-        <section id="top-combinations-section" class="quant-card p-5">
+        <section id="top-combinations-section" class="quant-card decision-card p-5">
           <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
             <div><p class="text-xs uppercase tracking-[0.24em] text-amber-300">Simulación V4.2</p><h2 class="mt-2 text-2xl font-black text-white">Mejores combinaciones del generator_pool</h2><p class="mt-2 text-sm text-slate-400">Top combinaciones exportadas por el cruncher local, enriquecidas con explicación física/modelo.</p></div>
             <span id="top-combos-label" class="rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-2 text-sm font-bold text-amber-200">—</span>
@@ -84,13 +88,13 @@
           <div id="top-combinations-panel" class="mt-5 grid gap-3"></div>
         </section>
 
-        <section class="quant-card p-5">
+        <section class="quant-card decision-card p-5">
           <div><p class="text-xs uppercase tracking-[0.24em] text-violet-300">Ranking por número</p><h2 class="mt-2 text-2xl font-black text-white">Top 10 números V4.2</h2><p class="mt-2 text-sm text-slate-400">Números con mayor score del modelo, incluyendo física y expertos.</p></div>
           <div id="top-numbers-panel" class="mt-5 grid gap-3"></div>
         </section>
       </section>
 
-      <section id="manual-evaluator-section" class="quant-card-strong p-5">
+      <section id="manual-evaluator-section" class="quant-card-strong decision-card manual-evaluator-stage p-5">
         <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <div><p class="text-xs uppercase tracking-[0.24em] text-cyan-300">Súper-Validador V4</p><h2 class="mt-2 text-2xl font-black text-white">Evaluador manual por modelo, estructura, física y pool</h2><p class="mt-2 text-sm text-slate-400">Ingresa 6 números. La calificación usa el contrato V4.2 y la física efectiva de esferas.</p></div>
           <button id="btn-evaluate-manual" class="min-h-[44px] rounded-2xl bg-cyan-400 px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-200" aria-label="Evaluar combinacion manual V4.2">Evaluar</button>
@@ -107,7 +111,7 @@
         <div id="manual-result" class="mt-5 hidden"></div>
       </section>
 
-      <section id="combo-comparator-section" class="quant-card p-5">
+      <section id="combo-comparator-section" class="quant-card comparator-board p-5">
         <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <div>
             <p class="text-xs uppercase tracking-[0.24em] text-violet-300">Comparador personal</p>
@@ -123,7 +127,7 @@
         <div id="combo-comparator-panel" class="mt-5 grid gap-3"></div>
       </section>
 
-      <section id="physics-section" class="quant-card p-5">
+      <section id="physics-section" class="quant-card physics-lab p-5">
         <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <div><p class="text-xs uppercase tracking-[0.24em] text-emerald-300">Panel de Control Fisico</p><h2 class="mt-2 text-2xl font-black text-white">Laboratorio de esferas y peso efectivo</h2><p class="mt-2 text-sm text-slate-400">Cada esfera muestra peso real, salidas desde calibracion, peso efectivo y desgaste estimado.</p></div>
           <div id="physics-summary-label" class="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-sm font-bold text-emerald-200">Esperando física…</div>
@@ -131,18 +135,18 @@
         <div id="physics-grid" class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
       </section>
 
-      <details id="auditor-section" class="quant-card p-5">
+      <details id="auditor-section" class="quant-card technical-terminal p-5">
         <summary class="cursor-pointer text-lg font-black text-white focus:outline-none focus:ring-2 focus:ring-cyan-200">Auditor V4.2</summary>
         <p class="mt-2 text-sm text-slate-400">Conteos, advertencias, escalas detectadas y muestras crudas para revisar el contrato sin saturar el flujo diario.</p>
         <div id="auditor-panel" class="mt-5 grid gap-3"></div>
       </details>
 
-      <section class="quant-card p-5">
+      <section class="quant-card technical-terminal p-5">
         <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between"><div><p class="text-xs uppercase tracking-[0.24em] text-slate-500">Contrato V4.2 validado</p><h2 class="mt-2 text-2xl font-black text-white">Panel base listo para módulos científicos</h2></div><button id="btn-reload-json" class="rounded-2xl border border-cyan-400/30 bg-cyan-400/10 px-4 py-2 text-sm font-bold text-cyan-200 transition hover:bg-cyan-400/20">Recargar JSON</button></div>
         <pre id="contract-preview" class="mt-5 max-h-80 overflow-auto rounded-2xl border border-slate-800 bg-slate-900/80 p-4 text-xs leading-5 text-slate-300"></pre>
       </section>
 
-      <section class="quant-card p-5">
+      <section class="quant-card decision-card p-5">
         <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <div><p class="text-xs uppercase tracking-[0.24em] text-cyan-300">Diagnostico de Datos</p><h2 class="mt-2 text-2xl font-black text-white">Estado del Sistema V4.2</h2><p class="mt-2 text-sm text-slate-400">Valida contrato, conteos fisicos, pool, walk-forward y metadata cargada en resultados.json.</p></div>
           <span id="system-diagnostics-status" class="rounded-2xl border border-slate-700 bg-slate-900/80 px-4 py-2 text-sm font-bold text-slate-200">Esperando JSON</span>
