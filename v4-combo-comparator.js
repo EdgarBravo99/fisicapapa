@@ -106,7 +106,7 @@
   }
 
   function renderMetric(label, value, tone) {
-    return `<div class="rounded-xl border border-slate-800 bg-slate-950/50 p-3">
+    return `<div class="quant-metric rounded-xl border border-slate-800 bg-slate-950/50 p-3">
       <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500">${esc(label)}</p>
       <p class="mt-1 text-sm font-black ${tone}">${fmt(value)}</p>
     </div>`;
@@ -149,10 +149,10 @@
         ${items.map(item => {
           const result = evaluate(item.numbers);
           if (!result || result.error) {
-            return `<article class="rounded-2xl border border-red-400/30 bg-red-500/10 p-4 text-sm text-red-100">${esc(item.label)}: ${esc(result?.error || 'No evaluable')}</article>`;
+            return `<article class="quant-card rounded-2xl border border-red-400/30 bg-red-500/10 p-4 text-sm text-red-100">${esc(item.label)}: ${esc(result?.error || 'No evaluable')}</article>`;
           }
           const s = result.evaluation.summary;
-          return `<article class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+          return `<article class="quant-card rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
             <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <p class="text-xs uppercase tracking-[0.22em] text-slate-500">${esc(item.label)}</p>

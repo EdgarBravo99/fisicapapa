@@ -110,16 +110,16 @@
       const nums = comboNumbers(combo);
       const score = comboScore(combo);
       const explanation = combo?.plain_route || combo?.human_explanation || combo?.source || 'Sin ruta explicativa exportada.';
-      return `<article class="rounded-2xl border border-amber-400/20 bg-slate-900/70 p-4">
+      return `<article class="quant-card rounded-2xl border border-amber-400/20 bg-slate-900/70 p-4">
         <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <p class="text-xs uppercase tracking-[0.22em] text-amber-300">#${idx + 1} · score ${fmt(score)}</p>
-            <div class="mt-2 flex flex-wrap gap-2">${nums.map(n => `<span class="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-sm font-black text-cyan-100">${n}</span>`).join('')}</div>
+            <div class="mt-2 flex flex-wrap gap-2">${nums.map(n => `<span class="quant-number-ball rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-sm font-black text-cyan-100">${n}</span>`).join('')}</div>
             <div class="mt-3 flex flex-wrap gap-2">${comboBadges(combo, nums, data)}</div>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button class="min-h-[44px] rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 text-xs font-bold text-cyan-100 transition hover:bg-cyan-400/20 focus:outline-none focus:ring-2 focus:ring-cyan-300" data-fill-combo="${nums.join(',')}">Evaluar esta combinacion</button>
-            <button class="min-h-[44px] rounded-xl border border-slate-600 bg-slate-800/70 px-3 py-2 text-xs font-bold text-slate-100 transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300" data-copy-combo="${nums.join(' ')}">Copiar</button>
+            <button class="quant-ghost-button min-h-[44px] rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 text-xs font-bold text-cyan-100 transition hover:bg-cyan-400/20 focus:outline-none focus:ring-2 focus:ring-cyan-300" data-fill-combo="${nums.join(',')}">Evaluar esta combinacion</button>
+            <button class="quant-ghost-button min-h-[44px] rounded-xl border border-slate-600 bg-slate-800/70 px-3 py-2 text-xs font-bold text-slate-100 transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300" data-copy-combo="${nums.join(' ')}">Copiar</button>
           </div>
         </div>
         <p class="mt-3 text-xs leading-5 text-slate-400">${esc(explanation).slice(0, 420)}</p>
@@ -179,9 +179,9 @@
       const xgboost = pct(raw.xgboost);
       const graph = pct(raw.graph);
       const physicsBadge = !item.phys.hasEffective ? badgeHtml('sin datos fisicos', 'red') : item.phys.effectiveWeight < item.phys.avgEffective ? badgeHtml('fisica ligera', 'emerald') : badgeHtml('fisica pesada', 'amber');
-      return `<article class="rounded-2xl border border-violet-400/20 bg-slate-900/70 p-4">
+      return `<article class="quant-card rounded-2xl border border-violet-400/20 bg-slate-900/70 p-4">
         <div class="flex items-center justify-between gap-3">
-          <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-full border border-violet-300/40 bg-violet-400/10 text-lg font-black text-violet-100">${item.number}</span><div><p class="text-xs text-slate-500">Rank #${idx + 1}</p><p class="text-sm font-black text-white">${fmt(item.score)} pts</p></div></div>
+          <div class="flex items-center gap-3"><span class="quant-number-ball flex h-10 w-10 items-center justify-center rounded-full border border-violet-300/40 bg-violet-400/10 text-lg font-black text-violet-100">${item.number}</span><div><p class="text-xs text-slate-500">Rank #${idx + 1}</p><p class="text-sm font-black text-white">${fmt(item.score)} pts</p></div></div>
           <span class="text-xs font-bold text-cyan-200">${esc(driver)}</span>
         </div>
         <p class="mt-3 text-xs leading-5 text-slate-400">${esc(reason).slice(0, 180)}</p>
@@ -220,7 +220,7 @@
       if (phys.avgEffective != null && phys.effectiveWeight != null && phys.effectiveWeight - phys.avgEffective >= 0.055) alerts.push(['extremadamente pesada', 'amber']);
       if (phys.avgEffective != null && phys.effectiveWeight != null && phys.avgEffective - phys.effectiveWeight >= 0.055) alerts.push(['extremadamente ligera', 'cyan']);
       if (phys.uses != null && phys.uses >= Math.max(3, Math.ceil(maxUses * 0.8))) alerts.push(['muy usada', 'violet']);
-      return `<article class="rounded-2xl border ${tone} bg-slate-900/60 p-4">
+      return `<article class="quant-card rounded-2xl border ${tone} bg-slate-900/60 p-4">
         <div class="flex items-center justify-between gap-3">
           <span class="text-2xl font-black text-white">${number}</span>
           <span class="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2 py-1 text-xs font-bold text-cyan-100">${esc(badge)}</span>
