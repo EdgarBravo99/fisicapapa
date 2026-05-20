@@ -188,7 +188,11 @@
       red: 'border-red-300/30 bg-red-500/10 text-red-100',
       slate: 'border-slate-600 bg-slate-800/80 text-slate-100',
     };
-    return `<span class="rounded-full border ${tones[badge.tone] || tones.slate} px-3 py-1 text-xs font-bold">${esc(badge.label)}</span>`;
+    return `<span class="quant-pill rounded-full border ${tones[badge.tone] || tones.slate} px-3 py-1 text-xs font-bold">${esc(badge.label)}</span>`;
+  }
+
+  function comboBallHtml(numbers) {
+    return comboNumbers(numbers).map(number => `<span class="quant-number-ball">${number}</span>`).join('');
   }
 
   function card(label, value, status = 'OK', detail = '') {
@@ -197,7 +201,7 @@
       : status === 'Revisar'
         ? 'border-amber-400/40 bg-amber-400/10 text-amber-100'
         : 'border-emerald-400/40 bg-emerald-400/10 text-emerald-100';
-    return `<article class="rounded-2xl border ${tone} p-4">
+    return `<article class="quant-metric status-radar rounded-2xl border ${tone} p-4">
       <p class="text-[10px] uppercase tracking-[0.22em] opacity-75">${esc(label)}</p>
       <p class="mt-2 text-lg font-black">${esc(value)}</p>
       ${detail ? `<p class="mt-1 text-xs opacity-80">${esc(detail)}</p>` : ''}
@@ -218,7 +222,7 @@
     const statusEl = $('personal-center-status');
     if (statusEl) {
       statusEl.textContent = status;
-      statusEl.className = `rounded-2xl border px-4 py-2 text-sm font-bold ${status === 'Critico' ? 'border-red-400/40 bg-red-500/10 text-red-100' : status === 'Revisar' ? 'border-amber-400/40 bg-amber-400/10 text-amber-100' : 'border-emerald-400/40 bg-emerald-400/10 text-emerald-100'}`;
+      statusEl.className = `status-radar rounded-2xl border px-4 py-2 text-sm font-bold ${status === 'Critico' ? 'border-red-400/40 bg-red-500/10 text-red-100' : status === 'Revisar' ? 'border-amber-400/40 bg-amber-400/10 text-amber-100' : 'border-emerald-400/40 bg-emerald-400/10 text-emerald-100'}`;
     }
     const firstAction = hasCritical
       ? 'Actualizar resultados.json'
@@ -226,34 +230,41 @@
         ? 'Revisar fisica y auditor'
         : 'Evaluar y comparar manual';
     panel.innerHTML = `
-      <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div class="control-room-hero-grid">
+        <article class="decision-card hero-primary-decision">
+          <div>
+            <p class="text-xs uppercase tracking-[0.22em] text-cyan-300">Mejor combinacion actual</p>
+            <div class="combo-ball-row mt-3">${bestCombo.length ? comboBallHtml(bestCombo) : '<span class="text-sm text-slate-400">N/D</span>'}</div>
+          </div>
+          <button class="quant-action mt-4 min-h-[44px] rounded-xl px-4 py-3 text-sm font-black" data-fill-combo="${bestCombo.join(',')}">Evaluar esta combinacion</button>
+        </article>
+        <article class="decision-card hero-side-panel">
+          <p class="text-xs uppercase tracking-[0.22em] text-violet-300">Mejor numero actual</p>
+          <div class="mt-3 flex items-center gap-3">
+            <span class="quant-number-ball hero-number">${esc(bestNumber?.number ?? bestNumber?.n ?? bestNumber?.ball)}</span>
+            <div>
+              <p class="text-xs text-slate-500">Score interno</p>
+              <p class="text-2xl font-black text-white">${fmt(pct(bestNumber?.score ?? bestNumber?.meta_score ?? bestNumber?.score_percent ?? bestNumber?.net_score))}</p>
+            </div>
+          </div>
+        </article>
+        <article class="decision-card hero-side-panel">
+          <p class="text-xs uppercase tracking-[0.22em] text-amber-300">Revisar primero</p>
+          <p class="mt-3 text-2xl font-black text-white">${esc(firstAction)}</p>
+          <p class="mt-2 text-xs leading-5 text-slate-400">Scores internos de decision, no probabilidades garantizadas.</p>
+        </article>
+      </div>
+      <div class="bento-status-grid mt-4">
         ${card('JSON', jsonData?.last_update || 'Sin timestamp', hasCritical ? 'Critico' : 'OK', 'Cache: fetch no-store + parametro temporal.')}
         ${card('Modo / modelo', `${jsonData?.game_mode || 'N/D'} / ${feedback.version || 'N/D'}`, feedback.version === 'V4.2' ? 'OK' : 'Critico', jsonData?.model_version || jsonData?.source || 'V4.2')}
         ${card('Fisica', `${quality.counts.realWeights}/56 reales, ${quality.counts.effectiveWeights}/56 efectivos`, quality.counts.effectiveWeights === 56 ? (quality.counts.realWeights === 56 ? 'OK' : 'Revisar') : 'Critico', `${quality.counts.usesSinceCalibration}/56 usos desde calibracion`)}
         ${card('Combinaciones', `${quality.counts.topCombinations} top, ${quality.counts.generatorPool} pool`, quality.counts.generatorPool ? 'OK' : 'Critico', `Walk-forward rows: ${quality.counts.walkForwardRows}`)}
       </div>
-      <div class="grid gap-3 lg:grid-cols-3">
-        <article class="rounded-2xl border border-cyan-400/20 bg-slate-900/70 p-4">
-          <p class="text-xs uppercase tracking-[0.22em] text-cyan-300">Mejor combinacion actual</p>
-          <p class="mt-2 text-xl font-black text-white">${bestCombo.length ? bestCombo.join(' - ') : 'N/D'}</p>
-          <button class="mt-3 min-h-[44px] rounded-xl border border-cyan-300/40 bg-cyan-400/10 px-3 py-2 text-sm font-bold text-cyan-100" data-fill-combo="${bestCombo.join(',')}">Evaluar esta combinacion</button>
-        </article>
-        <article class="rounded-2xl border border-violet-400/20 bg-slate-900/70 p-4">
-          <p class="text-xs uppercase tracking-[0.22em] text-violet-300">Mejor numero actual</p>
-          <p class="mt-2 text-xl font-black text-white">${esc(bestNumber?.number ?? bestNumber?.n ?? bestNumber?.ball)}</p>
-          <p class="mt-1 text-xs text-slate-400">Score interno: ${fmt(pct(bestNumber?.score ?? bestNumber?.meta_score ?? bestNumber?.score_percent ?? bestNumber?.net_score))}</p>
-        </article>
-        <article class="rounded-2xl border border-amber-400/20 bg-slate-900/70 p-4">
-          <p class="text-xs uppercase tracking-[0.22em] text-amber-300">Revisar primero</p>
-          <p class="mt-2 text-xl font-black text-white">${esc(firstAction)}</p>
-          <p class="mt-1 text-xs text-slate-400">Los scores son indices internos de decision, no probabilidades garantizadas.</p>
-        </article>
-      </div>
-      <div class="flex flex-wrap gap-2">
-        <a class="min-h-[44px] rounded-xl border border-cyan-300/40 bg-cyan-400/10 px-3 py-3 text-sm font-bold text-cyan-100" href="#manual-evaluator-section">Evaluar manual</a>
-        <a class="min-h-[44px] rounded-xl border border-amber-300/40 bg-amber-400/10 px-3 py-3 text-sm font-bold text-amber-100" href="#top-combinations-section">Ver top combos</a>
-        <a class="min-h-[44px] rounded-xl border border-emerald-300/40 bg-emerald-400/10 px-3 py-3 text-sm font-bold text-emerald-100" href="#physics-section">Revisar fisica</a>
-        <a class="min-h-[44px] rounded-xl border border-violet-300/40 bg-violet-400/10 px-3 py-3 text-sm font-bold text-violet-100" href="#combo-comparator-section">Comparar</a>
+      <div class="metric-strip mt-4">
+        <a class="quant-ghost-button" href="#manual-evaluator-section">Evaluar manual</a>
+        <a class="quant-ghost-button" href="#top-combinations-section">Ver top combos</a>
+        <a class="quant-ghost-button" href="#physics-section">Revisar fisica</a>
+        <a class="quant-ghost-button" href="#combo-comparator-section">Comparar</a>
       </div>`;
     panel.querySelector('[data-fill-combo]')?.addEventListener('click', event => {
       const nums = event.currentTarget.getAttribute('data-fill-combo').split(',').map(Number);
@@ -274,27 +285,27 @@
     const numberTop = rows(jsonData).slice().sort((a, b) => (pct(b.score ?? b.meta_score ?? b.score_percent ?? b.net_score) || 0) - (pct(a.score ?? a.meta_score ?? a.score_percent ?? a.net_score) || 0))[0] || null;
     const scales = (jsonData?.top_combinations || []).slice(0, 10).map(firstCruncherScore).map(score => score.scaleDetected);
     panel.innerHTML = `
-      <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+      <div class="bento-status-grid">
         ${Object.entries(quality.counts).map(([key, value]) => card(key, value, value ? 'OK' : 'Revisar')).join('')}
       </div>
       <div class="grid gap-3 lg:grid-cols-2">
-        <article class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+        <article class="technical-terminal-panel rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
           <p class="font-black text-white">Advertencias</p>
           <ul class="mt-2 list-disc space-y-1 pl-5 text-xs text-slate-300">${quality.errors.concat(quality.warnings).map(item => `<li>${esc(item)}</li>`).join('') || '<li>Sin advertencias de contrato.</li>'}</ul>
           <p class="mt-3 text-xs text-slate-400">Escalas top detectadas: ${esc([...new Set(scales)].join(', ') || 'N/D')}</p>
         </article>
-        <article class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+        <article class="technical-terminal-panel rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
           <p class="font-black text-white">Calidad fisica / walk-forward</p>
           <p class="mt-2 text-xs text-slate-300">avg_effective_weight: ${fmt(jsonData?.physics_summary?.avg_effective_weight, 4)}g</p>
           <p class="mt-1 text-xs text-slate-300">walk_forward.rows: ${quality.counts.walkForwardRows}</p>
           <p class="mt-1 text-xs text-slate-300">Calibracion esperada: 2026-05-17 / sorteo 4214 / reset posterior a 4213.</p>
         </article>
       </div>
-      <details class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+      <details class="technical-terminal-panel rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
         <summary class="cursor-pointer font-black text-white">Raw top combination</summary>
         <pre class="mt-3 max-h-72 overflow-auto text-xs text-slate-300">${esc(displayJson(top))}</pre>
       </details>
-      <details class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+      <details class="technical-terminal-panel rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
         <summary class="cursor-pointer font-black text-white">Raw top number</summary>
         <pre class="mt-3 max-h-72 overflow-auto text-xs text-slate-300">${esc(displayJson(numberTop))}</pre>
       </details>`;
@@ -310,11 +321,11 @@
     const state = quality.ok ? (quality.warnings.length ? 'Revisar' : 'OK V4.2') : `${quality.errors.length} errores`;
     if (status) {
       status.textContent = state;
-      status.className = `rounded-2xl border px-4 py-2 text-sm font-bold ${quality.ok ? (quality.warnings.length ? 'border-amber-400/40 bg-amber-400/10 text-amber-100' : 'border-emerald-400/30 bg-emerald-400/10 text-emerald-100') : 'border-red-400/40 bg-red-500/10 text-red-100'}`;
+      status.className = `status-radar rounded-2xl border px-4 py-2 text-sm font-bold ${quality.ok ? (quality.warnings.length ? 'border-amber-400/40 bg-amber-400/10 text-amber-100' : 'border-emerald-400/30 bg-emerald-400/10 text-emerald-100') : 'border-red-400/40 bg-red-500/10 text-red-100'}`;
     }
     const messages = quality.errors.concat(quality.warnings);
     panel.innerHTML = `
-      <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+      <div class="bento-status-grid">
         ${card('Modelo', jsonData?.model_version || jsonData?.source || 'N/D', feedback.version === 'V4.2' ? 'OK' : 'Critico', jsonData?.last_update || 'Sin timestamp')}
         ${card('Modo', jsonData?.game_mode || jsonData?.game_label || 'N/D', jsonData?.game_mode || jsonData?.game_label ? 'OK' : 'Revisar', `feedback ${feedback.version || 'N/D'}`)}
         ${card('Pool', `${quality.counts.generatorPool} combos`, quality.counts.generatorPool ? 'OK' : 'Critico', `${quality.counts.topCombinations} top_combinations`)}
@@ -324,11 +335,11 @@
         ${card('Pesos efectivos', `${quality.counts.effectiveWeights}/56`, quality.counts.effectiveWeights === 56 ? 'OK' : 'Critico')}
         ${card('Usos calibracion', `${quality.counts.usesSinceCalibration}/56`, quality.counts.usesSinceCalibration === 56 ? 'OK' : 'Revisar')}
       </div>
-      <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 text-sm text-slate-300">
+      <div class="status-radar rounded-2xl border border-slate-800 bg-slate-900/70 p-4 text-sm text-slate-300">
         <p class="font-black text-white">Calibracion fisica</p>
         <p class="mt-2 leading-6">Fecha 2026-05-17 / sorteo 4214. Reset de vida util despues del sorteo 4213. Promedio efectivo: ${fmt(physics.avg_effective_weight, 4)}g.</p>
       </div>
-      ${messages.length ? `<div class="grid gap-2">${messages.map(item => `<p class="rounded-xl border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-100">${esc(item)}</p>`).join('')}</div>` : '<p class="rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm font-bold text-emerald-100">Contrato y conteos principales completos.</p>'}`;
+      ${messages.length ? `<div class="grid gap-2">${messages.map(item => `<p class="status-radar rounded-xl border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-100">${esc(item)}</p>`).join('')}</div>` : '<p class="status-radar rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm font-bold text-emerald-100">Contrato y conteos principales completos.</p>'}`;
   }
 
   function enhanceTopCombinationCards(jsonData) {
@@ -348,13 +359,13 @@
       const compare = compareCruncherVsWebScore(nums, jsonData);
       const badges = getComboProfileV4(evaluation, jsonData);
       const actions = document.createElement('div');
-      actions.className = 'mt-3 grid gap-2';
+      actions.className = 'metric-strip mt-3';
       actions.innerHTML = `
         <div class="flex flex-wrap gap-2">${badges.map(badgeHtml).join('')}</div>
         <p class="text-xs text-slate-500">Score web ${fmt(compare.webScore)} | score cruncher ${fmt(compare.cruncherScore)} | ${esc(compare.interpretation)}</p>
         <div class="flex flex-wrap gap-2">
-          <button class="min-h-[44px] rounded-xl border border-violet-300/40 bg-violet-400/10 px-3 py-2 text-xs font-bold text-violet-100" data-save-top-combo="${nums.join(',')}" data-save-label="Top #${index + 1}">Guardar al comparador</button>
-          <button class="min-h-[44px] rounded-xl border border-slate-600 bg-slate-800 px-3 py-2 text-xs font-bold text-slate-100" data-copy-top-combo="${nums.join(' ')}">Copiar</button>
+          <button class="quant-ghost-button px-3 py-2 text-xs font-bold" data-save-top-combo="${nums.join(',')}" data-save-label="Top #${index + 1}">Guardar al comparador</button>
+          <button class="quant-ghost-button px-3 py-2 text-xs font-bold" data-copy-top-combo="${nums.join(' ')}">Copiar</button>
         </div>`;
       article.appendChild(actions);
       article.dataset.v42Enhanced = '1';

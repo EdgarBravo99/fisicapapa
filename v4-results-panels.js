@@ -58,6 +58,19 @@
     return pct(combo?.score_percent ?? combo?.net_score ?? combo?.confidence ?? combo?.score ?? 0);
   }
 
+  function compareScores(nums, combo, data) {
+    if (typeof window.compareCruncherVsWebScore === 'function') {
+      return window.compareCruncherVsWebScore(nums, data);
+    }
+    return {
+      cruncherScore: comboScore(combo),
+      webScore: null,
+      delta: null,
+      scaleDetected: 'unknown',
+      interpretation: 'Score web disponible despues de cargar diagnosticos V4.2.'
+    };
+  }
+
   function badgeHtml(label, tone) {
     const cls = {
       emerald: 'border-emerald-400/30 bg-emerald-400/10 text-emerald-100',
@@ -66,7 +79,7 @@
       amber: 'border-amber-400/30 bg-amber-400/10 text-amber-100',
       red: 'border-red-400/40 bg-red-500/10 text-red-100',
     }[tone] || 'border-slate-700 bg-slate-900 text-slate-200';
-    return `<span class="rounded-full border ${cls} px-2 py-1 text-[10px] font-bold uppercase tracking-[0.14em]">${esc(label)}</span>`;
+    return `<span class="quant-pill rounded-full border ${cls} px-2 py-1 text-[10px] font-bold uppercase tracking-[0.14em]">${esc(label)}</span>`;
   }
 
   function comboBadges(combo, nums, data) {
@@ -109,20 +122,30 @@
     panel.innerHTML = pool.slice(0, 10).map((combo, idx) => {
       const nums = comboNumbers(combo);
       const score = comboScore(combo);
+      const scoreCompare = compareScores(nums, combo, data);
+      const webScore = Number.isFinite(Number(scoreCompare.webScore)) ? fmt(scoreCompare.webScore) : 'N/D';
+      const cruncherScore = Number.isFinite(Number(scoreCompare.cruncherScore)) ? fmt(scoreCompare.cruncherScore) : fmt(score);
+      const delta = Number.isFinite(Number(scoreCompare.delta)) ? fmt(scoreCompare.delta) : 'N/D';
       const explanation = combo?.plain_route || combo?.human_explanation || combo?.source || 'Sin ruta explicativa exportada.';
-      return `<article class="rounded-2xl border border-amber-400/20 bg-slate-900/70 p-4">
-        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+      return `<article class="combo-ticket quant-card rounded-2xl border border-amber-400/20 bg-slate-900/70 p-4">
+        <div class="combo-ticket-rank">#${idx + 1}</div>
+        <div class="combo-ticket-main flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <p class="text-xs uppercase tracking-[0.22em] text-amber-300">#${idx + 1} · score ${fmt(score)}</p>
-            <div class="mt-2 flex flex-wrap gap-2">${nums.map(n => `<span class="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-sm font-black text-cyan-100">${n}</span>`).join('')}</div>
+            <div class="combo-ball-row mt-2">${nums.map(n => `<span class="quant-number-ball rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-sm font-black text-cyan-100">${n}</span>`).join('')}</div>
             <div class="mt-3 flex flex-wrap gap-2">${comboBadges(combo, nums, data)}</div>
+            <div class="metric-strip mt-3">
+              <div class="quant-metric"><p>Score web</p><b>${webScore}</b></div>
+              <div class="quant-metric"><p>Cruncher</p><b>${cruncherScore}</b></div>
+              <div class="quant-metric"><p>Delta</p><b>${delta}</b></div>
+            </div>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button class="min-h-[44px] rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 text-xs font-bold text-cyan-100 transition hover:bg-cyan-400/20 focus:outline-none focus:ring-2 focus:ring-cyan-300" data-fill-combo="${nums.join(',')}">Evaluar esta combinacion</button>
-            <button class="min-h-[44px] rounded-xl border border-slate-600 bg-slate-800/70 px-3 py-2 text-xs font-bold text-slate-100 transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300" data-copy-combo="${nums.join(' ')}">Copiar</button>
+            <button class="quant-ghost-button min-h-[44px] rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 text-xs font-bold text-cyan-100 transition hover:bg-cyan-400/20 focus:outline-none focus:ring-2 focus:ring-cyan-300" data-fill-combo="${nums.join(',')}">Evaluar esta combinacion</button>
+            <button class="quant-ghost-button min-h-[44px] rounded-xl border border-slate-600 bg-slate-800/70 px-3 py-2 text-xs font-bold text-slate-100 transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300" data-copy-combo="${nums.join(' ')}">Copiar</button>
           </div>
         </div>
-        <p class="mt-3 text-xs leading-5 text-slate-400">${esc(explanation).slice(0, 420)}</p>
+        <p class="combo-ticket-score mt-3 text-xs leading-5 text-slate-400">${esc(explanation).slice(0, 420)}</p>
       </article>`;
     }).join('');
 
@@ -179,14 +202,18 @@
       const xgboost = pct(raw.xgboost);
       const graph = pct(raw.graph);
       const physicsBadge = !item.phys.hasEffective ? badgeHtml('sin datos fisicos', 'red') : item.phys.effectiveWeight < item.phys.avgEffective ? badgeHtml('fisica ligera', 'emerald') : badgeHtml('fisica pesada', 'amber');
-      return `<article class="rounded-2xl border border-violet-400/20 bg-slate-900/70 p-4">
+      return `<article class="number-rank-card quant-card rounded-2xl border border-violet-400/20 bg-slate-900/70 p-4">
         <div class="flex items-center justify-between gap-3">
-          <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-full border border-violet-300/40 bg-violet-400/10 text-lg font-black text-violet-100">${item.number}</span><div><p class="text-xs text-slate-500">Rank #${idx + 1}</p><p class="text-sm font-black text-white">${fmt(item.score)} pts</p></div></div>
-          <span class="text-xs font-bold text-cyan-200">${esc(driver)}</span>
+          <div class="flex items-center gap-3"><span class="quant-number-ball flex h-10 w-10 items-center justify-center rounded-full border border-violet-300/40 bg-violet-400/10 text-lg font-black text-violet-100">${item.number}</span><div><p class="text-xs text-slate-500">Rank #${idx + 1}</p><p class="text-sm font-black text-white">${fmt(item.score)} pts</p></div></div>
+          <span class="driver-chip text-xs font-bold text-cyan-200">${esc(driver)}</span>
         </div>
         <p class="mt-3 text-xs leading-5 text-slate-400">${esc(reason).slice(0, 180)}</p>
         <div class="mt-3 flex flex-wrap gap-2">${physicsBadge}</div>
-        <p class="mt-2 text-xs text-slate-300">Transformer: <b>${fmt(transformer)}</b> Â· XGBoost: <b>${fmt(xgboost)}</b> Â· Graph: <b>${fmt(graph)}</b></p>
+        <div class="metric-strip mt-3">
+          <div class="quant-metric"><p>Transformer</p><b>${fmt(transformer)}</b></div>
+          <div class="quant-metric"><p>XGBoost</p><b>${fmt(xgboost)}</b></div>
+          <div class="quant-metric"><p>Graph</p><b>${fmt(graph)}</b></div>
+        </div>
         <p class="mt-2 text-xs text-slate-300">Peso real: <b>${real}</b> · efectivo: <b>${eff}</b> · salidas desde calibración: <b>${uses}</b> · desgaste: <b>${wear}</b></p>
       </article>`;
     }).join('');
@@ -220,15 +247,15 @@
       if (phys.avgEffective != null && phys.effectiveWeight != null && phys.effectiveWeight - phys.avgEffective >= 0.055) alerts.push(['extremadamente pesada', 'amber']);
       if (phys.avgEffective != null && phys.effectiveWeight != null && phys.avgEffective - phys.effectiveWeight >= 0.055) alerts.push(['extremadamente ligera', 'cyan']);
       if (phys.uses != null && phys.uses >= Math.max(3, Math.ceil(maxUses * 0.8))) alerts.push(['muy usada', 'violet']);
-      return `<article class="rounded-2xl border ${tone} bg-slate-900/60 p-4">
+      return `<article class="physics-lab-card quant-card rounded-2xl border ${tone} bg-slate-900/60 p-4">
         <div class="flex items-center justify-between gap-3">
-          <span class="text-2xl font-black text-white">${number}</span>
-          <span class="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2 py-1 text-xs font-bold text-cyan-100">${esc(badge)}</span>
+          <span class="quant-number-ball">${number}</span>
+          <span class="quant-pill rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2 py-1 text-xs font-bold text-cyan-100">${esc(badge)}</span>
         </div>
         <div class="mt-3 flex flex-wrap gap-2">${alerts.map(([label, alertTone]) => badgeHtml(label, alertTone)).join('') || badgeHtml('fisica nominal', 'emerald')}</div>
         <div class="mt-3 space-y-2">
-          <div><div class="flex justify-between text-[10px] uppercase tracking-[0.18em] text-slate-500"><span>Salidas reales</span><span>${uses}</span></div><div class="mt-1 h-2 overflow-hidden rounded-full bg-slate-800"><div class="h-full rounded-full bg-cyan-400" style="width:${useWidth}%"></div></div></div>
-          <div><div class="flex justify-between text-[10px] uppercase tracking-[0.18em] text-slate-500"><span>Desgaste estimado</span><span>${wear}</span></div><div class="mt-1 h-2 overflow-hidden rounded-full bg-slate-800"><div class="h-full rounded-full bg-emerald-400" style="width:${wearWidth}%"></div></div></div>
+          <div class="component-meter"><div class="flex justify-between text-[10px] uppercase tracking-[0.18em] text-slate-500"><span>Salidas reales</span><span>${uses}</span></div><div class="quant-progress mt-1"><div style="width:${useWidth}%"></div></div></div>
+          <div class="component-meter"><div class="flex justify-between text-[10px] uppercase tracking-[0.18em] text-slate-500"><span>Desgaste estimado</span><span>${wear}</span></div><div class="quant-progress mt-1"><div style="width:${wearWidth}%"></div></div></div>
         </div>
         <p class="mt-3 text-xs leading-5 text-slate-300">Bola ${number}: peso real <b>${real}</b>; desde el reset post-sorteo <b>${esc(resetAfter)}</b> ha salido <b>${uses}</b> veces y su peso efectivo actual es <b>${eff}</b>.</p>
       </article>`;

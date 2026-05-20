@@ -106,7 +106,7 @@
   }
 
   function renderMetric(label, value, tone) {
-    return `<div class="rounded-xl border border-slate-800 bg-slate-950/50 p-3">
+    return `<div class="quant-metric component-meter rounded-xl border border-slate-800 bg-slate-950/50 p-3">
       <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500">${esc(label)}</p>
       <p class="mt-1 text-sm font-black ${tone}">${fmt(value)}</p>
     </div>`;
@@ -131,7 +131,7 @@
     const panel = $('combo-comparator-panel');
     if (!panel) return;
     if (!items.length) {
-      panel.innerHTML = '<div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 text-sm text-slate-300">Aun no hay combinaciones guardadas. Evalua una manual o guarda una top combination.</div>';
+      panel.innerHTML = '<div class="comparator-board-empty rounded-2xl border border-slate-800 bg-slate-900/70 p-4 text-sm text-slate-300">Aun no hay combinaciones guardadas. Evalua una manual o guarda una top combination.</div>';
       return;
     }
     const winTotal = winner('total');
@@ -140,23 +140,23 @@
     const winPhysics = winner('physics');
     const winPool = winner('pool');
     panel.innerHTML = `
-      <div class="rounded-2xl border border-violet-400/20 bg-violet-400/10 p-4">
+      <div class="winner-ribbon rounded-2xl border border-violet-400/20 bg-violet-400/10 p-4">
         <p class="text-xs uppercase tracking-[0.22em] text-violet-200">Conclusion humana</p>
         <p class="mt-2 text-sm font-bold text-violet-50">${esc(conclusion())}</p>
         <p class="mt-2 text-xs text-violet-100/80">Ganadoras: general ${esc(winTotal?.label)} | modelo ${esc(winModel?.label)} | estructura ${esc(winStructure?.label)} | fisica ${esc(winPhysics?.label)} | pool ${esc(winPool?.label)}.</p>
       </div>
-      <div class="grid gap-3 lg:grid-cols-2">
+      <div class="comparator-card-grid grid gap-3 lg:grid-cols-2">
         ${items.map(item => {
           const result = evaluate(item.numbers);
           if (!result || result.error) {
-            return `<article class="rounded-2xl border border-red-400/30 bg-red-500/10 p-4 text-sm text-red-100">${esc(item.label)}: ${esc(result?.error || 'No evaluable')}</article>`;
+            return `<article class="decision-card rounded-2xl border border-red-400/30 bg-red-500/10 p-4 text-sm text-red-100">${esc(item.label)}: ${esc(result?.error || 'No evaluable')}</article>`;
           }
           const s = result.evaluation.summary;
-          return `<article class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+          return `<article class="decision-card comparator-combo-card rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
             <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <p class="text-xs uppercase tracking-[0.22em] text-slate-500">${esc(item.label)}</p>
-                <p class="mt-2 text-xl font-black text-white">${item.numbers.join(' - ')}</p>
+                <div class="combo-ball-row mt-2">${item.numbers.map(n => `<span class="quant-number-ball">${n}</span>`).join('')}</div>
               </div>
               <button class="min-h-[44px] rounded-xl border border-red-300/30 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-100" data-remove-combo="${esc(item.id)}">Quitar</button>
             </div>

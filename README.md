@@ -8,7 +8,7 @@ Esta rama deja como flujo vigente **Web V2 + Cruncher V4.2**. Las secciones hist
 Runner oficial: local_cruncher_v4_2_calibrated.py
 Motor base: local_cruncher_v4_deep_stacking.py
 Salida principal: resultados.json
-Web activa: index.html + v4-clean-app.js + v4-results-panels.js + v4-under40-verifier.js + v4-system-diagnostics.js + v4-combo-comparator.js
+Web activa: index.html + v4-clean-app.js + v4-results-panels.js + v4-under40-verifier.js + v4-system-diagnostics.js + v4-combo-comparator.js + v4-visual-system.css
 ```
 
 La web valida estrictamente `feedback_loop.version = V4.2` y no debe cargar scripts V3. El verificador `<40` es solo auditoria visual: no modifica el cruncher ni la formula oficial del Score Neto V4.
@@ -50,6 +50,8 @@ v4-clean-app.js
 v4-results-panels.js
 v4-under40-verifier.js
 v4-system-diagnostics.js
+v4-combo-comparator.js
+v4-visual-system.css
 data.js
 pakin-remote-loader.js
 local_cruncher_v4_2_calibrated.py
@@ -91,6 +93,7 @@ Si `walk_forward.feedback_loop.version` no es `"V4.2"`, la web debe detenerse co
 <script src="v4-results-panels.js"></script>
 <script src="v4-under40-verifier.js"></script>
 <script src="v4-system-diagnostics.js"></script>
+<script src="v4-combo-comparator.js"></script>
 ```
 
 Responsabilidades:
@@ -99,6 +102,8 @@ Responsabilidades:
 - `v4-results-panels.js`: renderiza combinaciones, top de numeros y panel fisico V4.2.
 - `v4-under40-verifier.js`: agrega auditoria visual de macroestructura `<40`; no modifica score ni cruncher.
 - `v4-system-diagnostics.js`: valida calidad de `resultados.json`, muestra estado del sistema y agrega explicabilidad manual visual.
+- `v4-combo-comparator.js`: mantiene el comparador personal temporal en localStorage.
+- `v4-visual-system.css`: aplica el sistema visual Quant Control Room sin tocar logica matematica.
 - `pakin-remote-loader.js`: carga historicos remotos de Pakin para Melate/Revancha.
 - `data.js`: dataset y utilidades base para la web.
 
