@@ -37,6 +37,18 @@
     return loadJson('v4_history_analysis.json', 'analysis');
   }
 
+  async function loadReplayMemory() {
+    return loadJson('v4_replay_memory.json', 'replayMemory');
+  }
+
+  async function loadReplayAnalysis() {
+    return loadJson('v4_replay_analysis.json', 'replayAnalysis');
+  }
+
+  async function loadLegacyReport() {
+    return loadJson('v4_legacy_snapshot_report.json', 'legacyReport');
+  }
+
   function topList(items, emptyText) {
     if (!Array.isArray(items) || !items.length) {
       return `<p class="text-sm text-slate-400">${esc(emptyText)}</p>`;
@@ -66,7 +78,42 @@
     return '<span class="taste-chip taste-chip-warn">Sin historico importado</span>';
   }
 
-  function renderEmpty(jsonData, archiveIndex, analysis) {
+  function renderReplayAndLegacy(replayMemory, replayAnalysis, legacyReport) {
+    const replayAggregate = replayMemory?.aggregate || {};
+    const replayAudit = replayAnalysis?.replay_prior_audit || {};
+    const legacyRows = Array.isArray(legacyReport?.snapshots) ? legacyReport.snapshots : [];
+    const legacyHindsight = legacyRows.filter(row => row?.classification === 'legacy_hindsight_snapshot');
+    const sampleLegacy = legacyHindsight.find(row => String(row?.detected_draw) === '4212') || legacyHindsight[0] || null;
+    const replayRecords = finite(replayAggregate.records_count) ? replayAggregate.records_count : (Array.isArray(replayMemory?.records) ? replayMemory.records.length : 0);
+    const replayStatus = replayRecords > 0
+      ? 'Replay prior calculado, no aplicado'
+      : 'Replay pendiente; ejecuta el lab historico para generar examenes anti-leakage.';
+    return `
+      <div class="grid gap-3 mt-4 lg:grid-cols-2">
+        <article class="taste-panel-muted">
+          <p class="taste-eyebrow">Replay Memory</p>
+          <h4 class="mt-1 text-lg font-black text-slate-100">${esc(replayStatus)}</h4>
+          <div class="bento-status-grid mt-3">
+            <article class="taste-metric"><span>Records replay</span><b>${fmt(replayRecords, 0)}</b></article>
+            <article class="taste-metric"><span>Leakage OK</span><b>${fmt(replayAggregate.leakage_passed_count, 0)}</b></article>
+            <article class="taste-metric"><span>Fuerza shadow</span><b>${fmt(replayAudit.max_number_adjustment, 3)}</b></article>
+            <article class="taste-metric"><span>Aplicado</span><b>No</b></article>
+          </div>
+          <p class="mt-3 text-xs leading-5 text-slate-400">El replay usa CSV temporal truncado y motor principal. Por defecto solo calcula shadow prior.</p>
+        </article>
+        <article class="taste-panel-muted">
+          <p class="taste-eyebrow">Legacy Snapshots</p>
+          <h4 class="mt-1 text-lg font-black text-slate-100">${sampleLegacy ? `Legacy ${esc(sampleLegacy.detected_draw || 'N/D')} detectado` : 'Sin legacy hindsight detectado'}</h4>
+          <div class="bento-status-grid mt-3">
+            <article class="taste-metric"><span>Hindsight</span><b>${fmt(legacyHindsight.length, 0)}</b></article>
+            <article class="taste-metric"><span>Elegibles prior</span><b>${fmt(legacyReport?.summary?.eligible_for_prior, 0)}</b></article>
+          </div>
+          <p class="mt-3 text-xs leading-5 text-slate-400">${sampleLegacy ? 'No elegible por contener auditoria inversa / combinacion real.' : 'Los snapshots legacy se muestran solo como diagnostico.'}</p>
+        </article>
+      </div>`;
+  }
+
+  function renderEmpty(jsonData, archiveIndex, analysis, replayMemory, replayAnalysis, legacyReport) {
     const node = $('feedback-memory-panel');
     if (!node) return;
     const exported = jsonData?.feedback_memory;
@@ -91,14 +138,15 @@
         <p class="taste-eyebrow">Anti-leakage</p>
         <p>resultados.json historico es prediccion pasada. La verdad revelada vive en el CSV actualizado.</p>
       </div>
+      ${renderReplayAndLegacy(replayMemory, replayAnalysis, legacyReport)}
       <a class="taste-ghost mt-4" href="${HISTORY_URL}" target="_blank" rel="noopener">Ver historial resultados.json</a>`;
   }
 
-  function renderMemory(memory, jsonData, archiveIndex, analysis) {
+  function renderMemory(memory, jsonData, archiveIndex, analysis, replayMemory, replayAnalysis, legacyReport) {
     const node = $('feedback-memory-panel');
     if (!node) return;
     if (!memory || !Array.isArray(memory.records) || !memory.records.length) {
-      renderEmpty(jsonData, archiveIndex, analysis);
+      renderEmpty(jsonData, archiveIndex, analysis, replayMemory, replayAnalysis, legacyReport);
       return;
     }
     const aggregate = memory.aggregate || {};
@@ -146,12 +194,20 @@
         <p class="taste-eyebrow">Nota anti-leakage</p>
         <p>${esc(exported.note || 'Esta memoria mide errores de predicciones pasadas; no es probabilidad garantizada.')}</p>
       </div>
+      ${renderReplayAndLegacy(replayMemory, replayAnalysis, legacyReport)}
       <a class="taste-ghost mt-4" href="${HISTORY_URL}" target="_blank" rel="noopener">Ver historial resultados.json</a>`;
   }
 
   async function render(jsonData) {
-    const [memory, archiveIndex, analysis] = await Promise.all([loadMemory(), loadArchiveIndex(), loadHistoryAnalysis()]);
-    renderMemory(memory, jsonData || window.FISICAPAPA_WEB_V2?.jsonData || null, archiveIndex, analysis);
+    const [memory, archiveIndex, analysis, replayMemory, replayAnalysis, legacyReport] = await Promise.all([
+      loadMemory(),
+      loadArchiveIndex(),
+      loadHistoryAnalysis(),
+      loadReplayMemory(),
+      loadReplayAnalysis(),
+      loadLegacyReport(),
+    ]);
+    renderMemory(memory, jsonData || window.FISICAPAPA_WEB_V2?.jsonData || null, archiveIndex, analysis, replayMemory, replayAnalysis, legacyReport);
   }
 
   document.addEventListener('fisicapapa:v42-ready', event => render(event.detail?.jsonData));

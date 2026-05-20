@@ -128,3 +128,46 @@ El ajuste maximo absoluto es +/-5%. Si falta Git, CSV, historial o evidencia suf
 - No usar memoria para afirmar probabilidades garantizadas.
 - No usar records mock para activar memoria aplicada.
 - No hacer post-score calibration como sustituto silencioso del prior pre-Monte-Carlo.
+
+## Replay archive V4.3.2
+
+Los replays historicos no se guardan aqui. Viven en:
+
+```txt
+replay_archive/
+```
+
+Cada replay usa un CSV temporal truncado y el motor principal. El CSV real nunca se reemplaza.
+
+Formato:
+
+```txt
+replay_archive/replay_{game_mode}_{prediction_draw}_to_{target_draw}.json
+```
+
+Reglas:
+
+- `prediction_draw` es el ultimo sorteo incluido en el CSV temporal.
+- `target_draw` no aparece en el CSV temporal.
+- Sorteos posteriores a `target_draw` nunca aparecen en el CSV temporal.
+- La verdad se toma del CSV completo original.
+- El replay record debe marcar `uses_main_engine=true`.
+- Replay memory queda separada de live memory.
+
+Dry-run recomendado:
+
+```powershell
+py .\tools\v4_historical_replay_lab.py --csv revancha.csv --game-mode revancha --start-draw 4210 --end-draw 4214 --max-targets 3 --intensity replay_fast --dry-run
+```
+
+Si el replay falla por costo o dependencias, no se debe crear `v4_replay_memory.json` falso.
+
+## Legacy/hindsight
+
+Snapshots antiguos con auditoria inversa o combinacion real embebida se clasifican con:
+
+```powershell
+py .\tools\v4_legacy_snapshot_classifier.py --commit c5d4a18594c4c4b70833f62b70db694964a2aa12
+```
+
+Esos snapshots solo sirven para diagnostico. No activan prior.
