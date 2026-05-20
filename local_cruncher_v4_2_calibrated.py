@@ -26,6 +26,7 @@ import importlib
 import json
 import shutil
 import traceback
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional
 
@@ -247,6 +248,7 @@ def archive_current_results() -> Optional[Path]:
     source = Path("resultados.json")
     if not source.exists():
         return None
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     try:
         data = json.loads(source.read_text(encoding="utf-8"))
         draw_id = infer_prediction_draw(data) or "unknown"
@@ -254,12 +256,7 @@ def archive_current_results() -> Optional[Path]:
         draw_id = "unknown"
     archive_dir = Path("resultados_archive")
     archive_dir.mkdir(exist_ok=True)
-    target = archive_dir / f"resultados_{draw_id}.json"
-    if target.exists():
-        suffix = 2
-        while (archive_dir / f"resultados_{draw_id}_{suffix}.json").exists():
-            suffix += 1
-        target = archive_dir / f"resultados_{draw_id}_{suffix}.json"
+    target = archive_dir / f"resultados_{draw_id}_{timestamp}.json"
     shutil.copy2(source, target)
     return target
 
@@ -299,6 +296,9 @@ def sync_with_github() -> None:
     except GitSyncError as exc:
         print(f"GitHub sync no completado: {exc}")
         return
+    print(f"Rama actual: {result.get('branch')}")
+    for warning in result.get("warnings", []):
+        print(f"warning: {warning}")
     print(f"GitHub sync: {result.get('reason')}")
 
 

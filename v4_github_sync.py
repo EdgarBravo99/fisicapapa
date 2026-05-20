@@ -84,13 +84,43 @@ def sync_outputs_to_github(paths: Iterable[str | Path], message: str) -> dict[st
     if not is_git_repo():
         raise GitSyncError("Este directorio no es un repo git.")
     current = git_current_branch()
+    warnings: list[str] = []
+    if current != "main":
+        warnings.append(
+            f"La rama actual es '{current}', no 'main'. Se hara pull --rebase origin main "
+            f"y push a origin {current}; Vercel/main no vera estos cambios hasta mergear esa rama."
+        )
     git_pull_rebase("origin", "main")
     git_add(paths)
     status_after_add = git_status_porcelain()
     if not status_after_add.strip():
-        return {"synced": False, "branch": current, "committed": False, "pushed": False, "reason": "Sin cambios para commitear."}
+        return {
+            "synced": False,
+            "branch": current,
+            "warnings": warnings,
+            "committed": False,
+            "pushed": False,
+            "reason": "Sin cambios para commitear.",
+        }
     committed = git_commit(message)
     if not committed:
-        return {"synced": False, "branch": current, "committed": False, "pushed": False, "reason": "Commit vacio evitado."}
+        return {
+            "synced": False,
+            "branch": current,
+            "warnings": warnings,
+            "committed": False,
+            "pushed": False,
+            "reason": "Commit vacio evitado.",
+        }
     git_push("origin", current)
-    return {"synced": True, "branch": current, "committed": True, "pushed": True, "reason": "Cambios subidos con git CLI local."}
+    reason = f"Cambios subidos con git CLI local a origin/{current}."
+    if current != "main":
+        reason += " Main/Vercel los vera despues del merge."
+    return {
+        "synced": True,
+        "branch": current,
+        "warnings": warnings,
+        "committed": True,
+        "pushed": True,
+        "reason": reason,
+    }

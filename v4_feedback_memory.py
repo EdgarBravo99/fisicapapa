@@ -188,7 +188,12 @@ def find_target_draw_in_csv(csv_rows: list[Draw], prediction_draw: str | int | N
 
 def _combo_numbers(combo: Any) -> list[int]:
     raw = combo if isinstance(combo, list) else combo.get("numbers") or combo.get("nums") or combo.get("combo") or []
-    numbers = sorted({int(value) for value in raw if _parse_int(value) is not None and 1 <= int(value) <= MAX_NUMBER})
+    parsed_numbers = []
+    for value in raw:
+        parsed = _parse_int(value)
+        if parsed is not None and 1 <= parsed <= MAX_NUMBER:
+            parsed_numbers.append(parsed)
+    numbers = sorted(set(parsed_numbers))
     return numbers if len(numbers) == PICK_COUNT else []
 
 
