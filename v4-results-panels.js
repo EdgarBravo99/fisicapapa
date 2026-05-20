@@ -129,10 +129,14 @@
       const cruncherScore = Number.isFinite(Number(scoreCompare.cruncherScore)) ? fmt(scoreCompare.cruncherScore) : fmt(score);
       const delta = Number.isFinite(Number(scoreCompare.delta)) ? fmt(scoreCompare.delta) : 'N/D';
       const explanation = combo?.plain_route || combo?.human_explanation || combo?.source || 'Sin ruta explicativa exportada.';
-      return `<article class="combo-ticket taste-motion-in rounded-2xl border border-cyan-400/20 bg-slate-900/70 p-4" style="animation-delay:${idx * 55}ms">
-        <div class="combo-ticket-rank">#${idx + 1}</div>
-        <div class="combo-ticket-main flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div>
+      const comparatorReady = Boolean(window.FISICAPAPA_COMPARATOR?.saveCombo);
+      const saveAttrs = comparatorReady
+        ? `data-save-combo="${nums.join(',')}" data-save-label="Top #${idx + 1}"`
+        : 'disabled aria-disabled="true" title="Comparador cargando"';
+      return `<article class="combo-ticket taste-motion-in" style="animation-delay:${idx * 55}ms">
+        <div class="combo-ticket-rank" aria-label="Ranking ${idx + 1}">#${idx + 1}</div>
+        <div class="combo-ticket-body">
+          <div class="combo-ticket-main">
             <p class="text-xs uppercase tracking-[0.22em] text-amber-300">#${idx + 1} · score ${fmt(score)}</p>
             <div class="combo-ball-row mt-3">${nums.map(n => `<span class="taste-ball quant-number-ball rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-sm font-black text-cyan-100">${n}</span>`).join('')}</div>
             <div class="mt-3 flex flex-wrap gap-2">${comboBadges(combo, nums, data)}</div>
@@ -144,6 +148,7 @@
           </div>
           <div class="combo-ticket-actions">
             <button class="taste-ghost quant-ghost-button" data-fill-combo="${nums.join(',')}">Evaluar</button>
+            <button class="taste-ghost quant-ghost-button" ${saveAttrs}>Guardar</button>
             <button class="taste-ghost quant-ghost-button" data-copy-combo="${nums.join(' ')}">Copiar</button>
           </div>
         </div>
@@ -175,6 +180,20 @@
           area.remove();
         }
         btn.textContent = 'Copiada';
+      });
+    });
+
+    panel.querySelectorAll('[data-save-combo]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const nums = btn.getAttribute('data-save-combo').split(',').map(Number);
+        const label = btn.getAttribute('data-save-label') || 'Top combination';
+        if (window.FISICAPAPA_COMPARATOR?.saveCombo) {
+          window.FISICAPAPA_COMPARATOR.saveCombo(nums, label);
+          btn.textContent = 'Guardada';
+          return;
+        }
+        btn.textContent = 'Comparador no listo';
+        btn.setAttribute('disabled', 'disabled');
       });
     });
   }

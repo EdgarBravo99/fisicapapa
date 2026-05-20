@@ -23,29 +23,45 @@ Si lo abres con doble clic y ocurre un error, este runner NO cierra la consola:
 from __future__ import annotations
 
 import importlib
+import hashlib
 import json
 import shutil
 import traceback
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any, Optional
 
 from v4_feedback_memory import (
+    apply_memory_prior_to_score_vector,
     annotate_results_with_memory,
+    build_memory_prior_audit,
+    compute_memory_prior,
+    detect_csv_path,
     infer_game_mode,
     infer_prediction_draw,
+    load_feedback_memory,
+    update_feedback_memory_from_archive,
     update_feedback_memory_from_snapshot,
 )
-from v4_github_sync import GitSyncError, sync_outputs_to_github
+from v4_github_sync import (
+    GitSyncError,
+    import_resultados_history_from_git,
+    register_archive_snapshot,
+    safe_git_pull_rebase_main,
+    sync_outputs_to_github_or_desktop,
+)
+from tools.v4_history_analyzer import analyze_history
 
 engine = None
 
 SYNC_PATHS = [
     "resultados.json",
     "v4_feedback_memory.json",
+    "v4_history_analysis.json",
     "resultados_archive",
     "v4_feedback_memory.py",
     "v4_github_sync.py",
+    "tools",
     "v4-feedback-memory-panel.js",
     "README.md",
     "resultados_archive/README.md",
@@ -249,15 +265,36 @@ def archive_current_results() -> Optional[Path]:
     if not source.exists():
         return None
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    raw_text = source.read_text(encoding="utf-8", errors="replace")
     try:
-        data = json.loads(source.read_text(encoding="utf-8"))
+        data = json.loads(raw_text)
+        if not isinstance(data, dict):
+            raise ValueError("resultados.json no es objeto JSON")
         draw_id = infer_prediction_draw(data) or "unknown"
-    except Exception:
+    except Exception as exc:
         draw_id = "unknown"
+        archive_dir = Path("resultados_archive")
+        archive_dir.mkdir(exist_ok=True)
+        target = archive_dir / f"resultados_unknown_{timestamp}.corrupt.json"
+        shutil.copy2(source, target)
+        print(f"warning: resultados.json actual no es JSON valido; se archivo copia cruda sin index: {exc}")
+        return target
     archive_dir = Path("resultados_archive")
     archive_dir.mkdir(exist_ok=True)
     target = archive_dir / f"resultados_{draw_id}_{timestamp}.json"
-    shutil.copy2(source, target)
+    metadata = {
+        "source": "local_pre_run_archive",
+        "archived_at": datetime.now(timezone.utc).isoformat(),
+        "original_path": "resultados.json",
+        "content_sha256": hashlib.sha256(raw_text.encode("utf-8", errors="replace")).hexdigest(),
+        "prediction_draw": str(draw_id),
+        "game_mode": data.get("game_mode"),
+        "model_version": data.get("model_version"),
+        "score_kind": data.get("score_kind"),
+    }
+    data["snapshot_metadata"] = metadata
+    target.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    register_archive_snapshot(target, metadata, archive_dir, status="available")
     return target
 
 
@@ -272,30 +309,146 @@ def print_calibration_banner() -> None:
     print("  Vida útil/desgaste: RESET después del sorteo 4213; solo cuenta draw_id > 4213")
 
 
+def prepare_history_memory_prior() -> tuple[dict[str, Any], dict[str, Any]]:
+    """Importa historico, califica snapshots y construye prior diagnostico/aplicable."""
+    status: dict[str, Any] = {
+        "git_pull": {},
+        "history_import": {},
+        "archive": None,
+        "csv_path": None,
+        "memory_update": {},
+        "history_analysis": {},
+        "warnings": [],
+    }
+    pull = safe_git_pull_rebase_main()
+    status["git_pull"] = pull
+    for warning in pull.get("warnings", []):
+        print("warning:", warning)
+        status["warnings"].append(warning)
+
+    history_import = import_resultados_history_from_git("resultados_archive", limit=50)
+    status["history_import"] = history_import
+    for warning in history_import.get("warnings", []):
+        print("warning:", warning)
+        status["warnings"].append(warning)
+    print(
+        "Historico Git: "
+        f"importados={history_import.get('snapshots_imported', 0)} "
+        f"existentes={history_import.get('snapshots_existing', 0)} "
+        f"omitidos={history_import.get('snapshots_omitted', 0)}"
+    )
+
+    archived = archive_current_results()
+    if archived:
+        status["archive"] = str(archived)
+        print(f"Snapshot previo guardado en: {archived}")
+
+    csv_path, csv_warnings = detect_csv_path()
+    for warning in csv_warnings:
+        print("warning:", warning)
+        status["warnings"].append(warning)
+    if csv_path:
+        status["csv_path"] = str(csv_path)
+        memory_update = update_feedback_memory_from_archive(
+            archive_dir="resultados_archive",
+            csv_path=csv_path,
+            memory_path="v4_feedback_memory.json",
+            dry_run=False,
+        )
+        status["memory_update"] = memory_update
+        for warning in memory_update.get("warnings", []):
+            print("warning:", warning)
+        print(
+            "Memoria historica: "
+            f"records_nuevos={memory_update.get('records_new', 0)} "
+            f"duplicados={len(memory_update.get('duplicates', []))} "
+            f"omitidos={len(memory_update.get('omitted', []))}"
+        )
+        try:
+            analysis = analyze_history("resultados_archive", csv_path=csv_path, output_path="v4_history_analysis.json")
+            status["history_analysis"] = analysis.get("summary", {})
+        except Exception as exc:
+            warning = f"No se pudo generar v4_history_analysis.json: {exc}"
+            print("warning:", warning)
+            status["warnings"].append(warning)
+    else:
+        print("feedback_memory: sin CSV revelado; queda diagnostic_only.")
+
+    memory = load_feedback_memory("v4_feedback_memory.json")
+    analysis_data = None
+    history_path = Path("v4_history_analysis.json")
+    if history_path.exists():
+        try:
+            analysis_data = json.loads(history_path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            status["warnings"].append(f"Analisis historico ilegible: {exc}")
+    prior = compute_memory_prior(memory, analysis_data)
+    prior["history_import"] = {
+        "attempted": True,
+        "snapshots_imported": history_import.get("snapshots_imported", 0),
+        "snapshots_existing": history_import.get("snapshots_existing", 0),
+        "warnings": history_import.get("warnings", []),
+    }
+    if not csv_path:
+        prior["eligible"] = False
+        prior["mode"] = "diagnostic_only"
+        prior["reason"] = "Sin CSV revelado; no se instala prior."
+    print(f"Memory prior: mode={prior.get('mode')} eligible={prior.get('eligible')} reason={prior.get('reason')}")
+    return prior, status
+
+
 def run_pipeline_calibrated(archive_before: bool = True) -> None:
     eng = load_engine()
     apply_weight_calibration()
-    if archive_before:
-        archived = archive_current_results()
-        if archived:
-            print(f"Snapshot previo guardado en: {archived}")
-    eng.run_pipeline()
-    summary = annotate_results_with_memory()
+    memory_prior, workflow_status = prepare_history_memory_prior() if archive_before else (
+        {"eligible": False, "mode": "diagnostic_only", "reason": "Archivo previo desactivado."},
+        {},
+    )
+    original_meta_scores = getattr(eng, "meta_scores", None)
+    prior_number_audit: list[dict[str, Any]] = []
+    hook_installed = False
+    if memory_prior.get("eligible") and original_meta_scores:
+        def memory_aware_meta_scores(meta, live_X, experts):
+            base_score = original_meta_scores(meta, live_X, experts)
+            adjusted_score, audit = apply_memory_prior_to_score_vector(base_score, memory_prior)
+            prior_number_audit.clear()
+            prior_number_audit.extend(audit)
+            return adjusted_score
+        eng.meta_scores = memory_aware_meta_scores
+        hook_installed = True
+        print("memory_prior: hook pre-Monte-Carlo instalado.")
+    elif memory_prior.get("eligible"):
+        memory_prior["eligible"] = False
+        memory_prior["mode"] = "diagnostic_only"
+        memory_prior["reason"] = "eng.meta_scores no disponible; no se instala hook."
+        print("warning: eng.meta_scores no disponible; pipeline corre normal.")
+    try:
+        eng.run_pipeline()
+        if hook_installed:
+            memory_prior["applied"] = True
+    except Exception:
+        memory_prior["applied"] = False
+        if hook_installed:
+            print("warning: fallo pipeline con memory_prior; se restaura hook y se relanza error.")
+        raise
+    finally:
+        if hook_installed:
+            eng.meta_scores = original_meta_scores
+            print("memory_prior: hook restaurado.")
+    prior_audit = build_memory_prior_audit(memory_prior, prior_number_audit)
+    prior_audit["workflow_status"] = workflow_status
+    summary = annotate_results_with_memory(memory_prior=memory_prior, prior_audit=prior_audit)
     if summary:
         print(
             "feedback_memory exportado en resultados.json "
             f"(records={summary.get('records_used')}, modo={summary.get('adjustment_mode')})."
         )
     else:
-        print("feedback_memory: sin memoria real calificada; resultados.json queda sin ajustes de memoria.")
+        print("feedback_memory: resultados.json queda con diagnostico de memoria pendiente.")
 
 
 def sync_with_github() -> None:
-    try:
-        result = sync_outputs_to_github(SYNC_PATHS, "Update V4.3 results, memory, and dashboard")
-    except GitSyncError as exc:
-        print(f"GitHub sync no completado: {exc}")
-        return
+    result = sync_outputs_to_github_or_desktop(SYNC_PATHS, "Update V4.3.1 smart history prior")
     print(f"Rama actual: {result.get('branch')}")
     for warning in result.get("warnings", []):
         print(f"warning: {warning}")
@@ -370,21 +523,17 @@ def run() -> None:
     apply_weight_calibration()
     print_calibration_banner()
     print("\nMELATE LOCAL CRUNCHER V4.3 - RUNNER V4.2 CALIBRADO")
-    print("[1] Ejecutar pipeline V4.2 completo")
+    print("[1] Ejecutar pipeline V4.3 completo")
     print("[2] Inspeccionar resultados.json")
-    print("[3] Actualizar memoria de predicciones / calificar examenes")
-    print("[4] Sincronizar resultados con GitHub")
-    print("[5] Pipeline + memoria + GitHub sync")
+    print("[3] Sincronizar resultados con GitHub")
+    print("[4] Salir")
     choice = input("Opcion [1]: ").strip() or "1"
     if choice == "2":
         inspect_results()
     elif choice == "3":
-        update_memory_prompt()
+        sync_with_github()
     elif choice == "4":
-        sync_with_github()
-    elif choice == "5":
-        run_pipeline_calibrated(archive_before=True)
-        sync_with_github()
+        print("Salida solicitada.")
     else:
         run_pipeline_calibrated(archive_before=True)
         upload = input("Subir resultados.json, memoria y snapshot a GitHub? [s/N]: ").strip().lower()
