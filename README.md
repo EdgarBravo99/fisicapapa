@@ -338,6 +338,45 @@ El replay siempre corre en un `TemporaryDirectory`, porque el motor escribe `res
 
 Replay memory vive en `v4_replay_memory.py`. Si existen records replay reales, puede escribir `v4_replay_memory.json` y `v4_replay_analysis.json`. Por default el replay prior es `shadow_replay_prior`: se calcula y se muestra, pero no se aplica. `ENABLE_REPLAY_PRIOR = False`.
 
+### Calidad del replay prior V4.3.3
+
+PR #19 generaba replay memory y shadow prior. PR #20 mejora la calidad del shadow prior para evitar castigar numeros solo porque no salieron.
+
+Antes, casi cualquier numero con score positivo que no aparecia podia sumar como sobreestimado. Eso era demasiado amplio porque en cada sorteo aparecen 6 numeros y fallan 50.
+
+Nuevo criterio:
+
+```txt
+overestimated = numero top-ranked / high-percentile que fallo
+underestimated = numero low-ranked / low-percentile que si aparecio
+```
+
+El aggregate ahora deriva, aun para records viejos:
+
+- rank por numero;
+- percentile;
+- bucket `p0_p20`, `p20_p40`, `p40_p60`, `p60_p80`, `p80_p90`, `p90_p100`;
+- `score_bucket_performance`;
+- `rank_band_performance`;
+- `calibration_summary`;
+- evidencia ponderada `overestimated_weighted` / `underestimated_weighted`.
+
+`compute_replay_prior()` usa evidencia ponderada:
+
+```txt
+weighted_underestimated - weighted_overestimated
+```
+
+Aunque existan 30+ records, el prior queda diagnostic-only si los buckets altos no muestran mejor hit-rate que los buckets medios.
+
+Recalcular aggregate sin regenerar replays:
+
+```powershell
+py .\v4_replay_memory.py --rebuild
+```
+
+El replay prior sigue apagado por defecto. No debe activarse hasta revisar `prior_quality`.
+
 Reglas replay:
 
 - minimo 30 records replay limpios para shadow prior;
@@ -431,6 +470,7 @@ Replay:
 Ejecutar classifier contra commit c5d4a185...
 Ejecutar replay dry-run con max-targets 3
 Ejecutar tools/v4_replay_smoke_test.py
+Ejecutar tools/v4_replay_quality_smoke_test.py
 Confirmar que v4_replay_memory.json no se crea en dry-run ni sin records reales
 ```
 

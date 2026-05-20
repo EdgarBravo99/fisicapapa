@@ -100,11 +100,19 @@ def run_smoke() -> dict:
     classified = classify_snapshot_text(hindsight_text, commit_sha="c5d4a18594c4c4b70833f62b70db694964a2aa12")
     results["legacy_hindsight_blocked"] = classified["classification"] == "legacy_hindsight_snapshot" and not classified["eligible_for_prior"]
 
+    def quality_record(index: int) -> dict:
+        rows = {}
+        for number in range(1, 57):
+            appeared = number <= 6
+            score = 95 - number if number <= 10 else 40 - (number % 20)
+            rows[str(number)] = {"predicted_score": score, "appeared": appeared, "error": score - (100 if appeared else 0)}
+        return {"record_type": "historical_replay", "leakage_passed": True, "prediction_draw": str(index), "target_draw": str(index + 1), "number_score_errors": rows}
+
     memory = default_replay_memory()
-    memory["records"] = [{"record_type": "historical_replay", "leakage_passed": True, "number_score_errors": {}} for _ in range(30)]
+    memory["records"] = [quality_record(i) for i in range(30)]
     prior = compute_replay_prior(memory)
     memory_60 = default_replay_memory()
-    memory_60["records"] = [{"record_type": "historical_replay", "leakage_passed": True, "number_score_errors": {}} for _ in range(60)]
+    memory_60["records"] = [quality_record(i) for i in range(60)]
     prior_60 = compute_replay_prior(memory_60)
     results["replay_prior_disabled_by_default"] = ENABLE_REPLAY_PRIOR is False and not prior["applied"]
     results["replay_prior_threshold_30"] = prior["eligible"] and prior["max_number_adjustment"] == 0.02
