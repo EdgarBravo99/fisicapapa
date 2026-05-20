@@ -6,7 +6,7 @@
   const STORAGE_KEY = 'fisicapapa:v42:combo-comparator';
   const MAX_ITEMS = 5;
   const $ = id => document.getElementById(id);
-  const finite = value => Number.isFinite(Number(value));
+  const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
   const fmt = (value, digits = 2) => finite(value) ? Number(value).toFixed(digits) : 'N/D';
   const esc = value => String(value ?? 'N/D').replace(/[&<>"']/g, mark => ({
     '&': '&amp;',

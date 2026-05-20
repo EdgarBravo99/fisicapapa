@@ -3,155 +3,243 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#020617" />
-  <title>Fisicapapa · Web V2 · V4.2 Deep Stacking</title>
+  <meta name="theme-color" content="#030712" />
+  <title>Fisicapapa Personal Quant Desk · Web V2 · V4.2</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      theme: { extend: { fontFamily: { mono: ['ui-monospace','SFMono-Regular','Menlo','Monaco','Consolas','monospace'] }, colors: { science: { bg:'#020617', panel:'#0f172a', panel2:'#111827', line:'#1f2937', cyan:'#22d3ee', green:'#22c55e', red:'#ef4444', amber:'#f59e0b', violet:'#a78bfa' } } } }
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Outfit', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            display: ['Space Grotesk', 'Outfit', 'ui-sans-serif', 'system-ui'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+          },
+          colors: {
+            desk: { bg: '#030712', panel: '#08111f', card: '#0f172a', line: 'rgba(148,163,184,.16)', cyan: '#22d3ee' },
+          },
+        },
+      },
     };
   </script>
   <link rel="stylesheet" href="v4-visual-system.css" />
 </head>
-<body class="min-h-screen bg-science-bg text-slate-100 selection:bg-cyan-400 selection:text-slate-950">
-  <div class="quant-grid-bg fixed inset-0 -z-10 opacity-40" aria-hidden="true">
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,.18),transparent_35%),radial-gradient(circle_at_80%_10%,rgba(167,139,250,.12),transparent_35%),linear-gradient(180deg,#020617,#020617)]"></div>
-    <div class="absolute inset-0 bg-[linear-gradient(rgba(148,163,184,.05)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,.05)_1px,transparent_1px)] bg-[size:36px_36px]"></div>
-  </div>
+<body class="taste-bg min-h-[100dvh] text-slate-100 selection:bg-cyan-300 selection:text-slate-950">
+  <div class="taste-atmosphere" aria-hidden="true"></div>
 
-  <main id="app-root" class="quant-shell mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
-    <nav class="hud-command-bar sticky top-3 z-20" aria-label="Navegacion rapida">
-      <div class="hud-command-status">
-        <span class="hud-dot" aria-hidden="true"></span>
-        <span>V4.2</span>
-      </div>
-      <div class="hud-command-links" role="list">
+  <main id="app-root" class="taste-shell mx-auto flex w-full max-w-[1440px] flex-col gap-5 px-4 py-4 sm:px-6 lg:px-8">
+    <nav class="taste-command-bar sticky top-3 z-20" aria-label="Navegacion rapida">
+      <a class="taste-command-brand" href="#personal-center" aria-label="Ir al Centro Personal">
+        <span class="taste-live-dot" aria-hidden="true"></span>
+        <span>Fisicapapa Desk</span>
+        <b>V4.2</b>
+      </a>
+      <div class="taste-command-links" role="list">
         <a role="listitem" href="#personal-center">Centro</a>
         <a role="listitem" href="#top-combinations-section">Top</a>
         <a role="listitem" href="#manual-evaluator-section">Evaluar</a>
-        <a role="listitem" href="#combo-comparator-section">Comparar</a>
+        <a role="listitem" href="#combo-comparator-section">Mesa</a>
         <a role="listitem" href="#physics-section">Fisica</a>
         <a role="listitem" href="#auditor-section">Auditor</a>
+        <a role="listitem" href="#system-diagnostics-panel">Sistema</a>
       </div>
     </nav>
-    <header class="quant-card-strong quant-control-header control-room-header p-5 md:p-6">
-      <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <div class="quant-pill-ok mb-3">Web V2 / V4.2 Only</div>
-          <h1 class="quant-section-title text-3xl font-black text-white sm:text-4xl">Fisicapapa V4.2 Control Room</h1>
-          <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-400">Cabina personal para lectura rapida del JSON V4.2, evaluacion manual y comparacion de combinaciones. Los scores son indices internos, no probabilidades garantizadas.</p>
-        </div>
-        <section class="grid gap-3 sm:grid-cols-3 lg:min-w-[560px]" aria-label="Resumen del modelo">
-          <div class="quant-metric"><p class="text-[10px] uppercase tracking-[0.24em] text-slate-500">Actualizacion</p><p id="header-last-update" class="mt-2 text-sm font-bold text-cyan-200">Esperando JSON</p></div>
-          <div class="quant-metric"><p class="text-[10px] uppercase tracking-[0.24em] text-slate-500">Modo de juego</p><p id="header-game-mode" class="mt-2 text-sm font-bold text-emerald-300">N/D</p></div>
-          <div class="quant-metric"><p class="text-[10px] uppercase tracking-[0.24em] text-slate-500">Modelo</p><p id="header-model-version" class="mt-2 text-sm font-bold text-violet-300">N/D</p></div>
-        </section>
+
+    <header class="taste-header taste-motion-in">
+      <div class="taste-header-copy">
+        <p class="taste-eyebrow">Web V2 · Cruncher V4.2 · Lectura personal</p>
+        <h1>Fisicapapa Personal Quant Desk</h1>
+        <p>Cabina diaria para revisar resultados, evaluar combinaciones y comparar decisiones sin confundir score interno con probabilidad garantizada.</p>
       </div>
+      <section class="taste-header-metrics" aria-label="Resumen del modelo">
+        <article class="taste-metric">
+          <span>Actualizacion</span>
+          <b id="header-last-update">Esperando JSON</b>
+        </article>
+        <article class="taste-metric">
+          <span>Modo</span>
+          <b id="header-game-mode">N/D</b>
+        </article>
+        <article class="taste-metric">
+          <span>Modelo</span>
+          <b id="header-model-version">N/D</b>
+        </article>
+      </section>
     </header>
 
-    <section id="fatal-error" class="hidden rounded-3xl border border-red-500/60 bg-red-950/70 p-6 shadow-2xl shadow-red-950/40">
-      <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between"><div><p class="text-xs font-bold uppercase tracking-[0.28em] text-red-300">Ejecución detenida</p><h2 class="mt-2 text-2xl font-black text-red-100">JSON incompatible con Web V2</h2><p id="fatal-error-message" class="mt-3 max-w-4xl text-sm leading-6 text-red-100/90"></p></div><div class="rounded-2xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm font-bold text-red-100">V4.2 requerido</div></div>
+    <section id="fatal-error" class="taste-alert taste-alert-danger hidden">
+      <div>
+        <p class="taste-eyebrow">Ejecucion detenida</p>
+        <h2>JSON incompatible con Web V2</h2>
+        <p id="fatal-error-message"></p>
+      </div>
+      <strong>V4.2 requerido</strong>
     </section>
 
-    <section id="loading-panel" class="status-radar rounded-3xl border border-slate-800 bg-slate-950/70 p-6 text-slate-300">
-      <div class="flex items-center gap-3"><div class="h-3 w-3 animate-pulse rounded-full bg-cyan-300"></div><p class="text-sm">Cargando resultados.json y validando contrato V4.2…</p></div>
+    <section id="loading-panel" class="taste-loading">
+      <div class="taste-loading-skeleton"></div>
+      <div>
+        <p class="taste-eyebrow">Arranque de cabina</p>
+        <p>Cargando resultados.json y validando contrato V4.2.</p>
+      </div>
     </section>
 
-    <section id="dashboard" class="hidden grid gap-6">
-      <section id="personal-center" class="quant-card-strong control-room-hero p-5">
-        <div class="control-room-hero-header">
+    <section id="dashboard" class="hidden grid gap-5">
+      <section id="personal-center" class="taste-section-hero taste-motion-in">
+        <div class="taste-hero-grid">
+          <div class="taste-hero-main">
+            <div class="taste-hero-kicker">
+              <span>Centro Personal V4.2</span>
+              <span id="personal-center-status" class="taste-chip">Esperando JSON</span>
+            </div>
+            <h2>Decision rapida del dia</h2>
+            <p>Primero mira estado, mejor combinacion, mejor numero y que revisar antes de bajar a detalles.</p>
+            <div id="personal-center-panel" class="taste-hero-panel"></div>
+          </div>
+          <aside class="taste-hero-side" aria-label="Kpis del sistema">
+            <article class="taste-metric">
+              <span>Score Kind</span>
+              <b id="kpi-score-kind">N/D</b>
+            </article>
+            <article class="taste-metric">
+              <span>Feedback Loop</span>
+              <b id="kpi-feedback-loop">N/D</b>
+            </article>
+            <article class="taste-metric">
+              <span>Walk-Forward</span>
+              <b id="kpi-walk-forward">N/D</b>
+            </article>
+            <article class="taste-metric">
+              <span>Generator Pool</span>
+              <b id="kpi-generator-pool">N/D</b>
+            </article>
+          </aside>
+        </div>
+      </section>
+
+      <section class="taste-section" aria-labelledby="results-title">
+        <div class="taste-section-heading">
           <div>
-            <p class="text-xs uppercase tracking-[0.24em] text-cyan-300">Centro Personal V4.2</p>
-            <h2 class="mt-2 text-3xl font-black text-white md:text-4xl">Decision rapida del dia</h2>
-            <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-400">Resumen operativo para decidir que revisar primero sin interpretar el score como probabilidad real.</p>
+            <p class="taste-eyebrow">Generador / Top resultados</p>
+            <h2 id="results-title">Tickets de decision</h2>
           </div>
-          <span id="personal-center-status" class="status-radar rounded-2xl border border-slate-700 bg-slate-900/80 px-4 py-2 text-sm font-bold text-slate-200">Esperando JSON</span>
+          <p>Top combinaciones y ranking de numeros en una lectura compacta para escritorio o celular.</p>
         </div>
-        <div id="personal-center-panel" class="mt-5 grid gap-3"></div>
-      </section>
-      <section class="bento-status-grid">
-        <article class="quant-metric"><p class="text-xs uppercase tracking-[0.24em] text-slate-500">Score Kind</p><p id="kpi-score-kind" class="mt-3 break-words text-lg font-black text-cyan-200">N/D</p></article>
-        <article class="quant-metric"><p class="text-xs uppercase tracking-[0.24em] text-slate-500">Feedback Loop</p><p id="kpi-feedback-loop" class="mt-3 text-lg font-black text-emerald-300">N/D</p></article>
-        <article class="quant-metric"><p class="text-xs uppercase tracking-[0.24em] text-slate-500">Walk-Forward</p><p id="kpi-walk-forward" class="mt-3 text-lg font-black text-violet-300">N/D</p></article>
-        <article class="quant-metric"><p class="text-xs uppercase tracking-[0.24em] text-slate-500">Generator Pool</p><p id="kpi-generator-pool" class="mt-3 text-lg font-black text-amber-300">N/D</p></article>
+        <div class="taste-results-grid">
+          <section id="top-combinations-section" class="taste-card taste-card-large">
+            <div class="taste-card-heading">
+              <div>
+                <p class="taste-eyebrow">Generator pool</p>
+                <h3>Mejores combinaciones</h3>
+              </div>
+              <span id="top-combos-label" class="taste-chip">N/D</span>
+            </div>
+            <div id="top-combinations-panel" class="taste-stack"></div>
+          </section>
+
+          <section class="taste-card">
+            <div class="taste-card-heading">
+              <div>
+                <p class="taste-eyebrow">Ranking por numero</p>
+                <h3>Top 10 V4.2</h3>
+              </div>
+            </div>
+            <div id="top-numbers-panel" class="taste-stack"></div>
+          </section>
+        </div>
       </section>
 
-      <section class="grid gap-6 xl:grid-cols-[1.15fr_.85fr]">
-        <section id="top-combinations-section" class="quant-card decision-card p-5">
-          <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-            <div><p class="text-xs uppercase tracking-[0.24em] text-amber-300">Simulación V4.2</p><h2 class="mt-2 text-2xl font-black text-white">Mejores combinaciones del generator_pool</h2><p class="mt-2 text-sm text-slate-400">Top combinaciones exportadas por el cruncher local, enriquecidas con explicación física/modelo.</p></div>
-            <span id="top-combos-label" class="rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-2 text-sm font-bold text-amber-200">—</span>
+      <section id="manual-evaluator-section" class="taste-section taste-section-evaluator">
+        <div class="taste-section-heading">
+          <div>
+            <p class="taste-eyebrow">Evaluador manual</p>
+            <h2>Score web, cruncher y componentes</h2>
           </div>
-          <div id="top-combinations-panel" class="mt-5 grid gap-3"></div>
-        </section>
-
-        <section class="quant-card decision-card p-5">
-          <div><p class="text-xs uppercase tracking-[0.24em] text-violet-300">Ranking por número</p><h2 class="mt-2 text-2xl font-black text-white">Top 10 números V4.2</h2><p class="mt-2 text-sm text-slate-400">Números con mayor score del modelo, incluyendo física y expertos.</p></div>
-          <div id="top-numbers-panel" class="mt-5 grid gap-3"></div>
-        </section>
-      </section>
-
-      <section id="manual-evaluator-section" class="quant-card-strong decision-card manual-evaluator-stage p-5">
-        <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-          <div><p class="text-xs uppercase tracking-[0.24em] text-cyan-300">Súper-Validador V4</p><h2 class="mt-2 text-2xl font-black text-white">Evaluador manual por modelo, estructura, física y pool</h2><p class="mt-2 text-sm text-slate-400">Ingresa 6 números. La calificación usa el contrato V4.2 y la física efectiva de esferas.</p></div>
-          <button id="btn-evaluate-manual" class="min-h-[44px] rounded-2xl bg-cyan-400 px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-200" aria-label="Evaluar combinacion manual V4.2">Evaluar</button>
+          <button id="btn-evaluate-manual" class="taste-action" aria-label="Evaluar combinacion manual V4.2">Evaluar</button>
         </div>
-        <div class="mt-5 grid grid-cols-3 gap-3 sm:grid-cols-6">
-          <label class="sr-only" for="manual-n1">Numero 1</label><input id="manual-n1" class="min-h-[44px] rounded-2xl border border-slate-700 bg-slate-900/80 px-3 py-3 text-center text-lg font-black text-white outline-none focus:border-cyan-300 focus:ring-2 focus:ring-cyan-300/40" type="number" min="1" max="56" placeholder="N1" />
-          <label class="sr-only" for="manual-n2">Numero 2</label><input id="manual-n2" class="min-h-[44px] rounded-2xl border border-slate-700 bg-slate-900/80 px-3 py-3 text-center text-lg font-black text-white outline-none focus:border-cyan-300 focus:ring-2 focus:ring-cyan-300/40" type="number" min="1" max="56" placeholder="N2" />
-          <label class="sr-only" for="manual-n3">Numero 3</label><input id="manual-n3" class="min-h-[44px] rounded-2xl border border-slate-700 bg-slate-900/80 px-3 py-3 text-center text-lg font-black text-white outline-none focus:border-cyan-300 focus:ring-2 focus:ring-cyan-300/40" type="number" min="1" max="56" placeholder="N3" />
-          <label class="sr-only" for="manual-n4">Numero 4</label><input id="manual-n4" class="min-h-[44px] rounded-2xl border border-slate-700 bg-slate-900/80 px-3 py-3 text-center text-lg font-black text-white outline-none focus:border-cyan-300 focus:ring-2 focus:ring-cyan-300/40" type="number" min="1" max="56" placeholder="N4" />
-          <label class="sr-only" for="manual-n5">Numero 5</label><input id="manual-n5" class="min-h-[44px] rounded-2xl border border-slate-700 bg-slate-900/80 px-3 py-3 text-center text-lg font-black text-white outline-none focus:border-cyan-300 focus:ring-2 focus:ring-cyan-300/40" type="number" min="1" max="56" placeholder="N5" />
-          <label class="sr-only" for="manual-n6">Numero 6</label><input id="manual-n6" class="min-h-[44px] rounded-2xl border border-slate-700 bg-slate-900/80 px-3 py-3 text-center text-lg font-black text-white outline-none focus:border-cyan-300 focus:ring-2 focus:ring-cyan-300/40" type="number" min="1" max="56" placeholder="N6" />
+        <div class="taste-input-deck" aria-label="Ingresar seis numeros">
+          <label for="manual-n1"><span>Numero 1</span><input id="manual-n1" type="number" min="1" max="56" placeholder="N1" /></label>
+          <label for="manual-n2"><span>Numero 2</span><input id="manual-n2" type="number" min="1" max="56" placeholder="N2" /></label>
+          <label for="manual-n3"><span>Numero 3</span><input id="manual-n3" type="number" min="1" max="56" placeholder="N3" /></label>
+          <label for="manual-n4"><span>Numero 4</span><input id="manual-n4" type="number" min="1" max="56" placeholder="N4" /></label>
+          <label for="manual-n5"><span>Numero 5</span><input id="manual-n5" type="number" min="1" max="56" placeholder="N5" /></label>
+          <label for="manual-n6"><span>Numero 6</span><input id="manual-n6" type="number" min="1" max="56" placeholder="N6" /></label>
         </div>
-        <div id="manual-error" class="mt-4 hidden rounded-2xl border border-red-500/50 bg-red-950/60 p-4 text-sm font-bold text-red-100"></div>
+        <div id="manual-error" class="taste-alert taste-alert-danger mt-4 hidden"></div>
         <div id="manual-result" class="mt-5 hidden"></div>
       </section>
 
-      <section id="combo-comparator-section" class="quant-card comparator-board p-5">
-        <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+      <section id="combo-comparator-section" class="taste-section taste-comparator">
+        <div class="taste-section-heading">
           <div>
-            <p class="text-xs uppercase tracking-[0.24em] text-violet-300">Comparador personal</p>
-            <h2 class="mt-2 text-2xl font-black text-white">Comparar de 2 a 5 combinaciones</h2>
-            <p class="mt-2 text-sm text-slate-400">Guarda una manual o una top para ver ganadoras por score web, cruncher, modelo, estructura, fisica, pool y macro &lt;40.</p>
+            <p class="taste-eyebrow">Mesa de decision</p>
+            <h2>Comparador de 2 a 5 combinaciones</h2>
           </div>
-          <div class="flex flex-wrap gap-2">
-            <button id="btn-save-current-combo" class="min-h-[44px] rounded-2xl border border-violet-300/40 bg-violet-400/10 px-4 py-2 text-sm font-bold text-violet-100 transition hover:bg-violet-400/20 focus:outline-none focus:ring-2 focus:ring-violet-200">Guardar actual</button>
-            <button id="btn-copy-comparator-report" class="min-h-[44px] rounded-2xl border border-cyan-300/40 bg-cyan-400/10 px-4 py-2 text-sm font-bold text-cyan-100 transition hover:bg-cyan-400/20 focus:outline-none focus:ring-2 focus:ring-cyan-200">Copiar reporte</button>
-            <button id="btn-clear-comparator" class="min-h-[44px] rounded-2xl border border-red-300/40 bg-red-500/10 px-4 py-2 text-sm font-bold text-red-100 transition hover:bg-red-500/20 focus:outline-none focus:ring-2 focus:ring-red-200">Limpiar</button>
+          <div class="taste-action-row">
+            <button id="btn-save-current-combo" class="taste-ghost">Guardar actual</button>
+            <button id="btn-copy-comparator-report" class="taste-ghost">Copiar reporte</button>
+            <button id="btn-clear-comparator" class="taste-danger">Limpiar</button>
           </div>
         </div>
-        <div id="combo-comparator-panel" class="mt-5 grid gap-3"></div>
+        <div id="combo-comparator-panel" class="taste-stack"></div>
       </section>
 
-      <section id="physics-section" class="quant-card physics-lab p-5">
-        <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-          <div><p class="text-xs uppercase tracking-[0.24em] text-emerald-300">Panel de Control Fisico</p><h2 class="mt-2 text-2xl font-black text-white">Laboratorio de esferas y peso efectivo</h2><p class="mt-2 text-sm text-slate-400">Cada esfera muestra peso real, salidas desde calibracion, peso efectivo y desgaste estimado.</p></div>
-          <div id="physics-summary-label" class="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-sm font-bold text-emerald-200">Esperando física…</div>
+      <section id="physics-section" class="taste-section taste-physics">
+        <div class="taste-section-heading">
+          <div>
+            <p class="taste-eyebrow">Fisica de esferas</p>
+            <h2>Laboratorio fisico calibrado</h2>
+          </div>
+          <div id="physics-summary-label" class="taste-chip taste-chip-ok">Esperando fisica</div>
         </div>
-        <div id="physics-grid" class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
+        <div id="physics-grid" class="taste-physics-grid"></div>
       </section>
 
-      <details id="auditor-section" class="quant-card technical-terminal p-5">
-        <summary class="cursor-pointer text-lg font-black text-white focus:outline-none focus:ring-2 focus:ring-cyan-200">Auditor V4.2</summary>
-        <p class="mt-2 text-sm text-slate-400">Conteos, advertencias, escalas detectadas y muestras crudas para revisar el contrato sin saturar el flujo diario.</p>
-        <div id="auditor-panel" class="mt-5 grid gap-3"></div>
+      <section class="taste-section taste-memory-preview">
+        <div class="taste-section-heading">
+          <div>
+            <p class="taste-eyebrow">Memoria / GitHub</p>
+            <h2>Preparado para examenes calificados</h2>
+          </div>
+          <a class="taste-ghost" href="https://github.com/EdgarBravo99/fisicapapa/commits/main/resultados.json" target="_blank" rel="noopener">Historial JSON</a>
+        </div>
+        <div id="feedback-memory-panel" class="taste-panel-muted">
+          <p class="taste-eyebrow">Memoria pendiente</p>
+          <p>Aun no hay examenes calificados en esta web. El panel activo se agregara despues de integrar la memoria del runner.</p>
+        </div>
+      </section>
+
+      <details id="auditor-section" class="taste-terminal">
+        <summary>Auditor V4.2</summary>
+        <p>Conteos, advertencias, escalas detectadas y muestras crudas para revisar contrato sin saturar el flujo diario.</p>
+        <div id="auditor-panel" class="taste-stack"></div>
       </details>
 
-      <section class="quant-card technical-terminal p-5">
-        <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between"><div><p class="text-xs uppercase tracking-[0.24em] text-slate-500">Contrato V4.2 validado</p><h2 class="mt-2 text-2xl font-black text-white">Panel base listo para módulos científicos</h2></div><button id="btn-reload-json" class="rounded-2xl border border-cyan-400/30 bg-cyan-400/10 px-4 py-2 text-sm font-bold text-cyan-200 transition hover:bg-cyan-400/20">Recargar JSON</button></div>
-        <pre id="contract-preview" class="mt-5 max-h-80 overflow-auto rounded-2xl border border-slate-800 bg-slate-900/80 p-4 text-xs leading-5 text-slate-300"></pre>
-      </section>
+      <section class="taste-section taste-system-grid">
+        <article class="taste-terminal taste-terminal-card">
+          <div class="taste-card-heading">
+            <div>
+              <p class="taste-eyebrow">Contrato V4.2 validado</p>
+              <h3>Vista cruda controlada</h3>
+            </div>
+            <button id="btn-reload-json" class="taste-ghost">Recargar JSON</button>
+          </div>
+          <pre id="contract-preview"></pre>
+        </article>
 
-      <section class="quant-card decision-card p-5">
-        <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-          <div><p class="text-xs uppercase tracking-[0.24em] text-cyan-300">Diagnostico de Datos</p><h2 class="mt-2 text-2xl font-black text-white">Estado del Sistema V4.2</h2><p class="mt-2 text-sm text-slate-400">Valida contrato, conteos fisicos, pool, walk-forward y metadata cargada en resultados.json.</p></div>
-          <span id="system-diagnostics-status" class="rounded-2xl border border-slate-700 bg-slate-900/80 px-4 py-2 text-sm font-bold text-slate-200">Esperando JSON</span>
-        </div>
-        <div id="system-diagnostics-panel" class="mt-5 grid gap-3"></div>
+        <article class="taste-card">
+          <div class="taste-card-heading">
+            <div>
+              <p class="taste-eyebrow">Diagnostico de datos</p>
+              <h3>Estado del sistema V4.2</h3>
+            </div>
+            <span id="system-diagnostics-status" class="taste-chip">Esperando JSON</span>
+          </div>
+          <div id="system-diagnostics-panel" class="taste-stack"></div>
+        </article>
       </section>
     </section>
   </main>
@@ -163,5 +251,6 @@
   <script src="v4-under40-verifier.js"></script>
   <script src="v4-system-diagnostics.js"></script>
   <script src="v4-combo-comparator.js"></script>
+  <script src="v4-feedback-memory-panel.js"></script>
 </body>
 </html>

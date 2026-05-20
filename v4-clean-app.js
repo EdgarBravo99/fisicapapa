@@ -223,15 +223,15 @@
 
   function gravityAlert(profile) {
     if (profile === 'Muy Pesado') {
-      return `<div class="rounded-2xl border border-amber-400/60 bg-amber-500/10 p-4 text-sm font-bold text-amber-100">⚠️ Advertencia de Gravedad: Tu combinación es demasiado pesada y tiene poca probabilidad de subir a la tómbola de extracción.</div>`;
+      return `<div class="taste-alert rounded-2xl border border-amber-400/60 bg-amber-500/10 p-4 text-sm font-bold text-amber-100">Advertencia de gravedad: la combinacion concentra peso efectivo alto. Revisala como perfil fisico extremo, no como probabilidad garantizada.</div>`;
     }
     if (profile === 'Muy Ligero') {
-      return `<div class="rounded-2xl border border-cyan-400/60 bg-cyan-500/10 p-4 text-sm font-bold text-cyan-100">🪶 Perfil muy ligero: la combinación concentra esferas por debajo del peso efectivo promedio. Vigila que no sea una señal extrema del modelo.</div>`;
+      return `<div class="taste-alert rounded-2xl border border-cyan-400/60 bg-cyan-500/10 p-4 text-sm font-bold text-cyan-100">Perfil muy ligero: la combinacion concentra esferas por debajo del peso efectivo promedio. Vigila que no sea una senal extrema del modelo.</div>`;
     }
     if (profile === 'Sin datos físicos') {
-      return `<div class="rounded-2xl border border-red-400/60 bg-red-500/10 p-4 text-sm font-bold text-red-100">Sin datos físicos suficientes: el JSON no trae peso efectivo por número en manual_suggestion_seed.</div>`;
+      return `<div class="taste-alert rounded-2xl border border-red-400/60 bg-red-500/10 p-4 text-sm font-bold text-red-100">Sin datos fisicos suficientes: el JSON no trae peso efectivo por numero en manual_suggestion_seed.</div>`;
     }
-    return `<div class="rounded-2xl border border-emerald-400/50 bg-emerald-500/10 p-4 text-sm font-bold text-emerald-100">✅ Perfil gravitacional balanceado: la combinación no está sesgada a extremos de peso efectivo.</div>`;
+    return `<div class="taste-alert rounded-2xl border border-emerald-400/50 bg-emerald-500/10 p-4 text-sm font-bold text-emerald-100">Perfil gravitacional balanceado: la combinacion no esta sesgada a extremos de peso efectivo.</div>`;
   }
 
   function weakestNumber(result) {
@@ -274,8 +274,8 @@
     const structural = result.components.structuralBalance;
     const suggestionHtml = suggestion ? `<div class="decision-card rounded-2xl border border-violet-400/40 bg-violet-500/10 p-4">
       <p class="text-xs uppercase tracking-[0.22em] text-violet-300">Asistente de reemplazo</p>
-      <p class="mt-2 text-sm text-slate-200">Cambiar <b class="text-red-300">${suggestion.remove}</b> por <b class="text-emerald-300">${suggestion.add}</b> mejora ${fmt(suggestion.gain)} puntos netos. Transformer candidato: ${fmt(suggestion.transformer)}. Nueva combinación: <span class="text-cyan-200">${suggestion.next.join(' · ')}</span></p>
-      <button class="quant-ghost-button mt-3 rounded-xl border border-violet-300/30 bg-violet-400/10 px-3 py-2 text-xs font-bold text-violet-100" id="btn-apply-suggestion">Aplicar sugerencia</button>
+      <p class="mt-2 text-sm text-slate-200">Cambiar <b class="text-red-300">${suggestion.remove}</b> por <b class="text-emerald-300">${suggestion.add}</b> mejora ${fmt(suggestion.gain)} puntos netos. Transformer candidato: ${fmt(suggestion.transformer)}. Nueva combinacion: <span class="text-cyan-200">${suggestion.next.join(' / ')}</span></p>
+      <button class="taste-ghost quant-ghost-button mt-3 rounded-xl border border-violet-300/30 bg-violet-400/10 px-3 py-2 text-xs font-bold text-violet-100" id="btn-apply-suggestion">Aplicar sugerencia</button>
     </div>` : '';
 
     el.innerHTML = `<div class="manual-result-board grid gap-4">
