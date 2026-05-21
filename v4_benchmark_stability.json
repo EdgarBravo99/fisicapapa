@@ -1,0 +1,57 @@
+{
+  "version": "V4.4-benchmark-stability",
+  "generated_at": "2026-05-21T20:57:07.607682+00:00",
+  "input_files": {
+    "hardening": "v4_benchmark_hardening.json",
+    "replay_memory": "v4_replay_memory.json"
+  },
+  "records_count": 30,
+  "bootstrap_iterations": 1000,
+  "random_seed": 42,
+  "cruncher_minus_random_mean": -0.071429,
+  "cruncher_minus_random_ci_95": [
+    -0.338096,
+    0.195238
+  ],
+  "cruncher_minus_frequency_mean": -0.068966,
+  "cruncher_minus_frequency_ci_95": [
+    -0.62069,
+    0.413793
+  ],
+  "cruncher_minus_recency_mean": 0.448276,
+  "cruncher_minus_recency_ci_95": [
+    0.068966,
+    0.758621
+  ],
+  "metrics": {
+    "cruncher_minus_random": {
+      "available": true,
+      "mean": -0.071429,
+      "ci_95": [
+        -0.338096,
+        0.195238
+      ],
+      "interpretation": "not_statistically_stable"
+    },
+    "cruncher_minus_frequency": {
+      "available": true,
+      "mean": -0.068966,
+      "ci_95": [
+        -0.62069,
+        0.413793
+      ],
+      "interpretation": "not_statistically_stable"
+    },
+    "cruncher_minus_recency": {
+      "available": true,
+      "mean": 0.448276,
+      "ci_95": [
+        0.068966,
+        0.758621
+      ],
+      "interpretation": "favorable_but_still_diagnostic"
+    }
+  },
+  "stability": "unstable",
+  "recommendation": "diagnostic_only"
+}
