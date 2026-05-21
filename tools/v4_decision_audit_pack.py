@@ -37,7 +37,11 @@ def main() -> int:
     steps = [
         (
             "diversity selector",
-            [python, str(ROOT / "tools" / "v4_diversity_selector.py"), "--input", args.results, "--output", "v4_diversity_output.json"],
+            [python, str(ROOT / "tools" / "v4_diversity_selector.py"), "--input", args.results, "--output", "v4_diversity_output.json", "--pool", "auto"],
+        ),
+        (
+            "candidate pool audit",
+            [python, str(ROOT / "tools" / "v4_candidate_pool_audit.py"), "--input", args.results, "--output", "v4_candidate_pool_audit.json"],
         ),
         (
             "baseline benchmark",
@@ -46,6 +50,14 @@ def main() -> int:
         (
             "physics regime audit",
             [python, str(ROOT / "tools" / "v4_physics_regime_audit.py"), "--weights", args.weights, "--output", "v4_physics_regime_analysis.json"],
+        ),
+        (
+            "replay qualification gate",
+            [python, str(ROOT / "tools" / "v4_replay_qualification_gate.py"), "--output", "v4_replay_qualification.json"],
+        ),
+        (
+            "decision slate",
+            [python, str(ROOT / "tools" / "v4_decision_slate.py"), "--output", "v4_decision_slate.json"],
         ),
     ]
     reports = [_run_step(label, command) for label, command in steps]

@@ -1,17 +1,18 @@
 {
   "version": "V4.4-decision-audit-pack",
-  "generated_at": "2026-05-21T07:41:17.866594+00:00",
+  "generated_at": "2026-05-21T18:38:40.068872+00:00",
   "source_file": "resultados.json",
+  "pool_source": "generator_pool",
   "score_kind": "v4_2_deep_stacking_meta_score",
   "lambda_used": 0.7,
   "k": 10,
-  "pool_size": 10,
-  "pool_entropy": 0.52203,
+  "pool_size": 250,
+  "pool_entropy": 0.637253,
   "average_pairwise_jaccard_original": 0.619048,
-  "average_pairwise_jaccard_diversified": 0.619048,
+  "average_pairwise_jaccard_diversified": 0.45037,
   "unique_numbers_original_top_k": 9,
-  "unique_numbers_diversified": 9,
-  "diversity_gain": 0.0,
+  "unique_numbers_diversified": 13,
+  "diversity_gain": 0.168678,
   "diversified_combinations": [
     {
       "rank_diversified": 1,
@@ -43,282 +44,282 @@
         32
       ],
       "original_score": 81.3921,
-      "normalized_score": 0.044348,
-      "mmr_score": -0.118956,
+      "normalized_score": 0.656711,
+      "mmr_score": 0.309698,
       "max_overlap_with_previous": 4,
       "max_jaccard_with_previous": 0.5,
       "selection_reason": "mmr_selected"
     },
     {
       "rank_diversified": 3,
-      "rank_original": 2,
+      "rank_original": 15,
       "numbers": [
-        9,
+        1,
         14,
         19,
         21,
-        25,
-        31
-      ],
-      "original_score": 82.3348,
-      "normalized_score": 0.875507,
-      "mmr_score": 0.398569,
-      "max_overlap_with_previous": 5,
-      "max_jaccard_with_previous": 0.714286,
-      "selection_reason": "overlap_relaxed"
-    },
-    {
-      "rank_diversified": 4,
-      "rank_original": 3,
-      "numbers": [
-        9,
-        14,
-        19,
-        25,
-        31,
-        33
-      ],
-      "original_score": 82.009,
-      "normalized_score": 0.588256,
-      "mmr_score": 0.197494,
-      "max_overlap_with_previous": 5,
-      "max_jaccard_with_previous": 0.714286,
-      "selection_reason": "overlap_relaxed"
-    },
-    {
-      "rank_diversified": 5,
-      "rank_original": 4,
-      "numbers": [
-        14,
-        19,
-        21,
-        25,
         31,
         32
       ],
-      "original_score": 81.8853,
-      "normalized_score": 0.479192,
-      "mmr_score": 0.121149,
-      "max_overlap_with_previous": 5,
-      "max_jaccard_with_previous": 0.714286,
-      "selection_reason": "overlap_relaxed"
+      "original_score": 81.2793,
+      "normalized_score": 0.620986,
+      "mmr_score": 0.28469,
+      "max_overlap_with_previous": 4,
+      "max_jaccard_with_previous": 0.5,
+      "selection_reason": "mmr_selected"
     },
     {
-      "rank_diversified": 6,
-      "rank_original": 5,
-      "numbers": [
-        1,
-        14,
-        19,
-        21,
-        25,
-        31
-      ],
-      "original_score": 81.7227,
-      "normalized_score": 0.335831,
-      "mmr_score": 0.020796,
-      "max_overlap_with_previous": 5,
-      "max_jaccard_with_previous": 0.714286,
-      "selection_reason": "overlap_relaxed"
-    },
-    {
-      "rank_diversified": 7,
-      "rank_original": 6,
+      "rank_diversified": 4,
+      "rank_original": 42,
       "numbers": [
         9,
         14,
         19,
         21,
-        25,
-        33
-      ],
-      "original_score": 81.5992,
-      "normalized_score": 0.226944,
-      "mmr_score": -0.055425,
-      "max_overlap_with_previous": 5,
-      "max_jaccard_with_previous": 0.714286,
-      "selection_reason": "overlap_relaxed"
-    },
-    {
-      "rank_diversified": 8,
-      "rank_original": 7,
-      "numbers": [
-        14,
-        19,
-        25,
-        31,
         32,
         33
       ],
-      "original_score": 81.5715,
-      "normalized_score": 0.202522,
-      "mmr_score": -0.072521,
-      "max_overlap_with_previous": 5,
-      "max_jaccard_with_previous": 0.714286,
-      "selection_reason": "overlap_relaxed"
+      "original_score": 80.569,
+      "normalized_score": 0.396022,
+      "mmr_score": 0.127215,
+      "max_overlap_with_previous": 4,
+      "max_jaccard_with_previous": 0.5,
+      "selection_reason": "mmr_selected"
     },
     {
-      "rank_diversified": 9,
-      "rank_original": 8,
+      "rank_diversified": 5,
+      "rank_original": 47,
       "numbers": [
+        9,
         14,
         19,
         21,
         31,
-        32,
-        33
+        41
       ],
-      "original_score": 81.4488,
-      "normalized_score": 0.09434,
-      "mmr_score": -0.148248,
-      "max_overlap_with_previous": 5,
-      "max_jaccard_with_previous": 0.714286,
-      "selection_reason": "overlap_relaxed"
+      "original_score": 80.5579,
+      "normalized_score": 0.392506,
+      "mmr_score": 0.124755,
+      "max_overlap_with_previous": 4,
+      "max_jaccard_with_previous": 0.5,
+      "selection_reason": "mmr_selected"
     },
     {
-      "rank_diversified": 10,
-      "rank_original": 10,
+      "rank_diversified": 6,
+      "rank_original": 61,
       "numbers": [
         1,
         14,
         19,
         25,
-        31,
+        32,
         33
       ],
-      "original_score": 81.3418,
-      "normalized_score": 0.0,
-      "mmr_score": -0.214286,
-      "max_overlap_with_previous": 5,
-      "max_jaccard_with_previous": 0.714286,
-      "selection_reason": "overlap_relaxed"
+      "original_score": 80.3341,
+      "normalized_score": 0.321625,
+      "mmr_score": 0.075138,
+      "max_overlap_with_previous": 4,
+      "max_jaccard_with_previous": 0.5,
+      "selection_reason": "mmr_selected"
+    },
+    {
+      "rank_diversified": 7,
+      "rank_original": 65,
+      "numbers": [
+        14,
+        19,
+        21,
+        25,
+        32,
+        41
+      ],
+      "original_score": 80.2706,
+      "normalized_score": 0.301514,
+      "mmr_score": 0.06106,
+      "max_overlap_with_previous": 4,
+      "max_jaccard_with_previous": 0.5,
+      "selection_reason": "mmr_selected"
+    },
+    {
+      "rank_diversified": 8,
+      "rank_original": 76,
+      "numbers": [
+        1,
+        9,
+        14,
+        19,
+        21,
+        25
+      ],
+      "original_score": 80.1765,
+      "normalized_score": 0.271711,
+      "mmr_score": 0.040198,
+      "max_overlap_with_previous": 4,
+      "max_jaccard_with_previous": 0.5,
+      "selection_reason": "mmr_selected"
+    },
+    {
+      "rank_diversified": 9,
+      "rank_original": 79,
+      "numbers": [
+        9,
+        10,
+        14,
+        19,
+        25,
+        33
+      ],
+      "original_score": 80.1579,
+      "normalized_score": 0.26582,
+      "mmr_score": 0.036074,
+      "max_overlap_with_previous": 4,
+      "max_jaccard_with_previous": 0.5,
+      "selection_reason": "mmr_selected"
+    },
+    {
+      "rank_diversified": 10,
+      "rank_original": 87,
+      "numbers": [
+        3,
+        14,
+        19,
+        25,
+        30,
+        31
+      ],
+      "original_score": 80.0523,
+      "normalized_score": 0.232375,
+      "mmr_score": 0.012662,
+      "max_overlap_with_previous": 4,
+      "max_jaccard_with_previous": 0.5,
+      "selection_reason": "mmr_selected"
     }
   ],
   "overlap_matrix": [
     [
       1.0,
       0.5,
-      0.714286,
-      0.714286,
-      0.714286,
-      0.714286,
-      0.714286,
-      0.714286,
-      0.714286,
-      0.714286
-    ],
-    [
-      0.5,
-      1.0,
-      0.714286,
-      0.714286,
-      0.714286,
       0.5,
       0.5,
-      0.714286,
       0.5,
-      0.5
-    ],
-    [
-      0.714286,
-      0.714286,
-      1.0,
-      0.714286,
-      0.714286,
-      0.714286,
-      0.714286,
+      0.5,
+      0.5,
       0.5,
       0.5,
       0.5
     ],
     [
-      0.714286,
-      0.714286,
-      0.714286,
-      1.0,
-      0.5,
-      0.5,
-      0.714286,
-      0.714286,
-      0.5,
-      0.714286
-    ],
-    [
-      0.714286,
-      0.714286,
-      0.714286,
       0.5,
       1.0,
-      0.714286,
-      0.5,
-      0.714286,
-      0.714286,
-      0.5
-    ],
-    [
-      0.714286,
-      0.5,
-      0.714286,
-      0.5,
-      0.714286,
-      1.0,
       0.5,
       0.5,
       0.5,
-      0.714286
-    ],
-    [
-      0.714286,
-      0.5,
-      0.714286,
-      0.714286,
       0.5,
       0.5,
-      1.0,
       0.5,
       0.5,
       0.5
     ],
     [
-      0.714286,
-      0.714286,
-      0.5,
-      0.714286,
-      0.714286,
       0.5,
       0.5,
       1.0,
-      0.714286,
-      0.714286
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.2,
+      0.333333
     ],
     [
-      0.714286,
       0.5,
       0.5,
       0.5,
-      0.714286,
-      0.5,
-      0.5,
-      0.714286,
       1.0,
-      0.5
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.2
     ],
     [
-      0.714286,
       0.5,
       0.5,
-      0.714286,
       0.5,
-      0.714286,
       0.5,
-      0.714286,
+      1.0,
+      0.2,
       0.5,
+      0.5,
+      0.333333,
+      0.333333
+    ],
+    [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.2,
+      1.0,
+      0.5,
+      0.5,
+      0.5,
+      0.333333
+    ],
+    [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      1.0,
+      0.5,
+      0.333333,
+      0.333333
+    ],
+    [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      1.0,
+      0.5,
+      0.333333
+    ],
+    [
+      0.5,
+      0.5,
+      0.2,
+      0.5,
+      0.333333,
+      0.5,
+      0.333333,
+      0.5,
+      1.0,
+      0.333333
+    ],
+    [
+      0.5,
+      0.5,
+      0.333333,
+      0.2,
+      0.333333,
+      0.333333,
+      0.333333,
+      0.333333,
+      0.333333,
       1.0
     ]
   ],
   "quality_notes": [
+    "Auto pool selected generator_pool with 250 valid combinations.",
     "High overlap detected in current top_combinations.",
-    "Top combinations use a narrow number pool; consider reviewing generator diversity.",
-    "MMR could not improve overlap using only top_combinations."
+    "Top combinations use a narrow number pool; consider reviewing generator diversity."
   ]
 }

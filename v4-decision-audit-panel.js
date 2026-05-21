@@ -7,6 +7,9 @@
     diversity: 'v4_diversity_output.json',
     benchmark: 'v4_baseline_benchmark.json',
     physics: 'v4_physics_regime_analysis.json',
+    candidatePool: 'v4_candidate_pool_audit.json',
+    qualification: 'v4_replay_qualification.json',
+    slate: 'v4_decision_slate.json',
   };
 
   const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -110,6 +113,32 @@
       </article>`;
   }
 
+  function renderCandidatePool(data) {
+    if (!data) {
+      return emptyCard('Candidate Pool', 'Sin v4_candidate_pool_audit.json. Si el pool es estrecho, MMR no puede crear diversidad real.');
+    }
+    const bestPool = data.best_available_pool || 'N/D';
+    const best = data.pools_detected?.[bestPool] || {};
+    const canImprove = data.can_improve_diversity_with_existing_data === true;
+    return `
+      <article class="taste-card">
+        <div class="taste-card-heading">
+          <div>
+            <p class="taste-eyebrow">Candidate Pool</p>
+            <h3>${esc(bestPool)}</h3>
+          </div>
+          <span class="taste-chip ${canImprove ? 'taste-chip-ok' : 'taste-chip-warn'}">${canImprove ? 'pool util' : 'pool estrecho'}</span>
+        </div>
+        <div class="bento-status-grid mt-4">
+          <article class="taste-metric"><span>Pool size</span><b>${fmt(data.best_available_pool_size, 0)}</b></article>
+          <article class="taste-metric"><span>Unicos</span><b>${fmt(best.unique_numbers, 0)}</b></article>
+          <article class="taste-metric"><span>Jaccard</span><b>${fmt(best.average_pairwise_jaccard, 3)}</b></article>
+          <article class="taste-metric"><span>Status</span><b>${esc(best.status || 'N/D')}</b></article>
+        </div>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Si el pool es estrecho, MMR no puede crear diversidad real. ${esc(data.reason)}</p>
+      </article>`;
+  }
+
   function baselineStatus(row, fallback) {
     if (!row) return esc(fallback);
     if (row.available === false) return `No disponible: ${esc(row.reason)}`;
@@ -178,13 +207,81 @@
       </article>`;
   }
 
+  function renderQualification(data) {
+    if (!data) {
+      return emptyCard('Replay Qualification', 'Sin v4_replay_qualification.json. Replay Qualification Gate. No activa prior.');
+    }
+    const canInfluence = data.can_influence_future_prior === true;
+    const eligible = data.eligible_for_future_experiment === true;
+    const gates = data.gates || {};
+    const missing = Array.isArray(data.required_next_evidence) ? data.required_next_evidence : [];
+    return `
+      <article class="taste-card">
+        <div class="taste-card-heading">
+          <div>
+            <p class="taste-eyebrow">Replay Qualification</p>
+            <h3>${eligible ? 'Elegible para experimento futuro' : 'Replay bloqueado'}</h3>
+          </div>
+          <span class="taste-chip ${canInfluence ? 'taste-chip-ok' : 'taste-chip-warn'}">${canInfluence ? 'elegible' : 'diagnostico'}</span>
+        </div>
+        <div class="bento-status-grid mt-4">
+          <article class="taste-metric"><span>Influye prior</span><b>${canInfluence ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Experimento</span><b>${eligible ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Ranking</span><b>${gates.ranking_quality_ok ? 'OK' : 'bloqueado'}</b></article>
+          <article class="taste-metric"><span>Benchmark</span><b>${gates.benchmark_ok ? 'OK' : 'bloqueado'}</b></article>
+          <article class="taste-metric"><span>Diversidad</span><b>${gates.diversity_ok ? 'OK' : 'bloqueado'}</b></article>
+          <article class="taste-metric"><span>Fisica</span><b>${gates.physics_regime_ok ? 'OK' : 'bloqueado'}</b></article>
+        </div>
+        <div class="taste-panel-muted mt-4">
+          <p class="taste-eyebrow">Evidencia faltante</p>
+          <ul class="mt-2 grid gap-1 text-sm leading-6 text-slate-300">
+            ${missing.map(item => `<li>${esc(item)}</li>`).join('') || '<li>N/D</li>'}
+          </ul>
+        </div>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Replay Qualification Gate. No activa prior. ${esc(data.reason)}</p>
+      </article>`;
+  }
+
+  function renderSlate(data) {
+    if (!data) {
+      return emptyCard('Decision Slate', 'Sin v4_decision_slate.json. Set de revision diagnostico. No es probabilidad de ganar.');
+    }
+    const balanced = data.review_sets?.balanced_review_set;
+    const rows = Array.isArray(balanced) ? balanced : [];
+    const warnings = Array.isArray(data.warnings) ? data.warnings : [];
+    return `
+      <article class="taste-card">
+        <div class="taste-card-heading">
+          <div>
+            <p class="taste-eyebrow">Decision Slate</p>
+            <h3>Set de revision diagnostico</h3>
+          </div>
+          <span class="taste-chip taste-chip-warn">${esc(data.mode || 'diagnostic_only')}</span>
+        </div>
+        <div class="grid gap-3 mt-4">
+          ${rows.slice(0, 5).map(row => `
+            <div class="taste-panel-muted">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <span class="taste-chip">${esc(row.source)} #${esc(row.rank_diversified || row.rank_original)}</span>
+                <span class="font-mono text-xs text-slate-400">${fmt(row.score_reference, 3)}</span>
+              </div>
+              <div class="mt-3">${comboBalls(row.numbers)}</div>
+            </div>`).join('') || '<p class="text-sm text-slate-400">Sin slate disponible.</p>'}
+        </div>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Set de revision diagnostico. No es probabilidad de ganar. ${esc(warnings.join(' ') || data.language_guardrail)}</p>
+      </article>`;
+  }
+
   async function render() {
     const panel = ensurePanel();
     if (!panel) return;
-    const [diversity, benchmark, physics] = await Promise.all([
+    const [diversity, benchmark, physics, candidatePool, qualification, slate] = await Promise.all([
       loadJson(FILES.diversity),
       loadJson(FILES.benchmark),
       loadJson(FILES.physics),
+      loadJson(FILES.candidatePool),
+      loadJson(FILES.qualification),
+      loadJson(FILES.slate),
     ]);
     panel.innerHTML = `
       <div class="grid gap-4 xl:grid-cols-3">
@@ -192,6 +289,12 @@
         ${renderBenchmark(benchmark)}
         ${renderPhysics(physics)}
       </div>`;
+    panel.insertAdjacentHTML('beforeend', `
+      <div class="grid gap-4 mt-4 xl:grid-cols-3">
+        ${renderCandidatePool(candidatePool)}
+        ${renderQualification(qualification)}
+        ${renderSlate(slate)}
+      </div>`);
   }
 
   document.addEventListener('DOMContentLoaded', () => setTimeout(render, 500));
