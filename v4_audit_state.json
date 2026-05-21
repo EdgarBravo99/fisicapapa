@@ -1,11 +1,20 @@
 {
   "version": "V4.4-local-audit-state",
-  "generated_at": "2026-05-21T19:52:27.508861+00:00",
+  "generated_at": "2026-05-21T20:11:20.682919+00:00",
   "git": {
-    "branch": "codex/v44-physics-timeline-audit-clean",
-    "has_uncommitted_changes": false,
+    "branch": "main",
+    "has_uncommitted_changes": true,
     "conflict_detected": false,
-    "status_entries": [],
+    "status_entries": [
+      "M v4_audit_state.json",
+      " M v4_baseline_benchmark.json",
+      " M v4_candidate_pool_audit.json",
+      " M v4_decision_slate.json",
+      " M v4_diversity_output.json",
+      " M v4_physics_regime_analysis.json",
+      " M v4_physics_regime_timeline.json",
+      " M v4_replay_qualification.json"
+    ],
     "conflicts": []
   },
   "critical_files": {
@@ -89,6 +98,8 @@
     "feedback_calibrator_exists": false,
     "suspicious_second_runners": []
   },
-  "warnings": [],
-  "recommendation": "ok"
+  "warnings": [
+    "Hay cambios locales sin commit."
+  ],
+  "recommendation": "review_warnings"
 }
