@@ -537,6 +537,31 @@ El comando integrado tambien corre timeline y audit state:
 py .\tools\v4_decision_audit_pack.py
 ```
 
+## Benchmark Hardening + Calibration Diagnostics V4.4
+
+PR #25 endurece el benchmark replay sin activar ningun prior. El benchmark lite da una primera lectura; este paquete agrega comparacion contra baselines, calibracion por ranking/buckets, evaluacion de diversidad contra el top original, bootstrap simple y una compuerta de resumen.
+
+```powershell
+py .\tools\v4_benchmark_hardening.py --output v4_benchmark_hardening.json
+py .\tools\v4_calibration_diagnostics.py --output v4_calibration_diagnostics.json
+py .\tools\v4_diversified_vs_original_eval.py --output v4_diversified_vs_original_eval.json
+py .\tools\v4_benchmark_stability.py --output v4_benchmark_stability.json
+py .\tools\v4_benchmark_summary_gate.py --output v4_benchmark_summary.json
+py .\tools\v4_decision_audit_pack.py
+```
+
+El hardening pregunta si el cruncher supera random, frecuencia y recencia con margen util. Si alguna baseline no tiene datos suficientes, queda `available=false` con razon clara; no se inventan historiales.
+
+La calibracion de ranking revisa si `top6`, `top10`, `top20`, `top40` y `rest` se comportan como deberian. Tambien revisa buckets por percentil cuando hay scores por numero. `ranking_signal_quality` solo puede subir si los grupos altos superan random/rest con consistencia.
+
+La evaluacion diversificada compara `pure_rank_top`, `diversified_top` y `balanced_review_set` sin generar combinaciones nuevas. Puede medir cobertura y overlap aunque no haya hits comparables; si no puede medir hits contra targets, lo declara explicitamente.
+
+El bootstrap simple evita autoengano por muestra pequena. Si el intervalo 95% cruza 0, la ventaja no es estable. Brier formal sigue desactivado porque los scores internos no son probabilidades calibradas.
+
+Para que replay sea elegible a un experimento futuro se requiere benchmark favorable contra random/frequency/recency, `ranking_signal_quality >= moderate`, ventaja estable en bootstrap, buckets altos superando al resto y slate diversificado que mejore best-of-N sin perdida excesiva.
+
+Aunque esas condiciones pasaran, PR #25 mantiene `recommendation = diagnostic_only`: no activa replay prior, physics prior, live prior, Monte Carlo ni cambia `score_kind`.
+
 ## Legacy Snapshot Classifier
 
 `tools/v4_legacy_snapshot_classifier.py` clasifica snapshots antiguos para conservar diagnostico sin contaminar memoria aplicada.

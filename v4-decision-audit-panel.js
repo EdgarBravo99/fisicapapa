@@ -12,6 +12,11 @@
     qualification: 'v4_replay_qualification.json',
     slate: 'v4_decision_slate.json',
     auditState: 'v4_audit_state.json',
+    benchmarkHardening: 'v4_benchmark_hardening.json',
+    calibration: 'v4_calibration_diagnostics.json',
+    diversifiedEval: 'v4_diversified_vs_original_eval.json',
+    benchmarkStability: 'v4_benchmark_stability.json',
+    benchmarkSummary: 'v4_benchmark_summary.json',
   };
 
   const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -177,6 +182,42 @@
       </article>`;
   }
 
+  function renderBenchmarkHardening(summary, hardening, calibration, stability) {
+    if (!summary && !hardening && !calibration && !stability) {
+      return emptyCard('Benchmark Hardening', 'Sin reportes endurecidos. Benchmark endurecido. No activa prior.');
+    }
+    const signal = summary?.benchmark_signal_quality || 'unknown';
+    const ranking = summary?.ranking_signal_quality || calibration?.ranking_signal_quality || 'unknown';
+    const stabilityValue = summary?.stability || stability?.stability || 'unknown';
+    const unlock = summary?.can_unlock_replay_prior === true;
+    const future = summary?.eligible_for_future_experiment === true;
+    return `
+      <article class="taste-card">
+        <div class="taste-card-heading">
+          <div>
+            <p class="taste-eyebrow">Benchmark Hardening</p>
+            <h3>Calibracion y estabilidad</h3>
+          </div>
+          <span class="taste-chip taste-chip-warn">diagnostic_only</span>
+        </div>
+        <div class="bento-status-grid mt-4">
+          <article class="taste-metric"><span>Benchmark</span><b>${esc(signal)}</b></article>
+          <article class="taste-metric"><span>Ranking</span><b>${esc(ranking)}</b></article>
+          <article class="taste-metric"><span>Stability</span><b>${esc(stabilityValue)}</b></article>
+          <article class="taste-metric"><span>Vs random</span><b>${fmt(summary?.cruncher_minus_random ?? hardening?.cruncher_minus_random, 3)}</b></article>
+          <article class="taste-metric"><span>Vs frecuencia</span><b>${fmt(summary?.cruncher_minus_frequency ?? hardening?.cruncher_minus_frequency, 3)}</b></article>
+          <article class="taste-metric"><span>Vs recencia</span><b>${fmt(summary?.cruncher_minus_recency ?? hardening?.cruncher_minus_recency, 3)}</b></article>
+          <article class="taste-metric"><span>Desbloquea prior</span><b>${unlock ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Experimento futuro</span><b>${future ? 'Si' : 'No'}</b></article>
+        </div>
+        <div class="taste-panel-muted mt-4">
+          <p class="taste-eyebrow">Lectura</p>
+          <p class="text-sm leading-6 text-slate-300">${esc(summary?.reason || calibration?.reason || 'Benchmark endurecido pendiente de datos suficientes.')}</p>
+        </div>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Benchmark endurecido. No activa prior. Scores internos no son probabilidades. Ventaja sobre baseline requiere estabilidad, no solo una muestra.</p>
+      </article>`;
+  }
+
   function renderPhysics(data) {
     if (!data) {
       return emptyCard('Evento fisico / regimen', 'Sin v4_physics_regime_analysis.json. El tracker fisico es diagnostico y no ajusta el cruncher.');
@@ -339,7 +380,21 @@
   async function render() {
     const panel = ensurePanel();
     if (!panel) return;
-    const [diversity, benchmark, physics, physicsTimeline, candidatePool, qualification, slate, auditState] = await Promise.all([
+    const [
+      diversity,
+      benchmark,
+      physics,
+      physicsTimeline,
+      candidatePool,
+      qualification,
+      slate,
+      auditState,
+      benchmarkHardening,
+      calibration,
+      diversifiedEval,
+      benchmarkStability,
+      benchmarkSummary,
+    ] = await Promise.all([
       loadJson(FILES.diversity),
       loadJson(FILES.benchmark),
       loadJson(FILES.physics),
@@ -348,6 +403,11 @@
       loadJson(FILES.qualification),
       loadJson(FILES.slate),
       loadJson(FILES.auditState),
+      loadJson(FILES.benchmarkHardening),
+      loadJson(FILES.calibration),
+      loadJson(FILES.diversifiedEval),
+      loadJson(FILES.benchmarkStability),
+      loadJson(FILES.benchmarkSummary),
     ]);
     panel.innerHTML = `
       <div class="grid gap-4 xl:grid-cols-3">
@@ -360,6 +420,9 @@
         ${renderCandidatePool(candidatePool)}
         ${renderQualification(qualification)}
         ${renderSlate(slate)}
+      </div>
+      <div class="grid gap-4 mt-4">
+        ${renderBenchmarkHardening(benchmarkSummary, benchmarkHardening, calibration, benchmarkStability)}
       </div>
       <div class="grid gap-4 mt-4 xl:grid-cols-2">
         ${renderPhysicsTimeline(physicsTimeline)}

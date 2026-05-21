@@ -48,6 +48,26 @@ def main() -> int:
             [python, str(ROOT / "tools" / "v4_baseline_benchmark.py"), "--replay-memory", args.replay_memory, "--output", "v4_baseline_benchmark.json"],
         ),
         (
+            "benchmark hardening",
+            [python, str(ROOT / "tools" / "v4_benchmark_hardening.py"), "--replay-memory", args.replay_memory, "--output", "v4_benchmark_hardening.json"],
+        ),
+        (
+            "calibration diagnostics",
+            [python, str(ROOT / "tools" / "v4_calibration_diagnostics.py"), "--replay-memory", args.replay_memory, "--output", "v4_calibration_diagnostics.json"],
+        ),
+        (
+            "diversified vs original eval",
+            [python, str(ROOT / "tools" / "v4_diversified_vs_original_eval.py"), "--replay-memory", args.replay_memory, "--output", "v4_diversified_vs_original_eval.json"],
+        ),
+        (
+            "benchmark stability",
+            [python, str(ROOT / "tools" / "v4_benchmark_stability.py"), "--replay-memory", args.replay_memory, "--output", "v4_benchmark_stability.json"],
+        ),
+        (
+            "benchmark summary gate",
+            [python, str(ROOT / "tools" / "v4_benchmark_summary_gate.py"), "--output", "v4_benchmark_summary.json"],
+        ),
+        (
             "physics regime audit",
             [python, str(ROOT / "tools" / "v4_physics_regime_audit.py"), "--weights", args.weights, "--output", "v4_physics_regime_analysis.json"],
         ),
