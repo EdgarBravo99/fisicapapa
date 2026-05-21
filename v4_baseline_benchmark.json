@@ -1,0 +1,47 @@
+{
+  "version": "V4.4-baseline-benchmark-lite",
+  "generated_at": "2026-05-21T07:41:17.926924+00:00",
+  "input_source": "v4_replay_memory.json",
+  "input_status": "loaded",
+  "records_count": 30,
+  "leakage_passed_count": 30,
+  "baselines": {
+    "random_uniform": {
+      "available": true,
+      "records_count": 30,
+      "hit_rate_per_number": 0.107143,
+      "random_expected_hits_top6": 0.642857,
+      "random_expected_hits_top10": 1.071429,
+      "random_expected_hits_top20": 2.142857
+    },
+    "frequency_baseline": {
+      "available": true,
+      "records_evaluated": 29,
+      "top6_hit_rate": 0.109195,
+      "top10_hit_rate": 0.103448,
+      "top20_hit_rate": 0.113793,
+      "frequency_baseline_hits": 1.034483
+    },
+    "recency_baseline": {
+      "available": true,
+      "records_evaluated": 29,
+      "top6_hit_rate": 0.086207,
+      "recency_baseline_hits": 0.517241
+    }
+  },
+  "cruncher_metrics": {
+    "top6_hit_rate": 0.122222,
+    "top10_hit_rate": 0.1,
+    "top20_hit_rate": 0.101667,
+    "best_hits_top10_avg": 1.133333
+  },
+  "experimental_brier": {
+    "enabled": false,
+    "reason": "Scores internos no son probabilidades calibradas."
+  },
+  "benchmark_summary": {
+    "signal_quality": "weak",
+    "recommendation": "diagnostic_only",
+    "reason": "El top10 del cruncher no supera claramente el baseline disponible."
+  }
+}

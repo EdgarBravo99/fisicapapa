@@ -52,6 +52,7 @@ v4-under40-verifier.js
 v4-system-diagnostics.js
 v4-combo-comparator.js
 v4-feedback-memory-panel.js
+v4-decision-audit-panel.js
 v4-visual-system.css
 data.js
 pakin-remote-loader.js
@@ -98,6 +99,7 @@ Si `walk_forward.feedback_loop.version` no es `"V4.2"`, la web debe detenerse co
 <script src="v4-system-diagnostics.js"></script>
 <script src="v4-combo-comparator.js"></script>
 <script src="v4-feedback-memory-panel.js"></script>
+<script src="v4-decision-audit-panel.js"></script>
 ```
 
 Responsabilidades:
@@ -108,6 +110,7 @@ Responsabilidades:
 - `v4-system-diagnostics.js`: valida calidad de `resultados.json`, muestra estado del sistema y agrega explicabilidad manual visual.
 - `v4-combo-comparator.js`: mantiene el comparador personal temporal en localStorage.
 - `v4-feedback-memory-panel.js`: muestra memoria tipo examen y el historial GitHub de `resultados.json`.
+- `v4-decision-audit-panel.js`: muestra diversidad MMR, benchmark lite y evento fisico como diagnostico read-only.
 - `v4-visual-system.css`: aplica el sistema visual Personal Quant Desk sin tocar logica matematica.
 - `pakin-remote-loader.js`: carga historicos remotos de Pakin para Melate/Revancha.
 - `data.js`: dataset y utilidades base para la web.
@@ -388,6 +391,65 @@ Reglas replay:
 - no elimina numeros;
 - no cambia `score_kind`;
 - no se presenta como garantia.
+
+## Decision Audit Pack V4.4
+
+PR #21 agrega un paquete de diagnostico read-only para responder tres preguntas practicas antes de activar cualquier senal nueva:
+
+```txt
+1. Mis top_combinations estan clonadas?
+2. El cruncher supera baselines simples o solo ruido sofisticado?
+3. El sorteo 4215 sugiere un evento fisico que deba vigilarse?
+```
+
+Todo el paquete queda en `diagnostic_only`. No toca `local_cruncher_v4_deep_stacking.py`, no cambia `score_kind`, no activa replay prior y no modifica `resultados.json`.
+
+### Diversity-Aware Combination Selector
+
+Genera `v4_diversity_output.json` desde `top_combinations` usando MMR:
+
+```powershell
+py .\tools\v4_diversity_selector.py --input resultados.json --output v4_diversity_output.json
+```
+
+La salida conserva los scores originales, ancla el top #1 original y calcula overlap/Jaccard para detectar boletos clonados. Es ranking diversificado, no probabilidad de ganar.
+
+### Baseline Benchmark Lite
+
+Genera `v4_baseline_benchmark.json` desde `v4_replay_memory.json` si existe:
+
+```powershell
+py .\tools\v4_baseline_benchmark.py --replay-memory v4_replay_memory.json --output v4_baseline_benchmark.json
+```
+
+Si `v4_replay_memory.json` no existe, el reporte no falla: deja `records_count = 0`, `signal_quality = unknown` y `recommendation = diagnostic_only`. Si no hay datos suficientes para `frequency_baseline` o `recency_baseline`, esos baselines aparecen como `unavailable` con razon clara. Brier formal queda desactivado porque los scores internos no son probabilidades calibradas.
+
+### Physics Regime Tracker
+
+Registra el hallazgo manual del sorteo 4215 en `sphere_weight_history.json` y genera `v4_physics_regime_analysis.json`:
+
+```powershell
+py .\tools\v4_physics_regime_audit.py --weights sphere_weight_history.json --output v4_physics_regime_analysis.json
+```
+
+El draw 4215 queda como `suspected_physics_event_not_confirmed`: evento fisico sospechoso, no confirmado. No crea physics prior, no ajusta numeros y con un solo registro no estima periodicidad.
+
+### Comando integrado
+
+```powershell
+py .\tools\v4_decision_audit_pack.py
+```
+
+Corre diversidad, benchmark y fisica. Si un modulo falla, reporta warning y sigue con los demas. No consulta GitHub y no toca el motor base.
+
+Para que replay pueda influir en el futuro se requiere:
+
+- benchmark favorable contra random/frequency/recency;
+- `ranking_signal_quality >= moderate`;
+- `prior_quality = usable_shadow`;
+- regimen fisico estable o segmentado;
+- validacion con datos posteriores;
+- activacion explicita, nunca por default.
 
 ## Legacy Snapshot Classifier
 

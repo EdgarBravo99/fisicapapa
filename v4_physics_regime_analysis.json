@@ -1,0 +1,88 @@
+{
+  "version": "V4.4-physics-regime-audit",
+  "generated_at": "2026-05-21T07:41:17.895621+00:00",
+  "source_file": "sphere_weight_history.json",
+  "records_count": 1,
+  "latest_draw": 4215,
+  "latest_event": {
+    "suspected": true,
+    "draw_id": 4215,
+    "type": "high_block_uniformity_shift",
+    "severity": "medium",
+    "status": "hypothesis_not_confirmed",
+    "evidence": [
+      "33-56 tiene mayor peso promedio que el global.",
+      "33-56 tiene desviacion estandar menor o igual que la global.",
+      "3 numeros ganadores caen dentro del bloque 33-56."
+    ],
+    "manual_observation": "Bloque alto, especialmente 33-56, parece mas pesado y uniforme. Posible cambio fisico de esferas o medicion.",
+    "records_available": 1
+  },
+  "latest_metrics": {
+    "draw_id": 4215,
+    "game_mode": "revancha",
+    "global_mean_weight": 4.576607,
+    "global_std_weight": 0.063282,
+    "winner_mean_weight": 4.596667,
+    "winner_vs_global_delta": 0.02006,
+    "block_1_21_mean": 4.542857,
+    "block_1_21_std": 0.056496,
+    "block_22_32_mean": 4.527273,
+    "block_22_32_std": 0.046922,
+    "block_33_56_mean": 4.62875,
+    "block_33_56_std": 0.026663,
+    "block_33_56_minus_global": 0.052143,
+    "block_33_56_uniformity_score": 0.578664,
+    "max_ball_z_score": {
+      "number": "6",
+      "z_score": -2.316725
+    },
+    "winner_block_distribution": {
+      "1_21": 3,
+      "22_32": 0,
+      "33_56": 3
+    },
+    "blocks": {
+      "1_21": {
+        "mean": 4.542857,
+        "std": 0.056496,
+        "count": 21
+      },
+      "22_32": {
+        "mean": 4.527273,
+        "std": 0.046922,
+        "count": 11
+      },
+      "33_56": {
+        "mean": 4.62875,
+        "std": 0.026663,
+        "count": 24
+      }
+    },
+    "weights_count": 56
+  },
+  "blocks": {
+    "1_21": {
+      "mean": 4.542857,
+      "std": 0.056496,
+      "count": 21
+    },
+    "22_32": {
+      "mean": 4.527273,
+      "std": 0.046922,
+      "count": 11
+    },
+    "33_56": {
+      "mean": 4.62875,
+      "std": 0.026663,
+      "count": 24
+    }
+  },
+  "regime_timing": {
+    "can_estimate_periodicity": false,
+    "reason": "Se requiere historial de pesos de multiples sorteos.",
+    "estimated_regime_lengths": [],
+    "mean_regime_length": null
+  },
+  "recommendation": "diagnostic_only"
+}
