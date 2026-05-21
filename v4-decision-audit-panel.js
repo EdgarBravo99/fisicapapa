@@ -7,9 +7,11 @@
     diversity: 'v4_diversity_output.json',
     benchmark: 'v4_baseline_benchmark.json',
     physics: 'v4_physics_regime_analysis.json',
+    physicsTimeline: 'v4_physics_regime_timeline.json',
     candidatePool: 'v4_candidate_pool_audit.json',
     qualification: 'v4_replay_qualification.json',
     slate: 'v4_decision_slate.json',
+    auditState: 'v4_audit_state.json',
   };
 
   const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -207,6 +209,36 @@
       </article>`;
   }
 
+  function renderPhysicsTimeline(data) {
+    if (!data) {
+      return emptyCard('Physics Timeline', 'Sin v4_physics_regime_timeline.json. Timeline fisico diagnostico. No activa prior.');
+    }
+    const summary = data.event_summary || {};
+    const shifts = Array.isArray(data.shifts) ? data.shifts : [];
+    const latestShift = shifts.length ? shifts[shifts.length - 1] : null;
+    return `
+      <article class="taste-card">
+        <div class="taste-card-heading">
+          <div>
+            <p class="taste-eyebrow">Physics Timeline</p>
+            <h3>Historial de pesos</h3>
+          </div>
+          <span class="taste-chip taste-chip-warn">${summary.can_estimate_periodicity ? 'estimable' : 'diagnostico'}</span>
+        </div>
+        <div class="bento-status-grid mt-4">
+          <article class="taste-metric"><span>Records</span><b>${fmt(data.records_count, 0)}</b></article>
+          <article class="taste-metric"><span>Latest draw</span><b>${esc(data.latest_draw)}</b></article>
+          <article class="taste-metric"><span>Eventos</span><b>${fmt(summary.events_detected_count, 0)}</b></article>
+          <article class="taste-metric"><span>Periodicidad</span><b>${summary.can_estimate_periodicity ? 'si' : 'no'}</b></article>
+        </div>
+        <div class="taste-panel-muted mt-4">
+          <p class="taste-eyebrow">Ultimo shift</p>
+          <p class="text-sm text-slate-300">${latestShift ? `${esc(latestShift.from_draw)} -> ${esc(latestShift.to_draw)} · bloque ${esc(latestShift.largest_block_shift?.block)} ${fmt(latestShift.largest_block_shift?.delta, 4)}` : 'Sin shifts; se requieren al menos dos registros.'}</p>
+        </div>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Timeline fisico diagnostico. No activa prior. ${esc(summary.reason)}</p>
+      </article>`;
+  }
+
   function renderQualification(data) {
     if (!data) {
       return emptyCard('Replay Qualification', 'Sin v4_replay_qualification.json. Replay Qualification Gate. No activa prior.');
@@ -272,16 +304,50 @@
       </article>`;
   }
 
+  function renderAuditState(data) {
+    if (!data) {
+      return emptyCard('Local Audit State', 'Sin v4_audit_state.json. Auditoria local. No consulta GitHub.');
+    }
+    const warnings = Array.isArray(data.warnings) ? data.warnings : [];
+    return `
+      <article class="taste-card">
+        <div class="taste-card-heading">
+          <div>
+            <p class="taste-eyebrow">Local Audit State</p>
+            <h3>${esc(data.recommendation || 'review_warnings')}</h3>
+          </div>
+          <span class="taste-chip ${warnings.length ? 'taste-chip-warn' : 'taste-chip-ok'}">${warnings.length ? 'warnings' : 'ok'}</span>
+        </div>
+        <div class="bento-status-grid mt-4">
+          <article class="taste-metric"><span>Branch</span><b>${esc(data.git?.branch)}</b></article>
+          <article class="taste-metric"><span>Uncommitted</span><b>${data.git?.has_uncommitted_changes ? 'si' : 'no'}</b></article>
+          <article class="taste-metric"><span>Conflicts</span><b>${data.git?.conflict_detected ? 'si' : 'no'}</b></article>
+          <article class="taste-metric"><span>Replay gate</span><b>${data.replay?.can_influence_future_prior ? 'si' : 'no'}</b></article>
+          <article class="taste-metric"><span>Physics records</span><b>${fmt(data.physics?.weight_records_count, 0)}</b></article>
+          <article class="taste-metric"><span>Outputs</span><b>${fmt(Object.values(data.generated_outputs || {}).filter(row => row?.exists).length, 0)}</b></article>
+        </div>
+        <div class="taste-panel-muted mt-4">
+          <p class="taste-eyebrow">Warnings</p>
+          <ul class="mt-2 grid gap-1 text-sm leading-6 text-slate-300">
+            ${warnings.slice(0, 5).map(item => `<li>${esc(item)}</li>`).join('') || '<li>Sin warnings.</li>'}
+          </ul>
+        </div>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Auditoria local. No consulta GitHub.</p>
+      </article>`;
+  }
+
   async function render() {
     const panel = ensurePanel();
     if (!panel) return;
-    const [diversity, benchmark, physics, candidatePool, qualification, slate] = await Promise.all([
+    const [diversity, benchmark, physics, physicsTimeline, candidatePool, qualification, slate, auditState] = await Promise.all([
       loadJson(FILES.diversity),
       loadJson(FILES.benchmark),
       loadJson(FILES.physics),
+      loadJson(FILES.physicsTimeline),
       loadJson(FILES.candidatePool),
       loadJson(FILES.qualification),
       loadJson(FILES.slate),
+      loadJson(FILES.auditState),
     ]);
     panel.innerHTML = `
       <div class="grid gap-4 xl:grid-cols-3">
@@ -294,6 +360,10 @@
         ${renderCandidatePool(candidatePool)}
         ${renderQualification(qualification)}
         ${renderSlate(slate)}
+      </div>
+      <div class="grid gap-4 mt-4 xl:grid-cols-2">
+        ${renderPhysicsTimeline(physicsTimeline)}
+        ${renderAuditState(auditState)}
       </div>`);
   }
 

@@ -1,0 +1,94 @@
+{
+  "version": "V4.4-local-audit-state",
+  "generated_at": "2026-05-21T19:52:27.508861+00:00",
+  "git": {
+    "branch": "codex/v44-physics-timeline-audit-clean",
+    "has_uncommitted_changes": false,
+    "conflict_detected": false,
+    "status_entries": [],
+    "conflicts": []
+  },
+  "critical_files": {
+    "AGENTS.md": {
+      "exists": true,
+      "size_bytes": 2396
+    },
+    "README.md": {
+      "exists": true,
+      "size_bytes": 22598
+    },
+    "index.html": {
+      "exists": true,
+      "size_bytes": 12342
+    },
+    "local_cruncher_v4_2_calibrated.py": {
+      "exists": true,
+      "size_bytes": 23838
+    },
+    "local_cruncher_v4_deep_stacking.py": {
+      "exists": true,
+      "size_bytes": 38256
+    },
+    "resultados.json": {
+      "exists": true,
+      "size_bytes": 2050876
+    },
+    "v4_replay_memory.py": {
+      "exists": true,
+      "size_bytes": 19411
+    },
+    "v4-decision-audit-panel.js": {
+      "exists": true,
+      "size_bytes": 19652
+    }
+  },
+  "generated_outputs": {
+    "v4_diversity_output.json": {
+      "exists": true,
+      "size_bytes": 6259
+    },
+    "v4_candidate_pool_audit.json": {
+      "exists": true,
+      "size_bytes": 1788
+    },
+    "v4_baseline_benchmark.json": {
+      "exists": true,
+      "size_bytes": 1404
+    },
+    "v4_physics_regime_analysis.json": {
+      "exists": true,
+      "size_bytes": 2368
+    },
+    "v4_physics_regime_timeline.json": {
+      "exists": true,
+      "size_bytes": 1277
+    },
+    "v4_replay_qualification.json": {
+      "exists": true,
+      "size_bytes": 2009
+    },
+    "v4_decision_slate.json": {
+      "exists": true,
+      "size_bytes": 11362
+    }
+  },
+  "replay": {
+    "can_influence_future_prior": false,
+    "eligible_for_future_experiment": false,
+    "recommendation": "diagnostic_only",
+    "reason": "Replay remains blocked because one or more evidence gates are not satisfied."
+  },
+  "physics": {
+    "weight_records_count": 1,
+    "timeline_records_count": 1,
+    "can_estimate_periodicity": false,
+    "reason": "Se requieren al menos 5 registros de pesos para shifts preliminares."
+  },
+  "sensitive_scan": {
+    "enable_replay_prior_true_hits": [],
+    "feedback_calibrator_exists": false,
+    "suspicious_second_runners": []
+  },
+  "warnings": [],
+  "recommendation": "ok"
+}

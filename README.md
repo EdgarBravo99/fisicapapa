@@ -501,6 +501,42 @@ Aunque todo pase, este PR solo marca `eligible_for_future_experiment = true`. Nu
 
 La web muestra Replay Qualification, Candidate Pool y Decision Slate en el panel de Decision Audit. El frontend solo lee JSON: no recalibra, no usa `localStorage` para auditoria y no modifica `resultados.json`.
 
+## Physics Timeline & Local Audit State V4.4
+
+PR #24 agrega herramientas diagnosticas para cuidar el historial fisico y revisar el estado local antes de correr o subir outputs. Todo sigue `diagnostic_only`: no activa physics prior, replay prior, Monte Carlo ni cambios de score.
+
+### Agregar pesos nuevos
+
+Para agregar un nuevo sorteo sin editar JSON a mano:
+
+```powershell
+py .\tools\v4_add_sphere_weights.py --draw 4216 --game-mode revancha --winning "1,2,3,4,5,6" --weights-file sphere_weights_4216.json
+```
+
+Tambien se puede usar `--weights "1=4.56,2=4.52,..."` si conviene. El comando valida exactamente 56 pesos, 6 ganadores unicos, numeros 1-56 y deduplica por `draw_id + game_mode`. Si ya existe el draw, no sobrescribe salvo `--force`. El status por defecto es `observed_weight_record`; `suspected_physics_event_not_confirmed` solo debe pasarse explicitamente.
+
+### Timeline fisico
+
+```powershell
+py .\tools\v4_physics_timeline.py --weights sphere_weight_history.json --output v4_physics_regime_timeline.json
+```
+
+`can_estimate_periodicity` queda en `false` con menos de 5 registros porque aun no hay suficientes shifts preliminares. Con 5+ registros calcula shifts simples. Con 10+ puede marcar periodicidad preliminar posible. Con 20+ puede quedar elegible para metodos futuros de changepoint. BOCPD y ruptures quedan fuera de este PR.
+
+### Auditoria local
+
+```powershell
+py .\tools\v4_audit_state.py
+```
+
+Genera `v4_audit_state.json` sin consultar GitHub. Revisa rama actual, cambios sin commit, conflictos, archivos criticos, outputs generados, records fisicos, replay qualification, `ENABLE_REPLAY_PRIOR`, `feedback_calibrator.py` y runners sospechosos. Antes de correr pipeline o subir outputs, revisa que la recomendacion sea `ok` o entiende los warnings.
+
+El comando integrado tambien corre timeline y audit state:
+
+```powershell
+py .\tools\v4_decision_audit_pack.py
+```
+
 ## Legacy Snapshot Classifier
 
 `tools/v4_legacy_snapshot_classifier.py` clasifica snapshots antiguos para conservar diagnostico sin contaminar memoria aplicada.
