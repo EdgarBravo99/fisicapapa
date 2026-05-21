@@ -1,6 +1,6 @@
 # Fisicapapa Agent Instructions
 
-Before editing any file, every agent must read:
+Before editing any file, every agent must read the required project context that exists in the repo:
 
 1. `CODEX_HANDOFF_V4_2.md`
 2. `.skills/fisicapapa-v42/SKILL.md`
@@ -9,8 +9,19 @@ Before editing any file, every agent must read:
 5. `.skills/python-patterns/SKILL.md`
 6. `.skills/verification-loop/SKILL.md`
 7. `.skills/documentation-lookup/SKILL.md`
+8. `README.md`
 
-If a skill file is missing, stop and report which one is missing.
+If a skill file is missing:
+
+- Report it as a warning in the PR skill usage report.
+- Do not invent rules or content for missing skills.
+- Use the available fallback context explicitly:
+  - `CODEX_HANDOFF_V4_2.md`
+  - `.skills/fisicapapa-implementation-planner/SKILL.md`
+  - `.skills/python-patterns/SKILL.md`
+  - `README.md`
+  - the hard rules in the current user prompt
+- Stop only when an indispensable instruction is missing and there is no safe fallback.
 
 ## Project mode
 
