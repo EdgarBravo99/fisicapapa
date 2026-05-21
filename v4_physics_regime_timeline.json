@@ -1,0 +1,41 @@
+{
+  "version": "V4.4-physics-timeline",
+  "generated_at": "2026-05-21T19:51:42.571081+00:00",
+  "source_file": "sphere_weight_history.json",
+  "records_count": 1,
+  "latest_draw": 4215,
+  "timeline": [
+    {
+      "draw_id": 4215,
+      "game_mode": "revancha",
+      "status": "suspected_physics_event_not_confirmed",
+      "global_mean_weight": 4.576607,
+      "global_std_weight": 0.063282,
+      "block_1_21_mean": 4.542857,
+      "block_1_21_std": 0.056496,
+      "block_22_32_mean": 4.527273,
+      "block_22_32_std": 0.046922,
+      "block_33_56_mean": 4.62875,
+      "block_33_56_std": 0.026663,
+      "block_33_56_minus_global": 0.052143,
+      "winner_mean_weight": 4.596667,
+      "winner_vs_global_delta": 0.02006,
+      "winner_block_distribution": {
+        "1_21": 3,
+        "22_32": 0,
+        "33_56": 3
+      },
+      "weights_count": 56
+    }
+  ],
+  "shifts": [],
+  "event_summary": {
+    "events_detected_count": 1,
+    "latest_event_draw": 4215,
+    "can_estimate_periodicity": false,
+    "preliminary_periodicity_possible": false,
+    "eligible_for_future_changepoint_methods": false,
+    "reason": "Se requieren al menos 5 registros de pesos para shifts preliminares."
+  },
+  "recommendation": "diagnostic_only"
+}

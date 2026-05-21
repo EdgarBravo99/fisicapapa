@@ -52,12 +52,20 @@ def main() -> int:
             [python, str(ROOT / "tools" / "v4_physics_regime_audit.py"), "--weights", args.weights, "--output", "v4_physics_regime_analysis.json"],
         ),
         (
+            "physics timeline",
+            [python, str(ROOT / "tools" / "v4_physics_timeline.py"), "--weights", args.weights, "--output", "v4_physics_regime_timeline.json"],
+        ),
+        (
             "replay qualification gate",
             [python, str(ROOT / "tools" / "v4_replay_qualification_gate.py"), "--output", "v4_replay_qualification.json"],
         ),
         (
             "decision slate",
             [python, str(ROOT / "tools" / "v4_decision_slate.py"), "--output", "v4_decision_slate.json"],
+        ),
+        (
+            "local audit state",
+            [python, str(ROOT / "tools" / "v4_audit_state.py"), "--output", "v4_audit_state.json"],
         ),
     ]
     reports = [_run_step(label, command) for label, command in steps]
