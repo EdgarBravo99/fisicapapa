@@ -451,6 +451,56 @@ Para que replay pueda influir en el futuro se requiere:
 - validacion con datos posteriores;
 - activacion explicita, nunca por default.
 
+## Replay Qualification Gate V4.4
+
+PR #22 convierte los diagnosticos de PR #21 en una compuerta explicita de evidencia. El replay sigue bloqueado hasta que todos los gates pasen. Esta compuerta no activa prior y no modifica simulaciones.
+
+```powershell
+py .\tools\v4_candidate_pool_audit.py --input resultados.json --output v4_candidate_pool_audit.json
+py .\tools\v4_replay_qualification_gate.py --output v4_replay_qualification.json
+py .\tools\v4_decision_slate.py --output v4_decision_slate.json
+py .\tools\v4_decision_audit_pack.py
+```
+
+### Candidate Pool Audit
+
+`tools/v4_candidate_pool_audit.py` revisa pools ya existentes dentro de `resultados.json`:
+
+```txt
+top_combinations
+candidate_combinations
+generated_combinations
+monte_carlo_combinations
+combination_pool
+manual_suggestion_seed
+generator_pool
+```
+
+Solo cuenta filas con exactamente 6 numeros validos entre 1 y 56. No inventa combinaciones, no lee CSV y no usa memoria. Si `top_combinations` esta clonado y no hay pool amplio, el problema esta aguas arriba en la generacion de candidatos. Si existe un pool amplio, el selector puede usar `--pool auto` para diversificar desde datos ya presentes.
+
+### Replay Qualification Gate
+
+`tools/v4_replay_qualification_gate.py` lee memoria replay, benchmark, diversidad, candidate pool y fisica. Bloquea `can_influence_future_prior` si falta evidencia:
+
+- menos de 30 records limpios;
+- `ranking_signal_quality` debil;
+- `prior_quality` distinto de `usable_shadow`;
+- benchmark `unknown` o `weak`;
+- diversidad sin pool util;
+- evento fisico sospechoso sin regimen estable.
+
+Aunque todo pase, este PR solo marca `eligible_for_future_experiment = true`. Nunca aplica prior.
+
+### Decision Slate
+
+`tools/v4_decision_slate.py` crea `v4_decision_slate.json`: un set de revision diagnostico, no probabilidad. Usa combinaciones existentes:
+
+1. `diversified_combinations` si hay mejora;
+2. `diversified_combinations` con warning si la diversidad sigue baja;
+3. `top_combinations` como fallback.
+
+La web muestra Replay Qualification, Candidate Pool y Decision Slate en el panel de Decision Audit. El frontend solo lee JSON: no recalibra, no usa `localStorage` para auditoria y no modifica `resultados.json`.
+
 ## Legacy Snapshot Classifier
 
 `tools/v4_legacy_snapshot_classifier.py` clasifica snapshots antiguos para conservar diagnostico sin contaminar memoria aplicada.

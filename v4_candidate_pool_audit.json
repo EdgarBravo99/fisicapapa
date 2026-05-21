@@ -1,0 +1,61 @@
+{
+  "version": "V4.4-candidate-pool-audit",
+  "generated_at": "2026-05-21T18:38:40.195038+00:00",
+  "source_file": "resultados.json",
+  "pools_detected": {
+    "top_combinations": {
+      "exists": true,
+      "valid_combinations": 10,
+      "unique_numbers": 9,
+      "average_pairwise_jaccard": 0.619048,
+      "status": "too_narrow"
+    },
+    "candidate_combinations": {
+      "exists": false,
+      "valid_combinations": 0,
+      "unique_numbers": 0,
+      "average_pairwise_jaccard": 0.0,
+      "status": "missing"
+    },
+    "generated_combinations": {
+      "exists": false,
+      "valid_combinations": 0,
+      "unique_numbers": 0,
+      "average_pairwise_jaccard": 0.0,
+      "status": "missing"
+    },
+    "monte_carlo_combinations": {
+      "exists": false,
+      "valid_combinations": 0,
+      "unique_numbers": 0,
+      "average_pairwise_jaccard": 0.0,
+      "status": "missing"
+    },
+    "combination_pool": {
+      "exists": false,
+      "valid_combinations": 0,
+      "unique_numbers": 0,
+      "average_pairwise_jaccard": 0.0,
+      "status": "missing"
+    },
+    "manual_suggestion_seed": {
+      "exists": true,
+      "valid_combinations": 0,
+      "unique_numbers": 0,
+      "average_pairwise_jaccard": 0.0,
+      "status": "no_valid_combinations"
+    },
+    "generator_pool": {
+      "exists": true,
+      "valid_combinations": 250,
+      "unique_numbers": 24,
+      "average_pairwise_jaccard": 0.418605,
+      "status": "limited"
+    }
+  },
+  "best_available_pool": "generator_pool",
+  "best_available_pool_size": 250,
+  "can_improve_diversity_with_existing_data": true,
+  "reason": "generator_pool contains 250 valid combinations, broader than top_combinations.",
+  "recommendation": "diagnostic_only"
+}
