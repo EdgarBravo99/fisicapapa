@@ -1,0 +1,515 @@
+{
+  "version": "V4.4-decision-slate",
+  "generated_at": "2026-05-21T18:38:40.610488+00:00",
+  "mode": "diagnostic_only",
+  "source_files": {
+    "resultados": "resultados.json",
+    "diversity": "v4_diversity_output.json",
+    "candidate_pool": "v4_candidate_pool_audit.json",
+    "benchmark": "v4_baseline_benchmark.json",
+    "physics": "v4_physics_regime_analysis.json",
+    "replay_qualification": "v4_replay_qualification.json"
+  },
+  "warnings": [
+    "Replay no autorizado para prior.",
+    "Evento fisico sospechoso no confirmado."
+  ],
+  "evidence_summary": {
+    "replay_can_influence": false,
+    "eligible_for_future_experiment": false,
+    "benchmark_signal_quality": "weak",
+    "diversity_gain": 0.168678,
+    "candidate_pool_status": "limited",
+    "best_available_pool": "generator_pool",
+    "physics_status": "hypothesis_not_confirmed"
+  },
+  "review_sets": {
+    "pure_rank_top": [
+      {
+        "numbers": [
+          14,
+          19,
+          21,
+          25,
+          31,
+          33
+        ],
+        "source": "pure_rank",
+        "rank_original": 1,
+        "rank_diversified": null,
+        "score_reference": 82.476,
+        "selection_reason": "pure_rank",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          9,
+          14,
+          19,
+          21,
+          25,
+          31
+        ],
+        "source": "pure_rank",
+        "rank_original": 2,
+        "rank_diversified": null,
+        "score_reference": 82.3348,
+        "selection_reason": "pure_rank",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          9,
+          14,
+          19,
+          25,
+          31,
+          33
+        ],
+        "source": "pure_rank",
+        "rank_original": 3,
+        "rank_diversified": null,
+        "score_reference": 82.009,
+        "selection_reason": "pure_rank",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          14,
+          19,
+          21,
+          25,
+          31,
+          32
+        ],
+        "source": "pure_rank",
+        "rank_original": 4,
+        "rank_diversified": null,
+        "score_reference": 81.8853,
+        "selection_reason": "pure_rank",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          1,
+          14,
+          19,
+          21,
+          25,
+          31
+        ],
+        "source": "pure_rank",
+        "rank_original": 5,
+        "rank_diversified": null,
+        "score_reference": 81.7227,
+        "selection_reason": "pure_rank",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          9,
+          14,
+          19,
+          21,
+          25,
+          33
+        ],
+        "source": "pure_rank",
+        "rank_original": 6,
+        "rank_diversified": null,
+        "score_reference": 81.5992,
+        "selection_reason": "pure_rank",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          14,
+          19,
+          25,
+          31,
+          32,
+          33
+        ],
+        "source": "pure_rank",
+        "rank_original": 7,
+        "rank_diversified": null,
+        "score_reference": 81.5715,
+        "selection_reason": "pure_rank",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          14,
+          19,
+          21,
+          31,
+          32,
+          33
+        ],
+        "source": "pure_rank",
+        "rank_original": 8,
+        "rank_diversified": null,
+        "score_reference": 81.4488,
+        "selection_reason": "pure_rank",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          9,
+          14,
+          19,
+          25,
+          31,
+          32
+        ],
+        "source": "pure_rank",
+        "rank_original": 9,
+        "rank_diversified": null,
+        "score_reference": 81.3921,
+        "selection_reason": "pure_rank",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          1,
+          14,
+          19,
+          25,
+          31,
+          33
+        ],
+        "source": "pure_rank",
+        "rank_original": 10,
+        "rank_diversified": null,
+        "score_reference": 81.3418,
+        "selection_reason": "pure_rank",
+        "warnings": []
+      }
+    ],
+    "diversified_top": [
+      {
+        "numbers": [
+          14,
+          19,
+          21,
+          25,
+          31,
+          33
+        ],
+        "source": "diversified",
+        "rank_original": 1,
+        "rank_diversified": 1,
+        "score_reference": 82.476,
+        "selection_reason": "top_rank_anchor",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          9,
+          14,
+          19,
+          25,
+          31,
+          32
+        ],
+        "source": "diversified",
+        "rank_original": 9,
+        "rank_diversified": 2,
+        "score_reference": 81.3921,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          1,
+          14,
+          19,
+          21,
+          31,
+          32
+        ],
+        "source": "diversified",
+        "rank_original": 15,
+        "rank_diversified": 3,
+        "score_reference": 81.2793,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          9,
+          14,
+          19,
+          21,
+          32,
+          33
+        ],
+        "source": "diversified",
+        "rank_original": 42,
+        "rank_diversified": 4,
+        "score_reference": 80.569,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          9,
+          14,
+          19,
+          21,
+          31,
+          41
+        ],
+        "source": "diversified",
+        "rank_original": 47,
+        "rank_diversified": 5,
+        "score_reference": 80.5579,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          1,
+          14,
+          19,
+          25,
+          32,
+          33
+        ],
+        "source": "diversified",
+        "rank_original": 61,
+        "rank_diversified": 6,
+        "score_reference": 80.3341,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          14,
+          19,
+          21,
+          25,
+          32,
+          41
+        ],
+        "source": "diversified",
+        "rank_original": 65,
+        "rank_diversified": 7,
+        "score_reference": 80.2706,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          1,
+          9,
+          14,
+          19,
+          21,
+          25
+        ],
+        "source": "diversified",
+        "rank_original": 76,
+        "rank_diversified": 8,
+        "score_reference": 80.1765,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          9,
+          10,
+          14,
+          19,
+          25,
+          33
+        ],
+        "source": "diversified",
+        "rank_original": 79,
+        "rank_diversified": 9,
+        "score_reference": 80.1579,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          3,
+          14,
+          19,
+          25,
+          30,
+          31
+        ],
+        "source": "diversified",
+        "rank_original": 87,
+        "rank_diversified": 10,
+        "score_reference": 80.0523,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      }
+    ],
+    "balanced_review_set": [
+      {
+        "numbers": [
+          14,
+          19,
+          21,
+          25,
+          31,
+          33
+        ],
+        "source": "diversified",
+        "rank_original": 1,
+        "rank_diversified": 1,
+        "score_reference": 82.476,
+        "selection_reason": "top_rank_anchor",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          9,
+          14,
+          19,
+          25,
+          31,
+          32
+        ],
+        "source": "diversified",
+        "rank_original": 9,
+        "rank_diversified": 2,
+        "score_reference": 81.3921,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          1,
+          14,
+          19,
+          21,
+          31,
+          32
+        ],
+        "source": "diversified",
+        "rank_original": 15,
+        "rank_diversified": 3,
+        "score_reference": 81.2793,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          9,
+          14,
+          19,
+          21,
+          32,
+          33
+        ],
+        "source": "diversified",
+        "rank_original": 42,
+        "rank_diversified": 4,
+        "score_reference": 80.569,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          9,
+          14,
+          19,
+          21,
+          31,
+          41
+        ],
+        "source": "diversified",
+        "rank_original": 47,
+        "rank_diversified": 5,
+        "score_reference": 80.5579,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          1,
+          14,
+          19,
+          25,
+          32,
+          33
+        ],
+        "source": "diversified",
+        "rank_original": 61,
+        "rank_diversified": 6,
+        "score_reference": 80.3341,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          14,
+          19,
+          21,
+          25,
+          32,
+          41
+        ],
+        "source": "diversified",
+        "rank_original": 65,
+        "rank_diversified": 7,
+        "score_reference": 80.2706,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          1,
+          9,
+          14,
+          19,
+          21,
+          25
+        ],
+        "source": "diversified",
+        "rank_original": 76,
+        "rank_diversified": 8,
+        "score_reference": 80.1765,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          9,
+          10,
+          14,
+          19,
+          25,
+          33
+        ],
+        "source": "diversified",
+        "rank_original": 79,
+        "rank_diversified": 9,
+        "score_reference": 80.1579,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      },
+      {
+        "numbers": [
+          3,
+          14,
+          19,
+          25,
+          30,
+          31
+        ],
+        "source": "diversified",
+        "rank_original": 87,
+        "rank_diversified": 10,
+        "score_reference": 80.0523,
+        "selection_reason": "mmr_selected",
+        "warnings": []
+      }
+    ]
+  },
+  "language_guardrail": "Set de revision diagnostico. No es probabilidad de ganar."
+}

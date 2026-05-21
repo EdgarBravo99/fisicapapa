@@ -17,6 +17,15 @@ from typing import Any
 
 MAX_NUMBER = 56
 VERSION = "V4.4-decision-audit-pack"
+POOL_NAMES = (
+    "top_combinations",
+    "candidate_combinations",
+    "generated_combinations",
+    "monte_carlo_combinations",
+    "combination_pool",
+    "manual_suggestion_seed",
+    "generator_pool",
+)
 
 
 def _utc_now() -> str:
@@ -191,16 +200,43 @@ def _overlap_matrix(combos: list[list[int]]) -> list[list[float]]:
     return [[round(_jaccard(left, right), 6) for right in combos] for left in combos]
 
 
-def build_report(input_path: str | Path, k: int, lambda_param: float) -> dict[str, Any]:
+def _valid_pool_rows(data: dict[str, Any], pool_name: str) -> list[dict[str, Any]]:
+    rows = data.get(pool_name)
+    if not isinstance(rows, list):
+        return []
+    valid = []
+    for row in rows:
+        if isinstance(row, dict) and _combo_numbers(row):
+            valid.append(row)
+        elif isinstance(row, list) and _combo_numbers(row):
+            valid.append({"numbers": _combo_numbers(row), "score_percent": 0.0})
+    return valid
+
+
+def _choose_pool(data: dict[str, Any], pool: str) -> tuple[str, list[dict[str, Any]], list[str]]:
+    notes: list[str] = []
+    if pool != "auto":
+        rows = _valid_pool_rows(data, pool)
+        if not rows:
+            notes.append(f"Pool {pool} has no valid 6-number combinations.")
+        return pool, rows, notes
+    pools = [(name, _valid_pool_rows(data, name)) for name in POOL_NAMES]
+    pools = [(name, rows) for name, rows in pools if rows]
+    if not pools:
+        return "top_combinations", [], ["No valid combination pool was found."]
+    chosen_name, chosen_rows = max(pools, key=lambda item: (len(item[1]), item[0] == "top_combinations"))
+    notes.append(f"Auto pool selected {chosen_name} with {len(chosen_rows)} valid combinations.")
+    return chosen_name, chosen_rows, notes
+
+
+def build_report(input_path: str | Path, k: int, lambda_param: float, pool: str = "top_combinations") -> dict[str, Any]:
     source = Path(input_path)
     data = json.loads(source.read_text(encoding="utf-8"))
-    rows = data.get("top_combinations")
-    if not isinstance(rows, list):
-        rows = []
-    top_rows = [row for row in rows if isinstance(row, dict)]
+    selected_pool, top_rows, pool_notes = _choose_pool(data, pool)
     original_combos = [_combo_numbers(row) for row in top_rows[:k]]
     original_combos = [combo for combo in original_combos if combo]
     selected, notes = select_diverse_combos(top_rows, k, lambda_param)
+    notes = pool_notes + notes
     diversified_combos = [row["numbers"] for row in selected]
 
     report_rows = []
@@ -236,6 +272,7 @@ def build_report(input_path: str | Path, k: int, lambda_param: float) -> dict[st
         "version": VERSION,
         "generated_at": _utc_now(),
         "source_file": str(source),
+        "pool_source": selected_pool,
         "score_kind": data.get("score_kind") or data.get("v4_score_kind") or "N/D",
         "lambda_used": lambda_param,
         "k": k,
@@ -258,9 +295,10 @@ def main() -> int:
     parser.add_argument("--output", default="v4_diversity_output.json")
     parser.add_argument("--k", type=int, default=10)
     parser.add_argument("--lambda-param", type=float, default=0.7)
+    parser.add_argument("--pool", default="top_combinations", choices=(*POOL_NAMES, "auto"))
     args = parser.parse_args()
 
-    report = build_report(args.input, max(1, args.k), min(1.0, max(0.0, args.lambda_param)))
+    report = build_report(args.input, max(1, args.k), min(1.0, max(0.0, args.lambda_param)), args.pool)
     Path(args.output).write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Wrote {args.output} with {len(report['diversified_combinations'])} diversified combinations.")
     return 0

@@ -1,0 +1,64 @@
+{
+  "version": "V4.4-replay-qualification-gate",
+  "generated_at": "2026-05-21T18:38:40.510979+00:00",
+  "inputs": {
+    "replay_memory": {
+      "available": true,
+      "path": "v4_replay_memory.json",
+      "records_replay": 30,
+      "leakage_passed_count": 30,
+      "prior_quality": "diagnostic_only",
+      "ranking_signal_quality": "weak"
+    },
+    "replay_analysis": {
+      "available": true,
+      "path": "v4_replay_analysis.json"
+    },
+    "benchmark": {
+      "available": true,
+      "path": "v4_baseline_benchmark.json",
+      "records_count": 30,
+      "signal_quality": "weak",
+      "recommendation": "diagnostic_only"
+    },
+    "diversity": {
+      "available": true,
+      "path": "v4_diversity_output.json",
+      "diversity_gain": 0.168678,
+      "pool_source": "generator_pool",
+      "unique_numbers_diversified": 13
+    },
+    "candidate_pool": {
+      "available": true,
+      "path": "v4_candidate_pool_audit.json",
+      "best_available_pool": "generator_pool",
+      "best_available_pool_size": 250,
+      "can_improve_diversity_with_existing_data": true
+    },
+    "physics": {
+      "available": true,
+      "path": "v4_physics_regime_analysis.json",
+      "latest_event_suspected": true,
+      "latest_event_status": "hypothesis_not_confirmed",
+      "can_estimate_periodicity": false
+    }
+  },
+  "gates": {
+    "enough_records": true,
+    "leakage_clean": true,
+    "ranking_quality_ok": false,
+    "benchmark_ok": false,
+    "diversity_ok": true,
+    "physics_regime_ok": false
+  },
+  "can_influence_future_prior": false,
+  "eligible_for_future_experiment": false,
+  "recommendation": "diagnostic_only",
+  "reason": "Replay remains blocked because one or more evidence gates are not satisfied.",
+  "required_next_evidence": [
+    "ranking_signal_quality >= moderate",
+    "prior_quality = usable_shadow",
+    "benchmark favorable vs random/frequency/recency",
+    "physical regime stable or segmented"
+  ]
+}
