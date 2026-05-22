@@ -1,0 +1,60 @@
+{
+  "version": "V4.4-combination-repair-experiment",
+  "generated_at": "2026-05-22T20:11:45.077615+00:00",
+  "input_source": "v4_replay_memory.json",
+  "input_state": {
+    "available": true,
+    "path": "v4_replay_memory.json",
+    "raw_records_count": 60
+  },
+  "combination_repair_available": true,
+  "records_evaluated": 60,
+  "variants": {
+    "original_top_combinations": {
+      "records_evaluated": 60,
+      "best_hits_top10_avg": 1.116667,
+      "best_hits_top20_avg": 1.116667,
+      "average_pairwise_jaccard": 0.457069,
+      "unique_numbers_covered": 13.616667,
+      "coverage_gain": null,
+      "score_loss_proxy": 0.0,
+      "repair_improves_best_of_n": false
+    },
+    "top6_seeded_combinations": {
+      "records_evaluated": 59,
+      "best_hits_top10_avg": 1.135593,
+      "best_hits_top20_avg": 1.135593,
+      "average_pairwise_jaccard": 0.456386,
+      "unique_numbers_covered": 13.610169,
+      "coverage_gain": -0.006498,
+      "score_loss_proxy": 0.0,
+      "repair_improves_best_of_n": true
+    },
+    "frequency_seeded_existing_combinations": {
+      "records_evaluated": 59,
+      "best_hits_top10_avg": 1.135593,
+      "best_hits_top20_avg": 1.135593,
+      "average_pairwise_jaccard": 0.456386,
+      "unique_numbers_covered": 13.610169,
+      "coverage_gain": -0.006498,
+      "score_loss_proxy": 0.0,
+      "repair_improves_best_of_n": true
+    },
+    "hybrid_seeded_existing_combinations": {
+      "records_evaluated": 59,
+      "best_hits_top10_avg": 1.135593,
+      "best_hits_top20_avg": 1.135593,
+      "average_pairwise_jaccard": 0.456386,
+      "unique_numbers_covered": 13.610169,
+      "coverage_gain": -0.006498,
+      "score_loss_proxy": 0.0,
+      "repair_improves_best_of_n": true
+    }
+  },
+  "summary": {
+    "combination_issue_confirmed": true,
+    "existing_pool_can_help": true,
+    "records_without_pool": 0,
+    "recommendation": "diagnostic_only"
+  }
+}

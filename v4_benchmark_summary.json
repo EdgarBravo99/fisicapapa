@@ -1,6 +1,6 @@
 {
   "version": "V4.4-benchmark-summary-gate",
-  "generated_at": "2026-05-22T20:18:47.498066+00:00",
+  "generated_at": "2026-05-22T20:19:16.750095+00:00",
   "input_files": {
     "benchmark_hardening": "v4_benchmark_hardening.json",
     "calibration_diagnostics": "v4_calibration_diagnostics.json",
@@ -12,7 +12,7 @@
   "benchmark_signal_quality": "weak",
   "ranking_signal_quality": "weak",
   "stability": "unstable",
-  "diversification_value": "useful_for_hits_and_coverage",
+  "diversification_value": "useful_for_coverage_only",
   "cruncher_minus_random": -0.121429,
   "cruncher_minus_frequency": -0.117797,
   "cruncher_minus_recency": 0.475424,

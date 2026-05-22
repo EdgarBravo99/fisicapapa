@@ -1,0 +1,349 @@
+{
+  "version": "V4.4-ranking-repair-window-stability",
+  "generated_at": "2026-05-22T20:11:44.941826+00:00",
+  "records_count": 60,
+  "windows": [
+    {
+      "window_id": "draws_4155_4169",
+      "draw_start": 4155,
+      "draw_end": 4169,
+      "records_count": 15,
+      "is_total_window": false,
+      "variants": {
+        "top6_only": {
+          "top10_avg_hits": null,
+          "top20_avg_hits": null,
+          "variant_minus_original": null,
+          "variant_minus_frequency": null,
+          "variant_minus_random": null
+        },
+        "rank_7_20_penalized_5": {
+          "top10_avg_hits": 1.0,
+          "top20_avg_hits": 1.733333,
+          "variant_minus_original": 0.0,
+          "variant_minus_frequency": -0.071429,
+          "variant_minus_random": -0.071429
+        },
+        "rank_7_20_penalized_10": {
+          "top10_avg_hits": 1.0,
+          "top20_avg_hits": 2.0,
+          "variant_minus_original": 0.0,
+          "variant_minus_frequency": -0.071429,
+          "variant_minus_random": -0.071429
+        },
+        "rank_7_20_penalized_15": {
+          "top10_avg_hits": 1.0,
+          "top20_avg_hits": 2.133333,
+          "variant_minus_original": 0.0,
+          "variant_minus_frequency": -0.071429,
+          "variant_minus_random": -0.071429
+        },
+        "top6_preserved_plus_frequency": {
+          "top10_avg_hits": 1.285714,
+          "top20_avg_hits": 2.285714,
+          "variant_minus_original": 0.285714,
+          "variant_minus_frequency": 0.214285,
+          "variant_minus_random": 0.214285
+        },
+        "top6_preserved_plus_frequency_no_duplicates": {
+          "top10_avg_hits": 1.357143,
+          "top20_avg_hits": 2.357143,
+          "variant_minus_original": 0.357143,
+          "variant_minus_frequency": 0.285714,
+          "variant_minus_random": 0.285714
+        },
+        "hybrid_cruncher_frequency_70_30": {
+          "top10_avg_hits": 1.142857,
+          "top20_avg_hits": 2.0,
+          "variant_minus_original": 0.142857,
+          "variant_minus_frequency": 0.071428,
+          "variant_minus_random": 0.071428
+        },
+        "hybrid_cruncher_frequency_50_50": {
+          "top10_avg_hits": 0.928571,
+          "top20_avg_hits": 2.071429,
+          "variant_minus_original": -0.071429,
+          "variant_minus_frequency": -0.142858,
+          "variant_minus_random": -0.142858
+        }
+      },
+      "window_signal_quality": "weak_positive",
+      "window_recommendation": "diagnostic_only"
+    },
+    {
+      "window_id": "draws_4170_4184",
+      "draw_start": 4170,
+      "draw_end": 4184,
+      "records_count": 15,
+      "is_total_window": false,
+      "variants": {
+        "top6_only": {
+          "top10_avg_hits": null,
+          "top20_avg_hits": null,
+          "variant_minus_original": null,
+          "variant_minus_frequency": null,
+          "variant_minus_random": null
+        },
+        "rank_7_20_penalized_5": {
+          "top10_avg_hits": 0.8,
+          "top20_avg_hits": 1.8,
+          "variant_minus_original": 0.0,
+          "variant_minus_frequency": -0.466667,
+          "variant_minus_random": -0.271429
+        },
+        "rank_7_20_penalized_10": {
+          "top10_avg_hits": 0.733333,
+          "top20_avg_hits": 1.8,
+          "variant_minus_original": -0.066667,
+          "variant_minus_frequency": -0.533334,
+          "variant_minus_random": -0.338096
+        },
+        "rank_7_20_penalized_15": {
+          "top10_avg_hits": 0.8,
+          "top20_avg_hits": 1.733333,
+          "variant_minus_original": 0.0,
+          "variant_minus_frequency": -0.466667,
+          "variant_minus_random": -0.271429
+        },
+        "top6_preserved_plus_frequency": {
+          "top10_avg_hits": 1.266667,
+          "top20_avg_hits": 2.333333,
+          "variant_minus_original": 0.466667,
+          "variant_minus_frequency": 0.0,
+          "variant_minus_random": 0.195238
+        },
+        "top6_preserved_plus_frequency_no_duplicates": {
+          "top10_avg_hits": 1.266667,
+          "top20_avg_hits": 2.466667,
+          "variant_minus_original": 0.466667,
+          "variant_minus_frequency": 0.0,
+          "variant_minus_random": 0.195238
+        },
+        "hybrid_cruncher_frequency_70_30": {
+          "top10_avg_hits": 1.0,
+          "top20_avg_hits": 1.866667,
+          "variant_minus_original": 0.2,
+          "variant_minus_frequency": -0.266667,
+          "variant_minus_random": -0.071429
+        },
+        "hybrid_cruncher_frequency_50_50": {
+          "top10_avg_hits": 1.133333,
+          "top20_avg_hits": 1.933333,
+          "variant_minus_original": 0.333333,
+          "variant_minus_frequency": -0.133334,
+          "variant_minus_random": 0.061904
+        }
+      },
+      "window_signal_quality": "weak_positive",
+      "window_recommendation": "diagnostic_only"
+    },
+    {
+      "window_id": "draws_4185_4199",
+      "draw_start": 4185,
+      "draw_end": 4199,
+      "records_count": 15,
+      "is_total_window": false,
+      "variants": {
+        "top6_only": {
+          "top10_avg_hits": null,
+          "top20_avg_hits": null,
+          "variant_minus_original": null,
+          "variant_minus_frequency": null,
+          "variant_minus_random": null
+        },
+        "rank_7_20_penalized_5": {
+          "top10_avg_hits": 1.0,
+          "top20_avg_hits": 2.066667,
+          "variant_minus_original": 0.0,
+          "variant_minus_frequency": 0.133333,
+          "variant_minus_random": -0.071429
+        },
+        "rank_7_20_penalized_10": {
+          "top10_avg_hits": 1.0,
+          "top20_avg_hits": 2.133333,
+          "variant_minus_original": 0.0,
+          "variant_minus_frequency": 0.133333,
+          "variant_minus_random": -0.071429
+        },
+        "rank_7_20_penalized_15": {
+          "top10_avg_hits": 1.0,
+          "top20_avg_hits": 2.266667,
+          "variant_minus_original": 0.0,
+          "variant_minus_frequency": 0.133333,
+          "variant_minus_random": -0.071429
+        },
+        "top6_preserved_plus_frequency": {
+          "top10_avg_hits": 1.333333,
+          "top20_avg_hits": 2.2,
+          "variant_minus_original": 0.333333,
+          "variant_minus_frequency": 0.466666,
+          "variant_minus_random": 0.261904
+        },
+        "top6_preserved_plus_frequency_no_duplicates": {
+          "top10_avg_hits": 1.333333,
+          "top20_avg_hits": 2.4,
+          "variant_minus_original": 0.333333,
+          "variant_minus_frequency": 0.466666,
+          "variant_minus_random": 0.261904
+        },
+        "hybrid_cruncher_frequency_70_30": {
+          "top10_avg_hits": 1.2,
+          "top20_avg_hits": 2.133333,
+          "variant_minus_original": 0.2,
+          "variant_minus_frequency": 0.333333,
+          "variant_minus_random": 0.128571
+        },
+        "hybrid_cruncher_frequency_50_50": {
+          "top10_avg_hits": 0.933333,
+          "top20_avg_hits": 2.0,
+          "variant_minus_original": -0.066667,
+          "variant_minus_frequency": 0.066666,
+          "variant_minus_random": -0.138096
+        }
+      },
+      "window_signal_quality": "weak_positive",
+      "window_recommendation": "diagnostic_only"
+    },
+    {
+      "window_id": "draws_4200_4214",
+      "draw_start": 4200,
+      "draw_end": 4214,
+      "records_count": 15,
+      "is_total_window": false,
+      "variants": {
+        "top6_only": {
+          "top10_avg_hits": null,
+          "top20_avg_hits": null,
+          "variant_minus_original": null,
+          "variant_minus_frequency": null,
+          "variant_minus_random": null
+        },
+        "rank_7_20_penalized_5": {
+          "top10_avg_hits": 1.0,
+          "top20_avg_hits": 2.066667,
+          "variant_minus_original": 0.0,
+          "variant_minus_frequency": -0.066667,
+          "variant_minus_random": -0.071429
+        },
+        "rank_7_20_penalized_10": {
+          "top10_avg_hits": 1.0,
+          "top20_avg_hits": 2.066667,
+          "variant_minus_original": 0.0,
+          "variant_minus_frequency": -0.066667,
+          "variant_minus_random": -0.071429
+        },
+        "rank_7_20_penalized_15": {
+          "top10_avg_hits": 1.066667,
+          "top20_avg_hits": 2.2,
+          "variant_minus_original": 0.066667,
+          "variant_minus_frequency": 0.0,
+          "variant_minus_random": -0.004762
+        },
+        "top6_preserved_plus_frequency": {
+          "top10_avg_hits": 1.133333,
+          "top20_avg_hits": 2.133333,
+          "variant_minus_original": 0.133333,
+          "variant_minus_frequency": 0.066666,
+          "variant_minus_random": 0.061904
+        },
+        "top6_preserved_plus_frequency_no_duplicates": {
+          "top10_avg_hits": 1.133333,
+          "top20_avg_hits": 2.133333,
+          "variant_minus_original": 0.133333,
+          "variant_minus_frequency": 0.066666,
+          "variant_minus_random": 0.061904
+        },
+        "hybrid_cruncher_frequency_70_30": {
+          "top10_avg_hits": 1.066667,
+          "top20_avg_hits": 2.333333,
+          "variant_minus_original": 0.066667,
+          "variant_minus_frequency": 0.0,
+          "variant_minus_random": -0.004762
+        },
+        "hybrid_cruncher_frequency_50_50": {
+          "top10_avg_hits": 1.2,
+          "top20_avg_hits": 2.2,
+          "variant_minus_original": 0.2,
+          "variant_minus_frequency": 0.133333,
+          "variant_minus_random": 0.128571
+        }
+      },
+      "window_signal_quality": "weak_positive",
+      "window_recommendation": "diagnostic_only"
+    },
+    {
+      "window_id": "draws_4155_4214",
+      "draw_start": 4155,
+      "draw_end": 4214,
+      "records_count": 60,
+      "is_total_window": true,
+      "variants": {
+        "top6_only": {
+          "top10_avg_hits": null,
+          "top20_avg_hits": null,
+          "variant_minus_original": null,
+          "variant_minus_frequency": null,
+          "variant_minus_random": null
+        },
+        "rank_7_20_penalized_5": {
+          "top10_avg_hits": 0.95,
+          "top20_avg_hits": 1.916667,
+          "variant_minus_original": 0.0,
+          "variant_minus_frequency": -0.117797,
+          "variant_minus_random": -0.121429
+        },
+        "rank_7_20_penalized_10": {
+          "top10_avg_hits": 0.933333,
+          "top20_avg_hits": 2.0,
+          "variant_minus_original": -0.016667,
+          "variant_minus_frequency": -0.134464,
+          "variant_minus_random": -0.138096
+        },
+        "rank_7_20_penalized_15": {
+          "top10_avg_hits": 0.966667,
+          "top20_avg_hits": 2.083333,
+          "variant_minus_original": 0.016667,
+          "variant_minus_frequency": -0.10113,
+          "variant_minus_random": -0.104762
+        },
+        "top6_preserved_plus_frequency": {
+          "top10_avg_hits": 1.254237,
+          "top20_avg_hits": 2.237288,
+          "variant_minus_original": 0.304237,
+          "variant_minus_frequency": 0.18644,
+          "variant_minus_random": 0.182808
+        },
+        "top6_preserved_plus_frequency_no_duplicates": {
+          "top10_avg_hits": 1.271186,
+          "top20_avg_hits": 2.338983,
+          "variant_minus_original": 0.321186,
+          "variant_minus_frequency": 0.203389,
+          "variant_minus_random": 0.199757
+        },
+        "hybrid_cruncher_frequency_70_30": {
+          "top10_avg_hits": 1.101695,
+          "top20_avg_hits": 2.084746,
+          "variant_minus_original": 0.151695,
+          "variant_minus_frequency": 0.033898,
+          "variant_minus_random": 0.030266
+        },
+        "hybrid_cruncher_frequency_50_50": {
+          "top10_avg_hits": 1.050847,
+          "top20_avg_hits": 2.050847,
+          "variant_minus_original": 0.100847,
+          "variant_minus_frequency": -0.01695,
+          "variant_minus_random": -0.020582
+        }
+      },
+      "window_signal_quality": "weak_positive",
+      "window_recommendation": "diagnostic_only"
+    }
+  ],
+  "summary": {
+    "best_variant": "top6_preserved_plus_frequency_no_duplicates",
+    "stable_across_windows": true,
+    "windows_improved_count": 4,
+    "windows_total": 4,
+    "recommendation": "diagnostic_only"
+  }
+}
