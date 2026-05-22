@@ -1,8 +1,8 @@
 {
   "version": "V4.4-local-audit-state",
-  "generated_at": "2026-05-21T20:58:26.374122+00:00",
+  "generated_at": "2026-05-22T19:51:01.332698+00:00",
   "git": {
-    "branch": "codex/v44-benchmark-hardening",
+    "branch": "codex/v44-replay-failure-analysis",
     "has_uncommitted_changes": false,
     "conflict_detected": false,
     "status_entries": [],
@@ -15,7 +15,7 @@
     },
     "README.md": {
       "exists": true,
-      "size_bytes": 24790
+      "size_bytes": 26753
     },
     "index.html": {
       "exists": true,
@@ -39,7 +39,7 @@
     },
     "v4-decision-audit-panel.js": {
       "exists": true,
-      "size_bytes": 22952
+      "size_bytes": 26390
     }
   },
   "generated_outputs": {
@@ -53,7 +53,7 @@
     },
     "v4_baseline_benchmark.json": {
       "exists": true,
-      "size_bytes": 1404
+      "size_bytes": 1399
     },
     "v4_physics_regime_analysis.json": {
       "exists": true,

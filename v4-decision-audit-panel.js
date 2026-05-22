@@ -17,6 +17,11 @@
     diversifiedEval: 'v4_diversified_vs_original_eval.json',
     benchmarkStability: 'v4_benchmark_stability.json',
     benchmarkSummary: 'v4_benchmark_summary.json',
+    replayWindows: 'v4_replay_window_diagnostics.json',
+    rankingInversion: 'v4_ranking_inversion_audit.json',
+    frequencyDominance: 'v4_frequency_dominance_audit.json',
+    drawFailure: 'v4_draw_failure_report.json',
+    signalDecomposition: 'v4_signal_decomposition_summary.json',
   };
 
   const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -218,6 +223,43 @@
       </article>`;
   }
 
+  function renderReplayFailureAnalysis(signal, windows, ranking, frequency, drawFailure) {
+    if (!signal && !windows && !ranking && !frequency && !drawFailure) {
+      return emptyCard('Replay Failure Analysis', 'Sin diagnosticos de fallas replay. Analisis de fallas replay. No activa prior.');
+    }
+    const windowSummary = windows?.summary || {};
+    const drawSummary = drawFailure?.summary || {};
+    const findings = Array.isArray(signal?.main_findings) ? signal.main_findings : [];
+    const blocked = signal?.prior_should_remain_blocked !== false;
+    return `
+      <article class="taste-card">
+        <div class="taste-card-heading">
+          <div>
+            <p class="taste-eyebrow">Replay Failure Analysis</p>
+            <h3>${esc(signal?.failure_scope || 'diagnostic_only')}</h3>
+          </div>
+          <span class="taste-chip taste-chip-warn">${blocked ? 'prior bloqueado' : 'revisar'}</span>
+        </div>
+        <div class="bento-status-grid mt-4">
+          <article class="taste-metric"><span>Records</span><b>${fmt(windows?.records_count ?? drawFailure?.records_count, 0)}</b></article>
+          <article class="taste-metric"><span>Ranking mode</span><b>${esc(signal?.ranking_failure_mode || ranking?.ranking_failure_mode)}</b></article>
+          <article class="taste-metric"><span>Frequency domina</span><b>${signal?.frequency_dominance ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Prior bloqueado</span><b>${blocked ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Best window</span><b>${esc(windowSummary.best_window)}</b></article>
+          <article class="taste-metric"><span>Worst window</span><b>${esc(windowSummary.worst_window)}</b></article>
+          <article class="taste-metric"><span>Freq - cruncher</span><b>${fmt(frequency?.frequency_minus_cruncher, 3)}</b></article>
+          <article class="taste-metric"><span>Fallos altos</span><b>${fmt(drawSummary.high_or_extreme_failures, 0)}</b></article>
+        </div>
+        <div class="taste-panel-muted mt-4">
+          <p class="taste-eyebrow">Top failure notes</p>
+          <ul class="mt-2 grid gap-1 text-sm leading-6 text-slate-300">
+            ${findings.slice(0, 5).map(item => `<li>${esc(item)}</li>`).join('') || '<li>N/D</li>'}
+          </ul>
+        </div>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Analisis de fallas replay. No activa prior. Un ranking weak no debe usarse para modificar simulacion. Frequency baseline venciendo al cruncher indica que falta senal o calibracion. Accion: ${esc(signal?.recommended_next_action || 'diagnostic_only')}</p>
+      </article>`;
+  }
+
   function renderPhysics(data) {
     if (!data) {
       return emptyCard('Evento fisico / regimen', 'Sin v4_physics_regime_analysis.json. El tracker fisico es diagnostico y no ajusta el cruncher.');
@@ -394,6 +436,11 @@
       diversifiedEval,
       benchmarkStability,
       benchmarkSummary,
+      replayWindows,
+      rankingInversion,
+      frequencyDominance,
+      drawFailure,
+      signalDecomposition,
     ] = await Promise.all([
       loadJson(FILES.diversity),
       loadJson(FILES.benchmark),
@@ -408,6 +455,11 @@
       loadJson(FILES.diversifiedEval),
       loadJson(FILES.benchmarkStability),
       loadJson(FILES.benchmarkSummary),
+      loadJson(FILES.replayWindows),
+      loadJson(FILES.rankingInversion),
+      loadJson(FILES.frequencyDominance),
+      loadJson(FILES.drawFailure),
+      loadJson(FILES.signalDecomposition),
     ]);
     panel.innerHTML = `
       <div class="grid gap-4 xl:grid-cols-3">
@@ -423,6 +475,9 @@
       </div>
       <div class="grid gap-4 mt-4">
         ${renderBenchmarkHardening(benchmarkSummary, benchmarkHardening, calibration, benchmarkStability)}
+      </div>
+      <div class="grid gap-4 mt-4">
+        ${renderReplayFailureAnalysis(signalDecomposition, replayWindows, rankingInversion, frequencyDominance, drawFailure)}
       </div>
       <div class="grid gap-4 mt-4 xl:grid-cols-2">
         ${renderPhysicsTimeline(physicsTimeline)}

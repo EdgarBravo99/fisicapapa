@@ -1,114 +1,114 @@
 {
   "version": "V4.4-calibration-diagnostics",
-  "generated_at": "2026-05-21T20:57:07.343364+00:00",
+  "generated_at": "2026-05-22T19:49:40.164763+00:00",
   "input_source": "v4_replay_memory.json",
   "input_state": {
     "available": true,
     "path": "v4_replay_memory.json",
-    "raw_records_count": 30
+    "raw_records_count": 60
   },
-  "records_count": 30,
+  "records_count": 60,
   "rank_band_performance": {
     "top6": {
-      "records_count": 30,
-      "appearances_expected": 19.285714,
-      "appearances_observed": 22,
-      "predicted_count": 180,
-      "hit_rate": 0.122222,
-      "lift_vs_random": 0.015079,
-      "lift_vs_rest": 0.020139
+      "records_count": 60,
+      "appearances_expected": 38.571429,
+      "appearances_observed": 45,
+      "predicted_count": 360,
+      "hit_rate": 0.125,
+      "lift_vs_random": 0.017857,
+      "lift_vs_rest": 0.015625
     },
     "top10": {
-      "records_count": 30,
-      "appearances_expected": 12.857143,
-      "appearances_observed": 8,
-      "predicted_count": 120,
-      "hit_rate": 0.066667,
-      "lift_vs_random": -0.040476,
-      "lift_vs_rest": -0.035417
+      "records_count": 60,
+      "appearances_expected": 25.714286,
+      "appearances_observed": 12,
+      "predicted_count": 240,
+      "hit_rate": 0.05,
+      "lift_vs_random": -0.057143,
+      "lift_vs_rest": -0.059375
     },
     "top20": {
-      "records_count": 30,
-      "appearances_expected": 32.142857,
-      "appearances_observed": 31,
-      "predicted_count": 300,
-      "hit_rate": 0.103333,
-      "lift_vs_random": -0.00381,
-      "lift_vs_rest": 0.00125
+      "records_count": 60,
+      "appearances_expected": 64.285714,
+      "appearances_observed": 57,
+      "predicted_count": 600,
+      "hit_rate": 0.095,
+      "lift_vs_random": -0.012143,
+      "lift_vs_rest": -0.014375
     },
     "top40": {
-      "records_count": 30,
-      "appearances_expected": 64.285714,
-      "appearances_observed": 70,
-      "predicted_count": 600,
-      "hit_rate": 0.116667,
-      "lift_vs_random": 0.009524,
-      "lift_vs_rest": 0.014583
+      "records_count": 60,
+      "appearances_expected": 128.571429,
+      "appearances_observed": 141,
+      "predicted_count": 1200,
+      "hit_rate": 0.1175,
+      "lift_vs_random": 0.010357,
+      "lift_vs_rest": 0.008125
     },
     "rest": {
-      "records_count": 30,
-      "appearances_expected": 51.428571,
-      "appearances_observed": 49,
-      "predicted_count": 480,
-      "hit_rate": 0.102083,
-      "lift_vs_random": -0.00506,
+      "records_count": 60,
+      "appearances_expected": 102.857143,
+      "appearances_observed": 105,
+      "predicted_count": 960,
+      "hit_rate": 0.109375,
+      "lift_vs_random": 0.002232,
       "lift_vs_rest": 0.0
     }
   },
   "score_bucket_performance": {
     "p0_p20": {
-      "records_count": 30,
-      "appearances_expected": 38.571429,
-      "appearances_observed": 37,
-      "predicted_count": 360,
-      "hit_rate": 0.102778,
-      "lift_vs_random": -0.004365,
-      "lift_vs_rest": 0.000694
+      "records_count": 60,
+      "appearances_expected": 77.142857,
+      "appearances_observed": 73,
+      "predicted_count": 720,
+      "hit_rate": 0.101389,
+      "lift_vs_random": -0.005754,
+      "lift_vs_rest": -0.007986
     },
     "p20_p40": {
-      "records_count": 30,
-      "appearances_expected": 32.142857,
-      "appearances_observed": 30,
-      "predicted_count": 300,
-      "hit_rate": 0.1,
-      "lift_vs_random": -0.007143,
-      "lift_vs_rest": -0.002083
+      "records_count": 60,
+      "appearances_expected": 64.285714,
+      "appearances_observed": 73,
+      "predicted_count": 600,
+      "hit_rate": 0.121667,
+      "lift_vs_random": 0.014524,
+      "lift_vs_rest": 0.012292
     },
     "p40_p60": {
-      "records_count": 30,
-      "appearances_expected": 35.357143,
-      "appearances_observed": 40,
-      "predicted_count": 330,
-      "hit_rate": 0.121212,
-      "lift_vs_random": 0.014069,
-      "lift_vs_rest": 0.019129
+      "records_count": 60,
+      "appearances_expected": 70.714286,
+      "appearances_observed": 76,
+      "predicted_count": 660,
+      "hit_rate": 0.115152,
+      "lift_vs_random": 0.008009,
+      "lift_vs_rest": 0.005777
     },
     "p60_p80": {
-      "records_count": 30,
-      "appearances_expected": 35.357143,
-      "appearances_observed": 39,
-      "predicted_count": 330,
-      "hit_rate": 0.118182,
-      "lift_vs_random": 0.011039,
-      "lift_vs_rest": 0.016098
+      "records_count": 60,
+      "appearances_expected": 70.714286,
+      "appearances_observed": 70,
+      "predicted_count": 660,
+      "hit_rate": 0.106061,
+      "lift_vs_random": -0.001082,
+      "lift_vs_rest": -0.003314
     },
     "p80_p90": {
-      "records_count": 30,
-      "appearances_expected": 19.285714,
-      "appearances_observed": 12,
-      "predicted_count": 180,
-      "hit_rate": 0.066667,
-      "lift_vs_random": -0.040476,
-      "lift_vs_rest": -0.035417
+      "records_count": 60,
+      "appearances_expected": 38.571429,
+      "appearances_observed": 23,
+      "predicted_count": 360,
+      "hit_rate": 0.063889,
+      "lift_vs_random": -0.043254,
+      "lift_vs_rest": -0.045486
     },
     "p90_p100": {
-      "records_count": 30,
-      "appearances_expected": 19.285714,
-      "appearances_observed": 22,
-      "predicted_count": 180,
-      "hit_rate": 0.122222,
-      "lift_vs_random": 0.015079,
-      "lift_vs_rest": 0.020139
+      "records_count": 60,
+      "appearances_expected": 38.571429,
+      "appearances_observed": 45,
+      "predicted_count": 360,
+      "hit_rate": 0.125,
+      "lift_vs_random": 0.017857,
+      "lift_vs_rest": 0.015625
     }
   },
   "ranking_signal_quality": "weak",
