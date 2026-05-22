@@ -30,6 +30,11 @@
     postRankingRolling: 'v4_post_ranking_rolling_validation.json',
     postRankingSummary: 'v4_post_ranking_holdout_summary.json',
     postRankingCandidate: 'v4_post_ranking_layer_candidate.json',
+    postRankingSmoothing: 'v4_post_ranking_smoothing_stress_test.json',
+    postRankingConfidence: 'v4_post_ranking_confidence_gate_experiment.json',
+    postRankingWorstFold: 'v4_post_ranking_worst_fold_analysis.json',
+    postRankingFullSummary: 'v4_post_ranking_full_validation_summary.json',
+    postRankingDecisionRecord: 'v4_post_ranking_candidate_decision_record.json',
   };
 
   const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -340,6 +345,44 @@
       </article>`;
   }
 
+  function renderPostRankingFullValidation(summary, smoothing, confidence, worstFold, decisionRecord) {
+    if (!summary && !smoothing && !confidence && !worstFold && !decisionRecord) {
+      return emptyCard('Post-Ranking Full Validation', 'Sin v4_post_ranking_full_validation_summary.json. Validacion completa de candidato post-ranking. No modifica produccion.');
+    }
+    const bestSmoothing = summary?.best_smoothing_variant || smoothing?.best_smoothing_variant?.name || 'N/D';
+    const bestPolicy = summary?.best_policy || confidence?.best_policy?.name || 'N/D';
+    return `
+      <article class="taste-card">
+        <div class="taste-card-heading">
+          <div>
+            <p class="taste-eyebrow">Post-Ranking Full Validation</p>
+            <h3>${esc(summary?.candidate_status || decisionRecord?.decision || 'diagnostic_only')}</h3>
+          </div>
+          <span class="taste-chip taste-chip-warn">${summary?.production_ready ? 'revisar' : 'produccion bloqueada'}</span>
+        </div>
+        <div class="bento-status-grid mt-4">
+          <article class="taste-metric"><span>Best smoothing</span><b>${esc(bestSmoothing)}</b></article>
+          <article class="taste-metric"><span>Best policy</span><b>${esc(bestPolicy)}</b></article>
+          <article class="taste-metric"><span>Rolling pass</span><b>${fmt((summary?.rolling_pass_rate || 0) * 100, 0)}%</b></article>
+          <article class="taste-metric"><span>Holdout pass</span><b>${fmt((summary?.holdout_pass_rate || 0) * 100, 0)}%</b></article>
+          <article class="taste-metric"><span>Edge original</span><b>${fmt(summary?.avg_edge_vs_original, 3)}</b></article>
+          <article class="taste-metric"><span>Edge frequency</span><b>${fmt(summary?.avg_edge_vs_frequency, 3)}</b></article>
+          <article class="taste-metric"><span>Edge random</span><b>${fmt(summary?.avg_edge_vs_random, 3)}</b></article>
+          <article class="taste-metric"><span>Worst vs freq</span><b>${fmt(summary?.worst_fold_delta_vs_frequency, 3)}</b></article>
+          <article class="taste-metric"><span>Overfit risk</span><b>${esc(summary?.overfit_risk || 'unknown')}</b></article>
+          <article class="taste-metric"><span>Controlled future</span><b>${summary?.future_controlled_layer_candidate ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Production ready</span><b>${summary?.production_ready ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Prior bloqueado</span><b>${summary?.prior_should_remain_blocked === false ? 'No' : 'Si'}</b></article>
+        </div>
+        <div class="taste-panel-muted mt-4">
+          <p class="taste-eyebrow">Decision</p>
+          <p class="text-sm leading-6 text-slate-300">${esc(summary?.reason || 'Decision record pendiente.')}</p>
+          <p class="mt-2 text-sm leading-6 text-slate-300">Siguiente PR: ${esc(summary?.recommended_next_pr || 'diagnostic_only')}</p>
+        </div>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Validacion completa de candidato post-ranking. No modifica produccion. El candidato puede vivir como hipotesis aunque produccion siga bloqueada. Production ready siempre debe permanecer false en este PR.</p>
+      </article>`;
+  }
+
   function renderPhysics(data) {
     if (!data) {
       return emptyCard('Evento fisico / regimen', 'Sin v4_physics_regime_analysis.json. El tracker fisico es diagnostico y no ajusta el cruncher.');
@@ -529,6 +572,11 @@
       postRankingRolling,
       postRankingSummary,
       postRankingCandidate,
+      postRankingSmoothing,
+      postRankingConfidence,
+      postRankingWorstFold,
+      postRankingFullSummary,
+      postRankingDecisionRecord,
     ] = await Promise.all([
       loadJson(FILES.diversity),
       loadJson(FILES.benchmark),
@@ -556,6 +604,11 @@
       loadJson(FILES.postRankingRolling),
       loadJson(FILES.postRankingSummary),
       loadJson(FILES.postRankingCandidate),
+      loadJson(FILES.postRankingSmoothing),
+      loadJson(FILES.postRankingConfidence),
+      loadJson(FILES.postRankingWorstFold),
+      loadJson(FILES.postRankingFullSummary),
+      loadJson(FILES.postRankingDecisionRecord),
     ]);
     panel.innerHTML = `
       <div class="grid gap-4 xl:grid-cols-3">
@@ -580,6 +633,9 @@
       </div>
       <div class="grid gap-4 mt-4">
         ${renderPostRankingHoldoutValidation(postRankingSummary, postRankingHoldout, postRankingRolling, postRankingCandidate)}
+      </div>
+      <div class="grid gap-4 mt-4">
+        ${renderPostRankingFullValidation(postRankingFullSummary, postRankingSmoothing, postRankingConfidence, postRankingWorstFold, postRankingDecisionRecord)}
       </div>
       <div class="grid gap-4 mt-4 xl:grid-cols-2">
         ${renderPhysicsTimeline(physicsTimeline)}

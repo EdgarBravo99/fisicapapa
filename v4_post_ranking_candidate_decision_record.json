@@ -1,0 +1,30 @@
+{
+  "version": "V4.4-post-ranking-candidate-decision-record",
+  "generated_at": "2026-05-22T20:56:05.539975+00:00",
+  "candidate": "top6_preserved_plus_frequency_no_duplicates",
+  "decision": "ready_for_controlled_layer",
+  "why": [
+    "Policy clears diagnostic gates, but production remains blocked until controlled implementation and future validation. Signal decomposition still blocks prior. Benchmark remains diagnostic_only.",
+    "best_smoothing_variant=frequency_window_15",
+    "best_policy=always_repair__min_history_15",
+    "rolling_pass_rate=0.666667",
+    "overfit_risk=medium"
+  ],
+  "why_not_production": [
+    "production_ready is false",
+    "prior_should_remain_blocked is true",
+    "future unseen validation still required"
+  ],
+  "allowed_next_steps": [
+    "PR #30 controlled implementation",
+    "review worst-fold failure patterns",
+    "keep candidate separate from official scoring"
+  ],
+  "forbidden_next_steps": [
+    "do not enable replay prior",
+    "do not modify Monte Carlo",
+    "do not modify official scores",
+    "do not replace resultados.json"
+  ],
+  "recommendation": "diagnostic_only"
+}

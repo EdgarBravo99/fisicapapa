@@ -116,6 +116,22 @@ def main() -> int:
             [python, str(ROOT / "tools" / "v4_post_ranking_holdout_summary_gate.py"), "--output", "v4_post_ranking_holdout_summary.json"],
         ),
         (
+            "post-ranking smoothing stress test",
+            [python, str(ROOT / "tools" / "v4_post_ranking_smoothing_stress_test.py"), "--replay-memory", args.replay_memory, "--output", "v4_post_ranking_smoothing_stress_test.json"],
+        ),
+        (
+            "post-ranking confidence gate experiment",
+            [python, str(ROOT / "tools" / "v4_post_ranking_confidence_gate_experiment.py"), "--replay-memory", args.replay_memory, "--output", "v4_post_ranking_confidence_gate_experiment.json"],
+        ),
+        (
+            "post-ranking worst-fold analysis",
+            [python, str(ROOT / "tools" / "v4_post_ranking_worst_fold_analysis.py"), "--replay-memory", args.replay_memory, "--output", "v4_post_ranking_worst_fold_analysis.json"],
+        ),
+        (
+            "post-ranking full validation summary gate",
+            [python, str(ROOT / "tools" / "v4_post_ranking_full_validation_summary_gate.py"), "--output", "v4_post_ranking_full_validation_summary.json"],
+        ),
+        (
             "physics regime audit",
             [python, str(ROOT / "tools" / "v4_physics_regime_audit.py"), "--weights", args.weights, "--output", "v4_physics_regime_analysis.json"],
         ),

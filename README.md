@@ -626,6 +626,28 @@ La rolling validation usa una ventana inicial de 30 records y pruebas de 5 recor
 
 Para una futura capa experimental todavia faltaria validar en sorteos futuros no vistos, correr una simulacion controlada separada, superar frequency/random sin usar futuro y mantener `prior_should_remain_blocked = true` hasta que exista evidencia externa suficiente.
 
+## Post-Ranking Candidate Full Validation Pack V4.4
+
+PR #29 concentra el stress test final de la hipotesis `top6_preserved_plus_frequency_no_duplicates`. PR #28 no bastaba porque el holdout agregado se veia fuerte, pero la rolling validation fina seguia debil; este paquete prueba smoothing, gates de confianza, fallbacks y worst folds antes de decidir si la hipotesis vive o muere.
+
+```powershell
+py .\tools\v4_post_ranking_smoothing_stress_test.py --output v4_post_ranking_smoothing_stress_test.json
+py .\tools\v4_post_ranking_confidence_gate_experiment.py --output v4_post_ranking_confidence_gate_experiment.json
+py .\tools\v4_post_ranking_worst_fold_analysis.py --output v4_post_ranking_worst_fold_analysis.json
+py .\tools\v4_post_ranking_full_validation_summary_gate.py --output v4_post_ranking_full_validation_summary.json
+py .\tools\v4_decision_audit_pack.py
+```
+
+Smoothing significa cambiar como se rankea la frecuencia que rellena despues del top6: conteo crudo, Laplace, decay temporal y ventanas recientes de 15/30/45 records. La prueba conserva la regla anti-leakage: cada target solo puede usar sorteos anteriores.
+
+Confidence gate significa decidir si se usa la reparacion o si se cae a un fallback. Las policies probadas incluyen `always_repair`, fallback a original, fallback a frequency y versiones condicionadas por historial minimo, overlap top6/frequency, estabilidad de frequency y edge reciente.
+
+Worst-fold analysis explica donde falla la hipotesis: folds donde gana original, gana frequency, cae contra random o el top6 pierde calidad. Esto evita tomar una decision por promedio agregado cuando hay ventanas fragiles.
+
+`candidate_status` puede ser `reject`, `keep_candidate` o `ready_for_controlled_layer`. Incluso si aparece `ready_for_controlled_layer`, no significa produccion: `production_ready` debe seguir `false`, `prior_should_remain_blocked` debe seguir `true` y cualquier PR #30 tendria que ser una implementacion controlada separada, explicitamente aprobada, sin mutar scores oficiales ni activar prior.
+
+La hipotesis debe detenerse si ningun smoothing/policy mejora rolling, si frequency sigue dominando, si el peor fold es demasiado negativo o si el riesgo de overfit queda alto. Debe mantenerse viva solo si mejora original/random, no pierde contra frequency de forma estable y deja claro que el siguiente paso sigue siendo diagnostico/controlado.
+
 ## Legacy Snapshot Classifier
 
 `tools/v4_legacy_snapshot_classifier.py` clasifica snapshots antiguos para conservar diagnostico sin contaminar memoria aplicada.
