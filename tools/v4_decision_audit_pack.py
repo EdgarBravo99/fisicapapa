@@ -88,6 +88,22 @@ def main() -> int:
             [python, str(ROOT / "tools" / "v4_signal_decomposition_summary.py"), "--output", "v4_signal_decomposition_summary.json"],
         ),
         (
+            "ranking repair experiment",
+            [python, str(ROOT / "tools" / "v4_ranking_repair_experiment.py"), "--replay-memory", args.replay_memory, "--output", "v4_ranking_repair_experiment.json"],
+        ),
+        (
+            "ranking repair window stability",
+            [python, str(ROOT / "tools" / "v4_ranking_repair_window_stability.py"), "--replay-memory", args.replay_memory, "--output", "v4_ranking_repair_window_stability.json"],
+        ),
+        (
+            "combination repair experiment",
+            [python, str(ROOT / "tools" / "v4_combination_repair_experiment.py"), "--replay-memory", args.replay_memory, "--output", "v4_combination_repair_experiment.json"],
+        ),
+        (
+            "ranking repair summary gate",
+            [python, str(ROOT / "tools" / "v4_ranking_repair_summary_gate.py"), "--output", "v4_ranking_repair_summary.json"],
+        ),
+        (
             "physics regime audit",
             [python, str(ROOT / "tools" / "v4_physics_regime_audit.py"), "--weights", args.weights, "--output", "v4_physics_regime_analysis.json"],
         ),
