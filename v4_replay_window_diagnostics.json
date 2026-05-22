@@ -1,0 +1,716 @@
+{
+  "version": "V4.4-replay-window-diagnostics",
+  "generated_at": "2026-05-22T19:49:40.852923+00:00",
+  "input_source": "v4_replay_memory.json",
+  "input_state": {
+    "available": true,
+    "path": "v4_replay_memory.json",
+    "raw_records_count": 60
+  },
+  "records_count": 60,
+  "windows": [
+    {
+      "window_id": "draws_4155_4169",
+      "draw_start": 4155,
+      "draw_end": 4169,
+      "records_count": 15,
+      "window_low_confidence": false,
+      "cruncher_top6_hit_rate": 0.144444,
+      "cruncher_top10_hit_rate": 0.1,
+      "cruncher_top20_hit_rate": 0.083333,
+      "cruncher_avg_top10_hits": 1.0,
+      "random_expected_hits": 1.071429,
+      "frequency_baseline_hits": 1.071429,
+      "recency_baseline_hits": 0.571429,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": -0.071429,
+      "cruncher_minus_recency": 0.428571,
+      "ranking_signal_quality_window": "weak",
+      "best_hits_top10_avg": 1.133333,
+      "worst_targets": [
+        {
+          "target_draw": 4155,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            3,
+            4,
+            8,
+            26,
+            31,
+            37
+          ]
+        },
+        {
+          "target_draw": 4161,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            12,
+            27,
+            33,
+            45,
+            48,
+            52
+          ]
+        },
+        {
+          "target_draw": 4167,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            3,
+            18,
+            34,
+            36,
+            41,
+            48
+          ]
+        },
+        {
+          "target_draw": 4162,
+          "top10_hits": 0,
+          "top20_hits": 1,
+          "target_numbers": [
+            8,
+            18,
+            26,
+            29,
+            35,
+            56
+          ]
+        },
+        {
+          "target_draw": 4157,
+          "top10_hits": 1,
+          "top20_hits": 1,
+          "target_numbers": [
+            1,
+            11,
+            35,
+            40,
+            44,
+            47
+          ]
+        }
+      ],
+      "interpretation": "ranking weak or below simple baseline in this window"
+    },
+    {
+      "window_id": "draws_4170_4184",
+      "draw_start": 4170,
+      "draw_end": 4184,
+      "records_count": 15,
+      "window_low_confidence": false,
+      "cruncher_top6_hit_rate": 0.111111,
+      "cruncher_top10_hit_rate": 0.08,
+      "cruncher_top20_hit_rate": 0.093333,
+      "cruncher_avg_top10_hits": 0.8,
+      "random_expected_hits": 1.071429,
+      "frequency_baseline_hits": 1.214286,
+      "recency_baseline_hits": 0.214286,
+      "cruncher_minus_random": -0.271429,
+      "cruncher_minus_frequency": -0.414286,
+      "cruncher_minus_recency": 0.585714,
+      "ranking_signal_quality_window": "weak",
+      "best_hits_top10_avg": 1.066667,
+      "worst_targets": [
+        {
+          "target_draw": 4170,
+          "top10_hits": 0,
+          "top20_hits": 1,
+          "target_numbers": [
+            23,
+            28,
+            35,
+            47,
+            52,
+            54
+          ]
+        },
+        {
+          "target_draw": 4174,
+          "top10_hits": 0,
+          "top20_hits": 1,
+          "target_numbers": [
+            5,
+            11,
+            12,
+            13,
+            29,
+            44
+          ]
+        },
+        {
+          "target_draw": 4176,
+          "top10_hits": 0,
+          "top20_hits": 1,
+          "target_numbers": [
+            5,
+            8,
+            10,
+            29,
+            54,
+            56
+          ]
+        },
+        {
+          "target_draw": 4179,
+          "top10_hits": 0,
+          "top20_hits": 1,
+          "target_numbers": [
+            6,
+            15,
+            26,
+            35,
+            50,
+            53
+          ]
+        },
+        {
+          "target_draw": 4172,
+          "top10_hits": 1,
+          "top20_hits": 1,
+          "target_numbers": [
+            8,
+            11,
+            34,
+            38,
+            44,
+            54
+          ]
+        }
+      ],
+      "interpretation": "ranking weak or below simple baseline in this window"
+    },
+    {
+      "window_id": "draws_4185_4199",
+      "draw_start": 4185,
+      "draw_end": 4199,
+      "records_count": 15,
+      "window_low_confidence": false,
+      "cruncher_top6_hit_rate": 0.133333,
+      "cruncher_top10_hit_rate": 0.1,
+      "cruncher_top20_hit_rate": 0.103333,
+      "cruncher_avg_top10_hits": 1.0,
+      "random_expected_hits": 1.071429,
+      "frequency_baseline_hits": 0.928571,
+      "recency_baseline_hits": 0.571429,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 0.071429,
+      "cruncher_minus_recency": 0.428571,
+      "ranking_signal_quality_window": "weak",
+      "best_hits_top10_avg": 1.066667,
+      "worst_targets": [
+        {
+          "target_draw": 4186,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            4,
+            7,
+            23,
+            34,
+            37,
+            55
+          ]
+        },
+        {
+          "target_draw": 4192,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            7,
+            16,
+            27,
+            29,
+            34,
+            37
+          ]
+        },
+        {
+          "target_draw": 4188,
+          "top10_hits": 0,
+          "top20_hits": 1,
+          "target_numbers": [
+            2,
+            29,
+            31,
+            43,
+            45,
+            52
+          ]
+        },
+        {
+          "target_draw": 4193,
+          "top10_hits": 0,
+          "top20_hits": 1,
+          "target_numbers": [
+            4,
+            34,
+            35,
+            39,
+            51,
+            56
+          ]
+        },
+        {
+          "target_draw": 4199,
+          "top10_hits": 1,
+          "top20_hits": 1,
+          "target_numbers": [
+            11,
+            34,
+            38,
+            47,
+            48,
+            52
+          ]
+        }
+      ],
+      "interpretation": "ranking weak or below simple baseline in this window"
+    },
+    {
+      "window_id": "draws_4200_4214",
+      "draw_start": 4200,
+      "draw_end": 4214,
+      "records_count": 15,
+      "window_low_confidence": false,
+      "cruncher_top6_hit_rate": 0.111111,
+      "cruncher_top10_hit_rate": 0.1,
+      "cruncher_top20_hit_rate": 0.1,
+      "cruncher_avg_top10_hits": 1.0,
+      "random_expected_hits": 1.071429,
+      "frequency_baseline_hits": 1.285714,
+      "recency_baseline_hits": 0.5,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": -0.285714,
+      "cruncher_minus_recency": 0.5,
+      "ranking_signal_quality_window": "weak",
+      "best_hits_top10_avg": 1.2,
+      "worst_targets": [
+        {
+          "target_draw": 4207,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            11,
+            30,
+            33,
+            35,
+            46,
+            48
+          ]
+        },
+        {
+          "target_draw": 4204,
+          "top10_hits": 0,
+          "top20_hits": 1,
+          "target_numbers": [
+            4,
+            15,
+            29,
+            43,
+            44,
+            46
+          ]
+        },
+        {
+          "target_draw": 4213,
+          "top10_hits": 0,
+          "top20_hits": 1,
+          "target_numbers": [
+            7,
+            29,
+            39,
+            43,
+            47,
+            49
+          ]
+        },
+        {
+          "target_draw": 4206,
+          "top10_hits": 1,
+          "top20_hits": 1,
+          "target_numbers": [
+            4,
+            18,
+            24,
+            27,
+            45,
+            53
+          ]
+        },
+        {
+          "target_draw": 4202,
+          "top10_hits": 0,
+          "top20_hits": 2,
+          "target_numbers": [
+            6,
+            15,
+            17,
+            23,
+            27,
+            51
+          ]
+        }
+      ],
+      "interpretation": "ranking weak or below simple baseline in this window"
+    },
+    {
+      "window_id": "draws_4155_4174",
+      "draw_start": 4155,
+      "draw_end": 4174,
+      "records_count": 20,
+      "window_low_confidence": false,
+      "cruncher_top6_hit_rate": 0.133333,
+      "cruncher_top10_hit_rate": 0.095,
+      "cruncher_top20_hit_rate": 0.0825,
+      "cruncher_avg_top10_hits": 0.95,
+      "random_expected_hits": 1.071429,
+      "frequency_baseline_hits": 1.157895,
+      "recency_baseline_hits": 0.578947,
+      "cruncher_minus_random": -0.121429,
+      "cruncher_minus_frequency": -0.207895,
+      "cruncher_minus_recency": 0.371053,
+      "ranking_signal_quality_window": "weak",
+      "best_hits_top10_avg": 1.1,
+      "worst_targets": [
+        {
+          "target_draw": 4155,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            3,
+            4,
+            8,
+            26,
+            31,
+            37
+          ]
+        },
+        {
+          "target_draw": 4161,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            12,
+            27,
+            33,
+            45,
+            48,
+            52
+          ]
+        },
+        {
+          "target_draw": 4167,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            3,
+            18,
+            34,
+            36,
+            41,
+            48
+          ]
+        },
+        {
+          "target_draw": 4162,
+          "top10_hits": 0,
+          "top20_hits": 1,
+          "target_numbers": [
+            8,
+            18,
+            26,
+            29,
+            35,
+            56
+          ]
+        },
+        {
+          "target_draw": 4170,
+          "top10_hits": 0,
+          "top20_hits": 1,
+          "target_numbers": [
+            23,
+            28,
+            35,
+            47,
+            52,
+            54
+          ]
+        }
+      ],
+      "interpretation": "ranking weak or below simple baseline in this window"
+    },
+    {
+      "window_id": "draws_4175_4194",
+      "draw_start": 4175,
+      "draw_end": 4194,
+      "records_count": 20,
+      "window_low_confidence": false,
+      "cruncher_top6_hit_rate": 0.116667,
+      "cruncher_top10_hit_rate": 0.085,
+      "cruncher_top20_hit_rate": 0.095,
+      "cruncher_avg_top10_hits": 0.85,
+      "random_expected_hits": 1.071429,
+      "frequency_baseline_hits": 0.894737,
+      "recency_baseline_hits": 0.473684,
+      "cruncher_minus_random": -0.221429,
+      "cruncher_minus_frequency": -0.044737,
+      "cruncher_minus_recency": 0.376316,
+      "ranking_signal_quality_window": "weak",
+      "best_hits_top10_avg": 1.1,
+      "worst_targets": [
+        {
+          "target_draw": 4186,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            4,
+            7,
+            23,
+            34,
+            37,
+            55
+          ]
+        },
+        {
+          "target_draw": 4192,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            7,
+            16,
+            27,
+            29,
+            34,
+            37
+          ]
+        },
+        {
+          "target_draw": 4176,
+          "top10_hits": 0,
+          "top20_hits": 1,
+          "target_numbers": [
+            5,
+            8,
+            10,
+            29,
+            54,
+            56
+          ]
+        },
+        {
+          "target_draw": 4179,
+          "top10_hits": 0,
+          "top20_hits": 1,
+          "target_numbers": [
+            6,
+            15,
+            26,
+            35,
+            50,
+            53
+          ]
+        },
+        {
+          "target_draw": 4188,
+          "top10_hits": 0,
+          "top20_hits": 1,
+          "target_numbers": [
+            2,
+            29,
+            31,
+            43,
+            45,
+            52
+          ]
+        }
+      ],
+      "interpretation": "ranking weak or below simple baseline in this window"
+    },
+    {
+      "window_id": "draws_4195_4214",
+      "draw_start": 4195,
+      "draw_end": 4214,
+      "records_count": 20,
+      "window_low_confidence": false,
+      "cruncher_top6_hit_rate": 0.125,
+      "cruncher_top10_hit_rate": 0.105,
+      "cruncher_top20_hit_rate": 0.1075,
+      "cruncher_avg_top10_hits": 1.05,
+      "random_expected_hits": 1.071429,
+      "frequency_baseline_hits": 0.842105,
+      "recency_baseline_hits": 0.421053,
+      "cruncher_minus_random": -0.021429,
+      "cruncher_minus_frequency": 0.207895,
+      "cruncher_minus_recency": 0.628947,
+      "ranking_signal_quality_window": "weak",
+      "best_hits_top10_avg": 1.15,
+      "worst_targets": [
+        {
+          "target_draw": 4207,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            11,
+            30,
+            33,
+            35,
+            46,
+            48
+          ]
+        },
+        {
+          "target_draw": 4204,
+          "top10_hits": 0,
+          "top20_hits": 1,
+          "target_numbers": [
+            4,
+            15,
+            29,
+            43,
+            44,
+            46
+          ]
+        },
+        {
+          "target_draw": 4213,
+          "top10_hits": 0,
+          "top20_hits": 1,
+          "target_numbers": [
+            7,
+            29,
+            39,
+            43,
+            47,
+            49
+          ]
+        },
+        {
+          "target_draw": 4199,
+          "top10_hits": 1,
+          "top20_hits": 1,
+          "target_numbers": [
+            11,
+            34,
+            38,
+            47,
+            48,
+            52
+          ]
+        },
+        {
+          "target_draw": 4206,
+          "top10_hits": 1,
+          "top20_hits": 1,
+          "target_numbers": [
+            4,
+            18,
+            24,
+            27,
+            45,
+            53
+          ]
+        }
+      ],
+      "interpretation": "ranking weak or below simple baseline in this window"
+    },
+    {
+      "window_id": "draws_4155_4214",
+      "draw_start": 4155,
+      "draw_end": 4214,
+      "records_count": 60,
+      "window_low_confidence": false,
+      "cruncher_top6_hit_rate": 0.125,
+      "cruncher_top10_hit_rate": 0.095,
+      "cruncher_top20_hit_rate": 0.095,
+      "cruncher_avg_top10_hits": 0.95,
+      "random_expected_hits": 1.071429,
+      "frequency_baseline_hits": 1.067797,
+      "recency_baseline_hits": 0.474576,
+      "cruncher_minus_random": -0.121429,
+      "cruncher_minus_frequency": -0.117797,
+      "cruncher_minus_recency": 0.475424,
+      "ranking_signal_quality_window": "weak",
+      "best_hits_top10_avg": 1.116667,
+      "worst_targets": [
+        {
+          "target_draw": 4155,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            3,
+            4,
+            8,
+            26,
+            31,
+            37
+          ]
+        },
+        {
+          "target_draw": 4161,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            12,
+            27,
+            33,
+            45,
+            48,
+            52
+          ]
+        },
+        {
+          "target_draw": 4167,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            3,
+            18,
+            34,
+            36,
+            41,
+            48
+          ]
+        },
+        {
+          "target_draw": 4186,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            4,
+            7,
+            23,
+            34,
+            37,
+            55
+          ]
+        },
+        {
+          "target_draw": 4192,
+          "top10_hits": 0,
+          "top20_hits": 0,
+          "target_numbers": [
+            7,
+            16,
+            27,
+            29,
+            34,
+            37
+          ]
+        }
+      ],
+      "interpretation": "ranking weak or below simple baseline in this window"
+    }
+  ],
+  "summary": {
+    "consistent_failure": true,
+    "localized_signal": false,
+    "best_window": "draws_4195_4214",
+    "worst_window": "draws_4170_4184",
+    "recommendation": "diagnostic_only"
+  }
+}

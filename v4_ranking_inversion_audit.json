@@ -1,0 +1,113 @@
+{
+  "version": "V4.4-ranking-inversion-audit",
+  "generated_at": "2026-05-22T19:49:40.960923+00:00",
+  "input_source": "v4_replay_memory.json",
+  "input_state": {
+    "available": true,
+    "path": "v4_replay_memory.json",
+    "raw_records_count": 60
+  },
+  "records_count": 60,
+  "segmented_bands": {
+    "rank_1_6": {
+      "predicted_count": 360,
+      "observed_hits": 45,
+      "hit_rate": 0.125,
+      "lift_vs_random": 0.017857,
+      "lift_vs_rank_41_56": 0.015625,
+      "lift_vs_all": 0.017857,
+      "inversion_flag": false
+    },
+    "rank_7_10": {
+      "predicted_count": 240,
+      "observed_hits": 12,
+      "hit_rate": 0.05,
+      "lift_vs_random": -0.057143,
+      "lift_vs_rank_41_56": -0.059375,
+      "lift_vs_all": -0.057143,
+      "inversion_flag": true
+    },
+    "rank_11_20": {
+      "predicted_count": 600,
+      "observed_hits": 57,
+      "hit_rate": 0.095,
+      "lift_vs_random": -0.012143,
+      "lift_vs_rank_41_56": -0.014375,
+      "lift_vs_all": -0.012143,
+      "inversion_flag": true
+    },
+    "rank_21_40": {
+      "predicted_count": 1200,
+      "observed_hits": 141,
+      "hit_rate": 0.1175,
+      "lift_vs_random": 0.010357,
+      "lift_vs_rank_41_56": 0.008125,
+      "lift_vs_all": 0.010357,
+      "inversion_flag": false
+    },
+    "rank_41_56": {
+      "predicted_count": 960,
+      "observed_hits": 105,
+      "hit_rate": 0.109375,
+      "lift_vs_random": 0.002232,
+      "lift_vs_rank_41_56": 0.0,
+      "lift_vs_all": 0.002232,
+      "inversion_flag": false
+    }
+  },
+  "cumulative_bands": {
+    "top6": {
+      "predicted_count": 360,
+      "observed_hits": 45,
+      "hit_rate": 0.125,
+      "lift_vs_random": 0.017857,
+      "lift_vs_rank_41_56": 0.015625,
+      "lift_vs_all": 0.017857,
+      "inversion_flag": false
+    },
+    "top10": {
+      "predicted_count": 600,
+      "observed_hits": 57,
+      "hit_rate": 0.095,
+      "lift_vs_random": -0.012143,
+      "lift_vs_rank_41_56": -0.014375,
+      "lift_vs_all": -0.012143,
+      "inversion_flag": true
+    },
+    "top20": {
+      "predicted_count": 1200,
+      "observed_hits": 114,
+      "hit_rate": 0.095,
+      "lift_vs_random": -0.012143,
+      "lift_vs_rank_41_56": -0.014375,
+      "lift_vs_all": -0.012143,
+      "inversion_flag": true
+    },
+    "top40": {
+      "predicted_count": 2400,
+      "observed_hits": 255,
+      "hit_rate": 0.10625,
+      "lift_vs_random": -0.000893,
+      "lift_vs_rank_41_56": -0.003125,
+      "lift_vs_all": -0.000893,
+      "inversion_flag": true
+    },
+    "all56": {
+      "predicted_count": 3360,
+      "observed_hits": 360,
+      "hit_rate": 0.107143,
+      "lift_vs_random": 0.0,
+      "lift_vs_rank_41_56": -0.002232,
+      "lift_vs_all": 0.0,
+      "inversion_flag": true
+    }
+  },
+  "inversion_tests": {
+    "top10_underperforms_rest": true,
+    "rank_21_40_beats_top10": true,
+    "mid_bucket_beats_high_bucket": false,
+    "score_monotonicity_broken": true
+  },
+  "ranking_failure_mode": "inverted",
+  "recommendation": "diagnostic_only"
+}

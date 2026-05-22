@@ -1,6 +1,6 @@
 {
   "version": "V4.4-diversified-vs-original-eval",
-  "generated_at": "2026-05-21T20:57:07.442193+00:00",
+  "generated_at": "2026-05-22T19:49:40.284621+00:00",
   "source_files": {
     "diversity": "v4_diversity_output.json",
     "decision_slate": "v4_decision_slate.json",
@@ -9,7 +9,7 @@
   "replay_input_state": {
     "available": true,
     "path": "v4_replay_memory.json",
-    "raw_records_count": 30
+    "raw_records_count": 60
   },
   "original": {
     "count": 10,
@@ -40,10 +40,10 @@
     "No new combinations are generated and no scores are modified."
   ],
   "hit_evaluation_available": true,
-  "records_count": 30,
-  "best_hits_original_avg": 0.6,
-  "best_hits_diversified_avg": 0.8,
-  "best_hits_balanced_avg": 0.8,
-  "diversified_minus_original": 0.2,
+  "records_count": 60,
+  "best_hits_original_avg": 0.683333,
+  "best_hits_diversified_avg": 0.9,
+  "best_hits_balanced_avg": 0.9,
+  "diversified_minus_original": 0.216667,
   "recommendation": "diagnostic_only"
 }
