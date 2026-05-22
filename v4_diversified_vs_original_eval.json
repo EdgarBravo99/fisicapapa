@@ -1,6 +1,6 @@
 {
   "version": "V4.4-diversified-vs-original-eval",
-  "generated_at": "2026-05-22T20:19:16.414064+00:00",
+  "generated_at": "2026-05-22T20:39:22.280381+00:00",
   "source_files": {
     "diversity": "v4_diversity_output.json",
     "decision_slate": "v4_decision_slate.json",
@@ -12,10 +12,10 @@
     "raw_records_count": 60
   },
   "original": {
-    "count": 0,
-    "average_overlap": 0.0,
-    "unique_numbers_covered": 0,
-    "average_score_reference": 0.0,
+    "count": 10,
+    "average_overlap": 0.619048,
+    "unique_numbers_covered": 9,
+    "average_score_reference": 81.77812,
     "combinations": null
   },
   "diversified": {
@@ -26,20 +26,24 @@
     "combinations": null
   },
   "balanced": {
-    "count": 0,
-    "average_overlap": 0.0,
-    "unique_numbers_covered": 0,
-    "average_score_reference": 0.0,
+    "count": 10,
+    "average_overlap": 0.45037,
+    "unique_numbers_covered": 13,
+    "average_score_reference": 80.72657,
     "combinations": null
   },
-  "coverage_gain": 13,
-  "score_loss_from_diversification": -80.72657,
+  "coverage_gain": 4,
+  "score_loss_from_diversification": 1.05155,
   "comparison_notes": [
     "Original comes from decision_slate.review_sets.pure_rank_top when available.",
     "Diversified comes from decision_slate.review_sets.diversified_top or v4_diversity_output.json.",
     "No new combinations are generated and no scores are modified."
   ],
-  "hit_evaluation_available": false,
-  "reason": "Replay records do not expose comparable original/diversified combination hits.",
+  "hit_evaluation_available": true,
+  "records_count": 60,
+  "best_hits_original_avg": 0.683333,
+  "best_hits_diversified_avg": 0.9,
+  "best_hits_balanced_avg": 0.9,
+  "diversified_minus_original": 0.216667,
   "recommendation": "diagnostic_only"
 }

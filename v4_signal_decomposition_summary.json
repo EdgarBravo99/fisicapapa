@@ -1,6 +1,6 @@
 {
   "version": "V4.4-signal-decomposition-summary",
-  "generated_at": "2026-05-22T20:19:17.349948+00:00",
+  "generated_at": "2026-05-22T20:39:23.157508+00:00",
   "input_files": {
     "windows": "v4_replay_window_diagnostics.json",
     "ranking": "v4_ranking_inversion_audit.json",

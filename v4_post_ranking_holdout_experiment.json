@@ -1,6 +1,6 @@
 {
   "version": "V4.4-post-ranking-holdout-experiment",
-  "generated_at": "2026-05-22T20:33:07.338505+00:00",
+  "generated_at": "2026-05-22T20:39:23.698237+00:00",
   "mode": "diagnostic_only",
   "candidate_variant": "top6_preserved_plus_frequency_no_duplicates",
   "input_source": "v4_replay_memory.json",

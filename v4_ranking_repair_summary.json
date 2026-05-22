@@ -1,6 +1,6 @@
 {
   "version": "V4.4-ranking-repair-summary-gate",
-  "generated_at": "2026-05-22T20:19:17.836775+00:00",
+  "generated_at": "2026-05-22T20:39:23.590538+00:00",
   "input_files": {
     "ranking_repair_experiment": "v4_ranking_repair_experiment.json",
     "ranking_repair_window_stability": "v4_ranking_repair_window_stability.json",

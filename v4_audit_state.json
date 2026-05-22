@@ -1,65 +1,38 @@
 {
   "version": "V4.4-local-audit-state",
-  "generated_at": "2026-05-22T20:19:27.027989+00:00",
+  "generated_at": "2026-05-22T20:39:32.688500+00:00",
   "git": {
     "branch": "main",
     "has_uncommitted_changes": true,
-    "conflict_detected": true,
+    "conflict_detected": false,
     "status_entries": [
-      "M  README.md",
-      "A  tools/v4_combination_repair_experiment.py",
-      "A  tools/v4_combination_repair_experiment_smoke_test.py",
-      "M  tools/v4_decision_audit_pack.py",
-      "A  tools/v4_ranking_repair_experiment.py",
-      "A  tools/v4_ranking_repair_experiment_smoke_test.py",
-      "A  tools/v4_ranking_repair_summary_gate.py",
-      "A  tools/v4_ranking_repair_summary_gate_smoke_test.py",
-      "A  tools/v4_ranking_repair_window_stability.py",
-      "A  tools/v4_ranking_repair_window_stability_smoke_test.py",
-      "M  v4-decision-audit-panel.js",
-      "UU v4_audit_state.json",
-      "UU v4_baseline_benchmark.json",
-      "UU v4_benchmark_hardening.json",
-      "UU v4_benchmark_stability.json",
-      "UU v4_benchmark_summary.json",
-      "UU v4_calibration_diagnostics.json",
-      "UU v4_candidate_pool_audit.json",
-      "AM v4_combination_repair_experiment.json",
-      "UU v4_decision_slate.json",
-      "UU v4_diversified_vs_original_eval.json",
-      "UU v4_diversity_output.json",
-      "UU v4_draw_failure_report.json",
-      "UU v4_frequency_dominance_audit.json",
-      "UU v4_physics_regime_analysis.json",
-      "UU v4_physics_regime_timeline.json",
-      "UU v4_ranking_inversion_audit.json",
-      "AM v4_ranking_repair_experiment.json",
-      "AM v4_ranking_repair_summary.json",
-      "AM v4_ranking_repair_window_stability.json",
-      "UU v4_replay_qualification.json",
-      "UU v4_replay_window_diagnostics.json",
-      "UU v4_signal_decomposition_summary.json"
+      "M v4_audit_state.json",
+      " M v4_baseline_benchmark.json",
+      " M v4_benchmark_hardening.json",
+      " M v4_benchmark_stability.json",
+      " M v4_benchmark_summary.json",
+      " M v4_calibration_diagnostics.json",
+      " M v4_candidate_pool_audit.json",
+      " M v4_combination_repair_experiment.json",
+      " M v4_decision_slate.json",
+      " M v4_diversified_vs_original_eval.json",
+      " M v4_diversity_output.json",
+      " M v4_draw_failure_report.json",
+      " M v4_frequency_dominance_audit.json",
+      " M v4_physics_regime_analysis.json",
+      " M v4_physics_regime_timeline.json",
+      " M v4_post_ranking_holdout_experiment.json",
+      " M v4_post_ranking_holdout_summary.json",
+      " M v4_post_ranking_rolling_validation.json",
+      " M v4_ranking_inversion_audit.json",
+      " M v4_ranking_repair_experiment.json",
+      " M v4_ranking_repair_summary.json",
+      " M v4_ranking_repair_window_stability.json",
+      " M v4_replay_qualification.json",
+      " M v4_replay_window_diagnostics.json",
+      " M v4_signal_decomposition_summary.json"
     ],
-    "conflicts": [
-      "UU v4_audit_state.json",
-      "UU v4_baseline_benchmark.json",
-      "UU v4_benchmark_hardening.json",
-      "UU v4_benchmark_stability.json",
-      "UU v4_benchmark_summary.json",
-      "UU v4_calibration_diagnostics.json",
-      "UU v4_candidate_pool_audit.json",
-      "UU v4_decision_slate.json",
-      "UU v4_diversified_vs_original_eval.json",
-      "UU v4_diversity_output.json",
-      "UU v4_draw_failure_report.json",
-      "UU v4_frequency_dominance_audit.json",
-      "UU v4_physics_regime_analysis.json",
-      "UU v4_physics_regime_timeline.json",
-      "UU v4_ranking_inversion_audit.json",
-      "UU v4_replay_qualification.json",
-      "UU v4_replay_window_diagnostics.json",
-      "UU v4_signal_decomposition_summary.json"
-    ]
+    "conflicts": []
   },
   "critical_files": {
     "AGENTS.md": {
@@ -68,7 +41,7 @@
     },
     "README.md": {
       "exists": true,
-      "size_bytes": 28882
+      "size_bytes": 30682
     },
     "index.html": {
       "exists": true,
@@ -92,7 +65,7 @@
     },
     "v4-decision-audit-panel.js": {
       "exists": true,
-      "size_bytes": 29871
+      "size_bytes": 33630
     }
   },
   "generated_outputs": {
@@ -143,8 +116,7 @@
     "suspicious_second_runners": []
   },
   "warnings": [
-    "Hay cambios locales sin commit.",
-    "Hay conflictos Git activos."
+    "Hay cambios locales sin commit."
   ],
   "recommendation": "review_warnings"
 }
