@@ -12,6 +12,16 @@
     qualification: 'v4_replay_qualification.json',
     slate: 'v4_decision_slate.json',
     auditState: 'v4_audit_state.json',
+    benchmarkHardening: 'v4_benchmark_hardening.json',
+    calibration: 'v4_calibration_diagnostics.json',
+    diversifiedEval: 'v4_diversified_vs_original_eval.json',
+    benchmarkStability: 'v4_benchmark_stability.json',
+    benchmarkSummary: 'v4_benchmark_summary.json',
+    replayWindows: 'v4_replay_window_diagnostics.json',
+    rankingInversion: 'v4_ranking_inversion_audit.json',
+    frequencyDominance: 'v4_frequency_dominance_audit.json',
+    drawFailure: 'v4_draw_failure_report.json',
+    signalDecomposition: 'v4_signal_decomposition_summary.json',
   };
 
   const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -177,6 +187,79 @@
       </article>`;
   }
 
+  function renderBenchmarkHardening(summary, hardening, calibration, stability) {
+    if (!summary && !hardening && !calibration && !stability) {
+      return emptyCard('Benchmark Hardening', 'Sin reportes endurecidos. Benchmark endurecido. No activa prior.');
+    }
+    const signal = summary?.benchmark_signal_quality || 'unknown';
+    const ranking = summary?.ranking_signal_quality || calibration?.ranking_signal_quality || 'unknown';
+    const stabilityValue = summary?.stability || stability?.stability || 'unknown';
+    const unlock = summary?.can_unlock_replay_prior === true;
+    const future = summary?.eligible_for_future_experiment === true;
+    return `
+      <article class="taste-card">
+        <div class="taste-card-heading">
+          <div>
+            <p class="taste-eyebrow">Benchmark Hardening</p>
+            <h3>Calibracion y estabilidad</h3>
+          </div>
+          <span class="taste-chip taste-chip-warn">diagnostic_only</span>
+        </div>
+        <div class="bento-status-grid mt-4">
+          <article class="taste-metric"><span>Benchmark</span><b>${esc(signal)}</b></article>
+          <article class="taste-metric"><span>Ranking</span><b>${esc(ranking)}</b></article>
+          <article class="taste-metric"><span>Stability</span><b>${esc(stabilityValue)}</b></article>
+          <article class="taste-metric"><span>Vs random</span><b>${fmt(summary?.cruncher_minus_random ?? hardening?.cruncher_minus_random, 3)}</b></article>
+          <article class="taste-metric"><span>Vs frecuencia</span><b>${fmt(summary?.cruncher_minus_frequency ?? hardening?.cruncher_minus_frequency, 3)}</b></article>
+          <article class="taste-metric"><span>Vs recencia</span><b>${fmt(summary?.cruncher_minus_recency ?? hardening?.cruncher_minus_recency, 3)}</b></article>
+          <article class="taste-metric"><span>Desbloquea prior</span><b>${unlock ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Experimento futuro</span><b>${future ? 'Si' : 'No'}</b></article>
+        </div>
+        <div class="taste-panel-muted mt-4">
+          <p class="taste-eyebrow">Lectura</p>
+          <p class="text-sm leading-6 text-slate-300">${esc(summary?.reason || calibration?.reason || 'Benchmark endurecido pendiente de datos suficientes.')}</p>
+        </div>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Benchmark endurecido. No activa prior. Scores internos no son probabilidades. Ventaja sobre baseline requiere estabilidad, no solo una muestra.</p>
+      </article>`;
+  }
+
+  function renderReplayFailureAnalysis(signal, windows, ranking, frequency, drawFailure) {
+    if (!signal && !windows && !ranking && !frequency && !drawFailure) {
+      return emptyCard('Replay Failure Analysis', 'Sin diagnosticos de fallas replay. Analisis de fallas replay. No activa prior.');
+    }
+    const windowSummary = windows?.summary || {};
+    const drawSummary = drawFailure?.summary || {};
+    const findings = Array.isArray(signal?.main_findings) ? signal.main_findings : [];
+    const blocked = signal?.prior_should_remain_blocked !== false;
+    return `
+      <article class="taste-card">
+        <div class="taste-card-heading">
+          <div>
+            <p class="taste-eyebrow">Replay Failure Analysis</p>
+            <h3>${esc(signal?.failure_scope || 'diagnostic_only')}</h3>
+          </div>
+          <span class="taste-chip taste-chip-warn">${blocked ? 'prior bloqueado' : 'revisar'}</span>
+        </div>
+        <div class="bento-status-grid mt-4">
+          <article class="taste-metric"><span>Records</span><b>${fmt(windows?.records_count ?? drawFailure?.records_count, 0)}</b></article>
+          <article class="taste-metric"><span>Ranking mode</span><b>${esc(signal?.ranking_failure_mode || ranking?.ranking_failure_mode)}</b></article>
+          <article class="taste-metric"><span>Frequency domina</span><b>${signal?.frequency_dominance ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Prior bloqueado</span><b>${blocked ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Best window</span><b>${esc(windowSummary.best_window)}</b></article>
+          <article class="taste-metric"><span>Worst window</span><b>${esc(windowSummary.worst_window)}</b></article>
+          <article class="taste-metric"><span>Freq - cruncher</span><b>${fmt(frequency?.frequency_minus_cruncher, 3)}</b></article>
+          <article class="taste-metric"><span>Fallos altos</span><b>${fmt(drawSummary.high_or_extreme_failures, 0)}</b></article>
+        </div>
+        <div class="taste-panel-muted mt-4">
+          <p class="taste-eyebrow">Top failure notes</p>
+          <ul class="mt-2 grid gap-1 text-sm leading-6 text-slate-300">
+            ${findings.slice(0, 5).map(item => `<li>${esc(item)}</li>`).join('') || '<li>N/D</li>'}
+          </ul>
+        </div>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Analisis de fallas replay. No activa prior. Un ranking weak no debe usarse para modificar simulacion. Frequency baseline venciendo al cruncher indica que falta senal o calibracion. Accion: ${esc(signal?.recommended_next_action || 'diagnostic_only')}</p>
+      </article>`;
+  }
+
   function renderPhysics(data) {
     if (!data) {
       return emptyCard('Evento fisico / regimen', 'Sin v4_physics_regime_analysis.json. El tracker fisico es diagnostico y no ajusta el cruncher.');
@@ -339,7 +422,26 @@
   async function render() {
     const panel = ensurePanel();
     if (!panel) return;
-    const [diversity, benchmark, physics, physicsTimeline, candidatePool, qualification, slate, auditState] = await Promise.all([
+    const [
+      diversity,
+      benchmark,
+      physics,
+      physicsTimeline,
+      candidatePool,
+      qualification,
+      slate,
+      auditState,
+      benchmarkHardening,
+      calibration,
+      diversifiedEval,
+      benchmarkStability,
+      benchmarkSummary,
+      replayWindows,
+      rankingInversion,
+      frequencyDominance,
+      drawFailure,
+      signalDecomposition,
+    ] = await Promise.all([
       loadJson(FILES.diversity),
       loadJson(FILES.benchmark),
       loadJson(FILES.physics),
@@ -348,6 +450,16 @@
       loadJson(FILES.qualification),
       loadJson(FILES.slate),
       loadJson(FILES.auditState),
+      loadJson(FILES.benchmarkHardening),
+      loadJson(FILES.calibration),
+      loadJson(FILES.diversifiedEval),
+      loadJson(FILES.benchmarkStability),
+      loadJson(FILES.benchmarkSummary),
+      loadJson(FILES.replayWindows),
+      loadJson(FILES.rankingInversion),
+      loadJson(FILES.frequencyDominance),
+      loadJson(FILES.drawFailure),
+      loadJson(FILES.signalDecomposition),
     ]);
     panel.innerHTML = `
       <div class="grid gap-4 xl:grid-cols-3">
@@ -360,6 +472,12 @@
         ${renderCandidatePool(candidatePool)}
         ${renderQualification(qualification)}
         ${renderSlate(slate)}
+      </div>
+      <div class="grid gap-4 mt-4">
+        ${renderBenchmarkHardening(benchmarkSummary, benchmarkHardening, calibration, benchmarkStability)}
+      </div>
+      <div class="grid gap-4 mt-4">
+        ${renderReplayFailureAnalysis(signalDecomposition, replayWindows, rankingInversion, frequencyDominance, drawFailure)}
       </div>
       <div class="grid gap-4 mt-4 xl:grid-cols-2">
         ${renderPhysicsTimeline(physicsTimeline)}

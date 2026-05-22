@@ -48,6 +48,46 @@ def main() -> int:
             [python, str(ROOT / "tools" / "v4_baseline_benchmark.py"), "--replay-memory", args.replay_memory, "--output", "v4_baseline_benchmark.json"],
         ),
         (
+            "benchmark hardening",
+            [python, str(ROOT / "tools" / "v4_benchmark_hardening.py"), "--replay-memory", args.replay_memory, "--output", "v4_benchmark_hardening.json"],
+        ),
+        (
+            "calibration diagnostics",
+            [python, str(ROOT / "tools" / "v4_calibration_diagnostics.py"), "--replay-memory", args.replay_memory, "--output", "v4_calibration_diagnostics.json"],
+        ),
+        (
+            "diversified vs original eval",
+            [python, str(ROOT / "tools" / "v4_diversified_vs_original_eval.py"), "--replay-memory", args.replay_memory, "--output", "v4_diversified_vs_original_eval.json"],
+        ),
+        (
+            "benchmark stability",
+            [python, str(ROOT / "tools" / "v4_benchmark_stability.py"), "--replay-memory", args.replay_memory, "--output", "v4_benchmark_stability.json"],
+        ),
+        (
+            "benchmark summary gate",
+            [python, str(ROOT / "tools" / "v4_benchmark_summary_gate.py"), "--output", "v4_benchmark_summary.json"],
+        ),
+        (
+            "replay window diagnostics",
+            [python, str(ROOT / "tools" / "v4_replay_window_diagnostics.py"), "--replay-memory", args.replay_memory, "--output", "v4_replay_window_diagnostics.json"],
+        ),
+        (
+            "ranking inversion audit",
+            [python, str(ROOT / "tools" / "v4_ranking_inversion_audit.py"), "--replay-memory", args.replay_memory, "--output", "v4_ranking_inversion_audit.json"],
+        ),
+        (
+            "frequency dominance audit",
+            [python, str(ROOT / "tools" / "v4_frequency_dominance_audit.py"), "--replay-memory", args.replay_memory, "--output", "v4_frequency_dominance_audit.json"],
+        ),
+        (
+            "draw failure report",
+            [python, str(ROOT / "tools" / "v4_draw_failure_report.py"), "--replay-memory", args.replay_memory, "--output", "v4_draw_failure_report.json"],
+        ),
+        (
+            "signal decomposition summary",
+            [python, str(ROOT / "tools" / "v4_signal_decomposition_summary.py"), "--output", "v4_signal_decomposition_summary.json"],
+        ),
+        (
             "physics regime audit",
             [python, str(ROOT / "tools" / "v4_physics_regime_audit.py"), "--weights", args.weights, "--output", "v4_physics_regime_analysis.json"],
         ),

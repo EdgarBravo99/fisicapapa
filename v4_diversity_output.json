@@ -1,6 +1,6 @@
 {
   "version": "V4.4-decision-audit-pack",
-  "generated_at": "2026-05-21T20:11:18.081706+00:00",
+  "generated_at": "2026-05-22T20:18:46.677505+00:00",
   "source_file": "resultados.json",
   "pool_source": "generator_pool",
   "score_kind": "v4_2_deep_stacking_meta_score",

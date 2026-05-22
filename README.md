@@ -537,6 +537,54 @@ El comando integrado tambien corre timeline y audit state:
 py .\tools\v4_decision_audit_pack.py
 ```
 
+## Benchmark Hardening + Calibration Diagnostics V4.4
+
+PR #25 endurece el benchmark replay sin activar ningun prior. El benchmark lite da una primera lectura; este paquete agrega comparacion contra baselines, calibracion por ranking/buckets, evaluacion de diversidad contra el top original, bootstrap simple y una compuerta de resumen.
+
+```powershell
+py .\tools\v4_benchmark_hardening.py --output v4_benchmark_hardening.json
+py .\tools\v4_calibration_diagnostics.py --output v4_calibration_diagnostics.json
+py .\tools\v4_diversified_vs_original_eval.py --output v4_diversified_vs_original_eval.json
+py .\tools\v4_benchmark_stability.py --output v4_benchmark_stability.json
+py .\tools\v4_benchmark_summary_gate.py --output v4_benchmark_summary.json
+py .\tools\v4_decision_audit_pack.py
+```
+
+El hardening pregunta si el cruncher supera random, frecuencia y recencia con margen util. Si alguna baseline no tiene datos suficientes, queda `available=false` con razon clara; no se inventan historiales.
+
+La calibracion de ranking revisa si `top6`, `top10`, `top20`, `top40` y `rest` se comportan como deberian. Tambien revisa buckets por percentil cuando hay scores por numero. `ranking_signal_quality` solo puede subir si los grupos altos superan random/rest con consistencia.
+
+La evaluacion diversificada compara `pure_rank_top`, `diversified_top` y `balanced_review_set` sin generar combinaciones nuevas. Puede medir cobertura y overlap aunque no haya hits comparables; si no puede medir hits contra targets, lo declara explicitamente.
+
+El bootstrap simple evita autoengano por muestra pequena. Si el intervalo 95% cruza 0, la ventaja no es estable. Brier formal sigue desactivado porque los scores internos no son probabilidades calibradas.
+
+Para que replay sea elegible a un experimento futuro se requiere benchmark favorable contra random/frequency/recency, `ranking_signal_quality >= moderate`, ventaja estable en bootstrap, buckets altos superando al resto y slate diversificado que mejore best-of-N sin perdida excesiva.
+
+Aunque esas condiciones pasaran, PR #25 mantiene `recommendation = diagnostic_only`: no activa replay prior, physics prior, live prior, Monte Carlo ni cambia `score_kind`.
+
+## Replay Failure Analysis V4.4
+
+PR #26 analiza por que el replay sigue debil despues de ampliar la muestra. No hace mas replay, no activa prior y no cambia el motor: solo descompone la falla en ventanas, ranking, frecuencia y targets concretos.
+
+```powershell
+py .\tools\v4_replay_window_diagnostics.py --output v4_replay_window_diagnostics.json
+py .\tools\v4_ranking_inversion_audit.py --output v4_ranking_inversion_audit.json
+py .\tools\v4_frequency_dominance_audit.py --output v4_frequency_dominance_audit.json
+py .\tools\v4_draw_failure_report.py --output v4_draw_failure_report.json
+py .\tools\v4_signal_decomposition_summary.py --output v4_signal_decomposition_summary.json
+py .\tools\v4_decision_audit_pack.py
+```
+
+`v4_replay_window_diagnostics.py` separa los records por ventanas de draws. Si todas las ventanas quedan debiles, la falla es global; si solo falla un tramo, la falla puede ser de regimen o periodo.
+
+`v4_ranking_inversion_audit.py` revisa si el ranking esta plano o invertido. Un ranking `weak`, `flat` o `inverted` significa que los numeros altos no estan ganando de forma consistente contra random/rest, asi que no debe usarse para modificar simulacion.
+
+`v4_frequency_dominance_audit.py` reconstruye una frecuencia progresiva usando solo targets anteriores dentro del replay. Si frequency vence al cruncher, falta senal o calibracion: no se debe convertir esa diferencia en prior sin entender el origen.
+
+`v4_draw_failure_report.py` lista target por target: hits top10/top20, numeros ganadores omitidos, numeros sobreestimados que fallaron y numeros subestimados que salieron. Esto sirve para ver fallas extremas sin inventar combinaciones.
+
+`v4_signal_decomposition_summary.py` integra todo y mantiene `prior_should_remain_blocked = true`. Random/frequency ganando, ranking weak o falla global bloquean replay prior. El siguiente paso recomendado es mejorar generacion de senal o ranking antes de hacer mas replay o tocar Monte Carlo.
+
 ## Legacy Snapshot Classifier
 
 `tools/v4_legacy_snapshot_classifier.py` clasifica snapshots antiguos para conservar diagnostico sin contaminar memoria aplicada.

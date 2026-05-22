@@ -1,0 +1,576 @@
+{
+  "version": "V4.4-benchmark-hardening",
+  "generated_at": "2026-05-22T19:49:40.037763+00:00",
+  "input_source": "v4_replay_memory.json",
+  "input_state": {
+    "available": true,
+    "path": "v4_replay_memory.json",
+    "raw_records_count": 60
+  },
+  "records_count": 60,
+  "leakage_passed_count": 60,
+  "cruncher_top6_hit_rate": 0.125,
+  "cruncher_top10_hit_rate": 0.095,
+  "cruncher_top20_hit_rate": 0.095,
+  "best_hits_top10_avg": 1.116667,
+  "best_hits_top20_avg": 1.116667,
+  "random_expected_hits": 1.071429,
+  "frequency_baseline_hits": {
+    "available": true,
+    "records_evaluated": 59,
+    "k": 10,
+    "average_hits": 1.067797
+  },
+  "recency_baseline_hits": {
+    "available": true,
+    "records_evaluated": 59,
+    "k": 6,
+    "average_hits": 0.474576
+  },
+  "cruncher_minus_random": -0.121429,
+  "cruncher_minus_frequency": -0.117797,
+  "cruncher_minus_recency": 0.475424,
+  "record_edges": [
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": null,
+      "recency_hits_top6": null,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": null,
+      "cruncher_minus_recency": null
+    },
+    {
+      "cruncher_hits_top10": 2.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": 0.928571,
+      "cruncher_minus_frequency": 2,
+      "cruncher_minus_recency": 2
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 3.0,
+      "recency_hits_top6": 3.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": -2,
+      "cruncher_minus_recency": -2
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 1,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 2.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": 0.928571,
+      "cruncher_minus_frequency": 1,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 2.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 2.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": 0.928571,
+      "cruncher_minus_frequency": 0,
+      "cruncher_minus_recency": 2
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": 0,
+      "cruncher_minus_recency": 0
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": -1,
+      "cruncher_minus_recency": 0
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 2.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": -1,
+      "cruncher_minus_recency": 0
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 0,
+      "cruncher_minus_recency": 0
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": 0,
+      "cruncher_minus_recency": 0
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 2.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": -1,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": -1,
+      "cruncher_minus_recency": -1
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 0,
+      "cruncher_minus_recency": 0
+    },
+    {
+      "cruncher_hits_top10": 3.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": 1.928571,
+      "cruncher_minus_frequency": 2,
+      "cruncher_minus_recency": 3
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 2.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": -2,
+      "cruncher_minus_recency": -1
+    },
+    {
+      "cruncher_hits_top10": 2.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": 0.928571,
+      "cruncher_minus_frequency": 2,
+      "cruncher_minus_recency": 2
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 2.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": -1,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 2.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": -1,
+      "cruncher_minus_recency": 0
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": -1,
+      "cruncher_minus_recency": -1
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 0,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 2.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": -2,
+      "cruncher_minus_recency": 0
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 0,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 2.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": -2,
+      "cruncher_minus_recency": -1
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 2.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": -2,
+      "cruncher_minus_recency": 0
+    },
+    {
+      "cruncher_hits_top10": 2.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": 0.928571,
+      "cruncher_minus_frequency": 2,
+      "cruncher_minus_recency": 2
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 0,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 1,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 1,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 3.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": -2,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 2.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": 0.928571,
+      "cruncher_minus_frequency": 2,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": 0,
+      "cruncher_minus_recency": -1
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 0,
+      "cruncher_minus_recency": 0
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": 0,
+      "cruncher_minus_recency": -1
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 0,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 2.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": -1,
+      "cruncher_minus_recency": 0
+    },
+    {
+      "cruncher_hits_top10": 2.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": 0.928571,
+      "cruncher_minus_frequency": 1,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": 0,
+      "cruncher_minus_recency": 0
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 2.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": -2,
+      "cruncher_minus_recency": -1
+    },
+    {
+      "cruncher_hits_top10": 2.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 3.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": 0.928571,
+      "cruncher_minus_frequency": -1,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 2.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": 0.928571,
+      "cruncher_minus_frequency": 2,
+      "cruncher_minus_recency": 2
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 0,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": -1,
+      "cruncher_minus_recency": -1
+    },
+    {
+      "cruncher_hits_top10": 2.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": 0.928571,
+      "cruncher_minus_frequency": 1,
+      "cruncher_minus_recency": 2
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 1,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 0,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 1,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": -1,
+      "cruncher_minus_recency": -1
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 1,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 4.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": -4,
+      "cruncher_minus_recency": 0
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 1,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 2.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": -1,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": -1,
+      "cruncher_minus_recency": 0
+    },
+    {
+      "cruncher_hits_top10": 2.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": 0.928571,
+      "cruncher_minus_frequency": 1,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 2.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": -1,
+      "cruncher_minus_recency": 0
+    },
+    {
+      "cruncher_hits_top10": 2.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": 0.928571,
+      "cruncher_minus_frequency": 2,
+      "cruncher_minus_recency": 2
+    },
+    {
+      "cruncher_hits_top10": 1.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 0.0,
+      "cruncher_minus_random": -0.071429,
+      "cruncher_minus_frequency": 0,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 2.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 1.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": 0.928571,
+      "cruncher_minus_frequency": 1,
+      "cruncher_minus_recency": 1
+    },
+    {
+      "cruncher_hits_top10": 0.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 2.0,
+      "recency_hits_top6": 2.0,
+      "cruncher_minus_random": -1.071429,
+      "cruncher_minus_frequency": -2,
+      "cruncher_minus_recency": -2
+    },
+    {
+      "cruncher_hits_top10": 2.0,
+      "random_hits_top10": 1.071429,
+      "frequency_hits_top10": 0.0,
+      "recency_hits_top6": 1.0,
+      "cruncher_minus_random": 0.928571,
+      "cruncher_minus_frequency": 2,
+      "cruncher_minus_recency": 1
+    }
+  ],
+  "recommendation": "diagnostic_only"
+}

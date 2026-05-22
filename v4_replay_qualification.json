@@ -1,12 +1,12 @@
 {
   "version": "V4.4-replay-qualification-gate",
-  "generated_at": "2026-05-21T20:11:18.902443+00:00",
+  "generated_at": "2026-05-22T20:18:48.397735+00:00",
   "inputs": {
     "replay_memory": {
       "available": true,
       "path": "v4_replay_memory.json",
-      "records_replay": 30,
-      "leakage_passed_count": 30,
+      "records_replay": 60,
+      "leakage_passed_count": 60,
       "prior_quality": "diagnostic_only",
       "ranking_signal_quality": "weak"
     },
@@ -17,7 +17,7 @@
     "benchmark": {
       "available": true,
       "path": "v4_baseline_benchmark.json",
-      "records_count": 30,
+      "records_count": 60,
       "signal_quality": "weak",
       "recommendation": "diagnostic_only"
     },

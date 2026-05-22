@@ -1,0 +1,29 @@
+{
+  "version": "V4.4-benchmark-summary-gate",
+  "generated_at": "2026-05-22T19:49:40.666925+00:00",
+  "input_files": {
+    "benchmark_hardening": "v4_benchmark_hardening.json",
+    "calibration_diagnostics": "v4_calibration_diagnostics.json",
+    "diversified_vs_original_eval": "v4_diversified_vs_original_eval.json",
+    "benchmark_stability": "v4_benchmark_stability.json",
+    "replay_qualification": "v4_replay_qualification.json"
+  },
+  "recommendation": "diagnostic_only",
+  "benchmark_signal_quality": "weak",
+  "ranking_signal_quality": "weak",
+  "stability": "unstable",
+  "diversification_value": "useful_for_hits_and_coverage",
+  "cruncher_minus_random": -0.121429,
+  "cruncher_minus_frequency": -0.117797,
+  "cruncher_minus_recency": 0.475424,
+  "replay_gate_currently_allows_prior": false,
+  "can_unlock_replay_prior": false,
+  "eligible_for_future_experiment": false,
+  "reason": "Cruncher does not beat every available baseline. Ranking or bucket calibration is not strong enough. Benchmark edge is not statistically stable enough.",
+  "required_next_evidence": [
+    "cruncher beats random/frequency/recency with stable margin",
+    "ranking_signal_quality >= moderate",
+    "top buckets outperform rest",
+    "diversified slate improves best-of-N without excessive score loss"
+  ]
+}

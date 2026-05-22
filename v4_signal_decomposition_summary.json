@@ -1,0 +1,30 @@
+{
+  "version": "V4.4-signal-decomposition-summary",
+  "generated_at": "2026-05-22T19:49:41.304924+00:00",
+  "input_files": {
+    "windows": "v4_replay_window_diagnostics.json",
+    "ranking": "v4_ranking_inversion_audit.json",
+    "frequency": "v4_frequency_dominance_audit.json",
+    "draw_report": "v4_draw_failure_report.json",
+    "benchmark_summary": "v4_benchmark_summary.json"
+  },
+  "missing_inputs": [],
+  "recommendation": "diagnostic_only",
+  "failure_scope": "global",
+  "ranking_failure_mode": "inverted",
+  "frequency_dominance": true,
+  "combination_issue": true,
+  "prior_should_remain_blocked": true,
+  "main_findings": [
+    "Replay 60 records analyzed as diagnostic_only.",
+    "Frequency baseline beats cruncher in progressive replay comparison.",
+    "Ranking failure mode detected: inverted.",
+    "Benchmark summary remains weak."
+  ],
+  "recommended_next_action": "improve_signal_generation_or_ranking_before_more_replay",
+  "do_not_do": [
+    "do not enable replay prior",
+    "do not modify Monte Carlo based on current replay",
+    "do not add physics prior from one event"
+  ]
+}
