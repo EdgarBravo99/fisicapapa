@@ -1,8 +1,8 @@
 {
   "version": "V4.4-local-audit-state",
-  "generated_at": "2026-05-22T19:51:01.332698+00:00",
+  "generated_at": "2026-05-22T20:14:17.642212+00:00",
   "git": {
-    "branch": "codex/v44-replay-failure-analysis",
+    "branch": "codex/v44-ranking-repair-experiment",
     "has_uncommitted_changes": false,
     "conflict_detected": false,
     "status_entries": [],
@@ -11,19 +11,19 @@
   "critical_files": {
     "AGENTS.md": {
       "exists": true,
-      "size_bytes": 2396
+      "size_bytes": 2480
     },
     "README.md": {
       "exists": true,
-      "size_bytes": 26753
+      "size_bytes": 28855
     },
     "index.html": {
       "exists": true,
-      "size_bytes": 12342
+      "size_bytes": 12616
     },
     "local_cruncher_v4_2_calibrated.py": {
       "exists": true,
-      "size_bytes": 23838
+      "size_bytes": 24177
     },
     "local_cruncher_v4_deep_stacking.py": {
       "exists": true,
@@ -39,7 +39,7 @@
     },
     "v4-decision-audit-panel.js": {
       "exists": true,
-      "size_bytes": 26390
+      "size_bytes": 29803
     }
   },
   "generated_outputs": {

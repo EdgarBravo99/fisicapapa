@@ -1,0 +1,22 @@
+{
+  "version": "V4.4-ranking-repair-summary-gate",
+  "generated_at": "2026-05-22T20:11:45.196420+00:00",
+  "input_files": {
+    "ranking_repair_experiment": "v4_ranking_repair_experiment.json",
+    "ranking_repair_window_stability": "v4_ranking_repair_window_stability.json",
+    "combination_repair_experiment": "v4_combination_repair_experiment.json",
+    "signal_decomposition": "v4_signal_decomposition_summary.json",
+    "benchmark_summary": "v4_benchmark_summary.json"
+  },
+  "recommendation": "diagnostic_only",
+  "best_repair_variant": "top6_preserved_plus_frequency_no_duplicates",
+  "repair_improves_original": true,
+  "repair_beats_frequency": true,
+  "repair_beats_random": true,
+  "repair_stable_across_windows": true,
+  "combination_repair_available": true,
+  "future_post_ranking_layer_candidate": true,
+  "prior_should_remain_blocked": true,
+  "reason": "Signal decomposition still blocks prior. Benchmark signal remains weak.",
+  "recommended_next_action": "investigate_signal_features_or_reranking_inputs"
+}

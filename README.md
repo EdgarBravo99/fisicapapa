@@ -585,6 +585,28 @@ py .\tools\v4_decision_audit_pack.py
 
 `v4_signal_decomposition_summary.py` integra todo y mantiene `prior_should_remain_blocked = true`. Random/frequency ganando, ranking weak o falla global bloquean replay prior. El siguiente paso recomendado es mejorar generacion de senal o ranking antes de hacer mas replay o tocar Monte Carlo.
 
+## Ranking Repair Experiment V4.4
+
+PR #27 prueba reparaciones externas de ranking despues de confirmar 60 replay records con falla global, ranking invertido y frequency dominance. Es un experimento read-only: no modifica `v4_replay_memory.json`, no cambia scores oficiales, no toca el motor y no activa prior.
+
+```powershell
+py .\tools\v4_ranking_repair_experiment.py --output v4_ranking_repair_experiment.json
+py .\tools\v4_ranking_repair_window_stability.py --output v4_ranking_repair_window_stability.json
+py .\tools\v4_combination_repair_experiment.py --output v4_combination_repair_experiment.json
+py .\tools\v4_ranking_repair_summary_gate.py --output v4_ranking_repair_summary.json
+py .\tools\v4_decision_audit_pack.py
+```
+
+El punto de partida es que `top6` puede conservar algo de senal mientras ranks 7-20 degradan el top. Por eso se prueban variantes como `top6_only`, `top6_preserved_plus_frequency`, penalizaciones diagnosticas a ranks 7-20, hibridos cruncher/frequency y `frequency_only`.
+
+Frequency es el rival principal porque PR #26 mostro que supera al cruncher en agregado usando solo targets previos. Cualquier reparacion debe compararse contra original, random y frequency; mejorar al original no basta si sigue perdiendo contra frequency o si solo funciona en una ventana.
+
+`v4_ranking_repair_window_stability.py` revisa si la mejora es estable por ventanas. `future_post_ranking_layer_candidate` solo puede ser true si mejora al original, es estable, supera random y no empeora fuerte contra frequency. Aun si eso ocurriera, PR #27 mantiene `prior_should_remain_blocked = true` y `recommendation = diagnostic_only`.
+
+`v4_combination_repair_experiment.py` separa problema de ranking numerico vs seleccion de combinaciones. Solo reordena combinaciones existentes en cada replay record; no inventa boletos ni usa resultados reales como prediccion.
+
+No se debe hacer todavia: activar replay prior, tocar Monte Carlo, crear post-ranking layer productivo, crear nuevo runner, ni tratar una mejora diagnostica como probabilidad de ganar.
+
 ## Legacy Snapshot Classifier
 
 `tools/v4_legacy_snapshot_classifier.py` clasifica snapshots antiguos para conservar diagnostico sin contaminar memoria aplicada.

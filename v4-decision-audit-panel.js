@@ -22,6 +22,10 @@
     frequencyDominance: 'v4_frequency_dominance_audit.json',
     drawFailure: 'v4_draw_failure_report.json',
     signalDecomposition: 'v4_signal_decomposition_summary.json',
+    rankingRepair: 'v4_ranking_repair_experiment.json',
+    rankingRepairStability: 'v4_ranking_repair_window_stability.json',
+    combinationRepair: 'v4_combination_repair_experiment.json',
+    rankingRepairSummary: 'v4_ranking_repair_summary.json',
   };
 
   const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -260,6 +264,38 @@
       </article>`;
   }
 
+  function renderRankingRepairExperiment(summary, experiment, stability, combination) {
+    if (!summary && !experiment && !stability && !combination) {
+      return emptyCard('Ranking Repair Experiment', 'Sin v4_ranking_repair_summary.json. Experimento de reparacion de ranking. No modifica el motor.');
+    }
+    const blocked = summary?.prior_should_remain_blocked !== false;
+    return `
+      <article class="taste-card">
+        <div class="taste-card-heading">
+          <div>
+            <p class="taste-eyebrow">Ranking Repair Experiment</p>
+            <h3>${esc(summary?.best_repair_variant || experiment?.best_variant?.name || 'diagnostic_only')}</h3>
+          </div>
+          <span class="taste-chip taste-chip-warn">${blocked ? 'prior bloqueado' : 'revisar'}</span>
+        </div>
+        <div class="bento-status-grid mt-4">
+          <article class="taste-metric"><span>Mejora original</span><b>${summary?.repair_improves_original ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Supera frequency</span><b>${summary?.repair_beats_frequency ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Supera random</span><b>${summary?.repair_beats_random ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Estable ventanas</span><b>${summary?.repair_stable_across_windows ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Post-ranking futuro</span><b>${summary?.future_post_ranking_layer_candidate ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Combo repair</span><b>${summary?.combination_repair_available || combination?.combination_repair_available ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Windows improved</span><b>${fmt(stability?.summary?.windows_improved_count, 0)} / ${fmt(stability?.summary?.windows_total, 0)}</b></article>
+          <article class="taste-metric"><span>Prior bloqueado</span><b>${blocked ? 'Si' : 'No'}</b></article>
+        </div>
+        <div class="taste-panel-muted mt-4">
+          <p class="taste-eyebrow">Lectura</p>
+          <p class="text-sm leading-6 text-slate-300">${esc(summary?.reason || 'Experimento pendiente de datos.')}</p>
+        </div>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Experimento de reparacion de ranking. No modifica el motor. Este experimento no activa prior ni cambia resultados oficiales. Una mejora diagnostica no equivale a probabilidad de ganar. Accion: ${esc(summary?.recommended_next_action || 'diagnostic_only')}</p>
+      </article>`;
+  }
+
   function renderPhysics(data) {
     if (!data) {
       return emptyCard('Evento fisico / regimen', 'Sin v4_physics_regime_analysis.json. El tracker fisico es diagnostico y no ajusta el cruncher.');
@@ -441,6 +477,10 @@
       frequencyDominance,
       drawFailure,
       signalDecomposition,
+      rankingRepair,
+      rankingRepairStability,
+      combinationRepair,
+      rankingRepairSummary,
     ] = await Promise.all([
       loadJson(FILES.diversity),
       loadJson(FILES.benchmark),
@@ -460,6 +500,10 @@
       loadJson(FILES.frequencyDominance),
       loadJson(FILES.drawFailure),
       loadJson(FILES.signalDecomposition),
+      loadJson(FILES.rankingRepair),
+      loadJson(FILES.rankingRepairStability),
+      loadJson(FILES.combinationRepair),
+      loadJson(FILES.rankingRepairSummary),
     ]);
     panel.innerHTML = `
       <div class="grid gap-4 xl:grid-cols-3">
@@ -478,6 +522,9 @@
       </div>
       <div class="grid gap-4 mt-4">
         ${renderReplayFailureAnalysis(signalDecomposition, replayWindows, rankingInversion, frequencyDominance, drawFailure)}
+      </div>
+      <div class="grid gap-4 mt-4">
+        ${renderRankingRepairExperiment(rankingRepairSummary, rankingRepair, rankingRepairStability, combinationRepair)}
       </div>
       <div class="grid gap-4 mt-4 xl:grid-cols-2">
         ${renderPhysicsTimeline(physicsTimeline)}
