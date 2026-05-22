@@ -1,0 +1,39 @@
+{
+  "version": "V4.4-post-ranking-full-validation-summary",
+  "generated_at": "2026-05-22T20:56:05.538976+00:00",
+  "mode": "diagnostic_only",
+  "input_files": {
+    "smoothing": "v4_post_ranking_smoothing_stress_test.json",
+    "confidence_gate": "v4_post_ranking_confidence_gate_experiment.json",
+    "worst_fold": "v4_post_ranking_worst_fold_analysis.json",
+    "holdout_summary": "v4_post_ranking_holdout_summary.json",
+    "ranking_repair_summary": "v4_ranking_repair_summary.json",
+    "benchmark_summary": "v4_benchmark_summary.json",
+    "signal_decomposition": "v4_signal_decomposition_summary.json"
+  },
+  "candidate_status": "ready_for_controlled_layer",
+  "candidate_variant": "top6_preserved_plus_frequency_no_duplicates",
+  "best_smoothing_variant": "frequency_window_15",
+  "best_policy": "always_repair__min_history_15",
+  "rolling_pass_rate": 0.666667,
+  "holdout_pass_rate": 1.0,
+  "avg_edge_vs_original": 0.266667,
+  "avg_edge_vs_frequency": 0.2,
+  "avg_edge_vs_random": 0.195238,
+  "worst_fold_delta_vs_frequency": -0.4,
+  "worst_fold_delta_vs_random": -0.271429,
+  "main_failure_pattern": "unknown",
+  "overfit_risk": "medium",
+  "future_controlled_layer_candidate": true,
+  "production_ready": false,
+  "prior_should_remain_blocked": true,
+  "recommendation": "diagnostic_only",
+  "recommended_next_pr": "PR #30 controlled implementation",
+  "reason": "Policy clears diagnostic gates, but production remains blocked until controlled implementation and future validation. Signal decomposition still blocks prior. Benchmark remains diagnostic_only.",
+  "required_next_evidence": [
+    "future unseen validation",
+    "controlled implementation only if explicitly approved",
+    "no score mutation or replay prior activation",
+    "continued comparison against frequency and random without future leakage"
+  ]
+}

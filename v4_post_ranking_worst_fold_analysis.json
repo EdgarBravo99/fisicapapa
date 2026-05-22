@@ -1,0 +1,790 @@
+{
+  "version": "V4.4-post-ranking-worst-fold-analysis",
+  "generated_at": "2026-05-22T20:56:05.421975+00:00",
+  "mode": "diagnostic_only",
+  "input_source": "v4_replay_memory.json",
+  "input_state": {
+    "available": true,
+    "path": "v4_replay_memory.json",
+    "raw_records_count": 60
+  },
+  "smoothing_variant": "frequency_window_15",
+  "worst_fold_by_frequency_delta": {
+    "split_id": "fold_4_test_4200_4204",
+    "variant": "frequency_window_15",
+    "policy": "always_repair",
+    "train_records": 45,
+    "test_records": 5,
+    "records_evaluated": 5,
+    "test_start": 4200,
+    "test_end": 4204,
+    "original_top10_avg_hits": 0.6,
+    "repaired_top10_avg_hits": 1.0,
+    "frequency_top10_avg_hits": 1.4,
+    "policy_top10_avg_hits": 1.0,
+    "policy_minus_original": 0.4,
+    "policy_minus_frequency": -0.4,
+    "policy_minus_random": -0.071429,
+    "split_status": "fail",
+    "activations_count": 5,
+    "fallback_count": 0,
+    "reason_hypothesis": "frequency_spike"
+  },
+  "worst_fold_by_random_delta": {
+    "split_id": "fold_5_test_4205_4209",
+    "variant": "frequency_window_15",
+    "policy": "always_repair",
+    "train_records": 50,
+    "test_records": 5,
+    "records_evaluated": 5,
+    "test_start": 4205,
+    "test_end": 4209,
+    "original_top10_avg_hits": 1.0,
+    "repaired_top10_avg_hits": 0.8,
+    "frequency_top10_avg_hits": 0.8,
+    "policy_top10_avg_hits": 0.8,
+    "policy_minus_original": -0.2,
+    "policy_minus_frequency": 0.0,
+    "policy_minus_random": -0.271429,
+    "split_status": "fail",
+    "activations_count": 5,
+    "fallback_count": 0,
+    "reason_hypothesis": "top6_quality_drop"
+  },
+  "worst_fold_by_original_delta": {
+    "split_id": "fold_5_test_4205_4209",
+    "variant": "frequency_window_15",
+    "policy": "always_repair",
+    "train_records": 50,
+    "test_records": 5,
+    "records_evaluated": 5,
+    "test_start": 4205,
+    "test_end": 4209,
+    "original_top10_avg_hits": 1.0,
+    "repaired_top10_avg_hits": 0.8,
+    "frequency_top10_avg_hits": 0.8,
+    "policy_top10_avg_hits": 0.8,
+    "policy_minus_original": -0.2,
+    "policy_minus_frequency": 0.0,
+    "policy_minus_random": -0.271429,
+    "split_status": "fail",
+    "activations_count": 5,
+    "fallback_count": 0,
+    "reason_hypothesis": "top6_quality_drop"
+  },
+  "folds_where_original_wins": [
+    {
+      "split_id": "fold_5_test_4205_4209",
+      "variant": "frequency_window_15",
+      "policy": "always_repair",
+      "train_records": 50,
+      "test_records": 5,
+      "records_evaluated": 5,
+      "test_start": 4205,
+      "test_end": 4209,
+      "original_top10_avg_hits": 1.0,
+      "repaired_top10_avg_hits": 0.8,
+      "frequency_top10_avg_hits": 0.8,
+      "policy_top10_avg_hits": 0.8,
+      "policy_minus_original": -0.2,
+      "policy_minus_frequency": 0.0,
+      "policy_minus_random": -0.271429,
+      "split_status": "fail",
+      "activations_count": 5,
+      "fallback_count": 0,
+      "reason_hypothesis": "top6_quality_drop"
+    }
+  ],
+  "folds_where_frequency_wins": [
+    {
+      "split_id": "fold_4_test_4200_4204",
+      "variant": "frequency_window_15",
+      "policy": "always_repair",
+      "train_records": 45,
+      "test_records": 5,
+      "records_evaluated": 5,
+      "test_start": 4200,
+      "test_end": 4204,
+      "original_top10_avg_hits": 0.6,
+      "repaired_top10_avg_hits": 1.0,
+      "frequency_top10_avg_hits": 1.4,
+      "policy_top10_avg_hits": 1.0,
+      "policy_minus_original": 0.4,
+      "policy_minus_frequency": -0.4,
+      "policy_minus_random": -0.071429,
+      "split_status": "fail",
+      "activations_count": 5,
+      "fallback_count": 0,
+      "reason_hypothesis": "frequency_spike"
+    }
+  ],
+  "folds_where_repair_wins": [
+    {
+      "split_id": "fold_1_test_4185_4189",
+      "variant": "frequency_window_15",
+      "policy": "always_repair",
+      "train_records": 30,
+      "test_records": 5,
+      "records_evaluated": 5,
+      "test_start": 4185,
+      "test_end": 4189,
+      "original_top10_avg_hits": 0.8,
+      "repaired_top10_avg_hits": 1.4,
+      "frequency_top10_avg_hits": 1.0,
+      "policy_top10_avg_hits": 1.4,
+      "policy_minus_original": 0.6,
+      "policy_minus_frequency": 0.4,
+      "policy_minus_random": 0.328571,
+      "split_status": "pass",
+      "activations_count": 5,
+      "fallback_count": 0,
+      "reason_hypothesis": "unknown"
+    },
+    {
+      "split_id": "fold_2_test_4190_4194",
+      "variant": "frequency_window_15",
+      "policy": "always_repair",
+      "train_records": 35,
+      "test_records": 5,
+      "records_evaluated": 5,
+      "test_start": 4190,
+      "test_end": 4194,
+      "original_top10_avg_hits": 1.0,
+      "repaired_top10_avg_hits": 1.2,
+      "frequency_top10_avg_hits": 1.2,
+      "policy_top10_avg_hits": 1.2,
+      "policy_minus_original": 0.2,
+      "policy_minus_frequency": 0.0,
+      "policy_minus_random": 0.128571,
+      "split_status": "pass",
+      "activations_count": 5,
+      "fallback_count": 0,
+      "reason_hypothesis": "unknown"
+    },
+    {
+      "split_id": "fold_3_test_4195_4199",
+      "variant": "frequency_window_15",
+      "policy": "always_repair",
+      "train_records": 40,
+      "test_records": 5,
+      "records_evaluated": 5,
+      "test_start": 4195,
+      "test_end": 4199,
+      "original_top10_avg_hits": 1.2,
+      "repaired_top10_avg_hits": 1.4,
+      "frequency_top10_avg_hits": 0.8,
+      "policy_top10_avg_hits": 1.4,
+      "policy_minus_original": 0.2,
+      "policy_minus_frequency": 0.6,
+      "policy_minus_random": 0.328571,
+      "split_status": "pass",
+      "activations_count": 5,
+      "fallback_count": 0,
+      "reason_hypothesis": "unknown"
+    },
+    {
+      "split_id": "fold_6_test_4210_4214",
+      "variant": "frequency_window_15",
+      "policy": "always_repair",
+      "train_records": 55,
+      "test_records": 5,
+      "records_evaluated": 5,
+      "test_start": 4210,
+      "test_end": 4214,
+      "original_top10_avg_hits": 1.4,
+      "repaired_top10_avg_hits": 1.8,
+      "frequency_top10_avg_hits": 1.2,
+      "policy_top10_avg_hits": 1.8,
+      "policy_minus_original": 0.4,
+      "policy_minus_frequency": 0.6,
+      "policy_minus_random": 0.728571,
+      "split_status": "pass",
+      "activations_count": 5,
+      "fallback_count": 0,
+      "reason_hypothesis": "unknown"
+    }
+  ],
+  "worst_folds": [
+    {
+      "split_id": "fold_4_test_4200_4204",
+      "variant": "frequency_window_15",
+      "policy": "always_repair",
+      "train_records": 45,
+      "test_records": 5,
+      "records_evaluated": 5,
+      "test_start": 4200,
+      "test_end": 4204,
+      "original_top10_avg_hits": 0.6,
+      "repaired_top10_avg_hits": 1.0,
+      "frequency_top10_avg_hits": 1.4,
+      "policy_top10_avg_hits": 1.0,
+      "policy_minus_original": 0.4,
+      "policy_minus_frequency": -0.4,
+      "policy_minus_random": -0.071429,
+      "split_status": "fail",
+      "activations_count": 5,
+      "fallback_count": 0,
+      "reason_hypothesis": "frequency_spike",
+      "worst_type": "worst_fold_by_frequency_delta",
+      "target_level_misses": [
+        {
+          "target_draw": 4200,
+          "target_numbers": [
+            7,
+            15,
+            17,
+            22,
+            45,
+            51
+          ],
+          "original_top10_hits": 1,
+          "repaired_top10_hits": 1,
+          "frequency_top10_hits": 1,
+          "missed_by_repair": [
+            7,
+            17,
+            22,
+            45,
+            51
+          ],
+          "repair_top10": [
+            14,
+            53,
+            9,
+            1,
+            19,
+            21,
+            34,
+            15,
+            52,
+            4
+          ]
+        },
+        {
+          "target_draw": 4201,
+          "target_numbers": [
+            23,
+            42,
+            48,
+            49,
+            50,
+            53
+          ],
+          "original_top10_hits": 1,
+          "repaired_top10_hits": 0,
+          "frequency_top10_hits": 1,
+          "missed_by_repair": [
+            23,
+            42,
+            48,
+            49,
+            50,
+            53
+          ],
+          "repair_top10": [
+            14,
+            9,
+            21,
+            31,
+            32,
+            19,
+            15,
+            34,
+            52,
+            4
+          ]
+        },
+        {
+          "target_draw": 4202,
+          "target_numbers": [
+            6,
+            15,
+            17,
+            23,
+            27,
+            51
+          ],
+          "original_top10_hits": 0,
+          "repaired_top10_hits": 1,
+          "frequency_top10_hits": 2,
+          "missed_by_repair": [
+            6,
+            17,
+            23,
+            27,
+            51
+          ],
+          "repair_top10": [
+            9,
+            14,
+            25,
+            1,
+            19,
+            21,
+            15,
+            52,
+            13,
+            16
+          ]
+        },
+        {
+          "target_draw": 4203,
+          "target_numbers": [
+            11,
+            13,
+            16,
+            24,
+            32,
+            41
+          ],
+          "original_top10_hits": 1,
+          "repaired_top10_hits": 2,
+          "frequency_top10_hits": 2,
+          "missed_by_repair": [
+            11,
+            24,
+            32,
+            41
+          ],
+          "repair_top10": [
+            38,
+            1,
+            14,
+            21,
+            31,
+            19,
+            15,
+            23,
+            13,
+            16
+          ]
+        },
+        {
+          "target_draw": 4204,
+          "target_numbers": [
+            4,
+            15,
+            29,
+            43,
+            44,
+            46
+          ],
+          "original_top10_hits": 0,
+          "repaired_top10_hits": 1,
+          "frequency_top10_hits": 1,
+          "missed_by_repair": [
+            4,
+            29,
+            43,
+            44,
+            46
+          ],
+          "repair_top10": [
+            14,
+            32,
+            38,
+            9,
+            20,
+            21,
+            15,
+            13,
+            16,
+            23
+          ]
+        }
+      ]
+    },
+    {
+      "split_id": "fold_5_test_4205_4209",
+      "variant": "frequency_window_15",
+      "policy": "always_repair",
+      "train_records": 50,
+      "test_records": 5,
+      "records_evaluated": 5,
+      "test_start": 4205,
+      "test_end": 4209,
+      "original_top10_avg_hits": 1.0,
+      "repaired_top10_avg_hits": 0.8,
+      "frequency_top10_avg_hits": 0.8,
+      "policy_top10_avg_hits": 0.8,
+      "policy_minus_original": -0.2,
+      "policy_minus_frequency": 0.0,
+      "policy_minus_random": -0.271429,
+      "split_status": "fail",
+      "activations_count": 5,
+      "fallback_count": 0,
+      "reason_hypothesis": "top6_quality_drop",
+      "worst_type": "worst_fold_by_random_delta",
+      "target_level_misses": [
+        {
+          "target_draw": 4205,
+          "target_numbers": [
+            6,
+            20,
+            39,
+            41,
+            42,
+            48
+          ],
+          "original_top10_hits": 1,
+          "repaired_top10_hits": 0,
+          "frequency_top10_hits": 1,
+          "missed_by_repair": [
+            6,
+            20,
+            39,
+            41,
+            42,
+            48
+          ],
+          "repair_top10": [
+            21,
+            9,
+            19,
+            14,
+            32,
+            25,
+            15,
+            23,
+            13,
+            16
+          ]
+        },
+        {
+          "target_draw": 4206,
+          "target_numbers": [
+            4,
+            18,
+            24,
+            27,
+            45,
+            53
+          ],
+          "original_top10_hits": 1,
+          "repaired_top10_hits": 1,
+          "frequency_top10_hits": 1,
+          "missed_by_repair": [
+            4,
+            18,
+            24,
+            27,
+            45
+          ],
+          "repair_top10": [
+            53,
+            14,
+            9,
+            32,
+            19,
+            38,
+            15,
+            23,
+            41,
+            13
+          ]
+        },
+        {
+          "target_draw": 4207,
+          "target_numbers": [
+            11,
+            30,
+            33,
+            35,
+            46,
+            48
+          ],
+          "original_top10_hits": 0,
+          "repaired_top10_hits": 0,
+          "frequency_top10_hits": 0,
+          "missed_by_repair": [
+            11,
+            30,
+            33,
+            35,
+            46,
+            48
+          ],
+          "repair_top10": [
+            14,
+            31,
+            53,
+            20,
+            9,
+            21,
+            15,
+            27,
+            41,
+            4
+          ]
+        },
+        {
+          "target_draw": 4208,
+          "target_numbers": [
+            6,
+            7,
+            26,
+            27,
+            30,
+            40
+          ],
+          "original_top10_hits": 2,
+          "repaired_top10_hits": 2,
+          "frequency_top10_hits": 1,
+          "missed_by_repair": [
+            6,
+            26,
+            30,
+            40
+          ],
+          "repair_top10": [
+            15,
+            17,
+            5,
+            23,
+            27,
+            7,
+            41,
+            48,
+            4,
+            11
+          ]
+        },
+        {
+          "target_draw": 4209,
+          "target_numbers": [
+            2,
+            8,
+            20,
+            26,
+            38,
+            54
+          ],
+          "original_top10_hits": 1,
+          "repaired_top10_hits": 1,
+          "frequency_top10_hits": 1,
+          "missed_by_repair": [
+            2,
+            8,
+            20,
+            26,
+            54
+          ],
+          "repair_top10": [
+            21,
+            9,
+            14,
+            3,
+            31,
+            38,
+            15,
+            27,
+            41,
+            48
+          ]
+        }
+      ]
+    },
+    {
+      "split_id": "fold_5_test_4205_4209",
+      "variant": "frequency_window_15",
+      "policy": "always_repair",
+      "train_records": 50,
+      "test_records": 5,
+      "records_evaluated": 5,
+      "test_start": 4205,
+      "test_end": 4209,
+      "original_top10_avg_hits": 1.0,
+      "repaired_top10_avg_hits": 0.8,
+      "frequency_top10_avg_hits": 0.8,
+      "policy_top10_avg_hits": 0.8,
+      "policy_minus_original": -0.2,
+      "policy_minus_frequency": 0.0,
+      "policy_minus_random": -0.271429,
+      "split_status": "fail",
+      "activations_count": 5,
+      "fallback_count": 0,
+      "reason_hypothesis": "top6_quality_drop",
+      "worst_type": "worst_fold_by_original_delta",
+      "target_level_misses": [
+        {
+          "target_draw": 4205,
+          "target_numbers": [
+            6,
+            20,
+            39,
+            41,
+            42,
+            48
+          ],
+          "original_top10_hits": 1,
+          "repaired_top10_hits": 0,
+          "frequency_top10_hits": 1,
+          "missed_by_repair": [
+            6,
+            20,
+            39,
+            41,
+            42,
+            48
+          ],
+          "repair_top10": [
+            21,
+            9,
+            19,
+            14,
+            32,
+            25,
+            15,
+            23,
+            13,
+            16
+          ]
+        },
+        {
+          "target_draw": 4206,
+          "target_numbers": [
+            4,
+            18,
+            24,
+            27,
+            45,
+            53
+          ],
+          "original_top10_hits": 1,
+          "repaired_top10_hits": 1,
+          "frequency_top10_hits": 1,
+          "missed_by_repair": [
+            4,
+            18,
+            24,
+            27,
+            45
+          ],
+          "repair_top10": [
+            53,
+            14,
+            9,
+            32,
+            19,
+            38,
+            15,
+            23,
+            41,
+            13
+          ]
+        },
+        {
+          "target_draw": 4207,
+          "target_numbers": [
+            11,
+            30,
+            33,
+            35,
+            46,
+            48
+          ],
+          "original_top10_hits": 0,
+          "repaired_top10_hits": 0,
+          "frequency_top10_hits": 0,
+          "missed_by_repair": [
+            11,
+            30,
+            33,
+            35,
+            46,
+            48
+          ],
+          "repair_top10": [
+            14,
+            31,
+            53,
+            20,
+            9,
+            21,
+            15,
+            27,
+            41,
+            4
+          ]
+        },
+        {
+          "target_draw": 4208,
+          "target_numbers": [
+            6,
+            7,
+            26,
+            27,
+            30,
+            40
+          ],
+          "original_top10_hits": 2,
+          "repaired_top10_hits": 2,
+          "frequency_top10_hits": 1,
+          "missed_by_repair": [
+            6,
+            26,
+            30,
+            40
+          ],
+          "repair_top10": [
+            15,
+            17,
+            5,
+            23,
+            27,
+            7,
+            41,
+            48,
+            4,
+            11
+          ]
+        },
+        {
+          "target_draw": 4209,
+          "target_numbers": [
+            2,
+            8,
+            20,
+            26,
+            38,
+            54
+          ],
+          "original_top10_hits": 1,
+          "repaired_top10_hits": 1,
+          "frequency_top10_hits": 1,
+          "missed_by_repair": [
+            2,
+            8,
+            20,
+            26,
+            54
+          ],
+          "repair_top10": [
+            21,
+            9,
+            14,
+            3,
+            31,
+            38,
+            15,
+            27,
+            41,
+            48
+          ]
+        }
+      ]
+    }
+  ],
+  "failure_patterns": {
+    "frequency_spike_count": 1,
+    "top6_quality_drop_count": 1,
+    "overreactive_frequency_count": 0,
+    "insufficient_history_count": 0,
+    "flat_signal_count": 0,
+    "unknown_count": 4
+  },
+  "summary": {
+    "main_failure_pattern": "unknown",
+    "recommendation": "diagnostic_only"
+  }
+}
