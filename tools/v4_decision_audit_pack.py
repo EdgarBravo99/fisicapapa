@@ -104,6 +104,18 @@ def main() -> int:
             [python, str(ROOT / "tools" / "v4_ranking_repair_summary_gate.py"), "--output", "v4_ranking_repair_summary.json"],
         ),
         (
+            "post-ranking holdout experiment",
+            [python, str(ROOT / "tools" / "v4_post_ranking_holdout_experiment.py"), "--replay-memory", args.replay_memory, "--output", "v4_post_ranking_holdout_experiment.json"],
+        ),
+        (
+            "post-ranking rolling validation",
+            [python, str(ROOT / "tools" / "v4_post_ranking_rolling_validation.py"), "--replay-memory", args.replay_memory, "--output", "v4_post_ranking_rolling_validation.json"],
+        ),
+        (
+            "post-ranking holdout summary gate",
+            [python, str(ROOT / "tools" / "v4_post_ranking_holdout_summary_gate.py"), "--output", "v4_post_ranking_holdout_summary.json"],
+        ),
+        (
             "physics regime audit",
             [python, str(ROOT / "tools" / "v4_physics_regime_audit.py"), "--weights", args.weights, "--output", "v4_physics_regime_analysis.json"],
         ),

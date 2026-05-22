@@ -1,0 +1,25 @@
+{
+  "version": "V4.4-post-ranking-layer-candidate",
+  "status": "candidate_not_applied",
+  "candidate_variant": "top6_preserved_plus_frequency_no_duplicates",
+  "description": "Preserve original cruncher top 6 and fill ranks 7-20 with progressive frequency numbers without duplicates.",
+  "inputs_required": [
+    "current cruncher number ranking",
+    "historical prior draws available before target",
+    "game_mode"
+  ],
+  "algorithm": {
+    "step_1": "Take top 6 numbers from cruncher ranking.",
+    "step_2": "Compute progressive frequency ranking from eligible historical draws only.",
+    "step_3": "Append frequency-ranked numbers not already in top 6 until top 20 is filled.",
+    "step_4": "Do not modify official scores; output candidate ranking separately."
+  },
+  "guardrails": [
+    "No future draws.",
+    "No result truth leakage.",
+    "No modification to resultados.json.",
+    "No replay prior activation.",
+    "No production use until holdout and future unseen validation pass."
+  ],
+  "recommendation": "diagnostic_only"
+}

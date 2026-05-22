@@ -26,6 +26,10 @@
     rankingRepairStability: 'v4_ranking_repair_window_stability.json',
     combinationRepair: 'v4_combination_repair_experiment.json',
     rankingRepairSummary: 'v4_ranking_repair_summary.json',
+    postRankingHoldout: 'v4_post_ranking_holdout_experiment.json',
+    postRankingRolling: 'v4_post_ranking_rolling_validation.json',
+    postRankingSummary: 'v4_post_ranking_holdout_summary.json',
+    postRankingCandidate: 'v4_post_ranking_layer_candidate.json',
   };
 
   const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -296,6 +300,46 @@
       </article>`;
   }
 
+  function renderPostRankingHoldoutValidation(summary, holdout, rolling, candidate) {
+    if (!summary && !holdout && !rolling && !candidate) {
+      return emptyCard('Post-Ranking Holdout Validation', 'Sin v4_post_ranking_holdout_summary.json. Validacion holdout de post-ranking. No modifica produccion.');
+    }
+    const evidence = Array.isArray(summary?.required_next_evidence) ? summary.required_next_evidence : [];
+    const holdoutSummary = holdout?.summary || {};
+    const rollingSummary = rolling?.summary || {};
+    return `
+      <article class="taste-card">
+        <div class="taste-card-heading">
+          <div>
+            <p class="taste-eyebrow">Post-Ranking Holdout Validation</p>
+            <h3>${esc(summary?.candidate_variant || candidate?.candidate_variant || 'candidate_not_applied')}</h3>
+          </div>
+          <span class="taste-chip taste-chip-warn">${summary?.prior_should_remain_blocked === false ? 'revisar' : 'prior bloqueado'}</span>
+        </div>
+        <div class="bento-status-grid mt-4">
+          <article class="taste-metric"><span>Holdout quality</span><b>${esc(summary?.holdout_signal_quality || holdoutSummary.holdout_signal_quality || 'unknown')}</b></article>
+          <article class="taste-metric"><span>Rolling quality</span><b>${esc(summary?.rolling_signal_quality || rollingSummary.rolling_signal_quality || 'unknown')}</b></article>
+          <article class="taste-metric"><span>Overfit risk</span><b>${esc(summary?.overfit_risk || 'unknown')}</b></article>
+          <article class="taste-metric"><span>Future layer</span><b>${summary?.future_experimental_layer_candidate ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Production ready</span><b>${summary?.production_ready ? 'Si' : 'No'}</b></article>
+          <article class="taste-metric"><span>Prior bloqueado</span><b>${summary?.prior_should_remain_blocked === false ? 'No' : 'Si'}</b></article>
+          <article class="taste-metric"><span>Holdout pass</span><b>${fmt((summary?.holdout_pass_rate || 0) * 100, 0)}%</b></article>
+          <article class="taste-metric"><span>Rolling pass</span><b>${fmt((summary?.rolling_pass_rate || 0) * 100, 0)}%</b></article>
+        </div>
+        <div class="taste-panel-muted mt-4">
+          <p class="taste-eyebrow">Lectura</p>
+          <p class="text-sm leading-6 text-slate-300">${esc(summary?.reason || 'La capa candidata no esta aplicada.')}</p>
+        </div>
+        <div class="taste-panel-muted mt-4">
+          <p class="taste-eyebrow">Evidencia requerida</p>
+          <ul class="mt-2 grid gap-1 text-sm leading-6 text-slate-300">
+            ${evidence.slice(0, 5).map(item => `<li>${esc(item)}</li>`).join('') || '<li>N/D</li>'}
+          </ul>
+        </div>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Validacion holdout de post-ranking. No modifica produccion. La capa candidata no esta aplicada. Produccion requiere validacion futura no vista.</p>
+      </article>`;
+  }
+
   function renderPhysics(data) {
     if (!data) {
       return emptyCard('Evento fisico / regimen', 'Sin v4_physics_regime_analysis.json. El tracker fisico es diagnostico y no ajusta el cruncher.');
@@ -481,6 +525,10 @@
       rankingRepairStability,
       combinationRepair,
       rankingRepairSummary,
+      postRankingHoldout,
+      postRankingRolling,
+      postRankingSummary,
+      postRankingCandidate,
     ] = await Promise.all([
       loadJson(FILES.diversity),
       loadJson(FILES.benchmark),
@@ -504,6 +552,10 @@
       loadJson(FILES.rankingRepairStability),
       loadJson(FILES.combinationRepair),
       loadJson(FILES.rankingRepairSummary),
+      loadJson(FILES.postRankingHoldout),
+      loadJson(FILES.postRankingRolling),
+      loadJson(FILES.postRankingSummary),
+      loadJson(FILES.postRankingCandidate),
     ]);
     panel.innerHTML = `
       <div class="grid gap-4 xl:grid-cols-3">
@@ -525,6 +577,9 @@
       </div>
       <div class="grid gap-4 mt-4">
         ${renderRankingRepairExperiment(rankingRepairSummary, rankingRepair, rankingRepairStability, combinationRepair)}
+      </div>
+      <div class="grid gap-4 mt-4">
+        ${renderPostRankingHoldoutValidation(postRankingSummary, postRankingHoldout, postRankingRolling, postRankingCandidate)}
       </div>
       <div class="grid gap-4 mt-4 xl:grid-cols-2">
         ${renderPhysicsTimeline(physicsTimeline)}
