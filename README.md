@@ -607,6 +607,25 @@ Frequency es el rival principal porque PR #26 mostro que supera al cruncher en a
 
 No se debe hacer todavia: activar replay prior, tocar Monte Carlo, crear post-ranking layer productivo, crear nuevo runner, ni tratar una mejora diagnostica como probabilidad de ganar.
 
+## Post-Ranking Holdout Experiment V4.4
+
+PR #28 valida la variante candidata de PR #27, `top6_preserved_plus_frequency_no_duplicates`, fuera del mismo analisis donde fue descubierta. PR #27 no bastaba porque una reparacion puede verse fuerte sobre los mismos 60 replay records y aun asi no generalizar.
+
+```powershell
+py .\tools\v4_post_ranking_holdout_experiment.py --output v4_post_ranking_holdout_experiment.json
+py .\tools\v4_post_ranking_rolling_validation.py --output v4_post_ranking_rolling_validation.json
+py .\tools\v4_post_ranking_holdout_summary_gate.py --output v4_post_ranking_holdout_summary.json
+py .\tools\v4_decision_audit_pack.py
+```
+
+El holdout separa train/test por tiempo y evalua la variante contra `original_cruncher`, `frequency_only` y `random_expected`. La frecuencia sigue siendo progresiva: para cada target solo puede usar targets anteriores a ese target, nunca el holdout completo ni CSV futuro.
+
+La rolling validation usa una ventana inicial de 30 records y pruebas de 5 records. Esto mide si la mejora vive en varias ventanas o si fue un accidente local. `overfit_risk` queda alto cuando holdout o rolling no llegan al menos a calidad moderada, aunque alguna metrica agregada se vea positiva.
+
+`v4_post_ranking_layer_candidate.json` documenta la capa candidata como especificacion estructurada, no como codigo productivo. Su estado debe permanecer `candidate_not_applied`: no modifica scores oficiales, no escribe `resultados.json`, no toca Monte Carlo y no activa replay prior.
+
+Para una futura capa experimental todavia faltaria validar en sorteos futuros no vistos, correr una simulacion controlada separada, superar frequency/random sin usar futuro y mantener `prior_should_remain_blocked = true` hasta que exista evidencia externa suficiente.
+
 ## Legacy Snapshot Classifier
 
 `tools/v4_legacy_snapshot_classifier.py` clasifica snapshots antiguos para conservar diagnostico sin contaminar memoria aplicada.

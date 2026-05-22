@@ -1,0 +1,31 @@
+{
+  "version": "V4.4-post-ranking-holdout-summary",
+  "generated_at": "2026-05-22T20:33:07.570840+00:00",
+  "input_files": {
+    "holdout_experiment": "v4_post_ranking_holdout_experiment.json",
+    "rolling_validation": "v4_post_ranking_rolling_validation.json",
+    "ranking_repair_summary": "v4_ranking_repair_summary.json",
+    "signal_decomposition_summary": "v4_signal_decomposition_summary.json",
+    "benchmark_summary": "v4_benchmark_summary.json"
+  },
+  "candidate_variant": "top6_preserved_plus_frequency_no_duplicates",
+  "recommendation": "diagnostic_only",
+  "holdout_signal_quality": "strong",
+  "rolling_signal_quality": "weak",
+  "holdout_pass_rate": 1.0,
+  "rolling_pass_rate": 0.333333,
+  "avg_edge_vs_original": 0.246667,
+  "avg_edge_vs_frequency": 0.226666,
+  "avg_edge_vs_random": 0.155238,
+  "overfit_risk": "high",
+  "future_experimental_layer_candidate": false,
+  "production_ready": false,
+  "prior_should_remain_blocked": true,
+  "reason": "Candidate is not ready for a future experimental layer under holdout gates. Overfit risk remains high or signal quality is below moderate. Signal decomposition still blocks prior. Benchmark summary remains diagnostic_only.",
+  "required_next_evidence": [
+    "validate on future unseen draws",
+    "run controlled post-ranking layer simulation",
+    "compare against frequency and random without using future",
+    "keep the candidate layer separate from official scores until future validation passes"
+  ]
+}
