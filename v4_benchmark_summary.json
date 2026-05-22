@@ -1,6 +1,6 @@
 {
   "version": "V4.4-benchmark-summary-gate",
-  "generated_at": "2026-05-22T19:49:40.666925+00:00",
+  "generated_at": "2026-05-22T20:18:47.498066+00:00",
   "input_files": {
     "benchmark_hardening": "v4_benchmark_hardening.json",
     "calibration_diagnostics": "v4_calibration_diagnostics.json",
