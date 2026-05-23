@@ -55,12 +55,62 @@
     "'": '&#39;',
   }[mark]));
 
-  async function loadJson(path) {
+  function parseOptionalJson(rawText, path, url) {
+    const raw = String(rawText ?? '');
+    const cleaned = raw.replace(/^\uFEFF/, '').trim();
+
+    if (!cleaned) {
+      console.warn('[Fisicapapa] JSON auxiliar vacío:', { path, url });
+      return null;
+    }
+
+    if (cleaned[0] === '<') {
+      console.warn('[Fisicapapa] JSON auxiliar parece HTML/no JSON:', {
+        path,
+        url,
+        preview: cleaned.slice(0, 220).replace(/\s+/g, ' '),
+      });
+      return null;
+    }
+
     try {
-      const response = await fetch(`${path}?audit=${Date.now()}`, { cache: 'no-store' });
-      if (!response.ok) return null;
-      return response.json();
-    } catch (_) {
+      return JSON.parse(cleaned);
+    } catch (err) {
+      console.warn('[Fisicapapa] JSON auxiliar inválido:', {
+        path,
+        url,
+        message: err.message,
+        preview: cleaned.slice(0, 220).replace(/\s+/g, ' '),
+      });
+      return null;
+    }
+  }
+
+  async function loadJson(path) {
+    const url = `${path}?audit=${Date.now()}`;
+    try {
+      const response = await fetch(url, {
+        cache: 'no-store',
+        headers: { 'Accept': 'application/json,text/plain,*/*' },
+      });
+
+      if (!response.ok) {
+        console.warn('[Fisicapapa] JSON auxiliar no disponible:', {
+          path,
+          url,
+          status: response.status,
+        });
+        return null;
+      }
+
+      const rawText = await response.text();
+      return parseOptionalJson(rawText, path, url);
+    } catch (err) {
+      console.warn('[Fisicapapa] No se pudo cargar JSON auxiliar:', {
+        path,
+        url,
+        message: err?.message || String(err),
+      });
       return null;
     }
   }
