@@ -1,0 +1,13 @@
+{
+  "version": "V4.4-future-unseen-validation-log",
+  "mode": "pending_future_validation",
+  "records": [],
+  "minimum_records_before_reconsidering_production": 5,
+  "production_ready": false,
+  "prior_should_remain_blocked": true,
+  "notes": [
+    "Append records only after a future real draw is revealed.",
+    "Do not use this file to generate current predictions.",
+    "Do not activate prior from this file in PR #30."
+  ]
+}
