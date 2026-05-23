@@ -35,6 +35,10 @@
     postRankingWorstFold: 'v4_post_ranking_worst_fold_analysis.json',
     postRankingFullSummary: 'v4_post_ranking_full_validation_summary.json',
     postRankingDecisionRecord: 'v4_post_ranking_candidate_decision_record.json',
+    postRankingControlledLayer: 'v4_post_ranking_controlled_layer_output.json',
+    postRankingControlledComparison: 'v4_post_ranking_controlled_comparison.json',
+    postRankingControlledSummary: 'v4_post_ranking_controlled_summary.json',
+    futureUnseenValidation: 'v4_future_unseen_validation_log.json',
   };
 
   const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -102,6 +106,11 @@
   function comboBalls(numbers) {
     if (!Array.isArray(numbers) || !numbers.length) return '<span class="text-sm text-slate-400">N/D</span>';
     return `<div class="flex flex-wrap gap-2">${numbers.map(number => `<span class="taste-ball quant-number-ball">${esc(number)}</span>`).join('')}</div>`;
+  }
+
+  function compactList(items) {
+    if (!Array.isArray(items) || !items.length) return 'N/D';
+    return items.map(item => esc(item)).join(', ');
   }
 
   function renderDiversity(data) {
@@ -383,6 +392,86 @@
       </article>`;
   }
 
+  function renderPostRankingControlledLayer(summary, layer, comparison, futureLog) {
+    if (!summary && !layer && !comparison && !futureLog) {
+      return emptyCard('Post-Ranking Controlled Layer', 'Sin capa controlada. Review-only. Does not replace official V4.2 output. Not a probability of winning.');
+    }
+    const controlledStatus = summary?.controlled_layer_status || layer?.status || 'blocked';
+    const overlap = comparison?.overlap || {};
+    const warnings = Array.isArray(layer?.warnings) ? layer.warnings : [];
+    return `
+      <article class="taste-card">
+        <div class="taste-card-heading">
+          <div>
+            <p class="taste-eyebrow">Post-Ranking Controlled Layer</p>
+            <h3>${esc(controlledStatus)}</h3>
+          </div>
+          <span class="taste-chip taste-chip-warn">${summary?.usable_in_app ? 'review_only' : 'bloqueada'}</span>
+        </div>
+        <p class="mt-3 text-sm leading-6 text-slate-300">Controlled post-ranking layer. Review-only. Does not replace official V4.2 output.</p>
+        <p class="text-sm leading-6 text-slate-300">Production ready remains false. Replay prior remains blocked. Not a probability of winning.</p>
+        <p class="mt-2 text-sm leading-6 text-slate-300">Review-only. Does not replace official V4.2 output. Not a probability of winning.</p>
+        <div class="grid gap-4 mt-4 lg:grid-cols-2">
+          <section class="taste-panel-muted">
+            <p class="taste-eyebrow">Official V4.2 Output</p>
+            <div class="mt-3 grid gap-3">
+              <div>
+                <p class="text-xs uppercase tracking-wide text-slate-500">Original top numbers</p>
+                ${comboBalls(layer?.original_top_numbers)}
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wide text-slate-500">Top 6 preservado</p>
+                ${comboBalls(layer?.top6_preserved)}
+              </div>
+              <div class="bento-status-grid">
+                <article class="taste-metric"><span>Overlap top10</span><b>${fmt(overlap.top10 ?? layer?.diff_vs_original?.overlap_top10, 0)}</b></article>
+                <article class="taste-metric"><span>Overlap top20</span><b>${fmt(overlap.top20 ?? layer?.diff_vs_original?.overlap_top20, 0)}</b></article>
+                <article class="taste-metric"><span>Top6 OK</span><b>${comparison?.top6_preservation_ok || layer?.diff_vs_original?.preserved_top6 ? 'Si' : 'No'}</b></article>
+              </div>
+            </div>
+          </section>
+          <section class="taste-panel-muted">
+            <p class="taste-eyebrow">Controlled Post-Ranking Layer</p>
+            <div class="mt-3 grid gap-3">
+              <div>
+                <p class="text-xs uppercase tracking-wide text-slate-500">Controlled top20</p>
+                ${comboBalls(layer?.controlled_top20_numbers)}
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wide text-slate-500">Frequency window 15 rank</p>
+                ${comboBalls(Array.isArray(layer?.frequency_window_15_rank) ? layer.frequency_window_15_rank.slice(0, 20) : [])}
+              </div>
+              <div class="bento-status-grid">
+                <article class="taste-metric"><span>Context</span><b>${esc(layer?.frequency_context || 'N/D')}</b></article>
+                <article class="taste-metric"><span>Window</span><b>${fmt(layer?.frequency_window_size, 0)}</b></article>
+                <article class="taste-metric"><span>Truth source</span><b>${layer?.frequency_is_truth_source ? 'Si' : 'No'}</b></article>
+                <article class="taste-metric"><span>Overfit risk</span><b>${esc(comparison?.validation_status?.overfit_risk || 'N/D')}</b></article>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div class="grid gap-4 mt-4 lg:grid-cols-2">
+          <section class="taste-panel-muted">
+            <p class="taste-eyebrow">Diff top20</p>
+            <p class="text-sm leading-6 text-slate-300">Agregados: ${compactList(layer?.diff_vs_original?.added_numbers_top20 || comparison?.added_numbers_top20)}</p>
+            <p class="text-sm leading-6 text-slate-300">Removidos: ${compactList(layer?.diff_vs_original?.removed_numbers_top20 || comparison?.removed_numbers_top20)}</p>
+          </section>
+          <section class="taste-panel-muted">
+            <p class="taste-eyebrow">Estado</p>
+            <p class="text-sm leading-6 text-slate-300">Uso: ${esc(summary?.recommended_usage || comparison?.recommended_usage || 'review_only')}</p>
+            <p class="text-sm leading-6 text-slate-300">Production ready: ${summary?.production_ready ? 'Si' : 'No'}</p>
+            <p class="text-sm leading-6 text-slate-300">Prior bloqueado: ${summary?.prior_should_remain_blocked === false ? 'No' : 'Si'}</p>
+            <p class="text-sm leading-6 text-slate-300">Futuro no visto: ${fmt(futureLog?.records?.length, 0)} registros</p>
+          </section>
+        </div>
+        <div class="taste-panel-muted mt-4">
+          <p class="taste-eyebrow">Reason / warnings</p>
+          <p class="text-sm leading-6 text-slate-300">${esc(summary?.reason || layer?.interpretation || 'Controlled review-only layer.')}</p>
+          <p class="mt-2 text-sm leading-6 text-slate-300">${warnings.slice(0, 4).map(item => esc(item)).join(' | ') || 'Sin warnings de capa.'}</p>
+        </div>
+      </article>`;
+  }
+
   function renderPhysics(data) {
     if (!data) {
       return emptyCard('Evento fisico / regimen', 'Sin v4_physics_regime_analysis.json. El tracker fisico es diagnostico y no ajusta el cruncher.');
@@ -577,6 +666,10 @@
       postRankingWorstFold,
       postRankingFullSummary,
       postRankingDecisionRecord,
+      postRankingControlledLayer,
+      postRankingControlledComparison,
+      postRankingControlledSummary,
+      futureUnseenValidation,
     ] = await Promise.all([
       loadJson(FILES.diversity),
       loadJson(FILES.benchmark),
@@ -609,6 +702,10 @@
       loadJson(FILES.postRankingWorstFold),
       loadJson(FILES.postRankingFullSummary),
       loadJson(FILES.postRankingDecisionRecord),
+      loadJson(FILES.postRankingControlledLayer),
+      loadJson(FILES.postRankingControlledComparison),
+      loadJson(FILES.postRankingControlledSummary),
+      loadJson(FILES.futureUnseenValidation),
     ]);
     panel.innerHTML = `
       <div class="grid gap-4 xl:grid-cols-3">
@@ -636,6 +733,9 @@
       </div>
       <div class="grid gap-4 mt-4">
         ${renderPostRankingFullValidation(postRankingFullSummary, postRankingSmoothing, postRankingConfidence, postRankingWorstFold, postRankingDecisionRecord)}
+      </div>
+      <div class="grid gap-4 mt-4">
+        ${renderPostRankingControlledLayer(postRankingControlledSummary, postRankingControlledLayer, postRankingControlledComparison, futureUnseenValidation)}
       </div>
       <div class="grid gap-4 mt-4 xl:grid-cols-2">
         ${renderPhysicsTimeline(physicsTimeline)}

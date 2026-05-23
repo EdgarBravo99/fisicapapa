@@ -648,6 +648,32 @@ Worst-fold analysis explica donde falla la hipotesis: folds donde gana original,
 
 La hipotesis debe detenerse si ningun smoothing/policy mejora rolling, si frequency sigue dominando, si el peor fold es demasiado negativo o si el riesgo de overfit queda alto. Debe mantenerse viva solo si mejora original/random, no pierde contra frequency de forma estable y deja claro que el siguiente paso sigue siendo diagnostico/controlado.
 
+## Controlled Post-Ranking Layer V4.4
+
+PR #30 toma la decision de PR #29 y la convierte en una vista controlada, separada y review-only. La capa candidata sigue siendo `top6_preserved_plus_frequency_no_duplicates`: conserva el top6 oficial derivado de `resultados.json` y rellena el resto del top20 con `frequency_window_15` calculado desde la ventana reciente de replay memory.
+
+```powershell
+py .\tools\v4_post_ranking_controlled_layer.py --output v4_post_ranking_controlled_layer_output.json
+py .\tools\v4_post_ranking_controlled_comparison.py --output v4_post_ranking_controlled_comparison.json
+py .\tools\v4_post_ranking_controlled_summary_gate.py --output v4_post_ranking_controlled_summary.json
+py .\tools\v4_decision_audit_pack.py
+```
+
+La capa queda bloqueada salvo que `v4_post_ranking_full_validation_summary.json` tenga `candidate_status = ready_for_controlled_layer`, `production_ready = false`, `prior_should_remain_blocked = true` y `future_controlled_layer_candidate = true`. Aunque pase esos gates, el uso permitido es `review_only`.
+
+El output controlado escribe archivos separados:
+
+```txt
+v4_post_ranking_controlled_layer_output.json
+v4_post_ranking_controlled_comparison.json
+v4_post_ranking_controlled_summary.json
+v4_future_unseen_validation_log.json
+```
+
+No modifica `resultados.json`, no modifica `v4_replay_memory.json`, no cambia scores oficiales, no activa replay/live/physics prior y no reemplaza el output oficial V4.2. La web debe mostrarlo separado de Official V4.2 Output con la copia: Review-only. Does not replace official V4.2 output. Not a probability of winning.
+
+`v4_future_unseen_validation_log.json` queda vacio a proposito. Solo debe recibir registros despues de sorteos reales futuros, y no puede usarse para generar predicciones actuales ni activar prior en PR #30.
+
 ## Legacy Snapshot Classifier
 
 `tools/v4_legacy_snapshot_classifier.py` clasifica snapshots antiguos para conservar diagnostico sin contaminar memoria aplicada.
