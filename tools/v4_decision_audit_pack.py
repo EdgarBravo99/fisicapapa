@@ -132,6 +132,18 @@ def main() -> int:
             [python, str(ROOT / "tools" / "v4_post_ranking_full_validation_summary_gate.py"), "--output", "v4_post_ranking_full_validation_summary.json"],
         ),
         (
+            "post-ranking controlled layer",
+            [python, str(ROOT / "tools" / "v4_post_ranking_controlled_layer.py"), "--output", "v4_post_ranking_controlled_layer_output.json"],
+        ),
+        (
+            "post-ranking controlled comparison",
+            [python, str(ROOT / "tools" / "v4_post_ranking_controlled_comparison.py"), "--output", "v4_post_ranking_controlled_comparison.json"],
+        ),
+        (
+            "post-ranking controlled summary gate",
+            [python, str(ROOT / "tools" / "v4_post_ranking_controlled_summary_gate.py"), "--output", "v4_post_ranking_controlled_summary.json"],
+        ),
+        (
             "physics regime audit",
             [python, str(ROOT / "tools" / "v4_physics_regime_audit.py"), "--weights", args.weights, "--output", "v4_physics_regime_analysis.json"],
         ),

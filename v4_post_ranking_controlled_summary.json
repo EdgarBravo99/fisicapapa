@@ -1,0 +1,26 @@
+{
+  "version": "V4.4-controlled-post-ranking-summary",
+  "generated_at": "2026-05-23T01:20:54.160869+00:00",
+  "mode": "controlled_experiment",
+  "controlled_layer_status": "controlled_layer_ready",
+  "candidate_variant": "top6_preserved_plus_frequency_no_duplicates",
+  "smoothing_variant": "frequency_window_15",
+  "policy": "always_repair__min_history_15",
+  "usable_in_app": true,
+  "recommended_usage": "review_only",
+  "production_ready": false,
+  "prior_should_remain_blocked": true,
+  "official_results_untouched": true,
+  "reason": "Controlled layer is ready for review-only app display; official V4.2 output remains untouched.",
+  "must_not_do": [
+    "do not replace resultados.json",
+    "do not activate replay prior",
+    "do not claim probability of winning",
+    "do not mutate official scores"
+  ],
+  "recommended_next_evidence": [
+    "future unseen validation after real draws",
+    "continued comparison against original/frequency/random"
+  ],
+  "warnings": []
+}
