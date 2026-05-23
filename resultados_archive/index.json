@@ -210,7 +210,22 @@
       "status": "available",
       "warnings": [],
       "indexed_at": "2026-05-20T19:20:23.294958+00:00"
+    },
+    {
+      "path": "resultados_archive\\resultados_git_4214_542090e0a7b0.json",
+      "filename": "resultados_git_4214_542090e0a7b0.json",
+      "source": "git_history",
+      "commit_sha": "542090e0a7b09ff7b2b8870fa33be6269c68c281",
+      "short_sha": "542090e0a7b0",
+      "content_sha256": "b85e4fbfc34eb79919941c593002c96e142ca2943f6f63d0408998edff703e2d",
+      "prediction_draw": "4214",
+      "game_mode": "revancha",
+      "model_version": "V4.2-oos-feedback-loop",
+      "score_kind": "v4_2_deep_stacking_meta_score",
+      "status": "available",
+      "warnings": [],
+      "indexed_at": "2026-05-23T01:59:59.332556+00:00"
     }
   ],
-  "last_updated": "2026-05-20T19:31:42.490888+00:00"
+  "last_updated": "2026-05-23T01:59:59.332943+00:00"
 }

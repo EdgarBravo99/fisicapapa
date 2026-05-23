@@ -1,35 +1,11 @@
 {
-  "version": "V4.3.1-history-analysis",
-  "csv_used": "revancha.csv",
-  "summary": {
-    "snapshots_imported": 5,
-    "snapshots_omitted": 1,
-    "records_real_used": 3,
-    "records_duplicates_ignored": 2,
-    "evidence_insufficient": false,
-    "overfitting_risk_level": "high"
-  },
-  "snapshots_imported": [
+  "version": "V4.3-persistent-exam-memory",
+  "last_updated": "2026-05-23T01:59:59.828516+00:00",
+  "records": [
     {
-      "path": "resultados_archive\\resultados_4214_20260520_132155.json",
-      "commit_sha": null,
-      "short_sha": null,
-      "snapshot_source": "local_pre_run_archive",
       "prediction_draw": "4214",
-      "game_mode": "revancha",
-      "model_version": "V4.2-oos-feedback-loop",
-      "score_kind": "v4_2_deep_stacking_meta_score",
-      "csv_path": "revancha.csv",
-      "top_combinations": 10,
-      "generator_pool": 250,
-      "number_scores": 56,
-      "manual_suggestion_seed": 56,
-      "has_walk_forward": true,
-      "has_expert_scores_v4": true,
-      "has_complete_physics": true,
-      "califiable": true,
-      "omitted_reason": null,
       "target_draw": "4215",
+      "target_date": "2026-05-20",
       "target_numbers": [
         3,
         5,
@@ -37,123 +13,15 @@
         39,
         47,
         54
-      ]
-    },
-    {
-      "path": "resultados_archive\\resultados_4214_20260520_132734.json",
-      "commit_sha": null,
-      "short_sha": null,
-      "snapshot_source": "local_pre_run_archive",
-      "prediction_draw": "4214",
-      "game_mode": "revancha",
-      "model_version": "V4.2-oos-feedback-loop",
-      "score_kind": "v4_2_deep_stacking_meta_score",
-      "csv_path": "revancha.csv",
-      "top_combinations": 10,
-      "generator_pool": 250,
-      "number_scores": 56,
-      "manual_suggestion_seed": 56,
-      "has_walk_forward": true,
-      "has_expert_scores_v4": true,
-      "has_complete_physics": true,
-      "califiable": false,
-      "omitted_reason": null
-    },
-    {
-      "path": "resultados_archive\\resultados_4214_20260520_133142.json",
-      "commit_sha": null,
-      "short_sha": null,
-      "snapshot_source": "local_pre_run_archive",
-      "prediction_draw": "4214",
-      "game_mode": "revancha",
-      "model_version": "V4.2-oos-feedback-loop",
-      "score_kind": "v4_2_deep_stacking_meta_score",
-      "csv_path": "revancha.csv",
-      "top_combinations": 10,
-      "generator_pool": 250,
-      "number_scores": 56,
-      "manual_suggestion_seed": 56,
-      "has_walk_forward": true,
-      "has_expert_scores_v4": true,
-      "has_complete_physics": true,
-      "califiable": false,
-      "omitted_reason": null
-    },
-    {
-      "path": "resultados_archive\\resultados_git_4214_542090e0a7b0.json",
-      "commit_sha": "542090e0a7b09ff7b2b8870fa33be6269c68c281",
-      "short_sha": "542090e0a7b0",
-      "snapshot_source": "git_history",
-      "prediction_draw": "4214",
-      "game_mode": "revancha",
-      "model_version": "V4.2-oos-feedback-loop",
-      "score_kind": "v4_2_deep_stacking_meta_score",
-      "csv_path": "revancha.csv",
-      "top_combinations": 10,
-      "generator_pool": 250,
-      "number_scores": 56,
-      "manual_suggestion_seed": 56,
-      "has_walk_forward": true,
-      "has_expert_scores_v4": true,
-      "has_complete_physics": true,
-      "califiable": true,
-      "omitted_reason": null,
-      "target_draw": "4215",
-      "target_numbers": [
-        3,
-        5,
-        19,
-        39,
-        47,
-        54
-      ]
-    },
-    {
-      "path": "resultados_archive\\resultados_git_4214_65385d728faa.json",
-      "commit_sha": "65385d728faae7dcc7bcd494c2d32e62864821e3",
-      "short_sha": "65385d728faa",
-      "snapshot_source": "git_history",
-      "prediction_draw": "4214",
-      "game_mode": "revancha",
-      "model_version": "V4.2-oos-feedback-loop",
-      "score_kind": "v4_2_deep_stacking_meta_score",
-      "csv_path": "revancha.csv",
-      "top_combinations": 10,
-      "generator_pool": 250,
-      "number_scores": 56,
-      "manual_suggestion_seed": 56,
-      "has_walk_forward": true,
-      "has_expert_scores_v4": true,
-      "has_complete_physics": true,
-      "califiable": true,
-      "omitted_reason": null,
-      "target_draw": "4215",
-      "target_numbers": [
-        3,
-        5,
-        19,
-        39,
-        47,
-        54
-      ]
-    }
-  ],
-  "snapshots_omitted": [
-    {
-      "path": "resultados_archive\\resultados_unknown_20260522_195959.corrupt.json",
-      "califiable": false,
-      "omitted_reason": "JSON invalido: Expecting property name enclosed in double quotes: line 2 column 1 (char 2)"
-    }
-  ],
-  "records_real_used": [
-    {
-      "path": "resultados_archive\\resultados_4214_20260520_132155.json",
-      "prediction_draw": "4214",
-      "target_draw": "4215",
+      ],
       "game_mode": "revancha",
       "snapshot_source": "local_pre_run_archive",
       "source_commit_sha": null,
       "source_content_sha256": "ec44be8fbb4dba01cf2d6d62023773b116db167eb902dba4c2fb1f0b3f4e1b02",
+      "snapshot_path": "resultados_archive\\resultados_4214_20260520_132155.json",
+      "model_version": "V4.2-oos-feedback-loop",
+      "generated_at": "2026-05-18T07:40:18.547406+00:00",
+      "graded_at": "2026-05-23T01:59:59.646589+00:00",
       "top_combinations": [
         {
           "numbers": [
@@ -658,79 +526,33 @@
           "error": 61.93445
         }
       },
-      "number_drivers": {
-        "14": "xgboost",
-        "19": "physical",
-        "21": "xgboost",
-        "31": "fourier",
-        "25": "physical",
-        "9": "physical",
-        "1": "xgboost",
-        "33": "fourier",
-        "3": "xgboost",
-        "13": "fourier",
-        "41": "xgboost",
-        "10": "physical",
-        "32": "xgboost",
-        "53": "transformer",
-        "39": "fourier",
-        "51": "fourier",
-        "49": "fourier",
-        "30": "fourier",
-        "55": "fourier",
-        "20": "xgboost",
-        "23": "xgboost",
-        "38": "transformer",
-        "28": "fourier",
-        "37": "fourier",
-        "42": "transformer",
-        "17": "fourier",
-        "45": "fourier",
-        "56": "fourier",
-        "7": "fourier",
-        "43": "fourier",
-        "22": "fourier",
-        "36": "physical",
-        "11": "fourier",
-        "29": "fourier",
-        "27": "fourier",
-        "15": "graph",
-        "2": "fourier",
-        "26": "fourier",
-        "5": "xgboost",
-        "24": "xgboost",
-        "6": "xgboost",
-        "16": "fourier",
-        "12": "fourier",
-        "4": "fourier",
-        "35": "fourier",
-        "52": "fourier",
-        "40": "fourier",
-        "8": "transformer",
-        "54": "fourier",
-        "47": "fourier",
-        "44": "fourier",
-        "18": "xgboost",
-        "34": "fourier",
-        "48": "fourier",
-        "46": "transformer",
-        "50": "transformer"
+      "exam_grade": {
+        "average_hits": 1.0,
+        "best_hits": 1,
+        "score_inflation_detected": false
       },
-      "walk_forward_exported": {
-        "avg_hits": 0.488889,
-        "avg_hits_top10": 1.044444
-      },
-      "best_hits_top10": 1,
-      "average_hits_top10": 1.0
+      "warnings": []
     },
     {
-      "path": "resultados_archive\\resultados_git_4214_542090e0a7b0.json",
       "prediction_draw": "4214",
       "target_draw": "4215",
+      "target_date": "2026-05-20",
+      "target_numbers": [
+        3,
+        5,
+        19,
+        39,
+        47,
+        54
+      ],
       "game_mode": "revancha",
       "snapshot_source": "git_history",
       "source_commit_sha": "542090e0a7b09ff7b2b8870fa33be6269c68c281",
       "source_content_sha256": "b85e4fbfc34eb79919941c593002c96e142ca2943f6f63d0408998edff703e2d",
+      "snapshot_path": "resultados_archive\\resultados_git_4214_542090e0a7b0.json",
+      "model_version": "V4.2-oos-feedback-loop",
+      "generated_at": "2026-05-20T19:44:32.912068+00:00",
+      "graded_at": "2026-05-23T01:59:59.784279+00:00",
       "top_combinations": [
         {
           "numbers": [
@@ -1235,79 +1057,33 @@
           "error": 61.93445
         }
       },
-      "number_drivers": {
-        "14": "xgboost",
-        "19": "physical",
-        "21": "xgboost",
-        "31": "fourier",
-        "25": "physical",
-        "9": "physical",
-        "1": "xgboost",
-        "33": "fourier",
-        "3": "xgboost",
-        "13": "fourier",
-        "41": "xgboost",
-        "10": "physical",
-        "32": "xgboost",
-        "53": "transformer",
-        "39": "fourier",
-        "51": "fourier",
-        "49": "fourier",
-        "30": "fourier",
-        "55": "fourier",
-        "20": "xgboost",
-        "23": "xgboost",
-        "38": "transformer",
-        "28": "fourier",
-        "37": "fourier",
-        "42": "transformer",
-        "17": "fourier",
-        "45": "fourier",
-        "56": "fourier",
-        "7": "fourier",
-        "43": "fourier",
-        "22": "fourier",
-        "36": "physical",
-        "11": "fourier",
-        "29": "fourier",
-        "27": "fourier",
-        "15": "graph",
-        "2": "fourier",
-        "26": "fourier",
-        "5": "xgboost",
-        "24": "xgboost",
-        "6": "xgboost",
-        "16": "fourier",
-        "12": "fourier",
-        "4": "fourier",
-        "35": "fourier",
-        "52": "fourier",
-        "40": "fourier",
-        "8": "transformer",
-        "54": "fourier",
-        "47": "fourier",
-        "44": "fourier",
-        "18": "xgboost",
-        "34": "fourier",
-        "48": "fourier",
-        "46": "transformer",
-        "50": "transformer"
+      "exam_grade": {
+        "average_hits": 1.0,
+        "best_hits": 1,
+        "score_inflation_detected": false
       },
-      "walk_forward_exported": {
-        "avg_hits": 0.488889,
-        "avg_hits_top10": 1.044444
-      },
-      "best_hits_top10": 1,
-      "average_hits_top10": 1.0
+      "warnings": []
     },
     {
-      "path": "resultados_archive\\resultados_git_4214_65385d728faa.json",
       "prediction_draw": "4214",
       "target_draw": "4215",
+      "target_date": "2026-05-20",
+      "target_numbers": [
+        3,
+        5,
+        19,
+        39,
+        47,
+        54
+      ],
       "game_mode": "revancha",
       "snapshot_source": "git_history",
       "source_commit_sha": "65385d728faae7dcc7bcd494c2d32e62864821e3",
       "source_content_sha256": "ec44be8fbb4dba01cf2d6d62023773b116db167eb902dba4c2fb1f0b3f4e1b02",
+      "snapshot_path": "resultados_archive\\resultados_git_4214_65385d728faa.json",
+      "model_version": "V4.2-oos-feedback-loop",
+      "generated_at": "2026-05-18T07:40:18.547406+00:00",
+      "graded_at": "2026-05-23T01:59:59.828358+00:00",
       "top_combinations": [
         {
           "numbers": [
@@ -1812,362 +1588,246 @@
           "error": 61.93445
         }
       },
-      "number_drivers": {
-        "14": "xgboost",
-        "19": "physical",
-        "21": "xgboost",
-        "31": "fourier",
-        "25": "physical",
-        "9": "physical",
-        "1": "xgboost",
-        "33": "fourier",
-        "3": "xgboost",
-        "13": "fourier",
-        "41": "xgboost",
-        "10": "physical",
-        "32": "xgboost",
-        "53": "transformer",
-        "39": "fourier",
-        "51": "fourier",
-        "49": "fourier",
-        "30": "fourier",
-        "55": "fourier",
-        "20": "xgboost",
-        "23": "xgboost",
-        "38": "transformer",
-        "28": "fourier",
-        "37": "fourier",
-        "42": "transformer",
-        "17": "fourier",
-        "45": "fourier",
-        "56": "fourier",
-        "7": "fourier",
-        "43": "fourier",
-        "22": "fourier",
-        "36": "physical",
-        "11": "fourier",
-        "29": "fourier",
-        "27": "fourier",
-        "15": "graph",
-        "2": "fourier",
-        "26": "fourier",
-        "5": "xgboost",
-        "24": "xgboost",
-        "6": "xgboost",
-        "16": "fourier",
-        "12": "fourier",
-        "4": "fourier",
-        "35": "fourier",
-        "52": "fourier",
-        "40": "fourier",
-        "8": "transformer",
-        "54": "fourier",
-        "47": "fourier",
-        "44": "fourier",
-        "18": "xgboost",
-        "34": "fourier",
-        "48": "fourier",
-        "46": "transformer",
-        "50": "transformer"
+      "exam_grade": {
+        "average_hits": 1.0,
+        "best_hits": 1,
+        "score_inflation_detected": false
       },
-      "walk_forward_exported": {
-        "avg_hits": 0.488889,
-        "avg_hits_top10": 1.044444
-      },
-      "best_hits_top10": 1,
-      "average_hits_top10": 1.0
+      "warnings": []
     }
   ],
-  "records_duplicates_ignored": [
-    {
-      "path": "resultados_archive\\resultados_4214_20260520_132734.json",
-      "identity": [
-        "4214",
-        "4215",
-        "revancha",
-        "local_pre_run_archive",
-        "ec44be8fbb4dba01cf2d6d62023773b116db167eb902dba4c2fb1f0b3f4e1b02"
-      ],
-      "reason": "duplicado"
-    },
-    {
-      "path": "resultados_archive\\resultados_4214_20260520_133142.json",
-      "identity": [
-        "4214",
-        "4215",
-        "revancha",
-        "local_pre_run_archive",
-        "ec44be8fbb4dba01cf2d6d62023773b116db167eb902dba4c2fb1f0b3f4e1b02"
-      ],
-      "reason": "duplicado"
-    }
-  ],
-  "warnings": [],
-  "evidence_insufficient": false,
-  "mistakes_summary": {
+  "aggregate": {
+    "records_count": 3,
+    "unique_records_count": 3,
+    "valid_real_records_count": 3,
+    "average_hits_top_combinations": 1.0,
+    "best_hits_seen": 1,
     "overestimated_numbers": {
-      "1": 3,
-      "2": 3,
-      "4": 3,
-      "6": 3,
-      "7": 3,
-      "8": 3,
-      "9": 3,
-      "10": 3,
-      "11": 3,
-      "12": 3,
-      "13": 3,
-      "14": 3,
-      "15": 3,
-      "16": 3,
-      "17": 3,
-      "18": 3,
-      "20": 3,
-      "21": 3,
-      "22": 3,
-      "23": 3
+      "14": {
+        "count": 3,
+        "avg_error": 100.0
+      },
+      "21": {
+        "count": 3,
+        "avg_error": 94.469819
+      },
+      "31": {
+        "count": 3,
+        "avg_error": 93.069907
+      },
+      "25": {
+        "count": 3,
+        "avg_error": 91.442294
+      },
+      "9": {
+        "count": 3,
+        "avg_error": 88.492647
+      },
+      "1": {
+        "count": 3,
+        "avg_error": 86.985315
+      },
+      "33": {
+        "count": 3,
+        "avg_error": 86.246808
+      },
+      "13": {
+        "count": 3,
+        "avg_error": 81.474993
+      },
+      "41": {
+        "count": 3,
+        "avg_error": 79.203077
+      },
+      "10": {
+        "count": 3,
+        "avg_error": 78.841244
+      },
+      "32": {
+        "count": 3,
+        "avg_error": 78.785414
+      },
+      "53": {
+        "count": 3,
+        "avg_error": 76.745862
+      },
+      "51": {
+        "count": 3,
+        "avg_error": 72.97665
+      },
+      "49": {
+        "count": 3,
+        "avg_error": 70.870244
+      },
+      "30": {
+        "count": 3,
+        "avg_error": 70.798089
+      },
+      "55": {
+        "count": 3,
+        "avg_error": 69.189557
+      },
+      "20": {
+        "count": 3,
+        "avg_error": 68.535219
+      },
+      "23": {
+        "count": 3,
+        "avg_error": 67.856217
+      },
+      "38": {
+        "count": 3,
+        "avg_error": 65.178652
+      },
+      "28": {
+        "count": 3,
+        "avg_error": 63.859021
+      },
+      "37": {
+        "count": 3,
+        "avg_error": 63.486728
+      },
+      "42": {
+        "count": 3,
+        "avg_error": 63.14751
+      },
+      "17": {
+        "count": 3,
+        "avg_error": 62.876912
+      },
+      "45": {
+        "count": 3,
+        "avg_error": 61.992683
+      },
+      "56": {
+        "count": 3,
+        "avg_error": 61.93445
+      },
+      "7": {
+        "count": 3,
+        "avg_error": 61.666892
+      },
+      "43": {
+        "count": 3,
+        "avg_error": 60.239135
+      },
+      "22": {
+        "count": 3,
+        "avg_error": 58.571098
+      },
+      "36": {
+        "count": 3,
+        "avg_error": 58.013084
+      },
+      "11": {
+        "count": 3,
+        "avg_error": 56.055298
+      },
+      "29": {
+        "count": 3,
+        "avg_error": 54.792487
+      },
+      "27": {
+        "count": 3,
+        "avg_error": 54.111223
+      },
+      "15": {
+        "count": 3,
+        "avg_error": 53.011589
+      },
+      "2": {
+        "count": 3,
+        "avg_error": 50.959034
+      },
+      "26": {
+        "count": 3,
+        "avg_error": 48.826905
+      },
+      "24": {
+        "count": 3,
+        "avg_error": 46.600359
+      },
+      "6": {
+        "count": 3,
+        "avg_error": 46.210116
+      },
+      "16": {
+        "count": 3,
+        "avg_error": 44.22272
+      },
+      "12": {
+        "count": 3,
+        "avg_error": 43.546615
+      },
+      "4": {
+        "count": 3,
+        "avg_error": 41.596603
+      },
+      "35": {
+        "count": 3,
+        "avg_error": 40.426864
+      },
+      "52": {
+        "count": 3,
+        "avg_error": 40.17245
+      },
+      "40": {
+        "count": 3,
+        "avg_error": 39.228151
+      },
+      "8": {
+        "count": 3,
+        "avg_error": 37.221214
+      },
+      "44": {
+        "count": 3,
+        "avg_error": 33.13992
+      },
+      "18": {
+        "count": 3,
+        "avg_error": 32.543319
+      },
+      "34": {
+        "count": 3,
+        "avg_error": 25.739125
+      },
+      "48": {
+        "count": 3,
+        "avg_error": 17.973318
+      },
+      "46": {
+        "count": 3,
+        "avg_error": 12.557588
+      }
     },
     "underestimated_numbers": {
-      "3": 3,
-      "5": 3,
-      "19": 3,
-      "39": 3,
-      "47": 3,
-      "54": 3
+      "47": {
+        "count": 3,
+        "avg_error": -66.447541
+      },
+      "54": {
+        "count": 3,
+        "avg_error": -66.276801
+      },
+      "5": {
+        "count": 3,
+        "avg_error": -51.51825
+      },
+      "39": {
+        "count": 3,
+        "avg_error": -27.022078
+      },
+      "3": {
+        "count": 3,
+        "avg_error": -17.226083
+      },
+      "19": {
+        "count": 3,
+        "avg_error": -0.714196
+      }
     },
-    "bad_score_buckets": {
-      "0-20": {
-        "total_predicted_numbers": 9,
-        "appeared_count": 0,
-        "hit_rate": 0.0,
-        "avg_error": 10.176969
-      },
-      "20-40": {
-        "total_predicted_numbers": 21,
-        "appeared_count": 6,
-        "hit_rate": 0.285714,
-        "avg_error": 5.021055
-      },
-      "40-60": {
-        "total_predicted_numbers": 48,
-        "appeared_count": 3,
-        "hit_rate": 0.0625,
-        "avg_error": 42.849887
-      },
-      "60-80": {
-        "total_predicted_numbers": 60,
-        "appeared_count": 3,
-        "hit_rate": 0.05,
-        "avg_error": 63.558074
-      },
-      "80-100": {
-        "total_predicted_numbers": 30,
-        "appeared_count": 6,
-        "hit_rate": 0.2,
-        "avg_error": 70.42415
-      },
-      "inflated_bucket_detected": true
-    },
-    "top_combo_failure_patterns": {
-      "weak_combos_count": 30,
-      "better_combos_count": 0,
-      "weak_profile_avg": {
-        "even": 1.4,
-        "odd": 4.6,
-        "low": 4.1,
-        "high": 1.9,
-        "decades": 3.6,
-        "sum_total": 132.4,
-        "under40": 6.0,
-        "dispersion": 23.0
-      },
-      "better_profile_avg": {},
-      "recurrent_low_performance_patterns": {}
-    },
-    "expert_miscalibration": {
-      "physical": {
-        "predicted_count": 15,
-        "appeared_count": 3,
-        "avg_error": 63.215015,
-        "overestimated_count": 12,
-        "underestimated_count": 3
-      },
-      "transformer": {
-        "predicted_count": 18,
-        "appeared_count": 0,
-        "avg_error": 42.475138,
-        "overestimated_count": 15,
-        "underestimated_count": 0
-      },
-      "xgboost": {
-        "predicted_count": 36,
-        "appeared_count": 6,
-        "avg_error": 52.70371,
-        "overestimated_count": 30,
-        "underestimated_count": 6
-      },
-      "fourier": {
-        "predicted_count": 96,
-        "appeared_count": 9,
-        "avg_error": 45.946796,
-        "overestimated_count": 87,
-        "underestimated_count": 9
-      },
-      "graph": {
-        "predicted_count": 3,
-        "appeared_count": 0,
-        "avg_error": 53.011589,
-        "overestimated_count": 3,
-        "underestimated_count": 0
-      },
-      "unknown": {
-        "predicted_count": 0,
-        "appeared_count": 0,
-        "avg_error": 0,
-        "overestimated_count": 0,
-        "underestimated_count": 0
-      },
-      "most_miscalibrated_expert": "fourier"
-    },
-    "physical_bias_errors": {
-      "predicted_count": 15,
-      "appeared_count": 3,
-      "avg_error": 63.215015,
-      "overestimated_count": 12,
-      "underestimated_count": 3,
-      "status": "review"
-    },
-    "graph_bias_errors": {
-      "predicted_count": 3,
-      "appeared_count": 0,
-      "avg_error": 53.011589,
-      "overestimated_count": 3,
-      "underestimated_count": 0,
-      "status": "review"
-    },
-    "transformer_bias_errors": {
-      "predicted_count": 18,
-      "appeared_count": 0,
-      "avg_error": 42.475138,
-      "overestimated_count": 15,
-      "underestimated_count": 0,
-      "status": "review"
-    },
-    "xgboost_bias_errors": {
-      "predicted_count": 36,
-      "appeared_count": 6,
-      "avg_error": 52.70371,
-      "overestimated_count": 30,
-      "underestimated_count": 6,
-      "status": "review"
-    },
-    "fourier_bias_errors": {
-      "predicted_count": 96,
-      "appeared_count": 9,
-      "avg_error": 45.946796,
-      "overestimated_count": 87,
-      "underestimated_count": 9,
-      "status": "review"
-    },
-    "monte_carlo_diversity_issues": {
-      "total_combos": 750,
-      "unique_combos": 250,
-      "unique_numbers_used": 24,
-      "avg_pair_overlap": 3.782626,
-      "most_repeated_numbers": [
-        {
-          "number": 14,
-          "count": 681
-        },
-        {
-          "number": 19,
-          "count": 663
-        },
-        {
-          "number": 31,
-          "count": 546
-        },
-        {
-          "number": 25,
-          "count": 483
-        },
-        {
-          "number": 21,
-          "count": 459
-        },
-        {
-          "number": 33,
-          "count": 336
-        },
-        {
-          "number": 9,
-          "count": 267
-        },
-        {
-          "number": 32,
-          "count": 237
-        },
-        {
-          "number": 1,
-          "count": 162
-        },
-        {
-          "number": 41,
-          "count": 111
-        }
-      ],
-      "repeated_number_concentration": 0.908,
-      "diversity_issue_detected": true
-    },
-    "ranking_quality": {
-      "best_hits_top10_max": 1,
-      "average_hits_top10": 1.0
-    },
-    "walk_forward_gap": {
-      "records": [
-        {
-          "prediction_draw": "4214",
-          "target_draw": "4215",
-          "exported_avg_hits": 0.488889,
-          "exported_avg_hits_top10": 1.044444,
-          "actual_best_hits_top10": 1,
-          "actual_avg_hits_top10": 1.0,
-          "gap": 0.044444,
-          "possible_overconfidence": false
-        },
-        {
-          "prediction_draw": "4214",
-          "target_draw": "4215",
-          "exported_avg_hits": 0.488889,
-          "exported_avg_hits_top10": 1.044444,
-          "actual_best_hits_top10": 1,
-          "actual_avg_hits_top10": 1.0,
-          "gap": 0.044444,
-          "possible_overconfidence": false
-        },
-        {
-          "prediction_draw": "4214",
-          "target_draw": "4215",
-          "exported_avg_hits": 0.488889,
-          "exported_avg_hits_top10": 1.044444,
-          "actual_best_hits_top10": 1,
-          "actual_avg_hits_top10": 1.0,
-          "gap": 0.044444,
-          "possible_overconfidence": false
-        }
-      ],
-      "possible_overconfidence_count": 0
-    },
-    "overfitting_risk": {
-      "level": "high",
-      "reason": "evidencia insuficiente o concentrada",
-      "records_count": 3,
-      "unique_records_count": 3,
-      "duplicate_ratio": 0.4,
-      "snapshots_per_target_draw": {
-        "4215": 3
-      },
-      "whether_single_target_dominates": true
-    }
+    "combo_score_buckets": {},
+    "profile_performance": {},
+    "memory_adjustments": {}
   }
 }
