@@ -47,6 +47,7 @@
   };
 
   const SUM_BANDS = ['low_tail', 'historical_core', 'upper_core', 'high_tail', 'extreme_high'];
+  const CRITICAL_SOURCE_KEYS = ['slate', 'visual', 'pair'];
 
   const state = {
     sources: {},
@@ -114,7 +115,7 @@
 
   function expectedCommand(key, targetDraw) {
     const commands = {
-      slate: 'python tools/v4_refresh.py --game revancha --pair-companion-audit',
+      slate: 'python tools/v4_refresh.py --game revancha --sync-history-from-pakin --export-visual-matrix --pair-companion-audit --snapshot-predraw',
       pair: 'python tools/v4_pair_companion_audit.py',
       postDraw: `python tools/v4_post_draw_audit.py --target-draw ${targetDraw || '<draw>'}`,
       historySync: 'python tools/v4_history_sync_from_pakin.py --game revancha --dry-run',
@@ -124,6 +125,29 @@
       resultados: 'python local_cruncher_v4_2_calibrated.py',
     };
     return commands[key] || 'python tools/v4_refresh.py --game revancha';
+  }
+
+  function inferTargetDraw(data) {
+    if (finite(data?.slate?.latest_draw)) return Number(data.slate.latest_draw) + 1;
+    if (finite(data?.visual?.latest_draw)) return Number(data.visual.latest_draw) + 1;
+    if (finite(data?.historySync?.latest_draw)) return Number(data.historySync.latest_draw) + 1;
+    if (finite(data?.postDraw?.target_draw)) return Number(data.postDraw.target_draw);
+    return null;
+  }
+
+  function targetDrawText(data) {
+    const targetDraw = inferTargetDraw(data);
+    return targetDraw || 'not available';
+  }
+
+  function pairLagMode(data) {
+    return data?.slate?.source_policy?.pair_lag_mode || data?.visual?.pair_lag_mode || 'not loaded';
+  }
+
+  function missingCriticalSources() {
+    return CRITICAL_SOURCE_KEYS
+      .filter(key => !state.sources[key]?.ok)
+      .map(key => FILES[key]);
   }
 
   function emptyState(section, filename, command) {
@@ -232,11 +256,19 @@
     const sourcePolicy = slate?.source_policy || {};
     const tickets = safeArray(slate?.slate);
     const latestDraw = slate?.latest_draw || visual?.latest_draw || history?.latest_draw || 'not available';
-    const targetDraw = finite(slate?.latest_draw) ? Number(slate.latest_draw) + 1 : postDraw?.target_draw || 'not available';
+    const targetDraw = targetDrawText(data);
     const loaded = Object.values(state.sources).filter(source => source.ok).length;
     const total = Object.values(FILES).length + (snapshot ? 1 : 0);
-    const snapshotText = snapshot?.ok ? 'Snapshot frozen' : 'Snapshot not loaded / unknown';
+    const snapshotText = snapshot?.ok ? `Snapshot frozen for ${targetDraw}` : 'Snapshot not loaded / unknown';
     const auditSnapshot = postDraw?.leakage_check ? `Audit leakage: ${clean(postDraw.leakage_check.status)}` : 'Audit not loaded';
+    const currentPairLagMode = pairLagMode(data);
+    const missingCritical = missingCriticalSources();
+    const slateMissingNote = !state.sources.slate?.ok
+      ? '<p class="cockpit-note">Missing v4_hybrid_composition_slate.json. Run: python tools/v4_refresh.py --game revancha --sync-history-from-pakin --export-visual-matrix --pair-companion-audit --snapshot-predraw</p>'
+      : '';
+    const pairLagNote = currentPairLagMode === 'not loaded'
+      ? '<p class="cockpit-note">Pair-lag mode comes from v4_visual_pattern_output.json or v4_hybrid_composition_slate.json.</p>'
+      : '';
     return `
       <section id="cockpit-mission" class="cockpit-zone cockpit-mission">
         <div class="cockpit-zone-heading">
@@ -249,8 +281,8 @@
           ${metric('Target draw', targetDraw, 'mono')}
           ${metric('System state', slate?.production_status || 'review_default')}
           ${metric('Sources loaded', `${loaded}/${total}`, 'mono')}
-          ${metric('Ticket count', tickets.length || 'not available', 'mono')}
-          ${metric('Pair-lag mode', sourcePolicy.pair_lag_mode || visual?.pair_lag_mode || 'not available')}
+          ${metric('Ticket count', state.sources.slate?.ok ? tickets.length : 'Slate not loaded', 'mono')}
+          ${metric('Pair-lag mode', currentPairLagMode)}
           ${metric('History sync latest', history?.latest_draw || 'not available', 'mono')}
           ${metric('Sync time', history?.generated_at || 'not available')}
           ${metric('V4.2 signal active', sourcePolicy.v42_signal_available || resultados?.number_scores ? 'yes' : 'no')}
@@ -258,6 +290,12 @@
           ${metric('Snapshot status', snapshotText)}
           ${metric('Post-draw status', auditSnapshot)}
         </div>
+        <div class="cockpit-role-pills mt-3">
+          <span class="cockpit-pill">Missing critical sources</span>
+          ${missingCritical.length ? missingCritical.map(path => `<span class="cockpit-pill">${esc(path)}</span>`).join('') : '<span class="cockpit-pill">none</span>'}
+        </div>
+        ${slateMissingNote}
+        ${pairLagNote}
       </section>`;
   }
 
@@ -491,7 +529,7 @@
   function render(data, snapshot) {
     const root = byId('v43-cockpit-root');
     if (!root) return;
-    const targetDraw = finite(data.slate?.latest_draw) ? Number(data.slate.latest_draw) + 1 : data.postDraw?.target_draw;
+    const targetDraw = inferTargetDraw(data);
     root.innerHTML = `
       ${renderMissionControl(data, snapshot)}
       ${renderRecommendedSlate(data)}
@@ -512,7 +550,7 @@
     const entries = await Promise.all(Object.entries(FILES).map(async ([key, path]) => [key, await loadJson(path)]));
     state.sources = Object.fromEntries(entries);
     const data = Object.fromEntries(entries.map(([key, source]) => [key, source.data]));
-    const targetDraw = finite(data.slate?.latest_draw) ? Number(data.slate.latest_draw) + 1 : data.postDraw?.target_draw;
+    const targetDraw = inferTargetDraw(data);
     let snapshot = null;
     if (targetDraw) {
       const path = `v4_predraw_slate_snapshots/v4_predraw_slate_target_${targetDraw}.json`;
