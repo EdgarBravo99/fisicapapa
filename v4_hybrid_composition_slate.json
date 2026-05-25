@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "generated_at": "2026-05-25T07:30:16.737114+00:00",
-=======
-  "generated_at": "2026-05-25T18:58:20.926377+00:00",
->>>>>>> 06aaa41be29e079889c0fe15ef236df417997a22
+  "generated_at": "2026-05-25T19:14:25.584007+00:00",
   "engine_version": "V4.3-hybrid-composition",
   "source_policy": {
     "primary_source": "revancha.csv",
@@ -17,112 +13,6 @@
   "latest_draw": 4217,
   "slate": [
     {
-<<<<<<< HEAD
-      "ticket_id": "composition_main_1",
-      "ticket_type": "composition_main",
-      "numbers": [
-        21,
-        26,
-        28,
-        29,
-        41,
-        55
-      ],
-      "roles": {
-        "21": [
-          "anchor",
-          "activated_block",
-          "block_completion",
-          "cold_companion",
-          "gap_echo",
-          "v42_signal_optional"
-        ],
-        "26": [
-          "support",
-          "activated_block",
-          "block_completion",
-          "gap_echo"
-        ],
-        "28": [
-          "support",
-          "activated_block",
-          "block_completion",
-          "cold_companion"
-        ],
-        "29": [
-          "activated_block",
-          "block_completion",
-          "gap_echo",
-          "support"
-        ],
-        "41": [
-          "support",
-          "activated_block",
-          "block_completion",
-          "gap_echo",
-          "v42_signal_optional"
-        ],
-        "55": [
-          "support",
-          "activated_block",
-          "block_completion",
-          "gap_echo"
-        ]
-      },
-      "reasons": {
-        "21": [
-          "Located inside activated 21_30 block by unique activation.",
-          "Gap echo: current gap 22, historical median gap 15.",
-          "Controlled cold companion attached to bridge/block evidence.",
-          "Supported by optional V4.2 number score ranking."
-        ],
-        "26": [
-          "Located inside activated 21_30 block by unique activation.",
-          "Gap echo: current gap 8, historical median gap 8.5."
-        ],
-        "28": [
-          "Located inside activated 21_30 block by unique activation.",
-          "Controlled cold companion attached to bridge/block evidence."
-        ],
-        "29": [
-          "Pair-lag evidence downgraded to support by walk-forward validation.",
-          "Located inside activated 21_30 block by unique activation.",
-          "Gap echo: current gap 3, historical median gap 4.0."
-        ],
-        "41": [
-          "Located inside activated 41_56 block by unique activation.",
-          "Gap echo: current gap 7, historical median gap 6.",
-          "Supported by optional V4.2 number score ranking."
-        ],
-        "55": [
-          "Located inside activated 41_56 block by unique activation.",
-          "Gap echo: current gap 7, historical median gap 7."
-        ]
-      },
-      "composition": {
-        "parity": {
-          "even": 2,
-          "odd": 4
-        },
-        "sum": 200,
-        "blocks": {
-          "1_10": 0,
-          "11_20": 0,
-          "21_30": 4,
-          "31_40": 0,
-          "41_56": 2
-        },
-        "immediate_overlap_previous_draw": 0
-      },
-      "reason": "Composed by V4.3 roles: bridge/block/gap/cold companion with parity and sum as soft checks.",
-      "risk_notes": [
-        "Review-default composition slate.",
-        "Outcome-neutral review layer."
-      ]
-    },
-    {
-=======
->>>>>>> 06aaa41be29e079889c0fe15ef236df417997a22
       "ticket_id": "activated_block_main_2",
       "ticket_type": "activated_block_main",
       "numbers": [
@@ -140,13 +30,9 @@
           "block_completion",
           "cold_companion",
           "gap_echo",
-<<<<<<< HEAD
-          "v42_signal_optional"
-=======
           "v42_signal_optional",
           "sum_band_guardrail",
           "harmonic_support"
->>>>>>> 06aaa41be29e079889c0fe15ef236df417997a22
         ],
         "26": [
           "support",
@@ -169,13 +55,9 @@
           "activated_block",
           "block_completion",
           "gap_echo",
-<<<<<<< HEAD
-          "v42_signal_optional"
-=======
           "v42_signal_optional",
           "sum_band_guardrail",
           "harmonic_support"
->>>>>>> 06aaa41be29e079889c0fe15ef236df417997a22
         ],
         "55": [
           "support",
@@ -260,100 +142,7 @@
         "Outcome-neutral review layer.",
         "Sum band guardrail: high_tail."
       ],
-<<<<<<< HEAD
-      "roles": {
-        "21": [
-          "anchor",
-          "activated_block",
-          "block_completion",
-          "cold_companion",
-          "gap_echo",
-          "v42_signal_optional"
-        ],
-        "22": [
-          "support",
-          "activated_block",
-          "block_completion"
-        ],
-        "26": [
-          "support",
-          "activated_block",
-          "block_completion",
-          "gap_echo"
-        ],
-        "41": [
-          "support",
-          "activated_block",
-          "block_completion",
-          "gap_echo",
-          "v42_signal_optional"
-        ],
-        "43": [
-          "support",
-          "activated_block",
-          "block_completion",
-          "gap_echo",
-          "v42_signal_optional"
-        ],
-        "56": [
-          "support",
-          "activated_block",
-          "block_completion",
-          "gap_echo"
-        ]
-      },
-      "reasons": {
-        "21": [
-          "Located inside activated 21_30 block by unique activation.",
-          "Gap echo: current gap 22, historical median gap 15.",
-          "Controlled cold companion attached to bridge/block evidence.",
-          "Supported by optional V4.2 number score ranking."
-        ],
-        "22": [
-          "Located inside activated 21_30 block by unique activation."
-        ],
-        "26": [
-          "Located inside activated 21_30 block by unique activation.",
-          "Gap echo: current gap 8, historical median gap 8.5."
-        ],
-        "41": [
-          "Located inside activated 41_56 block by unique activation.",
-          "Gap echo: current gap 7, historical median gap 6.",
-          "Supported by optional V4.2 number score ranking."
-        ],
-        "43": [
-          "Located inside activated 41_56 block by unique activation.",
-          "Gap echo: current gap 4, historical median gap 5.0.",
-          "Supported by optional V4.2 number score ranking."
-        ],
-        "56": [
-          "Located inside activated 41_56 block by unique activation.",
-          "Gap echo: current gap 7, historical median gap 6.0."
-        ]
-      },
-      "composition": {
-        "parity": {
-          "even": 3,
-          "odd": 3
-        },
-        "sum": 209,
-        "blocks": {
-          "1_10": 0,
-          "11_20": 0,
-          "21_30": 3,
-          "31_40": 0,
-          "41_56": 3
-        },
-        "immediate_overlap_previous_draw": 0
-      },
-      "reason": "Composed by V4.3 roles: bridge/block/gap/cold companion with parity and sum as soft checks.",
-      "risk_notes": [
-        "Review-default composition slate.",
-        "Outcome-neutral review layer."
-      ]
-=======
       "selection_score": 0.386173
->>>>>>> 06aaa41be29e079889c0fe15ef236df417997a22
     },
     {
       "ticket_id": "pair_lag_support_3",
@@ -372,12 +161,8 @@
           "activated_block",
           "block_completion",
           "cold_companion",
-<<<<<<< HEAD
-          "v42_signal_optional"
-=======
           "v42_signal_optional",
           "harmonic_support"
->>>>>>> 06aaa41be29e079889c0fe15ef236df417997a22
         ],
         "16": [
           "support",
@@ -405,24 +190,16 @@
           "activated_block",
           "block_completion",
           "gap_echo",
-<<<<<<< HEAD
-          "v42_signal_optional"
-=======
           "v42_signal_optional",
           "harmonic_support"
->>>>>>> 06aaa41be29e079889c0fe15ef236df417997a22
         ],
         "53": [
           "support",
           "activated_block",
           "block_completion",
           "gap_echo",
-<<<<<<< HEAD
-          "v42_signal_optional"
-=======
           "v42_signal_optional",
           "harmonic_support"
->>>>>>> 06aaa41be29e079889c0fe15ef236df417997a22
         ]
       },
       "reasons": {

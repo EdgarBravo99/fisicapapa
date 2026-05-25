@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-25T18:56:09.144382+00:00",
+  "generated_at": "2026-05-25T19:14:21.612534+00:00",
   "source_repo": "https://github.com/pakinja/pakin",
   "source_urls_attempted": [
     "https://raw.githubusercontent.com/pakinja/pakin/master/Revancha.csv",
@@ -11,7 +11,7 @@
   "rows_valid": 2132,
   "rows_dropped": 0,
   "latest_draw": 4217,
-  "output_path": "C:\\Users\\edyga\\Documents\\GitHub\\fisicapapa-v43-harmonic-history-sync\\revancha.csv",
+  "output_path": "C:\\Users\\edyga\\Documents\\GitHub\\fisicapapa\\revancha.csv",
   "checksum": "b2383c0afab0749b621c95be37cfd02c6f9c384fb8f8c457eb556420d051dc24",
   "warnings": []
 }

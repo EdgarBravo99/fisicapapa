@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "generated_at": "2026-05-25T07:30:13.675354+00:00",
-=======
-  "generated_at": "2026-05-25T18:58:18.435738+00:00",
->>>>>>> 06aaa41be29e079889c0fe15ef236df417997a22
+  "generated_at": "2026-05-25T19:14:22.317670+00:00",
   "source": {
     "revancha_csv": "revancha.csv",
     "resultados_json_available": true,
