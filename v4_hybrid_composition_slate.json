@@ -1,0 +1,457 @@
+{
+  "generated_at": "2026-05-25T06:39:38.911102+00:00",
+  "engine_version": "V4.3-hybrid-composition",
+  "source_policy": {
+    "primary_source": "revancha.csv",
+    "v42_signal_available": false,
+    "v42_signal_used_as": "not_used",
+    "fallback_mode": "csv_visual_composition_only"
+  },
+  "production_status": "review_default",
+  "disclaimer": "Experimental composition ranking, not probability or guarantee.",
+  "latest_draw": 4215,
+  "slate": [
+    {
+      "ticket_id": "composition_main_1",
+      "ticket_type": "composition_main",
+      "numbers": [
+        18,
+        27,
+        30,
+        45,
+        46,
+        50
+      ],
+      "roles": {
+        "18": [
+          "anchor",
+          "block_completion",
+          "bridge_pair_lag",
+          "gap_echo"
+        ],
+        "27": [
+          "support",
+          "block_completion",
+          "bridge_pair_lag",
+          "gap_echo"
+        ],
+        "30": [
+          "support",
+          "gap_echo"
+        ],
+        "45": [
+          "support",
+          "block_completion",
+          "bridge_pair_lag"
+        ],
+        "46": [
+          "support",
+          "block_completion",
+          "bridge_pair_lag",
+          "gap_echo"
+        ],
+        "50": [
+          "support",
+          "block_completion",
+          "bridge_pair_lag"
+        ]
+      },
+      "reasons": {
+        "18": [
+          "Strong pair-lag bridge from 3 to 18: 10/17 within lag <= 3.",
+          "Gap echo: current gap 4, historical median gap 5."
+        ],
+        "27": [
+          "Strong pair-lag bridge from 39 to 27: 10/20 within lag <= 3.",
+          "Gap echo: current gap 3, historical median gap 5.0.",
+          "4217 learning: 27 is explicitly watched as pair-lag/block bridge candidate."
+        ],
+        "30": [
+          "Gap echo: current gap 7, historical median gap 6.0."
+        ],
+        "45": [
+          "Strong pair-lag bridge from 19 to 45: 9/15 within lag <= 3."
+        ],
+        "46": [
+          "Strong pair-lag bridge from 39 to 46: 11/20 within lag <= 3.",
+          "Gap echo: current gap 8, historical median gap 6.0."
+        ],
+        "50": [
+          "Strong pair-lag bridge from 19 to 50: 8/15 within lag <= 3."
+        ]
+      },
+      "composition": {
+        "parity": {
+          "even": 4,
+          "odd": 2
+        },
+        "sum": 216,
+        "blocks": {
+          "1_10": 0,
+          "11_20": 1,
+          "21_30": 2,
+          "31_40": 0,
+          "41_56": 3
+        },
+        "immediate_overlap_previous_draw": 0
+      },
+      "reason": "Composed by V4.3 roles: bridge/block/gap/cold companion with parity and sum as soft checks.",
+      "risk_notes": [
+        "Review-default composition slate.",
+        "Not a probability estimate."
+      ]
+    },
+    {
+      "ticket_id": "activated_block_main_2",
+      "ticket_type": "activated_block_main",
+      "numbers": [
+        18,
+        27,
+        29,
+        30,
+        45,
+        46
+      ],
+      "roles": {
+        "18": [
+          "anchor",
+          "block_completion",
+          "bridge_pair_lag",
+          "gap_echo"
+        ],
+        "27": [
+          "support",
+          "block_completion",
+          "bridge_pair_lag",
+          "gap_echo"
+        ],
+        "29": [
+          "support",
+          "block_completion"
+        ],
+        "30": [
+          "support",
+          "gap_echo"
+        ],
+        "45": [
+          "support",
+          "block_completion",
+          "bridge_pair_lag"
+        ],
+        "46": [
+          "support",
+          "block_completion",
+          "bridge_pair_lag",
+          "gap_echo"
+        ]
+      },
+      "reasons": {
+        "18": [
+          "Strong pair-lag bridge from 3 to 18: 10/17 within lag <= 3.",
+          "Gap echo: current gap 4, historical median gap 5."
+        ],
+        "27": [
+          "Strong pair-lag bridge from 39 to 27: 10/20 within lag <= 3.",
+          "Gap echo: current gap 3, historical median gap 5.0.",
+          "4217 learning: 27 is explicitly watched as pair-lag/block bridge candidate."
+        ],
+        "29": [
+          "Selected by V4.3 composition role balance."
+        ],
+        "30": [
+          "Gap echo: current gap 7, historical median gap 6.0."
+        ],
+        "45": [
+          "Strong pair-lag bridge from 19 to 45: 9/15 within lag <= 3."
+        ],
+        "46": [
+          "Strong pair-lag bridge from 39 to 46: 11/20 within lag <= 3.",
+          "Gap echo: current gap 8, historical median gap 6.0."
+        ]
+      },
+      "composition": {
+        "parity": {
+          "even": 3,
+          "odd": 3
+        },
+        "sum": 195,
+        "blocks": {
+          "1_10": 0,
+          "11_20": 1,
+          "21_30": 3,
+          "31_40": 0,
+          "41_56": 2
+        },
+        "immediate_overlap_previous_draw": 0
+      },
+      "reason": "Composed by V4.3 roles: bridge/block/gap/cold companion with parity and sum as soft checks.",
+      "risk_notes": [
+        "Review-default composition slate.",
+        "Not a probability estimate."
+      ]
+    },
+    {
+      "ticket_id": "contrarian_controlled_5",
+      "ticket_type": "contrarian_controlled",
+      "numbers": [
+        7,
+        18,
+        24,
+        27,
+        29,
+        30
+      ],
+      "roles": {
+        "7": [
+          "anchor",
+          "block_completion",
+          "bridge_pair_lag"
+        ],
+        "18": [
+          "support",
+          "block_completion",
+          "bridge_pair_lag",
+          "gap_echo"
+        ],
+        "24": [
+          "support",
+          "gap_echo"
+        ],
+        "27": [
+          "support",
+          "block_completion",
+          "bridge_pair_lag",
+          "gap_echo"
+        ],
+        "29": [
+          "support",
+          "block_completion"
+        ],
+        "30": [
+          "support",
+          "gap_echo"
+        ]
+      },
+      "reasons": {
+        "7": [
+          "Strong pair-lag bridge from 54 to 7: 12/23 within lag <= 3."
+        ],
+        "18": [
+          "Strong pair-lag bridge from 3 to 18: 10/17 within lag <= 3.",
+          "Gap echo: current gap 4, historical median gap 5."
+        ],
+        "24": [
+          "Gap echo: current gap 9, historical median gap 8."
+        ],
+        "27": [
+          "Strong pair-lag bridge from 39 to 27: 10/20 within lag <= 3.",
+          "Gap echo: current gap 3, historical median gap 5.0.",
+          "4217 learning: 27 is explicitly watched as pair-lag/block bridge candidate."
+        ],
+        "29": [
+          "Selected by V4.3 composition role balance."
+        ],
+        "30": [
+          "Gap echo: current gap 7, historical median gap 6.0."
+        ]
+      },
+      "composition": {
+        "parity": {
+          "even": 3,
+          "odd": 3
+        },
+        "sum": 135,
+        "blocks": {
+          "1_10": 1,
+          "11_20": 1,
+          "21_30": 4,
+          "31_40": 0,
+          "41_56": 0
+        },
+        "immediate_overlap_previous_draw": 0
+      },
+      "reason": "Composed by V4.3 roles: bridge/block/gap/cold companion with parity and sum as soft checks.",
+      "risk_notes": [
+        "Review-default composition slate.",
+        "Not a probability estimate."
+      ]
+    },
+    {
+      "ticket_id": "pair_lag_bridge_3",
+      "ticket_type": "pair_lag_bridge",
+      "numbers": [
+        6,
+        23,
+        26,
+        35,
+        54,
+        55
+      ],
+      "roles": {
+        "6": [
+          "anchor",
+          "gap_echo"
+        ],
+        "23": [
+          "support",
+          "block_completion",
+          "bridge_pair_lag"
+        ],
+        "26": [
+          "support",
+          "gap_echo"
+        ],
+        "35": [
+          "support",
+          "block_completion",
+          "bridge_pair_lag"
+        ],
+        "54": [
+          "support",
+          "block_completion",
+          "bridge_pair_lag"
+        ],
+        "55": [
+          "support",
+          "gap_echo"
+        ]
+      },
+      "reasons": {
+        "6": [
+          "Gap echo: current gap 7, historical median gap 7.5."
+        ],
+        "23": [
+          "Strong pair-lag bridge from 19 to 23: 8/15 within lag <= 3."
+        ],
+        "26": [
+          "Gap echo: current gap 6, historical median gap 8.5."
+        ],
+        "35": [
+          "Strong pair-lag bridge from 54 to 35: 12/23 within lag <= 3."
+        ],
+        "54": [
+          "Strong pair-lag bridge from 3 to 54: 9/17 within lag <= 3."
+        ],
+        "55": [
+          "Gap echo: current gap 5, historical median gap 7."
+        ]
+      },
+      "composition": {
+        "parity": {
+          "even": 3,
+          "odd": 3
+        },
+        "sum": 199,
+        "blocks": {
+          "1_10": 1,
+          "11_20": 0,
+          "21_30": 2,
+          "31_40": 1,
+          "41_56": 2
+        },
+        "immediate_overlap_previous_draw": 1
+      },
+      "reason": "Fallback V4.3 role composition variant to keep the review slate broad but still role-scored.",
+      "risk_notes": [
+        "Review-default composition slate.",
+        "Not a probability estimate."
+      ]
+    },
+    {
+      "ticket_id": "balanced_hybrid_4",
+      "ticket_type": "balanced_hybrid",
+      "numbers": [
+        2,
+        6,
+        8,
+        33,
+        41,
+        56
+      ],
+      "roles": {
+        "2": [
+          "anchor",
+          "gap_echo"
+        ],
+        "6": [
+          "support",
+          "gap_echo"
+        ],
+        "8": [
+          "support",
+          "gap_echo"
+        ],
+        "33": [
+          "support",
+          "gap_echo"
+        ],
+        "41": [
+          "support",
+          "gap_echo"
+        ],
+        "56": [
+          "support",
+          "gap_echo"
+        ]
+      },
+      "reasons": {
+        "2": [
+          "Gap echo: current gap 6, historical median gap 6."
+        ],
+        "6": [
+          "Gap echo: current gap 7, historical median gap 7.5."
+        ],
+        "8": [
+          "Gap echo: current gap 6, historical median gap 7."
+        ],
+        "33": [
+          "Gap echo: current gap 8, historical median gap 8."
+        ],
+        "41": [
+          "Gap echo: current gap 5, historical median gap 6.5."
+        ],
+        "56": [
+          "Gap echo: current gap 5, historical median gap 6.0."
+        ]
+      },
+      "composition": {
+        "parity": {
+          "even": 4,
+          "odd": 2
+        },
+        "sum": 146,
+        "blocks": {
+          "1_10": 3,
+          "11_20": 0,
+          "21_30": 0,
+          "31_40": 1,
+          "41_56": 2
+        },
+        "immediate_overlap_previous_draw": 0
+      },
+      "reason": "Fallback V4.3 role composition variant to keep the review slate broad but still role-scored.",
+      "risk_notes": [
+        "Review-default composition slate.",
+        "Not a probability estimate."
+      ]
+    }
+  ],
+  "validation_summary": {
+    "available": true,
+    "draws_evaluated": 60,
+    "avg_hits_per_ticket": 0.64,
+    "best_ticket_hits_per_draw": 1.45,
+    "hit_ge_1_rate": 0.48,
+    "hit_ge_2_rate": 0.133333,
+    "hit_ge_3_rate": 0.026667,
+    "zero_rate": 0.52,
+    "rescued_winners_outside_v42_top10": null,
+    "activated_block_hit_rate": 0.071429,
+    "pair_lag_bridge_hit_rate": 0.0,
+    "immediate_carryover_hit_rate": 0.0,
+    "composition_pattern_match_rate": 0.423333
+  },
+  "warnings": [
+    "resultados.json contains conflict markers; V4.3 running CSV-only."
+  ]
+}

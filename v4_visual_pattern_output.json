@@ -1,0 +1,577 @@
+{
+  "generated_at": "2026-05-25T06:39:36.473770+00:00",
+  "mode": "csv_visual_composition_only",
+  "latest_draw": 4215,
+  "latest_numbers": [
+    3,
+    5,
+    19,
+    39,
+    47,
+    54
+  ],
+  "feature_windows": {
+    "recent_draws": 5,
+    "pair_lag_window": 3,
+    "history_draws": 200
+  },
+  "zone_activation": {
+    "1_10": 0.1,
+    "11_20": 0.14,
+    "21_30": 0.12,
+    "31_40": 0.04,
+    "41_56": 0.125
+  },
+  "top_visual_candidates": [
+    {
+      "number": 18,
+      "visual_score": 0.69,
+      "roles": [
+        "block_completion",
+        "bridge_pair_lag",
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.8,
+        "pair_lag": 0.588235,
+        "zone_activation": 0.14,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Strong pair-lag bridge from 3 to 18: 10/17 within lag <= 3.",
+        "Gap echo: current gap 4, historical median gap 5."
+      ]
+    },
+    {
+      "number": 27,
+      "visual_score": 0.654,
+      "roles": [
+        "block_completion",
+        "bridge_pair_lag",
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.6,
+        "pair_lag": 0.5,
+        "zone_activation": 0.12,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Strong pair-lag bridge from 39 to 27: 10/20 within lag <= 3.",
+        "Gap echo: current gap 3, historical median gap 5.0.",
+        "4217 learning: 27 is explicitly watched as pair-lag/block bridge candidate."
+      ]
+    },
+    {
+      "number": 46,
+      "visual_score": 0.631167,
+      "roles": [
+        "block_completion",
+        "bridge_pair_lag",
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.666667,
+        "pair_lag": 0.55,
+        "zone_activation": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Strong pair-lag bridge from 39 to 46: 11/20 within lag <= 3.",
+        "Gap echo: current gap 8, historical median gap 6.0."
+      ]
+    },
+    {
+      "number": 45,
+      "visual_score": 0.538167,
+      "roles": [
+        "block_completion",
+        "bridge_pair_lag"
+      ],
+      "signals": {
+        "gap_echo": 0.166667,
+        "pair_lag": 0.6,
+        "zone_activation": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Strong pair-lag bridge from 19 to 45: 9/15 within lag <= 3."
+      ]
+    },
+    {
+      "number": 50,
+      "visual_score": 0.533833,
+      "roles": [
+        "block_completion",
+        "bridge_pair_lag"
+      ],
+      "signals": {
+        "gap_echo": 0.25,
+        "pair_lag": 0.533333,
+        "zone_activation": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Strong pair-lag bridge from 19 to 50: 8/15 within lag <= 3."
+      ]
+    },
+    {
+      "number": 16,
+      "visual_score": 0.510715,
+      "roles": [
+        "block_completion"
+      ],
+      "signals": {
+        "gap_echo": 0.222222,
+        "pair_lag": 0.434783,
+        "zone_activation": 0.14,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": []
+    },
+    {
+      "number": 15,
+      "visual_score": 0.509514,
+      "roles": [
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.75,
+        "pair_lag": 0.428571,
+        "zone_activation": 0.14,
+        "block_completion": 0.28,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Gap echo: current gap 3, historical median gap 4.0."
+      ]
+    },
+    {
+      "number": 11,
+      "visual_score": 0.506174,
+      "roles": [
+        "block_completion",
+        "bridge_pair_lag"
+      ],
+      "signals": {
+        "gap_echo": 0.0,
+        "pair_lag": 0.565217,
+        "zone_activation": 0.14,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Strong pair-lag bridge from 54 to 11: 13/23 within lag <= 3."
+      ]
+    },
+    {
+      "number": 30,
+      "visual_score": 0.506147,
+      "roles": [
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.833333,
+        "pair_lag": 0.448276,
+        "zone_activation": 0.12,
+        "block_completion": 0.24,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Gap echo: current gap 7, historical median gap 6.0."
+      ]
+    },
+    {
+      "number": 7,
+      "visual_score": 0.506058,
+      "roles": [
+        "block_completion",
+        "bridge_pair_lag"
+      ],
+      "signals": {
+        "gap_echo": 0.266667,
+        "pair_lag": 0.521739,
+        "zone_activation": 0.1,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Strong pair-lag bridge from 54 to 7: 12/23 within lag <= 3."
+      ]
+    },
+    {
+      "number": 29,
+      "visual_score": 0.505667,
+      "roles": [
+        "block_completion"
+      ],
+      "signals": {
+        "gap_echo": 0.25,
+        "pair_lag": 0.466667,
+        "zone_activation": 0.12,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": []
+    },
+    {
+      "number": 24,
+      "visual_score": 0.4989,
+      "roles": [
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.875,
+        "pair_lag": 0.4,
+        "zone_activation": 0.12,
+        "block_completion": 0.24,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Gap echo: current gap 9, historical median gap 8."
+      ]
+    },
+    {
+      "number": 49,
+      "visual_score": 0.493928,
+      "roles": [
+        "block_completion"
+      ],
+      "signals": {
+        "gap_echo": 0.285714,
+        "pair_lag": 0.392857,
+        "zone_activation": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": []
+    },
+    {
+      "number": 53,
+      "visual_score": 0.487242,
+      "roles": [
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.875,
+        "pair_lag": 0.344828,
+        "zone_activation": 0.125,
+        "block_completion": 0.25,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Gap echo: current gap 9, historical median gap 8.0."
+      ]
+    },
+    {
+      "number": 4,
+      "visual_score": 0.482326,
+      "roles": [
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.875,
+        "pair_lag": 0.434783,
+        "zone_activation": 0.1,
+        "block_completion": 0.2,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Gap echo: current gap 9, historical median gap 8."
+      ]
+    },
+    {
+      "number": 26,
+      "visual_score": 0.478694,
+      "roles": [
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.705882,
+        "pair_lag": 0.45,
+        "zone_activation": 0.12,
+        "block_completion": 0.24,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Gap echo: current gap 6, historical median gap 8.5."
+      ]
+    },
+    {
+      "number": 54,
+      "visual_score": 0.4775,
+      "roles": [
+        "block_completion",
+        "bridge_pair_lag"
+      ],
+      "signals": {
+        "gap_echo": 0.0,
+        "pair_lag": 0.529412,
+        "zone_activation": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Strong pair-lag bridge from 3 to 54: 9/17 within lag <= 3."
+      ]
+    },
+    {
+      "number": 23,
+      "visual_score": 0.473333,
+      "roles": [
+        "block_completion",
+        "bridge_pair_lag"
+      ],
+      "signals": {
+        "gap_echo": 0.0,
+        "pair_lag": 0.533333,
+        "zone_activation": 0.12,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Strong pair-lag bridge from 19 to 23: 8/15 within lag <= 3."
+      ]
+    },
+    {
+      "number": 35,
+      "visual_score": 0.469391,
+      "roles": [
+        "block_completion",
+        "bridge_pair_lag"
+      ],
+      "signals": {
+        "gap_echo": 0.4,
+        "pair_lag": 0.521739,
+        "zone_activation": 0.04,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Strong pair-lag bridge from 54 to 35: 12/23 within lag <= 3."
+      ]
+    },
+    {
+      "number": 55,
+      "visual_score": 0.468214,
+      "roles": [
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.714286,
+        "pair_lag": 0.392857,
+        "zone_activation": 0.125,
+        "block_completion": 0.25,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Gap echo: current gap 5, historical median gap 7."
+      ]
+    },
+    {
+      "number": 6,
+      "visual_score": 0.465594,
+      "roles": [
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.933333,
+        "pair_lag": 0.347826,
+        "zone_activation": 0.1,
+        "block_completion": 0.2,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Gap echo: current gap 7, historical median gap 7.5."
+      ]
+    },
+    {
+      "number": 56,
+      "visual_score": 0.464312,
+      "roles": [
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.833333,
+        "pair_lag": 0.304348,
+        "zone_activation": 0.125,
+        "block_completion": 0.25,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Gap echo: current gap 5, historical median gap 6.0."
+      ]
+    },
+    {
+      "number": 8,
+      "visual_score": 0.448832,
+      "roles": [
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.857143,
+        "pair_lag": 0.347826,
+        "zone_activation": 0.1,
+        "block_completion": 0.2,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Gap echo: current gap 6, historical median gap 7."
+      ]
+    },
+    {
+      "number": 41,
+      "visual_score": 0.448731,
+      "roles": [
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.769231,
+        "pair_lag": 0.3,
+        "zone_activation": 0.125,
+        "block_completion": 0.25,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Gap echo: current gap 5, historical median gap 6.5."
+      ]
+    },
+    {
+      "number": 33,
+      "visual_score": 0.435467,
+      "roles": [
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 1.0,
+        "pair_lag": 0.466667,
+        "zone_activation": 0.04,
+        "block_completion": 0.08,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Gap echo: current gap 8, historical median gap 8."
+      ]
+    },
+    {
+      "number": 1,
+      "visual_score": 0.417789,
+      "roles": [
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.526316,
+        "pair_lag": 0.470588,
+        "zone_activation": 0.1,
+        "block_completion": 0.2,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Gap echo: current gap 5, historical median gap 9.5."
+      ]
+    },
+    {
+      "number": 20,
+      "visual_score": 0.409514,
+      "roles": [
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.571429,
+        "pair_lag": 0.25,
+        "zone_activation": 0.14,
+        "block_completion": 0.28,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Gap echo: current gap 4, historical median gap 7."
+      ]
+    },
+    {
+      "number": 13,
+      "visual_score": 0.407371,
+      "roles": [
+        "support"
+      ],
+      "signals": {
+        "gap_echo": 0.285714,
+        "pair_lag": 0.428571,
+        "zone_activation": 0.14,
+        "block_completion": 0.28,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": []
+    },
+    {
+      "number": 48,
+      "visual_score": 0.40619,
+      "roles": [
+        "support"
+      ],
+      "signals": {
+        "gap_echo": 0.4,
+        "pair_lag": 0.413793,
+        "zone_activation": 0.125,
+        "block_completion": 0.25,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": []
+    },
+    {
+      "number": 40,
+      "visual_score": 0.3988,
+      "roles": [
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.833333,
+        "pair_lag": 0.466667,
+        "zone_activation": 0.04,
+        "block_completion": 0.08,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Gap echo: current gap 7, historical median gap 6.0."
+      ]
+    }
+  ],
+  "warnings": [
+    "resultados.json contains conflict markers; V4.3 running CSV-only."
+  ]
+}

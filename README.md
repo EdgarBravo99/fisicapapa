@@ -674,6 +674,29 @@ No modifica `resultados.json`, no modifica `v4_replay_memory.json`, no cambia sc
 
 `v4_future_unseen_validation_log.json` queda vacio a proposito. Solo debe recibir registros despues de sorteos reales futuros, y no puede usarse para generar predicciones actuales ni activar prior en PR #30.
 
+## V4.3 Hybrid Composition Engine
+
+V4.3 separa la senal del motor V4.2 de la composicion final de tickets. `revancha.csv` es la fuente primaria; `resultados.json` solo se usa como senal auxiliar si es JSON valido. Si falta, esta vacio, esta corrupto o contiene conflict markers, V4.3 continua en modo `csv_visual_composition_only` y escribe warnings en sus outputs.
+
+```powershell
+py .\tools\v4_winner_composition_audit.py
+py .\tools\v4_visual_pattern_features.py
+py .\tools\v4_hybrid_composition_engine.py
+py .\tools\v4_hybrid_composition_smoke_test.py
+```
+
+Outputs:
+
+```txt
+v4_winner_composition_audit.json
+v4_visual_pattern_output.json
+v4_hybrid_composition_slate.json
+```
+
+La salida principal `v4_hybrid_composition_slate.json` contiene 4 a 6 tickets maximos, todos con 6 numeros unicos, roles por numero, razones, resumen de composicion y `production_status = review_default`. No reemplaza `resultados.json`, no cambia `score_kind`, no activa priors y no modifica el motor base.
+
+El panel `v4-decision-audit-panel.js` carga estos JSON como auxiliares opcionales. Si faltan o son invalidos, la web no se cae: muestra un estado pequeno de V4.3 no disponible. Los tickets se muestran como tarjetas compactas con role chips y detalles colapsables para mantener lectura rapida en movil.
+
 ## Legacy Snapshot Classifier
 
 `tools/v4_legacy_snapshot_classifier.py` clasifica snapshots antiguos para conservar diagnostico sin contaminar memoria aplicada.
