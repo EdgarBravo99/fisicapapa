@@ -225,7 +225,22 @@
       "status": "available",
       "warnings": [],
       "indexed_at": "2026-05-23T01:59:59.332556+00:00"
+    },
+    {
+      "path": "resultados_archive\\resultados_4215_20260522_203241.json",
+      "filename": "resultados_4215_20260522_203241.json",
+      "source": "local_pre_run_archive",
+      "commit_sha": null,
+      "short_sha": null,
+      "content_sha256": "5bb89237a5a8ed27fb0b8f4dcad5462fa812b9e99601ef95da66c4a5990e6976",
+      "prediction_draw": "4215",
+      "game_mode": "revancha",
+      "model_version": "V4.2-oos-feedback-loop",
+      "score_kind": "v4_2_deep_stacking_meta_score",
+      "status": "available",
+      "warnings": [],
+      "indexed_at": "2026-05-23T02:32:41.920779+00:00"
     }
   ],
-  "last_updated": "2026-05-23T01:59:59.332943+00:00"
+  "last_updated": "2026-05-23T02:32:41.921059+00:00"
 }

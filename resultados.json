@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-05-23T02:11:29.283624+00:00",
+  "last_update": "2026-05-24T02:37:49.572900+00:00",
   "source": "local_cruncher_v4_2_oos_feedback_loop",
   "model_version": "V4.2-oos-feedback-loop",
   "game_mode": "revancha",
@@ -53504,7 +53504,7 @@
   ],
   "total_mc_evaluated": 4000000,
   "max_net_score_found": 0.84067935,
-  "runtime_seconds": 689.33,
+  "runtime_seconds": 86711.15,
   "feedback_memory": {
     "enabled": true,
     "version": "V4.3-persistent-exam-memory",
@@ -53643,8 +53643,8 @@
     }
   },
   "history_analysis_summary": {
-    "snapshots_imported": 5,
-    "snapshots_omitted": 1,
+    "snapshots_imported": 7,
+    "snapshots_omitted": 3,
     "records_real_used": 3,
     "records_duplicates_ignored": 2,
     "evidence_insufficient": false,
@@ -53661,53 +53661,115 @@
     "reason": "Analisis historico marco evidencia insuficiente o riesgo alto de overfitting.",
     "workflow_status": {
       "git_pull": {
-        "attempted": true,
-        "ok": true,
+        "attempted": false,
+        "ok": false,
         "branch": "main",
-        "output": "Already up to date.\n",
-        "warnings": []
+        "warnings": [
+          "Working tree con cambios locales; se omite pull --rebase para no pisar trabajo."
+        ]
       },
       "history_import": {
         "attempted": true,
         "snapshots_imported": 1,
-        "snapshots_existing": 14,
+        "snapshots_existing": 15,
         "snapshots_omitted": 1,
         "imported_paths": [
-          "resultados_archive\\resultados_git_4214_542090e0a7b0.json"
+          "resultados_archive\\resultados_git_4215_be3925522501.json"
         ],
         "warnings": [
           "resultados.json invalido en 3fe670e1aad5: Expecting property name enclosed in double quotes: line 2 column 1 (char 2)"
         ]
       },
-      "archive": "resultados_archive\\resultados_unknown_20260522_195959.corrupt.json",
+      "archive": "resultados_archive\\resultados_4215_20260522_203241.json",
       "csv_path": "revancha.csv",
       "memory_update": {
-        "changed": true,
-        "records_new": 3,
+        "changed": false,
+        "records_new": 0,
         "csv_path": "revancha.csv",
-        "warnings": [
-          "Record ya existe: ('4214', '4215', 'revancha', 'local_pre_run_archive', 'ec44be8fbb4dba01cf2d6d62023773b116db167eb902dba4c2fb1f0b3f4e1b02')",
-          "Record ya existe: ('4214', '4215', 'revancha', 'local_pre_run_archive', 'ec44be8fbb4dba01cf2d6d62023773b116db167eb902dba4c2fb1f0b3f4e1b02')"
-        ],
+        "warnings": [],
         "omitted": [
+          {
+            "path": "resultados_archive\\resultados_4215_20260522_203241.json",
+            "reason": "sin target posterior para 4215"
+          },
+          {
+            "path": "resultados_archive\\resultados_git_4215_be3925522501.json",
+            "reason": "sin target posterior para 4215"
+          },
           {
             "path": "resultados_archive\\resultados_unknown_20260522_195959.corrupt.json",
             "reason": "JSON invalido: Expecting property name enclosed in double quotes: line 2 column 1 (char 2)"
           }
         ],
-        "duplicates": []
+        "duplicates": [
+          {
+            "path": "resultados_archive\\resultados_4214_20260520_132155.json",
+            "reason": "record duplicado",
+            "key": [
+              "4214",
+              "4215",
+              "revancha",
+              "local_pre_run_archive",
+              "ec44be8fbb4dba01cf2d6d62023773b116db167eb902dba4c2fb1f0b3f4e1b02"
+            ]
+          },
+          {
+            "path": "resultados_archive\\resultados_4214_20260520_132734.json",
+            "reason": "record duplicado",
+            "key": [
+              "4214",
+              "4215",
+              "revancha",
+              "local_pre_run_archive",
+              "ec44be8fbb4dba01cf2d6d62023773b116db167eb902dba4c2fb1f0b3f4e1b02"
+            ]
+          },
+          {
+            "path": "resultados_archive\\resultados_4214_20260520_133142.json",
+            "reason": "record duplicado",
+            "key": [
+              "4214",
+              "4215",
+              "revancha",
+              "local_pre_run_archive",
+              "ec44be8fbb4dba01cf2d6d62023773b116db167eb902dba4c2fb1f0b3f4e1b02"
+            ]
+          },
+          {
+            "path": "resultados_archive\\resultados_git_4214_542090e0a7b0.json",
+            "reason": "record duplicado",
+            "key": [
+              "4214",
+              "4215",
+              "revancha",
+              "git_history",
+              "542090e0a7b09ff7b2b8870fa33be6269c68c281"
+            ]
+          },
+          {
+            "path": "resultados_archive\\resultados_git_4214_65385d728faa.json",
+            "reason": "record duplicado",
+            "key": [
+              "4214",
+              "4215",
+              "revancha",
+              "git_history",
+              "65385d728faae7dcc7bcd494c2d32e62864821e3"
+            ]
+          }
+        ]
       },
       "history_analysis": {
-        "snapshots_imported": 5,
-        "snapshots_omitted": 1,
+        "snapshots_imported": 7,
+        "snapshots_omitted": 3,
         "records_real_used": 3,
         "records_duplicates_ignored": 2,
         "evidence_insufficient": false,
         "overfitting_risk_level": "high"
       },
       "warnings": [
-        "resultados.json invalido en 3fe670e1aad5: Expecting property name enclosed in double quotes: line 2 column 1 (char 2)",
-        "No pude leer csv_path de resultados.json actual: JSON invalido: Expecting property name enclosed in double quotes: line 2 column 1 (char 2)"
+        "Working tree con cambios locales; se omite pull --rebase para no pisar trabajo.",
+        "resultados.json invalido en 3fe670e1aad5: Expecting property name enclosed in double quotes: line 2 column 1 (char 2)"
       ]
     }
   }

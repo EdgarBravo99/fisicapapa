@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-05-25T07:13:58.047877+00:00",
-  "mode": "csv_visual_composition_only",
+  "generated_at": "2026-05-25T07:30:14.122290+00:00",
+  "mode": "csv_plus_v42_signal",
   "latest_draw": 4217,
   "latest_numbers": [
     3,
@@ -66,7 +66,8 @@
         "activated_block",
         "block_completion",
         "cold_companion",
-        "gap_echo"
+        "gap_echo",
+        "v42_signal_optional"
       ],
       "signals": {
         "gap_echo": 0.533333,
@@ -81,7 +82,8 @@
       "reasons": [
         "Located inside activated 21_30 block by unique activation.",
         "Gap echo: current gap 22, historical median gap 15.",
-        "Controlled cold companion attached to bridge/block evidence."
+        "Controlled cold companion attached to bridge/block evidence.",
+        "Supported by optional V4.2 number score ranking."
       ]
     },
     {
@@ -185,7 +187,8 @@
       "visual_score": 0.878504,
       "roles": [
         "activated_block",
-        "block_completion"
+        "block_completion",
+        "v42_signal_optional"
       ],
       "signals": {
         "gap_echo": 0.352941,
@@ -198,7 +201,8 @@
         "cold_companion": 0.0
       },
       "reasons": [
-        "Located inside activated 21_30 block by unique activation."
+        "Located inside activated 21_30 block by unique activation.",
+        "Supported by optional V4.2 number score ranking."
       ]
     },
     {
@@ -230,7 +234,8 @@
       "roles": [
         "activated_block",
         "block_completion",
-        "gap_echo"
+        "gap_echo",
+        "v42_signal_optional"
       ],
       "signals": {
         "gap_echo": 1.0,
@@ -244,7 +249,8 @@
       },
       "reasons": [
         "Located inside activated 11_20 block by unique activation.",
-        "Gap echo: current gap 6, historical median gap 6.0."
+        "Gap echo: current gap 6, historical median gap 6.0.",
+        "Supported by optional V4.2 number score ranking."
       ]
     },
     {
@@ -274,7 +280,8 @@
       "roles": [
         "activated_block",
         "block_completion",
-        "gap_echo"
+        "gap_echo",
+        "v42_signal_optional"
       ],
       "signals": {
         "gap_echo": 0.833333,
@@ -288,7 +295,8 @@
       },
       "reasons": [
         "Located inside activated 41_56 block by unique activation.",
-        "Gap echo: current gap 7, historical median gap 6."
+        "Gap echo: current gap 7, historical median gap 6.",
+        "Supported by optional V4.2 number score ranking."
       ]
     },
     {
@@ -320,7 +328,8 @@
       "roles": [
         "activated_block",
         "block_completion",
-        "gap_echo"
+        "gap_echo",
+        "v42_signal_optional"
       ],
       "signals": {
         "gap_echo": 0.8,
@@ -334,7 +343,8 @@
       },
       "reasons": [
         "Located inside activated 41_56 block by unique activation.",
-        "Gap echo: current gap 4, historical median gap 5.0."
+        "Gap echo: current gap 4, historical median gap 5.0.",
+        "Supported by optional V4.2 number score ranking."
       ]
     },
     {
@@ -389,7 +399,8 @@
       "roles": [
         "activated_block",
         "block_completion",
-        "cold_companion"
+        "cold_companion",
+        "v42_signal_optional"
       ],
       "signals": {
         "gap_echo": 0.0,
@@ -403,7 +414,8 @@
       },
       "reasons": [
         "Located inside activated 11_20 block by unique activation.",
-        "Controlled cold companion attached to bridge/block evidence."
+        "Controlled cold companion attached to bridge/block evidence.",
+        "Supported by optional V4.2 number score ranking."
       ]
     },
     {
@@ -412,7 +424,8 @@
       "roles": [
         "activated_block",
         "block_completion",
-        "gap_echo"
+        "gap_echo",
+        "v42_signal_optional"
       ],
       "signals": {
         "gap_echo": 0.625,
@@ -426,7 +439,8 @@
       },
       "reasons": [
         "Located inside activated 41_56 block by unique activation.",
-        "Gap echo: current gap 11, historical median gap 8."
+        "Gap echo: current gap 11, historical median gap 8.",
+        "Supported by optional V4.2 number score ranking."
       ]
     },
     {
@@ -458,7 +472,8 @@
       "roles": [
         "activated_block",
         "block_completion",
-        "gap_echo"
+        "gap_echo",
+        "v42_signal_optional"
       ],
       "signals": {
         "gap_echo": 0.571429,
@@ -472,7 +487,8 @@
       },
       "reasons": [
         "Located inside activated 41_56 block by unique activation.",
-        "Gap echo: current gap 4, historical median gap 7."
+        "Gap echo: current gap 4, historical median gap 7.",
+        "Supported by optional V4.2 number score ranking."
       ]
     },
     {
@@ -660,7 +676,8 @@
       "visual_score": 0.655,
       "roles": [
         "activated_block",
-        "block_completion"
+        "block_completion",
+        "v42_signal_optional"
       ],
       "signals": {
         "gap_echo": 0.25,
@@ -673,7 +690,8 @@
         "cold_companion": 0.0
       },
       "reasons": [
-        "Located inside activated 11_20 block by unique activation."
+        "Located inside activated 11_20 block by unique activation.",
+        "Supported by optional V4.2 number score ranking."
       ]
     },
     {
@@ -681,7 +699,8 @@
       "visual_score": 0.648625,
       "roles": [
         "activated_block",
-        "block_completion"
+        "block_completion",
+        "v42_signal_optional"
       ],
       "signals": {
         "gap_echo": 0.0,
@@ -694,7 +713,8 @@
         "cold_companion": 0.0
       },
       "reasons": [
-        "Located inside activated 41_56 block by unique activation."
+        "Located inside activated 41_56 block by unique activation.",
+        "Supported by optional V4.2 number score ranking."
       ]
     },
     {
@@ -744,7 +764,5 @@
       ]
     }
   ],
-  "warnings": [
-    "resultados.json contains conflict markers; V4.3 running CSV-only."
-  ]
+  "warnings": []
 }
