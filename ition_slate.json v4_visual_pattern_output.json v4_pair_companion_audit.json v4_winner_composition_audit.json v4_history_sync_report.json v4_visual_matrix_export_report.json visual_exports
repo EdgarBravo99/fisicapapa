@@ -1,0 +1,224 @@
+[1mdiff --git a/v4_hybrid_composition_slate.json b/v4_hybrid_composition_slate.json[m
+[1mindex 3e3b23c..870ccd4 100644[m
+[1m--- a/v4_hybrid_composition_slate.json[m
+[1m+++ b/v4_hybrid_composition_slate.json[m
+[36m@@ -1,9 +1,5 @@[m
+ {[m
+[31m-<<<<<<< HEAD[m
+[31m-  "generated_at": "2026-05-25T07:30:16.737114+00:00",[m
+[31m-=======[m
+[31m-  "generated_at": "2026-05-25T18:58:20.926377+00:00",[m
+[31m->>>>>>> 06aaa41be29e079889c0fe15ef236df417997a22[m
+[32m+[m[32m  "generated_at": "2026-05-25T19:14:25.584007+00:00",[m
+   "engine_version": "V4.3-hybrid-composition",[m
+   "source_policy": {[m
+     "primary_source": "revancha.csv",[m
+[36m@@ -17,112 +13,6 @@[m
+   "latest_draw": 4217,[m
+   "slate": [[m
+     {[m
+[31m-<<<<<<< HEAD[m
+[31m-      "ticket_id": "composition_main_1",[m
+[31m-      "ticket_type": "composition_main",[m
+[31m-      "numbers": [[m
+[31m-        21,[m
+[31m-        26,[m
+[31m-        28,[m
+[31m-        29,[m
+[31m-        41,[m
+[31m-        55[m
+[31m-      ],[m
+[31m-      "roles": {[m
+[31m-        "21": [[m
+[31m-          "anchor",[m
+[31m-          "activated_block",[m
+[31m-          "block_completion",[m
+[31m-          "cold_companion",[m
+[31m-          "gap_echo",[m
+[31m-          "v42_signal_optional"[m
+[31m-        ],[m
+[31m-        "26": [[m
+[31m-          "support",[m
+[31m-          "activated_block",[m
+[31m-          "block_completion",[m
+[31m-          "gap_echo"[m
+[31m-        ],[m
+[31m-        "28": [[m
+[31m-          "support",[m
+[31m-          "activated_block",[m
+[31m-          "block_completion",[m
+[31m-          "cold_companion"[m
+[31m-        ],[m
+[31m-        "29": [[m
+[31m-          "activated_block",[m
+[31m-          "block_completion",[m
+[31m-          "gap_echo",[m
+[31m-          "support"[m
+[31m-        ],[m
+[31m-        "41": [[m
+[31m-          "support",[m
+[31m-          "activated_block",[m
+[31m-          "block_completion",[m
+[31m-          "gap_echo",[m
+[31m-          "v42_signal_optional"[m
+[31m-        ],[m
+[31m-        "55": [[m
+[31m-          "support",[m
+[31m-          "activated_block",[m
+[31m-          "block_completion",[m
+[31m-          "gap_echo"[m
+[31m-        ][m
+[31m-      },[m
+[31m-      "reasons": {[m
+[31m-        "21": [[m
+[31m-          "Located inside activated 21_30 block by unique activation.",[m
+[31m-          "Gap echo: current gap 22, historical median gap 15.",[m
+[31m-          "Controlled cold companion attached to bridge/block evidence.",[m
+[31m-          "Supported by optional V4.2 number score ranking."[m
+[31m-        ],[m
+[31m-        "26": [[m
+[31m-          "Located inside activated 21_30 block by unique activation.",[m
+[31m-          "Gap echo: current gap 8, historical median gap 8.5."[m
+[31m-        ],[m
+[31m-        "28": [[m
+[31m-          "Located inside activated 21_30 block by unique activation.",[m
+[31m-          "Controlled cold companion attached to bridge/block evidence."[m
+[31m-        ],[m
+[31m-        "29": [[m
+[31m-          "Pair-lag evidence downgraded to support by walk-forward validation.",[m
+[31m-          "Located inside activated 21_30 block by unique activation.",[m
+[31m-          "Gap echo: current gap 3, historical median gap 4.0."[m
+[31m-        ],[m
+[31m-        "41": [[m
+[31m-          "Located inside activated 41_56 block by unique activation.",[m
+[31m-          "Gap echo: current gap 7, historical median gap 6.",[m
+[31m-          "Supported by optional V4.2 number score ranking."[m
+[31m-        ],[m
+[31m-        "55": [[m
+[31m-          "Located inside activated 41_56 block by unique activation.",[m
+[31m-          "Gap echo: current gap 7, historical median gap 7."[m
+[31m-        ][m
+[31m-      },[m
+[31m-      "composition": {[m
+[31m-        "parity": {[m
+[31m-          "even": 2,[m
+[31m-          "odd": 4[m
+[31m-        },[m
+[31m-        "sum": 200,[m
+[31m-        "blocks": {[m
+[31m-          "1_10": 0,[m
+[31m-          "11_20": 0,[m
+[31m-          "21_30": 4,[m
+[31m-          "31_40": 0,[m
+[31m-          "41_56": 2[m
+[31m-        },[m
+[31m-        "immediate_overlap_previous_draw": 0[m
+[31m-      },[m
+[31m-      "reason": "Composed by V4.3 roles: bridge/block/gap/cold companion with parity and sum as soft checks.",[m
+[31m-      "risk_notes": [[m
+[31m-        "Review-default composition slate.",[m
+[31m-        "Outcome-neutral review layer."[m
+[31m-      ][m
+[31m-    },[m
+[31m-    {[m
+[31m-=======[m
+[31m->>>>>>> 06aaa41be29e079889c0fe15ef236df417997a22[m
+       "ticket_id": "activated_block_main_2",[m
+       "ticket_type": "activated_block_main",[m
+       "numbers": [[m
+[36m@@ -140,13 +30,9 @@[m
+           "block_completion",[m
+           "cold_companion",[m
+           "gap_echo",[m
+[31m-<<<<<<< HEAD[m
+[31m-          "v42_signal_optional"[m
+[31m-=======[m
+           "v42_signal_optional",[m
+           "sum_band_guardrail",[m
+           "harmonic_support"[m
+[31m->>>>>>> 06aaa41be29e079889c0fe15ef236df417997a22[m
+         ],[m
+         "26": [[m
+           "support",[m
+[36m@@ -169,13 +55,9 @@[m
+           "activated_block",[m
+           "block_completion",[m
+           "gap_echo",[m
+[31m-<<<<<<< HEAD[m
+[31m-          "v42_signal_optional"[m
+[31m-=======[m
+           "v42_signal_optional",[m
+           "sum_band_guardrail",[m
+           "harmonic_support"[m
+[31m->>>>>>> 06aaa41be29e079889c0fe15ef236df417997a22[m
+         ],[m
+         "55": [[m
+           "support",[m
+[36m@@ -260,100 +142,7 @@[m
+         "Outcome-neutral review layer.",[m
+         "Sum band guardrail: high_tail."[m
+       ],[m
+[31m-<<<<<<< HEAD[m
+[31m-      "roles": {[m
+[31m-        "21": [[m
+[31m-          "anchor",[m
+[31m-          "activated_block",[m
+[31m-          "block_completion",[m
+[31m-          "cold_companion",[m
+[31m-          "gap_echo",[m
+[31m-          "v42_signal_optional"[m
+[31m-        ],[m
+[31m-        "22": [[m
+[31m-          "support",[m
+[31m-          "activated_block",[m
+[31m-          "block_completion"[m
+[31m-        ],[m
+[31m-        "26": [[m
+[31m-          "support",[m
+[31m-          "activated_block",[m
+[31m-          "block_completion",[m
+[31m-          "gap_echo"[m
+[31m-        ],[m
+[31m-        "41": [[m
+[31m-          "support",[m
+[31m-          "activated_block",[m
+[31m-          "block_completion",[m
+[31m-          "gap_echo",[m
+[31m-          "v42_signal_optional"[m
+[31m-        ],[m
+[31m-        "43": [[m
+[31m-          "support",[m
+[31m-          "activated_block",[m
+[31m-          "block_completion",[m
+[31m-          "gap_echo",[m
+[31m-          "v42_signal_optional"[m
+[31m-        ],[m
+[31m-        "56": [[m
+[31m-          "support",[m
+[31m-          "activated_block",[m
+[31m-          "block_completion",[m
+[31m-          "gap_echo"[m
+[31m-        ][m
+[31m-      },[m
+[31m-      "reasons": {[m
+[31m-        "21": [[m
+[31m-          "Located inside activated 21_30 block by unique activation.",[m
+[31m-          "Gap echo: current gap 22, historical median gap 15.",[m
+[31m-          "Controlled cold companion attached to bridge/block evidence.",[m
+[31m-          "Supported by optional V4.2 number score ranking."[m
+[31m-        ],[m
+[31m-        "22": [[m
+[31m-          "Located inside activated 21_30 block by unique activation."[m
+[31m-        ],[m
+[31m-        "26": [[m
+[31m-          "Located inside activated 21_30 block by unique activation.",[m
+[31m-          "Gap echo: current gap 8, historical median gap 8.5."[m
+[31m-        ],[m
+[31m-        "41": [[m
+[31m-          "Located inside activated 41_56 block by unique activation.",[m
+[31m-          "Gap echo: current gap 7, historical median gap 6.",[m
+[31m-          "Supported by optional V4.2 number score ranking."[m
+[31m-        ],[m
+[31m-        "43": [[m
+[31m-          "Located inside activated 41_56 block by unique activation.",[m
+[31m-          "Gap echo: current gap 4, histori
