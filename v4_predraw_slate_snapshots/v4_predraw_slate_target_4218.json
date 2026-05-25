@@ -1,6 +1,11 @@
 {
-  "generated_at": "2026-05-25T18:58:20.926377+00:00",
+  "version": "V4.3-predraw-slate-snapshot",
+  "snapshot_created_at": "2026-05-25T18:56:16.041355+00:00",
+  "source_latest_draw": 4217,
+  "target_draw": 4218,
+  "inferred_target_draw": true,
   "engine_version": "V4.3-hybrid-composition",
+  "production_status": "review_default",
   "source_policy": {
     "primary_source": "revancha.csv",
     "v42_signal_available": true,
@@ -8,9 +13,6 @@
     "fallback_mode": null,
     "pair_lag_mode": "support_only"
   },
-  "production_status": "review_default",
-  "disclaimer": "Experimental composition ranking for review only.",
-  "latest_draw": 4217,
   "slate": [
     {
       "ticket_id": "activated_block_main_2",
@@ -666,5 +668,7 @@
       "anti_pairs": 0
     }
   },
-  "warnings": []
+  "warnings": [],
+  "slate_hash": "449a1c92f575ecd613c36bcdcc20c06525e5de1f131c4aac9c6388a92b6843f2",
+  "no_outcome_certainty_claims": true
 }

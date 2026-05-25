@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-05-25T07:13:49.901502+00:00",
+  "generated_at": "2026-05-25T18:58:18.435738+00:00",
   "source": {
     "revancha_csv": "revancha.csv",
-    "resultados_json_available": false,
-    "resultados_json_warning": "resultados.json contains conflict markers; V4.3 running CSV-only."
+    "resultados_json_available": true,
+    "resultados_json_warning": null
   },
   "history": {
     "draws_used": 200,
@@ -125,7 +125,13 @@
         "41_56"
       ]
     },
-    "v42_ranking_distribution": {}
+    "v42_ranking_distribution": {
+      "rank31_56": 634,
+      "rank21_30": 220,
+      "rank11_20": 182,
+      "top5": 83,
+      "rank6_10": 81
+    }
   },
   "recommendations": {
     "avoid_top6_pure": true,

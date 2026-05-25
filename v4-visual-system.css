@@ -899,6 +899,14 @@ button:hover {
   justify-content: space-between;
 }
 
+.v43-ticket-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 120px;
+}
+
 .v43-ticket-id {
   margin-top: 4px;
   color: var(--taste-muted);
@@ -936,14 +944,30 @@ button:hover {
 .v43-role-row .taste-chip {
   min-height: 28px !important;
   width: fit-content;
-  white-space: normal;
-  overflow-wrap: anywhere;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: keep-all;
   padding: 4px 9px !important;
 }
 
 .v43-role-chip {
   border-color: rgba(148, 163, 184, .20) !important;
   background: rgba(15, 23, 42, .70) !important;
+  line-height: 1.15 !important;
+  text-transform: none !important;
+}
+
+.v43-ticket-thesis {
+  display: grid;
+  gap: 4px;
+  border: 1px solid rgba(148, 163, 184, .12);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, .36);
+  padding: 10px;
+  color: var(--taste-muted);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .v43-role-anchor,
@@ -965,6 +989,22 @@ button:hover {
   border-color: rgba(245, 158, 11, .36) !important;
   background: rgba(245, 158, 11, .10) !important;
   color: #fde68a !important;
+}
+
+.v43-role-co_travel_companion,
+.v43-role-block_bridge_pair,
+.v43-role-harmonic_cluster,
+.v43-role-harmonic_support {
+  border-color: rgba(129, 140, 248, .36) !important;
+  background: rgba(129, 140, 248, .12) !important;
+  color: #ddd6fe !important;
+}
+
+.v43-role-anti_pair_risk,
+.v43-role-sum_band_guardrail {
+  border-color: rgba(251, 191, 36, .34) !important;
+  background: rgba(251, 191, 36, .10) !important;
+  color: #fef3c7 !important;
 }
 
 .v43-ticket-details {

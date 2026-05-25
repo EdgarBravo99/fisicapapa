@@ -42,6 +42,8 @@
     v43Slate: 'v4_hybrid_composition_slate.json',
     v43Visual: 'v4_visual_pattern_output.json',
     v43Audit: 'v4_winner_composition_audit.json',
+    v43PairCompanion: 'v4_pair_companion_audit.json',
+    v43PostDrawAudit: 'v4_post_draw_audit.json',
   };
 
   const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -132,8 +134,8 @@
     section.innerHTML = `
       <div class="taste-section-heading">
         <div>
-          <p class="taste-eyebrow">Decision Audit Pack V4.4</p>
-          <h2>Diversidad, benchmark y regimen fisico</h2>
+          <p class="taste-eyebrow">V4.3 Decision Cockpit</p>
+          <h2>Composicion armonica, diagnostico y auditoria</h2>
         </div>
         <span class="taste-chip taste-chip-warn">diagnostic_only</span>
       </div>
@@ -166,14 +168,37 @@
     return items.map(item => esc(item)).join(', ');
   }
 
+  const ROLE_LABELS = {
+    activated_block: 'Active block',
+    block_completion: 'Block fill',
+    bridge_pair_lag: 'Pair-lag',
+    pair_lag_support: 'Pair support',
+    co_travel_companion: 'Co-travel',
+    block_bridge_pair: 'Bridge pair',
+    harmonic_cluster: 'Cluster',
+    anti_pair_risk: 'Anti-pair risk',
+    cold_companion: 'Cold',
+    gap_echo: 'Gap echo',
+    v42_signal_optional: 'V4.2 signal',
+    contrarian_controlled: 'Contrarian',
+    sum_band_guardrail: 'Sum guard',
+    harmonic_support: 'Harmonic',
+    anchor: 'Anchor',
+    support: 'Support',
+  };
+
   function roleChips(roles) {
-    if (!Array.isArray(roles) || !roles.length) return '<span class="taste-chip">support</span>';
-    return roles.slice(0, 3).map(role => `<span class="taste-chip v43-role-chip v43-role-${esc(role).replace(/[^a-z0-9_-]/gi, '-')}">${esc(role)}</span>`).join('');
+    if (!Array.isArray(roles) || !roles.length) return '<span class="taste-chip v43-role-chip" title="support">Support</span>';
+    return roles.slice(0, 4).map(role => {
+      const safeRole = esc(role).replace(/[^a-z0-9_-]/gi, '-');
+      const label = ROLE_LABELS[role] || String(role).replace(/_/g, ' ');
+      return `<span class="taste-chip v43-role-chip v43-role-${safeRole}" title="${esc(role)}">${esc(label)}</span>`;
+    }).join('');
   }
 
-  function renderV43HybridComposition(slate, visual, audit) {
+  function renderV43HybridComposition(slate, visual, audit, pairCompanion, postDrawAudit) {
     if (!slate) {
-      return emptyCard('V4.3 Hybrid Composition', 'V4.3 data not available yet. Ejecuta tools/v4_hybrid_composition_engine.py para generar el slate.');
+      return emptyCard('V4.3 Decision Cockpit', 'Aun no hay slate V4.3. Ejecuta tools/v4_refresh.py --game revancha --pair-companion-audit para generar la vista armonica.');
     }
     const tickets = Array.isArray(slate.slate) ? slate.slate.slice(0, 6) : [];
     const warnings = Array.isArray(slate.warnings) ? slate.warnings : [];
@@ -184,13 +209,17 @@
     const activeBlocks = Object.entries(zone)
       .filter(([, row]) => Number(row?.unique_activation || 0) >= 0.40)
       .map(([name, row]) => `${name} ${fmt(row?.unique_activation, 2)}`);
+    const sumDistribution = validation.slate_sum_distribution || {};
+    const coherence = validation.harmonic_coherence_summary || {};
+    const pairSummary = validation.pair_companion_summary || {};
+    const postDraw = postDrawAudit || null;
     return `
       <article class="taste-card v43-slate-card" id="v43-hybrid-slate">
         <div class="taste-card-heading v43-slate-heading">
           <div>
-            <p class="taste-eyebrow">V4.3 Hybrid Composition</p>
-            <h3>Slate de revision rapida</h3>
-            <p class="v43-slate-subcopy">Capa separada para revisar composicion: no reemplaza el output oficial V4.2.</p>
+            <p class="taste-eyebrow">V4.3 Decision Cockpit</p>
+            <h3>Candidate slate por coherencia historica</h3>
+            <p class="v43-slate-subcopy">Review-default: composicion armonica, companion pairs, bloques y disciplina de suma. No reemplaza el output oficial V4.2.</p>
           </div>
           <span class="taste-chip taste-chip-warn">${esc(slate.production_status || 'review_default')}</span>
         </div>
@@ -198,16 +227,21 @@
           <article class="taste-metric"><span>Tickets</span><b>${fmt(tickets.length, 0)}</b></article>
           <article class="taste-metric"><span>Modo</span><b>${esc(source.fallback_mode || visual?.mode || 'csv_plus_v42_signal')}</b></article>
           <article class="taste-metric"><span>Latest draw</span><b>${fmt(slate.latest_draw || visual?.latest_draw || audit?.history?.latest_draw, 0)}</b></article>
-          <article class="taste-metric"><span>Pair-lag</span><b>${esc(pairLagMode)}</b></article>
+          <article class="taste-metric"><span>Harmonic avg</span><b>${fmt(coherence.avg_score, 3)}</b></article>
         </div>
         <div class="v43-policy-strip">
           <span>Review-default</span>
-          <span>V4.2 signal optional</span>
+          <span>V4.2 legacy signal optional</span>
+          <span>Pair-lag: ${esc(pairLagMode)}</span>
           <span>Active blocks: ${esc(activeBlocks.join(' | ') || 'N/D')}</span>
         </div>
         <div class="v43-ticket-grid mt-4">
           ${tickets.map(ticket => {
             const roles = ticket.roles || {};
+            const composition = ticket.composition || {};
+            const harmonic = composition.harmonic_coherence || {};
+            const notes = Array.isArray(harmonic.notes) ? harmonic.notes : [];
+            const riskNotes = Array.isArray(ticket.risk_notes) ? ticket.risk_notes : [];
             return `
               <section class="v43-ticket-card">
                 <div class="v43-ticket-head">
@@ -215,9 +249,17 @@
                     <p class="taste-eyebrow">${esc(ticket.ticket_type || 'composition')}</p>
                     <p class="v43-ticket-id">${esc(ticket.ticket_id || '')}</p>
                   </div>
-                  <span class="taste-chip">sum ${esc(ticket.composition?.sum || 'N/D')}</span>
+                  <div class="v43-ticket-badges">
+                    <span class="taste-chip">sum ${esc(composition.sum || 'N/D')}</span>
+                    <span class="taste-chip">${esc(composition.sum_band || 'sum_band N/D')}</span>
+                    <span class="taste-chip">HC ${fmt(harmonic.score, 3)}</span>
+                  </div>
                 </div>
                 <div class="v43-ticket-numbers">${comboBalls(ticket.numbers)}</div>
+                <div class="v43-ticket-thesis">
+                  <p>${esc(ticket.reason || 'Ticket compuesto por soporte armonico V4.3.')}</p>
+                  <p>${esc(notes.slice(0, 2).join(' | ') || 'Sin notas armonicas adicionales.')}</p>
+                </div>
                 <div class="v43-role-grid">
                   ${(Array.isArray(ticket.numbers) ? ticket.numbers : []).map(number => `
                     <div class="v43-role-row">
@@ -226,10 +268,10 @@
                     </div>`).join('')}
                 </div>
                 <details class="v43-ticket-details">
-                  <summary>Razonamiento</summary>
-                  <p class="mt-2">${esc(ticket.reason || 'Role-composed ticket.')}</p>
-                  <p class="mt-1">Blocks: ${esc(JSON.stringify(ticket.composition?.blocks || {}))}</p>
-                  <p class="mt-1">Overlap previo: ${fmt(ticket.composition?.immediate_overlap_previous_draw, 0)}</p>
+                  <summary>Why this ticket exists</summary>
+                  <p class="mt-2">Blocks: ${esc(JSON.stringify(composition.blocks || {}))}</p>
+                  <p class="mt-1">Co-travel: ${fmt(harmonic.co_travel_score, 3)} | Bridge pairs: ${fmt(harmonic.block_bridge_pair_count, 0)} | Clusters: ${fmt(harmonic.cluster_support_count, 0)}</p>
+                  <p class="mt-1">Risk notes: ${esc(riskNotes.slice(0, 4).join(' | ') || 'Sin riesgos destacados.')}</p>
                 </details>
               </section>`;
           }).join('') || '<p class="text-sm text-slate-400">No V4.3 tickets available.</p>'}
@@ -238,18 +280,39 @@
           <section class="taste-panel-muted v43-compact-panel">
             <p class="taste-eyebrow">Source policy</p>
             <p class="text-sm leading-6 text-slate-300">Primary: ${esc(source.primary_source || 'revancha.csv')}</p>
-            <p class="text-sm leading-6 text-slate-300">V4.2 signal: ${source.v42_signal_available ? 'available' : 'not used'}</p>
+            <p class="text-sm leading-6 text-slate-300">V4.2 legacy signal: ${source.v42_signal_available ? 'available' : 'not used'}</p>
           </section>
           <section class="taste-panel-muted v43-compact-panel">
-            <p class="taste-eyebrow">Validation</p>
-            <p class="text-sm leading-6 text-slate-300">Best hits WF: ${fmt(validation.best_ticket_hits_per_draw, 2)}</p>
-            <p class="text-sm leading-6 text-slate-300">Avg hits/ticket: ${fmt(validation.avg_hits_per_ticket, 2)}</p>
-            <p class="text-sm leading-6 text-slate-300">GE2 rate: ${fmt(validation.hit_ge_2_rate, 3)}</p>
+            <p class="taste-eyebrow">Slate diagnostics</p>
+            <p class="text-sm leading-6 text-slate-300">Sum bands: ${esc(JSON.stringify(sumDistribution))}</p>
+            <p class="text-sm leading-6 text-slate-300">Pair support: ${esc(JSON.stringify(pairSummary))}</p>
           </section>
           <section class="taste-panel-muted v43-compact-panel">
             <p class="taste-eyebrow">Warnings</p>
             <p class="text-sm leading-6 text-slate-300">${warnings.slice(0, 2).map(item => esc(item)).join(' | ') || 'Sin warnings V4.3.'}</p>
           </section>
+        </div>
+        <div class="v43-support-grid mt-4">
+          <section class="taste-panel-muted v43-compact-panel">
+            <p class="taste-eyebrow">Pair companion audit</p>
+            <p class="text-sm leading-6 text-slate-300">Co-travel pairs: ${fmt(pairCompanion?.top_co_travel_pairs?.length, 0)}</p>
+            <p class="text-sm leading-6 text-slate-300">Bridge pairs: ${fmt(pairCompanion?.top_block_bridge_pairs?.length, 0)} | Anti-pairs: ${fmt(pairCompanion?.anti_pairs?.length, 0)}</p>
+          </section>
+          <section class="taste-panel-muted v43-compact-panel">
+            <p class="taste-eyebrow">Post-draw audit</p>
+            ${postDraw ? `
+              <p class="text-sm leading-6 text-slate-300">Audited draw: ${fmt(postDraw.target_draw, 0)} | Best ticket hits: ${fmt(postDraw.best_ticket_hits, 0)}</p>
+              <p class="text-sm leading-6 text-slate-300">Matched thesis: ${postDraw.actual_draw_matched_slate_thesis ? 'review signal present' : 'review needed'}</p>
+            ` : `
+              <p class="text-sm leading-6 text-slate-300">No post-draw audit yet. Freeze a pre-draw snapshot, add official result, then run post-draw audit.</p>
+            `}
+          </section>
+          <details class="taste-panel-muted v43-compact-panel">
+            <summary class="taste-eyebrow">V4.2 legacy diagnostics</summary>
+            <p class="text-sm leading-6 text-slate-300 mt-2">Best hits WF: ${fmt(validation.best_ticket_hits_per_draw, 2)}</p>
+            <p class="text-sm leading-6 text-slate-300">Avg hits/ticket: ${fmt(validation.avg_hits_per_ticket, 2)}</p>
+            <p class="text-sm leading-6 text-slate-300">GE2 rate: ${fmt(validation.hit_ge_2_rate, 3)}</p>
+          </details>
         </div>
       </article>`;
   }
@@ -561,13 +624,13 @@
                 ${comboBalls(layer?.original_top_numbers)}
               </div>
               <div>
-                <p class="text-xs uppercase tracking-wide text-slate-500">Top 6 preservado</p>
+                <p class="text-xs uppercase tracking-wide text-slate-500">Legacy core preservado</p>
                 ${comboBalls(layer?.top6_preserved)}
               </div>
               <div class="bento-status-grid">
                 <article class="taste-metric"><span>Overlap top10</span><b>${fmt(overlap.top10 ?? layer?.diff_vs_original?.overlap_top10, 0)}</b></article>
                 <article class="taste-metric"><span>Overlap top20</span><b>${fmt(overlap.top20 ?? layer?.diff_vs_original?.overlap_top20, 0)}</b></article>
-                <article class="taste-metric"><span>Top6 OK</span><b>${comparison?.top6_preservation_ok || layer?.diff_vs_original?.preserved_top6 ? 'Si' : 'No'}</b></article>
+                <article class="taste-metric"><span>Core OK</span><b>${comparison?.top6_preservation_ok || layer?.diff_vs_original?.preserved_top6 ? 'Si' : 'No'}</b></article>
               </div>
             </div>
           </section>
@@ -814,6 +877,8 @@
       v43Slate,
       v43Visual,
       v43Audit,
+      v43PairCompanion,
+      v43PostDrawAudit,
     ] = await Promise.all([
       loadJson(FILES.diversity),
       loadJson(FILES.benchmark),
@@ -853,10 +918,12 @@
       loadJson(FILES.v43Slate),
       loadJson(FILES.v43Visual),
       loadJson(FILES.v43Audit),
+      loadJson(FILES.v43PairCompanion),
+      loadJson(FILES.v43PostDrawAudit),
     ]);
     panel.innerHTML = `
       <div class="grid gap-4 mb-4">
-        ${renderV43HybridComposition(v43Slate, v43Visual, v43Audit)}
+        ${renderV43HybridComposition(v43Slate, v43Visual, v43Audit, v43PairCompanion, v43PostDrawAudit)}
       </div>
       <div class="grid gap-4 xl:grid-cols-3">
         ${renderDiversity(diversity)}
