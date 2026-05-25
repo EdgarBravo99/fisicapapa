@@ -1,0 +1,136 @@
+{
+  "generated_at": "2026-05-25T07:13:49.901502+00:00",
+  "source": {
+    "revancha_csv": "revancha.csv",
+    "resultados_json_available": false,
+    "resultados_json_warning": "resultados.json contains conflict markers; V4.3 running CSV-only."
+  },
+  "history": {
+    "draws_used": 200,
+    "latest_draw": 4217,
+    "latest_numbers": [
+      3,
+      23,
+      24,
+      27,
+      52,
+      54
+    ]
+  },
+  "composition_profile": {
+    "parity": {
+      "3_even_3_odd": 64,
+      "2_even_4_odd": 50,
+      "4_even_2_odd": 47,
+      "1_even_5_odd": 19,
+      "5_even_1_odd": 14,
+      "6_even_0_odd": 3,
+      "0_even_6_odd": 3
+    },
+    "sum": {
+      "average": 173.745,
+      "min": 92,
+      "max": 265,
+      "buckets": {
+        "100_124": 12,
+        "125_149": 37,
+        "150_174": 49,
+        "175_199": 52,
+        "200_224": 30,
+        "225_249": 14,
+        "250_274": 3,
+        "75_99": 3
+      }
+    },
+    "blocks": {
+      "average_per_draw": {
+        "1_10": 1.01,
+        "11_20": 1.085,
+        "21_30": 1.08,
+        "31_40": 1.03,
+        "41_56": 1.795
+      },
+      "top_patterns": {
+        "1_10:1|11_20:1|21_30:2|31_40:1|41_56:1": 8,
+        "1_10:1|11_20:1|21_30:0|31_40:2|41_56:2": 7,
+        "1_10:0|11_20:1|21_30:1|31_40:2|41_56:2": 6,
+        "1_10:2|11_20:1|21_30:0|31_40:1|41_56:2": 6,
+        "1_10:1|11_20:1|21_30:1|31_40:1|41_56:2": 6,
+        "1_10:1|11_20:0|21_30:1|31_40:1|41_56:3": 6,
+        "1_10:0|11_20:1|21_30:2|31_40:1|41_56:2": 6,
+        "1_10:1|11_20:2|21_30:1|31_40:1|41_56:1": 5,
+        "1_10:1|11_20:2|21_30:0|31_40:0|41_56:3": 5,
+        "1_10:1|11_20:1|21_30:1|31_40:0|41_56:3": 5,
+        "1_10:2|11_20:1|21_30:1|31_40:0|41_56:2": 4,
+        "1_10:2|11_20:0|21_30:1|31_40:2|41_56:1": 4
+      }
+    },
+    "immediate_overlap": {
+      "0": 105,
+      "1": 76,
+      "2": 16,
+      "3": 2
+    },
+    "consecutive_pairs": {
+      "0": 104,
+      "1": 72,
+      "2": 23,
+      "3": 1
+    },
+    "high_block_closures": {
+      "2": 64,
+      "1": 63,
+      "3": 42,
+      "0": 21,
+      "4": 8,
+      "5": 2
+    },
+    "activated_blocks": {
+      "recent_window_draws": 5,
+      "recent_activation": {
+        "1_10": {
+          "unique_activation": 0.3,
+          "hit_density": 0.1,
+          "unique_seen": 3,
+          "total_hits": 5
+        },
+        "11_20": {
+          "unique_activation": 0.4,
+          "hit_density": 0.1,
+          "unique_seen": 4,
+          "total_hits": 5
+        },
+        "21_30": {
+          "unique_activation": 0.6,
+          "hit_density": 0.14,
+          "unique_seen": 6,
+          "total_hits": 7
+        },
+        "31_40": {
+          "unique_activation": 0.2,
+          "hit_density": 0.06,
+          "unique_seen": 2,
+          "total_hits": 3
+        },
+        "41_56": {
+          "unique_activation": 0.4375,
+          "hit_density": 0.125,
+          "unique_seen": 7,
+          "total_hits": 10
+        }
+      },
+      "active_blocks": [
+        "11_20",
+        "21_30",
+        "41_56"
+      ]
+    },
+    "v42_ranking_distribution": {}
+  },
+  "recommendations": {
+    "avoid_top6_pure": true,
+    "allow_concentrated_activated_block": true,
+    "penalize_unjustified_carryover": true,
+    "treat_parity_sum_as_soft_filters": true
+  }
+}

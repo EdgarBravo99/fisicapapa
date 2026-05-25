@@ -39,6 +39,9 @@
     postRankingControlledComparison: 'v4_post_ranking_controlled_comparison.json',
     postRankingControlledSummary: 'v4_post_ranking_controlled_summary.json',
     futureUnseenValidation: 'v4_future_unseen_validation_log.json',
+    v43Slate: 'v4_hybrid_composition_slate.json',
+    v43Visual: 'v4_visual_pattern_output.json',
+    v43Audit: 'v4_winner_composition_audit.json',
   };
 
   const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -163,6 +166,94 @@
     return items.map(item => esc(item)).join(', ');
   }
 
+  function roleChips(roles) {
+    if (!Array.isArray(roles) || !roles.length) return '<span class="taste-chip">support</span>';
+    return roles.slice(0, 3).map(role => `<span class="taste-chip v43-role-chip v43-role-${esc(role).replace(/[^a-z0-9_-]/gi, '-')}">${esc(role)}</span>`).join('');
+  }
+
+  function renderV43HybridComposition(slate, visual, audit) {
+    if (!slate) {
+      return emptyCard('V4.3 Hybrid Composition', 'V4.3 data not available yet. Ejecuta tools/v4_hybrid_composition_engine.py para generar el slate.');
+    }
+    const tickets = Array.isArray(slate.slate) ? slate.slate.slice(0, 6) : [];
+    const warnings = Array.isArray(slate.warnings) ? slate.warnings : [];
+    const validation = slate.validation_summary || {};
+    const source = slate.source_policy || {};
+    const pairLagMode = source.pair_lag_mode || visual?.pair_lag_mode || 'support_only';
+    const zone = visual?.zone_activation || {};
+    const activeBlocks = Object.entries(zone)
+      .filter(([, row]) => Number(row?.unique_activation || 0) >= 0.40)
+      .map(([name, row]) => `${name} ${fmt(row?.unique_activation, 2)}`);
+    return `
+      <article class="taste-card v43-slate-card" id="v43-hybrid-slate">
+        <div class="taste-card-heading v43-slate-heading">
+          <div>
+            <p class="taste-eyebrow">V4.3 Hybrid Composition</p>
+            <h3>Slate de revision rapida</h3>
+            <p class="v43-slate-subcopy">Capa separada para revisar composicion: no reemplaza el output oficial V4.2.</p>
+          </div>
+          <span class="taste-chip taste-chip-warn">${esc(slate.production_status || 'review_default')}</span>
+        </div>
+        <div class="v43-status-strip mt-4">
+          <article class="taste-metric"><span>Tickets</span><b>${fmt(tickets.length, 0)}</b></article>
+          <article class="taste-metric"><span>Modo</span><b>${esc(source.fallback_mode || visual?.mode || 'csv_plus_v42_signal')}</b></article>
+          <article class="taste-metric"><span>Latest draw</span><b>${fmt(slate.latest_draw || visual?.latest_draw || audit?.history?.latest_draw, 0)}</b></article>
+          <article class="taste-metric"><span>Pair-lag</span><b>${esc(pairLagMode)}</b></article>
+        </div>
+        <div class="v43-policy-strip">
+          <span>Review-default</span>
+          <span>V4.2 signal optional</span>
+          <span>Active blocks: ${esc(activeBlocks.join(' | ') || 'N/D')}</span>
+        </div>
+        <div class="v43-ticket-grid mt-4">
+          ${tickets.map(ticket => {
+            const roles = ticket.roles || {};
+            return `
+              <section class="v43-ticket-card">
+                <div class="v43-ticket-head">
+                  <div>
+                    <p class="taste-eyebrow">${esc(ticket.ticket_type || 'composition')}</p>
+                    <p class="v43-ticket-id">${esc(ticket.ticket_id || '')}</p>
+                  </div>
+                  <span class="taste-chip">sum ${esc(ticket.composition?.sum || 'N/D')}</span>
+                </div>
+                <div class="v43-ticket-numbers">${comboBalls(ticket.numbers)}</div>
+                <div class="v43-role-grid">
+                  ${(Array.isArray(ticket.numbers) ? ticket.numbers : []).map(number => `
+                    <div class="v43-role-row">
+                      <b>${esc(number)}</b>
+                      ${roleChips(roles[String(number)])}
+                    </div>`).join('')}
+                </div>
+                <details class="v43-ticket-details">
+                  <summary>Razonamiento</summary>
+                  <p class="mt-2">${esc(ticket.reason || 'Role-composed ticket.')}</p>
+                  <p class="mt-1">Blocks: ${esc(JSON.stringify(ticket.composition?.blocks || {}))}</p>
+                  <p class="mt-1">Overlap previo: ${fmt(ticket.composition?.immediate_overlap_previous_draw, 0)}</p>
+                </details>
+              </section>`;
+          }).join('') || '<p class="text-sm text-slate-400">No V4.3 tickets available.</p>'}
+        </div>
+        <div class="v43-support-grid mt-4">
+          <section class="taste-panel-muted v43-compact-panel">
+            <p class="taste-eyebrow">Source policy</p>
+            <p class="text-sm leading-6 text-slate-300">Primary: ${esc(source.primary_source || 'revancha.csv')}</p>
+            <p class="text-sm leading-6 text-slate-300">V4.2 signal: ${source.v42_signal_available ? 'available' : 'not used'}</p>
+          </section>
+          <section class="taste-panel-muted v43-compact-panel">
+            <p class="taste-eyebrow">Validation</p>
+            <p class="text-sm leading-6 text-slate-300">Best hits WF: ${fmt(validation.best_ticket_hits_per_draw, 2)}</p>
+            <p class="text-sm leading-6 text-slate-300">Avg hits/ticket: ${fmt(validation.avg_hits_per_ticket, 2)}</p>
+            <p class="text-sm leading-6 text-slate-300">GE2 rate: ${fmt(validation.hit_ge_2_rate, 3)}</p>
+          </section>
+          <section class="taste-panel-muted v43-compact-panel">
+            <p class="taste-eyebrow">Warnings</p>
+            <p class="text-sm leading-6 text-slate-300">${warnings.slice(0, 2).map(item => esc(item)).join(' | ') || 'Sin warnings V4.3.'}</p>
+          </section>
+        </div>
+      </article>`;
+  }
+
   function renderDiversity(data) {
     if (!data) {
       return emptyCard('Diversidad de combinaciones', 'Sin v4_diversity_output.json. Ejecuta el selector MMR para ver overlap y tickets diversificados.');
@@ -175,7 +266,7 @@
             <p class="taste-eyebrow">Diversidad de combinaciones</p>
             <h3>Ranking diversificado</h3>
           </div>
-          <span class="taste-chip taste-chip-warn">No es probabilidad de ganar</span>
+          <span class="taste-chip taste-chip-warn">revision diagnostica</span>
         </div>
         <div class="bento-status-grid mt-4">
           <article class="taste-metric"><span>Overlap original</span><b>${fmt(data.average_pairwise_jaccard_original, 3)}</b></article>
@@ -193,7 +284,7 @@
               <div class="mt-3">${comboBalls(combo.numbers)}</div>
             </div>`).join('')}
         </div>
-        <p class="mt-3 text-xs leading-5 text-slate-400">${esc((data.quality_notes || []).join(' ') || 'Ranking diversificado. No es probabilidad de ganar.')}</p>
+        <p class="mt-3 text-xs leading-5 text-slate-400">${esc((data.quality_notes || []).join(' ') || 'Ranking diversificado para revision diagnostica.')}</p>
       </article>`;
   }
 
@@ -255,7 +346,7 @@
           <div class="taste-panel-muted"><p class="taste-eyebrow">Frecuencia</p><p class="text-sm text-slate-300">${baselineStatus(baselines.frequency_baseline, 'Sin baseline de frecuencia')}</p></div>
           <div class="taste-panel-muted"><p class="taste-eyebrow">Recencia</p><p class="text-sm text-slate-300">${baselineStatus(baselines.recency_baseline, 'Sin baseline de recencia')}</p></div>
         </div>
-        <p class="mt-3 text-xs leading-5 text-slate-400">Benchmark diagnostico. No activa prior. Brier desactivado: ${esc(data.experimental_brier?.reason || 'Scores internos no son probabilidades calibradas.')}</p>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Benchmark diagnostico. No activa prior. Brier desactivado: ${esc(data.experimental_brier?.reason || 'Scores internos no tienen calibracion real.')}</p>
       </article>`;
   }
 
@@ -291,7 +382,7 @@
           <p class="taste-eyebrow">Lectura</p>
           <p class="text-sm leading-6 text-slate-300">${esc(summary?.reason || calibration?.reason || 'Benchmark endurecido pendiente de datos suficientes.')}</p>
         </div>
-        <p class="mt-3 text-xs leading-5 text-slate-400">Benchmark endurecido. No activa prior. Scores internos no son probabilidades. Ventaja sobre baseline requiere estabilidad, no solo una muestra.</p>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Benchmark endurecido. No activa prior. Scores internos son ranking de revision. Ventaja sobre baseline requiere estabilidad, no solo una muestra.</p>
       </article>`;
   }
 
@@ -360,7 +451,7 @@
           <p class="taste-eyebrow">Lectura</p>
           <p class="text-sm leading-6 text-slate-300">${esc(summary?.reason || 'Experimento pendiente de datos.')}</p>
         </div>
-        <p class="mt-3 text-xs leading-5 text-slate-400">Experimento de reparacion de ranking. No modifica el motor. Este experimento no activa prior ni cambia resultados oficiales. Una mejora diagnostica no equivale a probabilidad de ganar. Accion: ${esc(summary?.recommended_next_action || 'diagnostic_only')}</p>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Experimento de reparacion de ranking. No modifica el motor. Este experimento no activa prior ni cambia resultados oficiales. Una mejora diagnostica no equivale a autorizacion operativa. Accion: ${esc(summary?.recommended_next_action || 'diagnostic_only')}</p>
       </article>`;
   }
 
@@ -444,7 +535,7 @@
 
   function renderPostRankingControlledLayer(summary, layer, comparison, futureLog) {
     if (!summary && !layer && !comparison && !futureLog) {
-      return emptyCard('Post-Ranking Controlled Layer', 'Sin capa controlada. Review-only. Does not replace official V4.2 output. Not a probability of winning.');
+      return emptyCard('Post-Ranking Controlled Layer', 'Sin capa controlada. Review-only. Does not replace official V4.2 output. Outcome-neutral review view.');
     }
     const controlledStatus = summary?.controlled_layer_status || layer?.status || 'blocked';
     const overlap = comparison?.overlap || {};
@@ -459,8 +550,8 @@
           <span class="taste-chip taste-chip-warn">${summary?.usable_in_app ? 'review_only' : 'bloqueada'}</span>
         </div>
         <p class="mt-3 text-sm leading-6 text-slate-300">Controlled post-ranking layer. Review-only. Does not replace official V4.2 output.</p>
-        <p class="text-sm leading-6 text-slate-300">Production ready remains false. Replay prior remains blocked. Not a probability of winning.</p>
-        <p class="mt-2 text-sm leading-6 text-slate-300">Review-only. Does not replace official V4.2 output. Not a probability of winning.</p>
+        <p class="text-sm leading-6 text-slate-300">Production ready remains false. Replay prior remains blocked. Outcome-neutral review view.</p>
+        <p class="mt-2 text-sm leading-6 text-slate-300">Review-only. Does not replace official V4.2 output.</p>
         <div class="grid gap-4 mt-4 lg:grid-cols-2">
           <section class="taste-panel-muted">
             <p class="taste-eyebrow">Official V4.2 Output</p>
@@ -621,7 +712,7 @@
 
   function renderSlate(data) {
     if (!data) {
-      return emptyCard('Decision Slate', 'Sin v4_decision_slate.json. Set de revision diagnostico. No es probabilidad de ganar.');
+      return emptyCard('Decision Slate', 'Sin v4_decision_slate.json. Set de revision diagnostico.');
     }
     const balanced = data.review_sets?.balanced_review_set;
     const rows = Array.isArray(balanced) ? balanced : [];
@@ -645,7 +736,7 @@
               <div class="mt-3">${comboBalls(row.numbers)}</div>
             </div>`).join('') || '<p class="text-sm text-slate-400">Sin slate disponible.</p>'}
         </div>
-        <p class="mt-3 text-xs leading-5 text-slate-400">Set de revision diagnostico. No es probabilidad de ganar. ${esc(warnings.join(' ') || data.language_guardrail)}</p>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Set de revision diagnostico. ${esc(warnings.join(' ') || 'Revision read-only.')}</p>
       </article>`;
   }
 
@@ -720,6 +811,9 @@
       postRankingControlledComparison,
       postRankingControlledSummary,
       futureUnseenValidation,
+      v43Slate,
+      v43Visual,
+      v43Audit,
     ] = await Promise.all([
       loadJson(FILES.diversity),
       loadJson(FILES.benchmark),
@@ -756,8 +850,14 @@
       loadJson(FILES.postRankingControlledComparison),
       loadJson(FILES.postRankingControlledSummary),
       loadJson(FILES.futureUnseenValidation),
+      loadJson(FILES.v43Slate),
+      loadJson(FILES.v43Visual),
+      loadJson(FILES.v43Audit),
     ]);
     panel.innerHTML = `
+      <div class="grid gap-4 mb-4">
+        ${renderV43HybridComposition(v43Slate, v43Visual, v43Audit)}
+      </div>
       <div class="grid gap-4 xl:grid-cols-3">
         ${renderDiversity(diversity)}
         ${renderBenchmark(benchmark)}
