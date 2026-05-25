@@ -26,35 +26,31 @@
     };
   </script>
   <link rel="stylesheet" href="v4-visual-system.css" />
+  <link rel="stylesheet" href="v4-cockpit.css" />
 </head>
 <body class="taste-bg min-h-[100dvh] text-slate-100 selection:bg-cyan-300 selection:text-slate-950">
   <div class="taste-atmosphere" aria-hidden="true"></div>
 
   <main id="app-root" class="taste-shell mx-auto flex w-full max-w-[1440px] flex-col gap-5 px-4 py-4 sm:px-6 lg:px-8">
-    <nav class="taste-command-bar sticky top-3 z-20" aria-label="Navegacion rapida">
-      <a class="taste-command-brand" href="#personal-center" aria-label="Ir al Centro Personal">
+    <nav class="cockpit-nav" aria-label="Navegacion principal V4.3">
+      <a class="cockpit-brand" href="#cockpit-mission" aria-label="Ir a Mission Control">
         <span class="taste-live-dot" aria-hidden="true"></span>
-        <span>Fisicapapa Desk</span>
-        <b>V4.2</b>
+        <span>Fisicapapa Cockpit</span>
+        <b>V4.3</b>
       </a>
-      <div class="taste-command-links" role="list">
-        <a role="listitem" href="#personal-center">Centro</a>
-        <a role="listitem" href="#top-combinations-section">Top</a>
-        <a role="listitem" href="#v43-hybrid-slate">V4.3 slate</a>
-        <a role="listitem" href="#manual-evaluator-section">Evaluar</a>
-        <a role="listitem" href="#combo-comparator-section">Mesa</a>
-        <a role="listitem" href="#physics-section">Fisica</a>
-        <a role="listitem" href="#decision-audit-section">Decision audit</a>
-        <a role="listitem" href="#auditor-section">Auditor</a>
-        <a role="listitem" href="#system-diagnostics-panel">Sistema</a>
+      <div class="cockpit-nav-links" role="list">
+        <a role="listitem" href="#cockpit-mission">Mission Control</a>
+        <a role="listitem" href="#cockpit-slate">Slate</a>
+        <a role="listitem" href="#cockpit-diagnostics">Diagnostics</a>
+        <a role="listitem" href="#cockpit-audit">Audit</a>
       </div>
     </nav>
 
     <header class="taste-header taste-motion-in">
       <div class="taste-header-copy">
-        <p class="taste-eyebrow">Web V2 · Cruncher V4.2 · Lectura personal</p>
-        <h1>Fisicapapa Personal Quant Desk</h1>
-        <p>Cabina diaria para revisar resultados, evaluar combinaciones y comparar decisiones sin confundir score interno con probabilidad garantizada.</p>
+        <p class="taste-eyebrow">V4.3 Decision Cockpit · Web V2 · Lectura personal</p>
+        <h1>Fisicapapa Harmonic Review Desk</h1>
+        <p>Cabina diaria para revisar tickets, soporte armonico, riesgos y auditoria post-draw sin confundir score interno con certeza de resultado.</p>
       </div>
       <section class="taste-header-metrics" aria-label="Resumen del modelo">
         <article class="taste-metric">
@@ -87,6 +83,14 @@
         <p class="taste-eyebrow">Arranque de cabina</p>
         <p>Cargando resultados.json y validando contrato V4.2.</p>
       </div>
+    </section>
+
+    <section id="v43-cockpit-root" class="v43-cockpit-root" aria-label="V4.3 Decision Cockpit">
+      <article class="cockpit-zone">
+        <p class="cockpit-kicker">V4.3 Decision Cockpit</p>
+        <h2>Cargando cockpit read-only</h2>
+        <p class="cockpit-muted">Leyendo JSONs existentes. El navegador no calcula senales de modelo ni modifica resultados oficiales.</p>
+      </article>
     </section>
 
     <section id="dashboard" class="hidden grid gap-5">
@@ -122,14 +126,14 @@
         </div>
       </section>
 
-      <section class="taste-section" aria-labelledby="results-title">
-        <div class="taste-section-heading">
+      <details class="taste-section cockpit-secondary-details" aria-labelledby="results-title">
+        <summary class="taste-section-heading">
           <div>
-            <p class="taste-eyebrow">Generador / Top resultados</p>
+            <p class="taste-eyebrow">V4.2 individual number scores — legacy diagnostics</p>
             <h2 id="results-title">Tickets de decision</h2>
           </div>
           <p>Top combinaciones y ranking de numeros en una lectura compacta para escritorio o celular.</p>
-        </div>
+        </summary>
         <div class="taste-results-grid">
           <section id="top-combinations-section" class="taste-card taste-card-large">
             <div class="taste-card-heading">
@@ -152,14 +156,16 @@
             <div id="top-numbers-panel" class="taste-stack"></div>
           </section>
         </div>
-      </section>
+      </details>
 
-      <section id="manual-evaluator-section" class="taste-section taste-section-evaluator">
-        <div class="taste-section-heading">
+      <details id="manual-evaluator-section" class="taste-section taste-section-evaluator cockpit-secondary-details">
+        <summary class="taste-section-heading">
           <div>
             <p class="taste-eyebrow">Evaluador manual</p>
             <h2>Score web, cruncher y componentes</h2>
           </div>
+        </summary>
+        <div class="taste-action-row mb-4">
           <button id="btn-evaluate-manual" class="taste-action" aria-label="Evaluar combinacion manual V4.2">Evaluar</button>
         </div>
         <div class="taste-input-deck" aria-label="Ingresar seis numeros">
@@ -172,14 +178,16 @@
         </div>
         <div id="manual-error" class="taste-alert taste-alert-danger mt-4 hidden"></div>
         <div id="manual-result" class="mt-5 hidden"></div>
-      </section>
+      </details>
 
-      <section id="combo-comparator-section" class="taste-section taste-comparator">
-        <div class="taste-section-heading">
+      <details id="combo-comparator-section" class="taste-section taste-comparator cockpit-secondary-details">
+        <summary class="taste-section-heading">
           <div>
             <p class="taste-eyebrow">Mesa de decision</p>
             <h2>Comparador de 2 a 5 combinaciones</h2>
           </div>
+        </summary>
+        <div class="taste-action-row mb-4">
           <div class="taste-action-row">
             <button id="btn-save-current-combo" class="taste-ghost">Guardar actual</button>
             <button id="btn-copy-comparator-report" class="taste-ghost">Copiar reporte</button>
@@ -187,7 +195,7 @@
           </div>
         </div>
         <div id="combo-comparator-panel" class="taste-stack"></div>
-      </section>
+      </details>
 
       <section id="physics-section" class="taste-section taste-physics">
         <div class="taste-section-heading">
@@ -214,21 +222,21 @@
         </div>
       </section>
 
-      <section id="decision-audit-section" class="taste-section taste-decision-audit">
-        <div class="taste-section-heading">
+      <details id="decision-audit-section" class="taste-section taste-decision-audit cockpit-secondary-details">
+        <summary class="taste-section-heading">
           <div>
-            <p class="taste-eyebrow">V4.3 Decision Cockpit</p>
-            <h2>Slate armonico y auditorias de decision</h2>
+            <p class="taste-eyebrow">V4.2 legacy diagnostics</p>
+            <h2>Auditorias historicas y diagnosticos secundarios</h2>
           </div>
           <span class="taste-chip taste-chip-warn">diagnostic_only</span>
-        </div>
+        </summary>
         <div id="decision-audit-panel" class="taste-stack">
           <div class="taste-panel-muted">
             <p class="taste-eyebrow">Audit pendiente</p>
             <p>Ejecuta el refresh V4.3 para generar diagnosticos read-only y composicion armonica.</p>
           </div>
         </div>
-      </section>
+      </details>
 
       <details id="auditor-section" class="taste-terminal">
         <summary>Auditor V4.2</summary>
@@ -270,6 +278,7 @@
   <script src="v4-system-diagnostics.js"></script>
   <script src="v4-combo-comparator.js"></script>
   <script src="v4-feedback-memory-panel.js"></script>
+  <script src="v4-cockpit-layout.js"></script>
   <script src="v4-decision-audit-panel.js"></script>
 </body>
 </html>

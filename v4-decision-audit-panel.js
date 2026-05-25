@@ -921,10 +921,12 @@
       loadJson(FILES.v43PairCompanion),
       loadJson(FILES.v43PostDrawAudit),
     ]);
-    panel.innerHTML = `
+    const v43LegacyBlock = window.FISICAPAPA_V43_COCKPIT_ACTIVE ? '' : `
       <div class="grid gap-4 mb-4">
         ${renderV43HybridComposition(v43Slate, v43Visual, v43Audit, v43PairCompanion, v43PostDrawAudit)}
-      </div>
+      </div>`;
+    panel.innerHTML = `
+      ${v43LegacyBlock}
       <div class="grid gap-4 xl:grid-cols-3">
         ${renderDiversity(diversity)}
         ${renderBenchmark(benchmark)}
