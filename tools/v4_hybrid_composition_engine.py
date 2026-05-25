@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import itertools
 import json
 from collections import Counter
 from pathlib import Path
@@ -36,6 +37,8 @@ TICKET_TYPES = [
     "cold_companion_high_edge",
 ]
 
+SUM_BAND_ORDER = ("low_tail", "historical_core", "upper_core", "high_tail", "extreme_high")
+
 def _block_name(number: int) -> str:
     for name, values in BLOCKS.items():
         if number in values:
@@ -53,6 +56,80 @@ def _unique(numbers: list[int]) -> list[int]:
 
 def _avg(values: list[float]) -> float:
     return round(sum(values) / len(values), 6) if values else 0.0
+
+
+def _percentile(values: list[int], percentile: float) -> float:
+    if not values:
+        return 0.0
+    ordered = sorted(values)
+    index = (len(ordered) - 1) * percentile
+    lower = int(index)
+    upper = min(lower + 1, len(ordered) - 1)
+    weight = index - lower
+    return round(ordered[lower] * (1 - weight) + ordered[upper] * weight, 6)
+
+
+def _sum_policy(draws: list[dict[str, Any]]) -> dict[str, Any]:
+    sums = [sum(draw["numbers"]) for draw in draws if isinstance(draw.get("numbers"), list)]
+    return {
+        "p10": _percentile(sums, 0.10),
+        "p60": _percentile(sums, 0.60),
+        "p80": _percentile(sums, 0.80),
+        "p95": _percentile(sums, 0.95),
+    }
+
+
+def _sum_band(total: int, policy: dict[str, Any]) -> str:
+    p10 = float(policy.get("p10", 0.0) or 0.0)
+    p60 = float(policy.get("p60", 0.0) or 0.0)
+    p80 = float(policy.get("p80", 0.0) or 0.0)
+    p95 = float(policy.get("p95", 0.0) or 0.0)
+    if total < p10:
+        return "low_tail"
+    if total < p60:
+        return "historical_core"
+    if total < p80:
+        return "upper_core"
+    if total < p95:
+        return "high_tail"
+    return "extreme_high"
+
+
+def _pair_key(pair: tuple[int, int] | list[int]) -> str:
+    a, b = sorted((int(pair[0]), int(pair[1])))
+    return f"{a:02d}-{b:02d}"
+
+
+def _pair_lookup(pair_audit: dict[str, Any] | None) -> dict[str, dict[str, Any]]:
+    lookup: dict[str, dict[str, Any]] = {}
+    if not isinstance(pair_audit, dict):
+        return lookup
+    for section in ("top_co_travel_pairs", "top_block_bridge_pairs", "anti_pairs"):
+        rows = pair_audit.get(section)
+        if not isinstance(rows, list):
+            continue
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            pair = row.get("pair")
+            if isinstance(pair, list) and len(pair) == 2:
+                lookup[_pair_key(pair)] = row
+    return lookup
+
+
+def _cluster_hits(numbers: list[int], pair_audit: dict[str, Any] | None) -> list[dict[str, Any]]:
+    if not isinstance(pair_audit, dict):
+        return []
+    number_set = set(numbers)
+    clusters = pair_audit.get("cluster_companions")
+    if not isinstance(clusters, list):
+        return []
+    hits = []
+    for cluster in clusters:
+        members = set(cluster.get("numbers") or []) if isinstance(cluster, dict) else set()
+        if len(members & number_set) >= 3:
+            hits.append(cluster)
+    return hits[:4]
 
 
 def _activation_metric(activation: dict[str, Any], block: str, key: str) -> float:
@@ -214,13 +291,96 @@ def _complete_ticket(seed: list[int], rows: list[dict[str, Any]], previous_numbe
     return sorted(ticket[:DRAW_SIZE])
 
 
-def _composition(numbers: list[int], previous_numbers: set[int]) -> dict[str, Any]:
+def _harmonic_coherence(
+    numbers: list[int],
+    rows: list[dict[str, Any]],
+    previous_numbers: set[int],
+    sum_policy: dict[str, Any] | None = None,
+    pair_audit: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    lookup = _pair_lookup(pair_audit)
+    pairs = [_pair_key(pair) for pair in itertools.combinations(numbers, 2)]
+    strong_pairs = [lookup[key] for key in pairs if lookup.get(key, {}).get("confidence") in {"medium", "high"}]
+    anti_pairs = [lookup[key] for key in pairs if lookup.get(key, {}).get("pair_type") == "anti_pair"]
+    block_bridges = [row for row in strong_pairs if row.get("is_block_bridge")]
+    clusters = _cluster_hits(numbers, pair_audit)
+    row_scores = [float(_find_row(rows, number).get("score", 0.0) or 0.0) for number in numbers]
+    total = sum(numbers)
+    band = _sum_band(total, sum_policy or {})
+    block_profile = block_counts(numbers)
+    max_block = max(block_profile.values()) if block_profile else 0
     parity = parity_counts(numbers)
+    parity_balance = 1.0 - abs(parity["even"] - parity["odd"]) / 6
+    carryover = len(set(numbers) & previous_numbers)
+    co_travel_score = round(
+        (sum(float(row.get("lift", 0.0)) for row in strong_pairs) + len(block_bridges) * 0.45 + len(clusters) * 0.55)
+        / max(len(pairs), 1),
+        6,
+    )
+    sum_score = {
+        "historical_core": 1.0,
+        "upper_core": 0.82,
+        "high_tail": 0.52,
+        "low_tail": 0.48,
+        "extreme_high": 0.18,
+    }.get(band, 0.5)
+    concentration_penalty = 0.18 if max_block >= 4 and not block_bridges else 0.0
+    anti_penalty = min(len(anti_pairs) * 0.08, 0.24)
+    carry_penalty = 0.08 if carryover > 1 else 0.0
+    score = (
+        _avg(row_scores) * 0.28
+        + co_travel_score * 0.28
+        + min(len(block_bridges) / 2, 1.0) * 0.16
+        + min(len(clusters) / 2, 1.0) * 0.10
+        + sum_score * 0.12
+        + parity_balance * 0.06
+        - concentration_penalty
+        - anti_penalty
+        - carry_penalty
+    )
+    notes = []
+    if strong_pairs:
+        notes.append(f"{len(strong_pairs)} companion pairs support internal coherence.")
+    if block_bridges:
+        notes.append(f"{len(block_bridges)} bridge pairs connect complementary blocks.")
+    if clusters:
+        notes.append(f"{len(clusters)} recurring companion clusters present.")
+    if band in {"high_tail", "extreme_high", "low_tail"}:
+        notes.append(f"Sum band guardrail: {band}.")
+    if anti_pairs:
+        notes.append(f"{len(anti_pairs)} anti-pair risk markers.")
+    return {
+        "score": round(max(score, 0.0), 6),
+        "co_travel_score": co_travel_score,
+        "anti_pair_risk_count": len(anti_pairs),
+        "block_bridge_pair_count": len(block_bridges),
+        "cluster_support_count": len(clusters),
+        "sum_band": band,
+        "strong_pairs": [row.get("pair") for row in strong_pairs[:6]],
+        "anti_pairs": [row.get("pair") for row in anti_pairs[:6]],
+        "block_bridge_pairs": [row.get("pair") for row in block_bridges[:6]],
+        "clusters": [row.get("numbers") for row in clusters],
+        "notes": notes,
+    }
+
+
+def _composition(
+    numbers: list[int],
+    previous_numbers: set[int],
+    rows: list[dict[str, Any]] | None = None,
+    sum_policy: dict[str, Any] | None = None,
+    pair_audit: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    parity = parity_counts(numbers)
+    total = sum(numbers)
+    harmonic = _harmonic_coherence(numbers, rows or [], previous_numbers, sum_policy, pair_audit)
     return {
         "parity": parity,
-        "sum": sum(numbers),
+        "sum": total,
+        "sum_band": harmonic["sum_band"],
         "blocks": block_counts(numbers),
         "immediate_overlap_previous_draw": len(set(numbers) & previous_numbers),
+        "harmonic_coherence": harmonic,
     }
 
 
@@ -231,12 +391,39 @@ def _ticket(
     previous_numbers: set[int],
     index: int,
     reason: str,
+    sum_policy: dict[str, Any] | None = None,
+    pair_audit: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     roles: dict[str, list[str]] = {}
     reasons: dict[str, list[str]] = {}
+    harmonic = _harmonic_coherence(numbers, rows, previous_numbers, sum_policy, pair_audit)
+    pair_numbers: set[int] = set()
+    bridge_numbers: set[int] = set()
+    anti_numbers: set[int] = set()
+    cluster_numbers: set[int] = set()
+    for pair in harmonic.get("strong_pairs", []):
+        pair_numbers.update(int(number) for number in pair if isinstance(number, int))
+    for pair in harmonic.get("block_bridge_pairs", []):
+        bridge_numbers.update(int(number) for number in pair if isinstance(number, int))
+    for pair in harmonic.get("anti_pairs", []):
+        anti_numbers.update(int(number) for number in pair if isinstance(number, int))
+    for cluster in harmonic.get("clusters", []):
+        cluster_numbers.update(int(number) for number in cluster if isinstance(number, int))
     for position, number in enumerate(numbers):
         row = _find_row(rows, number)
         number_roles = list(row["roles"])
+        if number in pair_numbers:
+            number_roles.append("co_travel_companion")
+        if number in bridge_numbers:
+            number_roles.append("block_bridge_pair")
+        if number in cluster_numbers:
+            number_roles.append("harmonic_cluster")
+        if number in anti_numbers:
+            number_roles.append("anti_pair_risk")
+        if harmonic.get("sum_band") in {"high_tail", "extreme_high", "low_tail"}:
+            number_roles.append("sum_band_guardrail")
+        if float(harmonic.get("score", 0.0) or 0.0) >= 0.35:
+            number_roles.append("harmonic_support")
         if position == 0:
             number_roles = _unique_text(["anchor"] + number_roles)
         elif "support" not in number_roles:
@@ -249,11 +436,12 @@ def _ticket(
         "numbers": numbers,
         "roles": roles,
         "reasons": reasons,
-        "composition": _composition(numbers, previous_numbers),
+        "composition": _composition(numbers, previous_numbers, rows, sum_policy, pair_audit),
         "reason": reason,
         "risk_notes": [
             "Review-default composition slate.",
             "Outcome-neutral review layer.",
+            *harmonic.get("notes", [])[:3],
         ],
     }
 
@@ -278,6 +466,8 @@ def compose_slate_from_rows(
     rows: list[dict[str, Any]],
     previous_draw: list[int],
     pair_lag_mode: str | None = None,
+    sum_policy: dict[str, Any] | None = None,
+    pair_audit: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     previous_numbers = set(previous_draw)
     role_index = _role_index(rows)
@@ -318,7 +508,9 @@ def compose_slate_from_rows(
                 rows,
                 previous_numbers,
                 idx,
-                "Composed by V4.3 roles: bridge/block/gap/cold companion with parity and sum as soft checks.",
+                "Composed by V4.3 harmonic roles: block activation, pair support, gap echo, companions, and sum discipline.",
+                sum_policy,
+                pair_audit,
             )
         )
     if len(tickets) < 5:
@@ -348,12 +540,40 @@ def compose_slate_from_rows(
                     rows,
                     previous_numbers,
                     idx,
-                    "Fallback V4.3 role composition variant to keep the review slate broad but still role-scored.",
+                    "Fallback V4.3 harmonic composition variant to keep the review slate broad and coherent.",
+                    sum_policy,
+                    pair_audit,
                 )
             )
             if len(tickets) >= 5:
                 break
+    tickets = _apply_slate_harmonic_order(tickets)
     return tickets[:6]
+
+
+def _apply_slate_harmonic_order(tickets: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    if not tickets:
+        return tickets
+    extreme_seen = 0
+    scored = []
+    used_theses: Counter[str] = Counter()
+    for ticket in tickets:
+        composition = ticket.get("composition", {})
+        harmonic = composition.get("harmonic_coherence", {}) if isinstance(composition, dict) else {}
+        band = composition.get("sum_band", "unknown") if isinstance(composition, dict) else "unknown"
+        block_key = "|".join(f"{key}:{value}" for key, value in sorted((composition.get("blocks") or {}).items())) if isinstance(composition, dict) else ""
+        thesis_key = f"{band}|{block_key}"
+        diversity_penalty = min(used_theses[thesis_key] * 0.05, 0.20)
+        extreme_penalty = 0.16 if band == "extreme_high" and extreme_seen >= 1 else 0.0
+        if band == "extreme_high":
+            extreme_seen += 1
+        score = float(harmonic.get("score", 0.0) or 0.0) - diversity_penalty - extreme_penalty
+        ticket["selection_score"] = round(score, 6)
+        if extreme_penalty:
+            ticket.setdefault("risk_notes", []).append("Extreme-high sum kept only as a limited review thesis.")
+        used_theses[thesis_key] += 1
+        scored.append(ticket)
+    return sorted(scored, key=lambda ticket: (-float(ticket.get("selection_score", 0.0) or 0.0), ticket.get("ticket_id", "")))
 
 
 def _load_json(path: str | Path) -> dict[str, Any] | None:
@@ -393,7 +613,7 @@ def walk_forward_validation(draws: list[dict[str, Any]], ranking: list[int], pai
         pre = draws[:index]
         target = draws[index]["numbers"]
         rows = _candidate_rows_from_draws(pre, ranking, pair_lag_mode=pair_lag_mode)
-        slate = compose_slate_from_rows(rows, pre[-1]["numbers"], pair_lag_mode=pair_lag_mode)
+        slate = compose_slate_from_rows(rows, pre[-1]["numbers"], pair_lag_mode=pair_lag_mode, sum_policy=_sum_policy(pre))
         if not slate:
             continue
         draw_best = 0
@@ -443,6 +663,7 @@ def build_slate(
     audit_path: str | Path = "v4_winner_composition_audit.json",
     visual_path: str | Path = "v4_visual_pattern_output.json",
     resultados_path: str | Path = "resultados.json",
+    pair_audit_path: str | Path = "v4_pair_companion_audit.json",
 ) -> dict[str, Any]:
     draws = read_revancha_csv(csv_path)
     if not draws:
@@ -450,9 +671,17 @@ def build_slate(
     ranking, v42_available, v42_warning = load_v42_ranking(resultados_path)
     audit = _load_json(audit_path)
     visual = _load_json(visual_path)
+    pair_audit = _load_json(pair_audit_path)
     pair_lag_mode = visual.get("pair_lag_mode") if isinstance(visual, dict) else pair_lag_validation(draws).get("status")
     rows = _merge_visual_rows(visual, _candidate_rows_from_draws(draws, ranking, pair_lag_mode=pair_lag_mode))
-    slate = compose_slate_from_rows(rows, draws[-1]["numbers"], pair_lag_mode=pair_lag_mode)
+    sum_policy = _sum_policy(draws)
+    slate = compose_slate_from_rows(
+        rows,
+        draws[-1]["numbers"],
+        pair_lag_mode=pair_lag_mode,
+        sum_policy=sum_policy,
+        pair_audit=pair_audit,
+    )
     warnings = []
     if v42_warning:
         warnings.append(v42_warning)
@@ -460,7 +689,28 @@ def build_slate(
         warnings.append("Composition audit not available; engine used direct CSV features.")
     if visual is None:
         warnings.append("Visual pattern output not available; engine recomputed direct CSV features.")
+    if pair_audit is None:
+        warnings.append("Pair companion audit not available; harmonic pair support degraded gracefully.")
     validation = walk_forward_validation(draws, ranking, pair_lag_mode=pair_lag_mode)
+    sum_distribution = Counter(ticket.get("composition", {}).get("sum_band", "unknown") for ticket in slate)
+    harmonic_scores = [
+        float(ticket.get("composition", {}).get("harmonic_coherence", {}).get("score", 0.0) or 0.0)
+        for ticket in slate
+    ]
+    pair_summary = {
+        "available": pair_audit is not None,
+        "top_co_travel_pairs": len(pair_audit.get("top_co_travel_pairs", [])) if isinstance(pair_audit, dict) else 0,
+        "top_block_bridge_pairs": len(pair_audit.get("top_block_bridge_pairs", [])) if isinstance(pair_audit, dict) else 0,
+        "anti_pairs": len(pair_audit.get("anti_pairs", [])) if isinstance(pair_audit, dict) else 0,
+    }
+    validation["sum_band_percentiles"] = sum_policy
+    validation["slate_sum_distribution"] = dict(sum_distribution)
+    validation["harmonic_coherence_summary"] = {
+        "avg_score": _avg(harmonic_scores),
+        "min_score": min(harmonic_scores) if harmonic_scores else 0.0,
+        "max_score": max(harmonic_scores) if harmonic_scores else 0.0,
+    }
+    validation["pair_companion_summary"] = pair_summary
 
     return {
         "generated_at": utc_now(),
@@ -487,9 +737,10 @@ def main() -> int:
     parser.add_argument("--audit", default="v4_winner_composition_audit.json")
     parser.add_argument("--visual", default="v4_visual_pattern_output.json")
     parser.add_argument("--resultados", default="resultados.json")
+    parser.add_argument("--pair-audit", default="v4_pair_companion_audit.json")
     parser.add_argument("--output", default="v4_hybrid_composition_slate.json")
     args = parser.parse_args()
-    report = build_slate(args.csv, args.audit, args.visual, args.resultados)
+    report = build_slate(args.csv, args.audit, args.visual, args.resultados, args.pair_audit)
     Path(args.output).write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"Wrote {args.output}; tickets={len(report['slate'])} production_status={report['production_status']}")
     return 0

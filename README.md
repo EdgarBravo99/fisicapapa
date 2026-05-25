@@ -718,6 +718,58 @@ tools/v4_hybrid_composition_smoke_test.py
 
 Si un paso falla, se detiene con exit code distinto de cero. Al terminar confirma que existen `v4_winner_composition_audit.json`, `v4_visual_pattern_output.json` y `v4_hybrid_composition_slate.json`, y resume `latest_draw`, `production_status`, `pair_lag_mode`, cantidad de tickets, `fallback_mode` y warnings.
 
+## V4.3 Harmonic History Sync And Decision Cockpit
+
+V4.3 now treats each draw as a historical composition, not as isolated number picks. The harmonic layer uses local history, block behavior, same-draw companion pairs, pair-lag support, sum-band discipline, and post-draw accountability to build a review-default candidate slate.
+
+V4.2 remains the official optional individual-number signal provider. V4.3 is the composition layer. It writes separate diagnostic outputs, keeps `production_status = review_default`, does not replace `resultados.json`, does not activate priors, and does not modify the cruncher internals.
+
+First run with internet:
+
+```powershell
+python tools/v4_history_sync_from_pakin.py --game revancha --dry-run
+python tools/v4_refresh.py --game revancha --sync-history-from-pakin --export-visual-matrix --pair-companion-audit --snapshot-predraw
+```
+
+Normal pre-draw workflow when internet is available:
+
+```powershell
+python tools/v4_refresh.py --game revancha --sync-history-from-pakin --export-visual-matrix --pair-companion-audit --snapshot-predraw
+```
+
+Offline workflow:
+
+```powershell
+python tools/v4_refresh.py --game revancha --export-visual-matrix --pair-companion-audit --snapshot-predraw
+```
+
+After the official result is added to `revancha.csv`:
+
+```powershell
+python tools/v4_post_draw_audit.py --target-draw <draw>
+```
+
+Optional manual visual review:
+
+```txt
+visual_exports/revancha_visual_matrix.csv
+visual_exports/revancha_visual_matrix_compact.csv
+visual_exports/revancha_visual_candidate_overlay.csv
+visual_exports/revancha_visual_pair_overlay.csv
+```
+
+Important workflow rules:
+
+- `tools/v4_history_sync_from_pakin.py` refreshes or rebuilds the local historical source from Pakin when internet is available.
+- Pre-draw snapshots freeze the exact V4.3 slate before the target draw, preventing post-result leakage in later audits.
+- Post-draw audit is diagnostic only and compares a frozen snapshot against the official CSV result.
+- Candidate overlays under `visual_exports/` are visual-only rows marked `synthetic=true` and `row_type=candidate`; they are never canonical history.
+- No script should treat `visual_exports/` as a historical input folder.
+- V4.3 uses harmonic composition: companion pairs, block harmony, sum bands, roles, and risk notes.
+- `v4_pair_companion_audit.json` measures same-draw co-travel pairs, bridge pairs, anti-pair risks, and simple clusters with transparent support thresholds.
+- High sums are not banned, but `sum_band` and `slate_sum_distribution` keep the slate from clustering blindly in high-tail territory.
+- `production_status` remains `review_default`.
+
 ## Legacy Snapshot Classifier
 
 `tools/v4_legacy_snapshot_classifier.py` clasifica snapshots antiguos para conservar diagnostico sin contaminar memoria aplicada.

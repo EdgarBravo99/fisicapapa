@@ -1,0 +1,16 @@
+{
+  "generated_at": "2026-05-25T18:58:30.431980+00:00",
+  "source": "revancha.csv",
+  "latest_draw": 4217,
+  "draws_exported": 2132,
+  "paths": {
+    "wide_matrix": "C:\\Users\\edyga\\Documents\\GitHub\\fisicapapa-v43-harmonic-history-sync\\visual_exports\\revancha_visual_matrix.csv",
+    "compact_matrix": "C:\\Users\\edyga\\Documents\\GitHub\\fisicapapa-v43-harmonic-history-sync\\visual_exports\\revancha_visual_matrix_compact.csv",
+    "candidate_overlay": "C:\\Users\\edyga\\Documents\\GitHub\\fisicapapa-v43-harmonic-history-sync\\visual_exports\\revancha_visual_candidate_overlay.csv",
+    "pair_overlay": "C:\\Users\\edyga\\Documents\\GitHub\\fisicapapa-v43-harmonic-history-sync\\visual_exports\\revancha_visual_pair_overlay.csv"
+  },
+  "candidate_overlay_rows": 5,
+  "warnings": [
+    "visual_exports contains visual-only overlays; do not use as canonical history."
+  ]
+}
