@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-05-25T06:39:36.473770+00:00",
+  "generated_at": "2026-05-25T07:00:10.508978+00:00",
   "mode": "csv_visual_composition_only",
-  "latest_draw": 4215,
+  "latest_draw": 4217,
   "latest_numbers": [
     3,
-    5,
-    19,
-    39,
-    47,
+    23,
+    24,
+    27,
+    52,
     54
   ],
   "feature_windows": {
@@ -16,558 +16,731 @@
     "history_draws": 200
   },
   "zone_activation": {
-    "1_10": 0.1,
-    "11_20": 0.14,
-    "21_30": 0.12,
-    "31_40": 0.04,
-    "41_56": 0.125
+    "1_10": {
+      "unique_activation": 0.3,
+      "hit_density": 0.1,
+      "unique_seen": 3,
+      "total_hits": 5
+    },
+    "11_20": {
+      "unique_activation": 0.4,
+      "hit_density": 0.1,
+      "unique_seen": 4,
+      "total_hits": 5
+    },
+    "21_30": {
+      "unique_activation": 0.6,
+      "hit_density": 0.14,
+      "unique_seen": 6,
+      "total_hits": 7
+    },
+    "31_40": {
+      "unique_activation": 0.2,
+      "hit_density": 0.06,
+      "unique_seen": 2,
+      "total_hits": 3
+    },
+    "41_56": {
+      "unique_activation": 0.4375,
+      "hit_density": 0.125,
+      "unique_seen": 7,
+      "total_hits": 10
+    }
   },
+  "pair_lag_validation": {
+    "status": "support_only",
+    "records_evaluated": 60,
+    "pair_lag_top10_avg_hits": 1.133333,
+    "recent_frequency_top10_avg_hits": 1.066667,
+    "gap_echo_top10_avg_hits": 1.0,
+    "neutral_visual_top10_avg_hits": 1.116667,
+    "pair_lag_minus_best_baseline": 0.016666,
+    "reason": "Pair-lag had evidence but did not beat the simple candidate baselines."
+  },
+  "pair_lag_mode": "support_only",
   "top_visual_candidates": [
     {
-      "number": 18,
-      "visual_score": 0.69,
+      "number": 21,
+      "visual_score": 1.109619,
       "roles": [
+        "activated_block",
         "block_completion",
-        "bridge_pair_lag",
+        "cold_companion",
         "gap_echo"
       ],
       "signals": {
-        "gap_echo": 0.8,
-        "pair_lag": 0.588235,
-        "zone_activation": 0.14,
+        "gap_echo": 0.533333,
+        "pair_lag": 0.285714,
+        "zone_activation": 0.6,
+        "unique_activation": 0.6,
+        "hit_density": 0.14,
         "block_completion": 1.0,
         "carryover_penalty": 0.0,
-        "cold_companion": 0.0
+        "cold_companion": 0.2
       },
       "reasons": [
-        "Strong pair-lag bridge from 3 to 18: 10/17 within lag <= 3.",
-        "Gap echo: current gap 4, historical median gap 5."
-      ]
-    },
-    {
-      "number": 27,
-      "visual_score": 0.654,
-      "roles": [
-        "block_completion",
-        "bridge_pair_lag",
-        "gap_echo"
-      ],
-      "signals": {
-        "gap_echo": 0.6,
-        "pair_lag": 0.5,
-        "zone_activation": 0.12,
-        "block_completion": 1.0,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Strong pair-lag bridge from 39 to 27: 10/20 within lag <= 3.",
-        "Gap echo: current gap 3, historical median gap 5.0.",
-        "4217 learning: 27 is explicitly watched as pair-lag/block bridge candidate."
-      ]
-    },
-    {
-      "number": 46,
-      "visual_score": 0.631167,
-      "roles": [
-        "block_completion",
-        "bridge_pair_lag",
-        "gap_echo"
-      ],
-      "signals": {
-        "gap_echo": 0.666667,
-        "pair_lag": 0.55,
-        "zone_activation": 0.125,
-        "block_completion": 1.0,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Strong pair-lag bridge from 39 to 46: 11/20 within lag <= 3.",
-        "Gap echo: current gap 8, historical median gap 6.0."
-      ]
-    },
-    {
-      "number": 45,
-      "visual_score": 0.538167,
-      "roles": [
-        "block_completion",
-        "bridge_pair_lag"
-      ],
-      "signals": {
-        "gap_echo": 0.166667,
-        "pair_lag": 0.6,
-        "zone_activation": 0.125,
-        "block_completion": 1.0,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Strong pair-lag bridge from 19 to 45: 9/15 within lag <= 3."
-      ]
-    },
-    {
-      "number": 50,
-      "visual_score": 0.533833,
-      "roles": [
-        "block_completion",
-        "bridge_pair_lag"
-      ],
-      "signals": {
-        "gap_echo": 0.25,
-        "pair_lag": 0.533333,
-        "zone_activation": 0.125,
-        "block_completion": 1.0,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Strong pair-lag bridge from 19 to 50: 8/15 within lag <= 3."
-      ]
-    },
-    {
-      "number": 16,
-      "visual_score": 0.510715,
-      "roles": [
-        "block_completion"
-      ],
-      "signals": {
-        "gap_echo": 0.222222,
-        "pair_lag": 0.434783,
-        "zone_activation": 0.14,
-        "block_completion": 1.0,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": []
-    },
-    {
-      "number": 15,
-      "visual_score": 0.509514,
-      "roles": [
-        "gap_echo"
-      ],
-      "signals": {
-        "gap_echo": 0.75,
-        "pair_lag": 0.428571,
-        "zone_activation": 0.14,
-        "block_completion": 0.28,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Gap echo: current gap 3, historical median gap 4.0."
-      ]
-    },
-    {
-      "number": 11,
-      "visual_score": 0.506174,
-      "roles": [
-        "block_completion",
-        "bridge_pair_lag"
-      ],
-      "signals": {
-        "gap_echo": 0.0,
-        "pair_lag": 0.565217,
-        "zone_activation": 0.14,
-        "block_completion": 1.0,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Strong pair-lag bridge from 54 to 11: 13/23 within lag <= 3."
-      ]
-    },
-    {
-      "number": 30,
-      "visual_score": 0.506147,
-      "roles": [
-        "gap_echo"
-      ],
-      "signals": {
-        "gap_echo": 0.833333,
-        "pair_lag": 0.448276,
-        "zone_activation": 0.12,
-        "block_completion": 0.24,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Gap echo: current gap 7, historical median gap 6.0."
-      ]
-    },
-    {
-      "number": 7,
-      "visual_score": 0.506058,
-      "roles": [
-        "block_completion",
-        "bridge_pair_lag"
-      ],
-      "signals": {
-        "gap_echo": 0.266667,
-        "pair_lag": 0.521739,
-        "zone_activation": 0.1,
-        "block_completion": 1.0,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Strong pair-lag bridge from 54 to 7: 12/23 within lag <= 3."
-      ]
-    },
-    {
-      "number": 29,
-      "visual_score": 0.505667,
-      "roles": [
-        "block_completion"
-      ],
-      "signals": {
-        "gap_echo": 0.25,
-        "pair_lag": 0.466667,
-        "zone_activation": 0.12,
-        "block_completion": 1.0,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": []
-    },
-    {
-      "number": 24,
-      "visual_score": 0.4989,
-      "roles": [
-        "gap_echo"
-      ],
-      "signals": {
-        "gap_echo": 0.875,
-        "pair_lag": 0.4,
-        "zone_activation": 0.12,
-        "block_completion": 0.24,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Gap echo: current gap 9, historical median gap 8."
-      ]
-    },
-    {
-      "number": 49,
-      "visual_score": 0.493928,
-      "roles": [
-        "block_completion"
-      ],
-      "signals": {
-        "gap_echo": 0.285714,
-        "pair_lag": 0.392857,
-        "zone_activation": 0.125,
-        "block_completion": 1.0,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": []
-    },
-    {
-      "number": 53,
-      "visual_score": 0.487242,
-      "roles": [
-        "gap_echo"
-      ],
-      "signals": {
-        "gap_echo": 0.875,
-        "pair_lag": 0.344828,
-        "zone_activation": 0.125,
-        "block_completion": 0.25,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Gap echo: current gap 9, historical median gap 8.0."
-      ]
-    },
-    {
-      "number": 4,
-      "visual_score": 0.482326,
-      "roles": [
-        "gap_echo"
-      ],
-      "signals": {
-        "gap_echo": 0.875,
-        "pair_lag": 0.434783,
-        "zone_activation": 0.1,
-        "block_completion": 0.2,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Gap echo: current gap 9, historical median gap 8."
+        "Located inside activated 21_30 block by unique activation.",
+        "Gap echo: current gap 22, historical median gap 15.",
+        "Controlled cold companion attached to bridge/block evidence."
       ]
     },
     {
       "number": 26,
-      "visual_score": 0.478694,
+      "visual_score": 1.016487,
       "roles": [
+        "activated_block",
+        "block_completion",
         "gap_echo"
       ],
       "signals": {
-        "gap_echo": 0.705882,
+        "gap_echo": 0.941176,
+        "pair_lag": 0.428571,
+        "zone_activation": 0.6,
+        "unique_activation": 0.6,
+        "hit_density": 0.14,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Located inside activated 21_30 block by unique activation.",
+        "Gap echo: current gap 8, historical median gap 8.5."
+      ]
+    },
+    {
+      "number": 28,
+      "visual_score": 1.012,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "cold_companion"
+      ],
+      "signals": {
+        "gap_echo": 0.0,
         "pair_lag": 0.45,
-        "zone_activation": 0.12,
-        "block_completion": 0.24,
+        "zone_activation": 0.6,
+        "unique_activation": 0.6,
+        "hit_density": 0.14,
+        "block_completion": 1.0,
         "carryover_penalty": 0.0,
-        "cold_companion": 0.0
+        "cold_companion": 0.2
       },
       "reasons": [
-        "Gap echo: current gap 6, historical median gap 8.5."
+        "Located inside activated 21_30 block by unique activation.",
+        "Controlled cold companion attached to bridge/block evidence."
       ]
     },
     {
-      "number": 54,
-      "visual_score": 0.4775,
+      "number": 29,
+      "visual_score": 0.983,
       "roles": [
+        "activated_block",
         "block_completion",
-        "bridge_pair_lag"
+        "gap_echo",
+        "support"
       ],
       "signals": {
-        "gap_echo": 0.0,
-        "pair_lag": 0.529412,
-        "zone_activation": 0.125,
+        "gap_echo": 0.75,
+        "pair_lag": 0.5,
+        "zone_activation": 0.6,
+        "unique_activation": 0.6,
+        "hit_density": 0.14,
         "block_completion": 1.0,
         "carryover_penalty": 0.0,
         "cold_companion": 0.0
       },
       "reasons": [
-        "Strong pair-lag bridge from 3 to 54: 9/17 within lag <= 3."
+        "Pair-lag evidence downgraded to support by walk-forward validation.",
+        "Located inside activated 21_30 block by unique activation.",
+        "Gap echo: current gap 3, historical median gap 4.0."
       ]
     },
     {
-      "number": 23,
-      "visual_score": 0.473333,
+      "number": 30,
+      "visual_score": 0.930857,
       "roles": [
+        "activated_block",
         "block_completion",
-        "bridge_pair_lag"
+        "gap_echo",
+        "support"
       ],
       "signals": {
-        "gap_echo": 0.0,
-        "pair_lag": 0.533333,
-        "zone_activation": 0.12,
+        "gap_echo": 0.5,
+        "pair_lag": 0.52381,
+        "zone_activation": 0.6,
+        "unique_activation": 0.6,
+        "hit_density": 0.14,
         "block_completion": 1.0,
         "carryover_penalty": 0.0,
         "cold_companion": 0.0
       },
       "reasons": [
-        "Strong pair-lag bridge from 19 to 23: 8/15 within lag <= 3."
+        "Pair-lag evidence downgraded to support by walk-forward validation.",
+        "Located inside activated 21_30 block by unique activation.",
+        "Gap echo: current gap 9, historical median gap 6.0."
       ]
     },
     {
-      "number": 35,
-      "visual_score": 0.469391,
+      "number": 25,
+      "visual_score": 0.878504,
       "roles": [
-        "block_completion",
-        "bridge_pair_lag"
+        "activated_block",
+        "block_completion"
       ],
       "signals": {
-        "gap_echo": 0.4,
-        "pair_lag": 0.521739,
-        "zone_activation": 0.04,
+        "gap_echo": 0.352941,
+        "pair_lag": 0.357143,
+        "zone_activation": 0.6,
+        "unique_activation": 0.6,
+        "hit_density": 0.14,
         "block_completion": 1.0,
         "carryover_penalty": 0.0,
         "cold_companion": 0.0
       },
       "reasons": [
-        "Strong pair-lag bridge from 54 to 35: 12/23 within lag <= 3."
+        "Located inside activated 21_30 block by unique activation."
       ]
     },
     {
       "number": 55,
-      "visual_score": 0.468214,
+      "visual_score": 0.860625,
       "roles": [
-        "gap_echo"
-      ],
-      "signals": {
-        "gap_echo": 0.714286,
-        "pair_lag": 0.392857,
-        "zone_activation": 0.125,
-        "block_completion": 0.25,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Gap echo: current gap 5, historical median gap 7."
-      ]
-    },
-    {
-      "number": 6,
-      "visual_score": 0.465594,
-      "roles": [
-        "gap_echo"
-      ],
-      "signals": {
-        "gap_echo": 0.933333,
-        "pair_lag": 0.347826,
-        "zone_activation": 0.1,
-        "block_completion": 0.2,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Gap echo: current gap 7, historical median gap 7.5."
-      ]
-    },
-    {
-      "number": 56,
-      "visual_score": 0.464312,
-      "roles": [
-        "gap_echo"
-      ],
-      "signals": {
-        "gap_echo": 0.833333,
-        "pair_lag": 0.304348,
-        "zone_activation": 0.125,
-        "block_completion": 0.25,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Gap echo: current gap 5, historical median gap 6.0."
-      ]
-    },
-    {
-      "number": 8,
-      "visual_score": 0.448832,
-      "roles": [
-        "gap_echo"
-      ],
-      "signals": {
-        "gap_echo": 0.857143,
-        "pair_lag": 0.347826,
-        "zone_activation": 0.1,
-        "block_completion": 0.2,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Gap echo: current gap 6, historical median gap 7."
-      ]
-    },
-    {
-      "number": 41,
-      "visual_score": 0.448731,
-      "roles": [
-        "gap_echo"
-      ],
-      "signals": {
-        "gap_echo": 0.769231,
-        "pair_lag": 0.3,
-        "zone_activation": 0.125,
-        "block_completion": 0.25,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Gap echo: current gap 5, historical median gap 6.5."
-      ]
-    },
-    {
-      "number": 33,
-      "visual_score": 0.435467,
-      "roles": [
+        "activated_block",
+        "block_completion",
         "gap_echo"
       ],
       "signals": {
         "gap_echo": 1.0,
-        "pair_lag": 0.466667,
-        "zone_activation": 0.04,
-        "block_completion": 0.08,
+        "pair_lag": 0.333333,
+        "zone_activation": 0.4375,
+        "unique_activation": 0.4375,
+        "hit_density": 0.125,
+        "block_completion": 1.0,
         "carryover_penalty": 0.0,
         "cold_companion": 0.0
       },
       "reasons": [
-        "Gap echo: current gap 8, historical median gap 8."
-      ]
-    },
-    {
-      "number": 1,
-      "visual_score": 0.417789,
-      "roles": [
-        "gap_echo"
-      ],
-      "signals": {
-        "gap_echo": 0.526316,
-        "pair_lag": 0.470588,
-        "zone_activation": 0.1,
-        "block_completion": 0.2,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": [
-        "Gap echo: current gap 5, historical median gap 9.5."
+        "Located inside activated 41_56 block by unique activation.",
+        "Gap echo: current gap 7, historical median gap 7."
       ]
     },
     {
       "number": 20,
-      "visual_score": 0.409514,
+      "visual_score": 0.834,
       "roles": [
+        "activated_block",
+        "block_completion",
         "gap_echo"
       ],
       "signals": {
-        "gap_echo": 0.571429,
-        "pair_lag": 0.25,
-        "zone_activation": 0.14,
-        "block_completion": 0.28,
+        "gap_echo": 1.0,
+        "pair_lag": 0.45,
+        "zone_activation": 0.4,
+        "unique_activation": 0.4,
+        "hit_density": 0.1,
+        "block_completion": 1.0,
         "carryover_penalty": 0.0,
         "cold_companion": 0.0
       },
       "reasons": [
-        "Gap echo: current gap 4, historical median gap 7."
+        "Located inside activated 11_20 block by unique activation.",
+        "Gap echo: current gap 6, historical median gap 6.0."
       ]
     },
     {
-      "number": 13,
-      "visual_score": 0.407371,
+      "number": 22,
+      "visual_score": 0.832643,
       "roles": [
-        "support"
+        "activated_block",
+        "block_completion"
       ],
       "signals": {
-        "gap_echo": 0.285714,
-        "pair_lag": 0.428571,
-        "zone_activation": 0.14,
-        "block_completion": 0.28,
+        "gap_echo": 0.125,
+        "pair_lag": 0.392857,
+        "zone_activation": 0.6,
+        "unique_activation": 0.6,
+        "hit_density": 0.14,
+        "block_completion": 1.0,
         "carryover_penalty": 0.0,
         "cold_companion": 0.0
       },
-      "reasons": []
+      "reasons": [
+        "Located inside activated 21_30 block by unique activation."
+      ]
     },
     {
-      "number": 48,
-      "visual_score": 0.40619,
+      "number": 41,
+      "visual_score": 0.827595,
       "roles": [
-        "support"
-      ],
-      "signals": {
-        "gap_echo": 0.4,
-        "pair_lag": 0.413793,
-        "zone_activation": 0.125,
-        "block_completion": 0.25,
-        "carryover_penalty": 0.0,
-        "cold_companion": 0.0
-      },
-      "reasons": []
-    },
-    {
-      "number": 40,
-      "visual_score": 0.3988,
-      "roles": [
+        "activated_block",
+        "block_completion",
         "gap_echo"
       ],
       "signals": {
         "gap_echo": 0.833333,
-        "pair_lag": 0.466667,
-        "zone_activation": 0.04,
-        "block_completion": 0.08,
+        "pair_lag": 0.363636,
+        "zone_activation": 0.4375,
+        "unique_activation": 0.4375,
+        "hit_density": 0.125,
+        "block_completion": 1.0,
         "carryover_penalty": 0.0,
         "cold_companion": 0.0
       },
       "reasons": [
+        "Located inside activated 41_56 block by unique activation.",
+        "Gap echo: current gap 7, historical median gap 6."
+      ]
+    },
+    {
+      "number": 56,
+      "visual_score": 0.825958,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.833333,
+        "pair_lag": 0.35,
+        "zone_activation": 0.4375,
+        "unique_activation": 0.4375,
+        "hit_density": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Located inside activated 41_56 block by unique activation.",
         "Gap echo: current gap 7, historical median gap 6.0."
+      ]
+    },
+    {
+      "number": 43,
+      "visual_score": 0.820261,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.8,
+        "pair_lag": 0.363636,
+        "zone_activation": 0.4375,
+        "unique_activation": 0.4375,
+        "hit_density": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Located inside activated 41_56 block by unique activation.",
+        "Gap echo: current gap 4, historical median gap 5.0."
+      ]
+    },
+    {
+      "number": 50,
+      "visual_score": 0.812768,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.75,
+        "pair_lag": 0.392857,
+        "zone_activation": 0.4375,
+        "unique_activation": 0.4375,
+        "hit_density": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Located inside activated 41_56 block by unique activation.",
+        "Gap echo: current gap 3, historical median gap 4."
+      ]
+    },
+    {
+      "number": 12,
+      "visual_score": 0.805,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "cold_companion"
+      ],
+      "signals": {
+        "gap_echo": 0.0,
+        "pair_lag": 0.375,
+        "zone_activation": 0.4,
+        "unique_activation": 0.4,
+        "hit_density": 0.1,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.2
+      },
+      "reasons": [
+        "Located inside activated 11_20 block by unique activation.",
+        "Controlled cold companion attached to bridge/block evidence."
+      ]
+    },
+    {
+      "number": 14,
+      "visual_score": 0.79,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "cold_companion"
+      ],
+      "signals": {
+        "gap_echo": 0.0,
+        "pair_lag": 0.25,
+        "zone_activation": 0.4,
+        "unique_activation": 0.4,
+        "hit_density": 0.1,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.2
+      },
+      "reasons": [
+        "Located inside activated 11_20 block by unique activation.",
+        "Controlled cold companion attached to bridge/block evidence."
+      ]
+    },
+    {
+      "number": 53,
+      "visual_score": 0.778125,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.625,
+        "pair_lag": 0.333333,
+        "zone_activation": 0.4375,
+        "unique_activation": 0.4375,
+        "hit_density": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Located inside activated 41_56 block by unique activation.",
+        "Gap echo: current gap 11, historical median gap 8."
+      ]
+    },
+    {
+      "number": 42,
+      "visual_score": 0.775572,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.631579,
+        "pair_lag": 0.3,
+        "zone_activation": 0.4375,
+        "unique_activation": 0.4375,
+        "hit_density": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Located inside activated 41_56 block by unique activation.",
+        "Gap echo: current gap 6, historical median gap 9.5."
+      ]
+    },
+    {
+      "number": 49,
+      "visual_score": 0.771339,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.571429,
+        "pair_lag": 0.375,
+        "zone_activation": 0.4375,
+        "unique_activation": 0.4375,
+        "hit_density": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Located inside activated 41_56 block by unique activation.",
+        "Gap echo: current gap 4, historical median gap 7."
+      ]
+    },
+    {
+      "number": 16,
+      "visual_score": 0.756667,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "gap_echo"
+      ],
+      "signals": {
+        "gap_echo": 0.666667,
+        "pair_lag": 0.416667,
+        "zone_activation": 0.4,
+        "unique_activation": 0.4,
+        "hit_density": 0.1,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Located inside activated 11_20 block by unique activation.",
+        "Gap echo: current gap 3, historical median gap 4.5."
+      ]
+    },
+    {
+      "number": 47,
+      "visual_score": 0.74253,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "support"
+      ],
+      "signals": {
+        "gap_echo": 0.333333,
+        "pair_lag": 0.571429,
+        "zone_activation": 0.4375,
+        "unique_activation": 0.4375,
+        "hit_density": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Pair-lag evidence downgraded to support by walk-forward validation.",
+        "Located inside activated 41_56 block by unique activation."
+      ]
+    },
+    {
+      "number": 46,
+      "visual_score": 0.723958,
+      "roles": [
+        "activated_block",
+        "block_completion"
+      ],
+      "signals": {
+        "gap_echo": 0.333333,
+        "pair_lag": 0.416667,
+        "zone_activation": 0.4375,
+        "unique_activation": 0.4375,
+        "hit_density": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Located inside activated 41_56 block by unique activation."
+      ]
+    },
+    {
+      "number": 45,
+      "visual_score": 0.711213,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "support"
+      ],
+      "signals": {
+        "gap_echo": 0.181818,
+        "pair_lag": 0.588235,
+        "zone_activation": 0.4375,
+        "unique_activation": 0.4375,
+        "hit_density": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Pair-lag evidence downgraded to support by walk-forward validation.",
+        "Located inside activated 41_56 block by unique activation."
+      ]
+    },
+    {
+      "number": 15,
+      "visual_score": 0.685909,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "support"
+      ],
+      "signals": {
+        "gap_echo": 0.25,
+        "pair_lag": 0.590909,
+        "zone_activation": 0.4,
+        "unique_activation": 0.4,
+        "hit_density": 0.1,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Pair-lag evidence downgraded to support by walk-forward validation.",
+        "Located inside activated 11_20 block by unique activation."
+      ]
+    },
+    {
+      "number": 18,
+      "visual_score": 0.681647,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "support"
+      ],
+      "signals": {
+        "gap_echo": 0.2,
+        "pair_lag": 0.647059,
+        "zone_activation": 0.4,
+        "unique_activation": 0.4,
+        "hit_density": 0.1,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Pair-lag evidence downgraded to support by walk-forward validation.",
+        "Located inside activated 11_20 block by unique activation."
+      ]
+    },
+    {
+      "number": 44,
+      "visual_score": 0.669196,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "support"
+      ],
+      "signals": {
+        "gap_echo": 0.0,
+        "pair_lag": 0.571429,
+        "zone_activation": 0.4375,
+        "unique_activation": 0.4375,
+        "hit_density": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Pair-lag evidence downgraded to support by walk-forward validation.",
+        "Located inside activated 41_56 block by unique activation."
+      ]
+    },
+    {
+      "number": 48,
+      "visual_score": 0.657768,
+      "roles": [
+        "activated_block",
+        "block_completion"
+      ],
+      "signals": {
+        "gap_echo": 0.0,
+        "pair_lag": 0.47619,
+        "zone_activation": 0.4375,
+        "unique_activation": 0.4375,
+        "hit_density": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Located inside activated 41_56 block by unique activation."
+      ]
+    },
+    {
+      "number": 19,
+      "visual_score": 0.655,
+      "roles": [
+        "activated_block",
+        "block_completion"
+      ],
+      "signals": {
+        "gap_echo": 0.25,
+        "pair_lag": 0.333333,
+        "zone_activation": 0.4,
+        "unique_activation": 0.4,
+        "hit_density": 0.1,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Located inside activated 11_20 block by unique activation."
+      ]
+    },
+    {
+      "number": 51,
+      "visual_score": 0.648625,
+      "roles": [
+        "activated_block",
+        "block_completion"
+      ],
+      "signals": {
+        "gap_echo": 0.0,
+        "pair_lag": 0.4,
+        "zone_activation": 0.4375,
+        "unique_activation": 0.4375,
+        "hit_density": 0.125,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Located inside activated 41_56 block by unique activation."
+      ]
+    },
+    {
+      "number": 17,
+      "visual_score": 0.625455,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "support"
+      ],
+      "signals": {
+        "gap_echo": 0.0,
+        "pair_lag": 0.545455,
+        "zone_activation": 0.4,
+        "unique_activation": 0.4,
+        "hit_density": 0.1,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Pair-lag evidence downgraded to support by walk-forward validation.",
+        "Located inside activated 11_20 block by unique activation."
+      ]
+    },
+    {
+      "number": 11,
+      "visual_score": 0.625,
+      "roles": [
+        "activated_block",
+        "block_completion",
+        "support"
+      ],
+      "signals": {
+        "gap_echo": 0.0,
+        "pair_lag": 0.541667,
+        "zone_activation": 0.4,
+        "unique_activation": 0.4,
+        "hit_density": 0.1,
+        "block_completion": 1.0,
+        "carryover_penalty": 0.0,
+        "cold_companion": 0.0
+      },
+      "reasons": [
+        "Pair-lag evidence downgraded to support by walk-forward validation.",
+        "Located inside activated 11_20 block by unique activation."
       ]
     }
   ],

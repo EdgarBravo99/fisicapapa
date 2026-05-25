@@ -20,6 +20,11 @@ FORBIDDEN_FILES = [
     "v4_replay_memory.json",
 ]
 FORBIDDEN_WORDS = [
+    "probability",
+    "probabilidad",
+    "guarantee",
+    "garantia",
+    "garantía",
     "guaranteed",
     "winning chance",
     "probability_model",
@@ -39,10 +44,13 @@ def _assert_ticket(ticket: dict) -> None:
     assert len(set(numbers)) == 6, f"ticket numbers must be unique: {numbers}"
     assert all(isinstance(number, int) and 1 <= number <= 56 for number in numbers), numbers
     assert isinstance(ticket.get("roles"), dict) and ticket["roles"], "ticket must include roles"
+    assert isinstance(ticket.get("reasons"), dict) and ticket["reasons"], "ticket must include reasons"
     assert isinstance(ticket.get("composition"), dict) and ticket["composition"], "ticket must include composition"
     for number in numbers:
         roles = ticket["roles"].get(str(number))
         assert isinstance(roles, list) and roles, f"number {number} missing roles"
+        reasons = ticket["reasons"].get(str(number))
+        assert isinstance(reasons, list) and reasons, f"number {number} missing reasons"
 
 
 def _assert_no_forbidden_language(payload: dict) -> None:
@@ -81,6 +89,13 @@ def main() -> int:
 
     visual = _load("v4_visual_pattern_output.json")
     assert visual.get("mode") in {"csv_visual_composition_only", "csv_plus_v42_signal"}
+    assert visual.get("latest_draw") == 4217
+    assert visual.get("pair_lag_mode") in {"promoter", "support_only", "disabled_by_validation"}
+    zone_activation = visual.get("zone_activation")
+    assert isinstance(zone_activation, dict) and zone_activation, "zone activation metrics missing"
+    for row in zone_activation.values():
+        assert isinstance(row, dict), "zone activation must expose separate metrics"
+        assert "unique_activation" in row and "hit_density" in row
 
     with tempfile.TemporaryDirectory() as tmp:
         invalid = Path(tmp) / "bad_resultados.json"
@@ -91,9 +106,13 @@ def main() -> int:
         assert invalid_slate["source_policy"]["fallback_mode"] == "csv_visual_composition_only"
         assert 4 <= len(invalid_slate["slate"]) <= 6
 
-    replay_memory = ROOT / "v4_replay_memory.py"
-    if replay_memory.exists():
-        text = replay_memory.read_text(encoding="utf-8", errors="replace")
+    replay_memory_json = ROOT / "v4_replay_memory.json"
+    if replay_memory_json.exists():
+        with replay_memory_json.open("r", encoding="utf-8") as handle:
+            json.load(handle)
+    replay_memory_py = ROOT / "v4_replay_memory.py"
+    if replay_memory_py.exists():
+        text = replay_memory_py.read_text(encoding="utf-8", errors="replace")
         assert "ENABLE_REPLAY_PRIOR = False" in text
     if (ROOT / "resultados.json").exists():
         text = (ROOT / "resultados.json").read_text(encoding="utf-8", errors="replace")

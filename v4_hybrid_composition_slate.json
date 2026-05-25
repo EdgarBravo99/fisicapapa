@@ -1,95 +1,203 @@
 {
-  "generated_at": "2026-05-25T06:39:38.911102+00:00",
+  "generated_at": "2026-05-25T07:00:19.872366+00:00",
   "engine_version": "V4.3-hybrid-composition",
   "source_policy": {
     "primary_source": "revancha.csv",
     "v42_signal_available": false,
     "v42_signal_used_as": "not_used",
-    "fallback_mode": "csv_visual_composition_only"
+    "fallback_mode": "csv_visual_composition_only",
+    "pair_lag_mode": "support_only"
   },
   "production_status": "review_default",
-  "disclaimer": "Experimental composition ranking, not probability or guarantee.",
-  "latest_draw": 4215,
+  "disclaimer": "Experimental composition ranking for review only.",
+  "latest_draw": 4217,
   "slate": [
     {
       "ticket_id": "composition_main_1",
       "ticket_type": "composition_main",
       "numbers": [
-        18,
-        27,
-        30,
-        45,
-        46,
-        50
+        21,
+        26,
+        28,
+        29,
+        41,
+        55
       ],
       "roles": {
-        "18": [
+        "21": [
           "anchor",
+          "activated_block",
           "block_completion",
-          "bridge_pair_lag",
+          "cold_companion",
           "gap_echo"
         ],
-        "27": [
+        "26": [
           "support",
+          "activated_block",
           "block_completion",
-          "bridge_pair_lag",
           "gap_echo"
         ],
-        "30": [
+        "28": [
           "support",
+          "activated_block",
+          "block_completion",
+          "cold_companion"
+        ],
+        "29": [
+          "activated_block",
+          "block_completion",
+          "gap_echo",
+          "support"
+        ],
+        "41": [
+          "support",
+          "activated_block",
+          "block_completion",
           "gap_echo"
         ],
-        "45": [
+        "55": [
           "support",
+          "activated_block",
           "block_completion",
-          "bridge_pair_lag"
-        ],
-        "46": [
-          "support",
-          "block_completion",
-          "bridge_pair_lag",
           "gap_echo"
-        ],
-        "50": [
-          "support",
-          "block_completion",
-          "bridge_pair_lag"
         ]
       },
       "reasons": {
-        "18": [
-          "Strong pair-lag bridge from 3 to 18: 10/17 within lag <= 3.",
-          "Gap echo: current gap 4, historical median gap 5."
+        "21": [
+          "Located inside activated 21_30 block by unique activation.",
+          "Gap echo: current gap 22, historical median gap 15.",
+          "Controlled cold companion attached to bridge/block evidence."
         ],
-        "27": [
-          "Strong pair-lag bridge from 39 to 27: 10/20 within lag <= 3.",
-          "Gap echo: current gap 3, historical median gap 5.0.",
-          "4217 learning: 27 is explicitly watched as pair-lag/block bridge candidate."
+        "26": [
+          "Located inside activated 21_30 block by unique activation.",
+          "Gap echo: current gap 8, historical median gap 8.5."
         ],
-        "30": [
-          "Gap echo: current gap 7, historical median gap 6.0."
+        "28": [
+          "Located inside activated 21_30 block by unique activation.",
+          "Controlled cold companion attached to bridge/block evidence."
         ],
-        "45": [
-          "Strong pair-lag bridge from 19 to 45: 9/15 within lag <= 3."
+        "29": [
+          "Pair-lag evidence downgraded to support by walk-forward validation.",
+          "Located inside activated 21_30 block by unique activation.",
+          "Gap echo: current gap 3, historical median gap 4.0."
         ],
-        "46": [
-          "Strong pair-lag bridge from 39 to 46: 11/20 within lag <= 3.",
-          "Gap echo: current gap 8, historical median gap 6.0."
+        "41": [
+          "Located inside activated 41_56 block by unique activation.",
+          "Gap echo: current gap 7, historical median gap 6."
         ],
-        "50": [
-          "Strong pair-lag bridge from 19 to 50: 8/15 within lag <= 3."
+        "55": [
+          "Located inside activated 41_56 block by unique activation.",
+          "Gap echo: current gap 7, historical median gap 7."
         ]
       },
       "composition": {
         "parity": {
-          "even": 4,
-          "odd": 2
+          "even": 2,
+          "odd": 4
         },
-        "sum": 216,
+        "sum": 200,
         "blocks": {
           "1_10": 0,
-          "11_20": 1,
-          "21_30": 2,
+          "11_20": 0,
+          "21_30": 4,
+          "31_40": 0,
+          "41_56": 2
+        },
+        "immediate_overlap_previous_draw": 0
+      },
+      "reason": "Composed by V4.3 roles: bridge/block/gap/cold companion with parity and sum as soft checks.",
+      "risk_notes": [
+        "Review-default composition slate.",
+        "Outcome-neutral review layer."
+      ]
+    },
+    {
+      "ticket_id": "activated_block_main_2",
+      "ticket_type": "activated_block_main",
+      "numbers": [
+        21,
+        26,
+        28,
+        41,
+        55,
+        56
+      ],
+      "roles": {
+        "21": [
+          "anchor",
+          "activated_block",
+          "block_completion",
+          "cold_companion",
+          "gap_echo"
+        ],
+        "26": [
+          "support",
+          "activated_block",
+          "block_completion",
+          "gap_echo"
+        ],
+        "28": [
+          "support",
+          "activated_block",
+          "block_completion",
+          "cold_companion"
+        ],
+        "41": [
+          "support",
+          "activated_block",
+          "block_completion",
+          "gap_echo"
+        ],
+        "55": [
+          "support",
+          "activated_block",
+          "block_completion",
+          "gap_echo"
+        ],
+        "56": [
+          "support",
+          "activated_block",
+          "block_completion",
+          "gap_echo"
+        ]
+      },
+      "reasons": {
+        "21": [
+          "Located inside activated 21_30 block by unique activation.",
+          "Gap echo: current gap 22, historical median gap 15.",
+          "Controlled cold companion attached to bridge/block evidence."
+        ],
+        "26": [
+          "Located inside activated 21_30 block by unique activation.",
+          "Gap echo: current gap 8, historical median gap 8.5."
+        ],
+        "28": [
+          "Located inside activated 21_30 block by unique activation.",
+          "Controlled cold companion attached to bridge/block evidence."
+        ],
+        "41": [
+          "Located inside activated 41_56 block by unique activation.",
+          "Gap echo: current gap 7, historical median gap 6."
+        ],
+        "55": [
+          "Located inside activated 41_56 block by unique activation.",
+          "Gap echo: current gap 7, historical median gap 7."
+        ],
+        "56": [
+          "Located inside activated 41_56 block by unique activation.",
+          "Gap echo: current gap 7, historical median gap 6.0."
+        ]
+      },
+      "composition": {
+        "parity": {
+          "even": 3,
+          "odd": 3
+        },
+        "sum": 227,
+        "blocks": {
+          "1_10": 0,
+          "11_20": 0,
+          "21_30": 3,
           "31_40": 0,
           "41_56": 3
         },
@@ -98,160 +206,81 @@
       "reason": "Composed by V4.3 roles: bridge/block/gap/cold companion with parity and sum as soft checks.",
       "risk_notes": [
         "Review-default composition slate.",
-        "Not a probability estimate."
-      ]
-    },
-    {
-      "ticket_id": "activated_block_main_2",
-      "ticket_type": "activated_block_main",
-      "numbers": [
-        18,
-        27,
-        29,
-        30,
-        45,
-        46
-      ],
-      "roles": {
-        "18": [
-          "anchor",
-          "block_completion",
-          "bridge_pair_lag",
-          "gap_echo"
-        ],
-        "27": [
-          "support",
-          "block_completion",
-          "bridge_pair_lag",
-          "gap_echo"
-        ],
-        "29": [
-          "support",
-          "block_completion"
-        ],
-        "30": [
-          "support",
-          "gap_echo"
-        ],
-        "45": [
-          "support",
-          "block_completion",
-          "bridge_pair_lag"
-        ],
-        "46": [
-          "support",
-          "block_completion",
-          "bridge_pair_lag",
-          "gap_echo"
-        ]
-      },
-      "reasons": {
-        "18": [
-          "Strong pair-lag bridge from 3 to 18: 10/17 within lag <= 3.",
-          "Gap echo: current gap 4, historical median gap 5."
-        ],
-        "27": [
-          "Strong pair-lag bridge from 39 to 27: 10/20 within lag <= 3.",
-          "Gap echo: current gap 3, historical median gap 5.0.",
-          "4217 learning: 27 is explicitly watched as pair-lag/block bridge candidate."
-        ],
-        "29": [
-          "Selected by V4.3 composition role balance."
-        ],
-        "30": [
-          "Gap echo: current gap 7, historical median gap 6.0."
-        ],
-        "45": [
-          "Strong pair-lag bridge from 19 to 45: 9/15 within lag <= 3."
-        ],
-        "46": [
-          "Strong pair-lag bridge from 39 to 46: 11/20 within lag <= 3.",
-          "Gap echo: current gap 8, historical median gap 6.0."
-        ]
-      },
-      "composition": {
-        "parity": {
-          "even": 3,
-          "odd": 3
-        },
-        "sum": 195,
-        "blocks": {
-          "1_10": 0,
-          "11_20": 1,
-          "21_30": 3,
-          "31_40": 0,
-          "41_56": 2
-        },
-        "immediate_overlap_previous_draw": 0
-      },
-      "reason": "Composed by V4.3 roles: bridge/block/gap/cold companion with parity and sum as soft checks.",
-      "risk_notes": [
-        "Review-default composition slate.",
-        "Not a probability estimate."
+        "Outcome-neutral review layer."
       ]
     },
     {
       "ticket_id": "contrarian_controlled_5",
       "ticket_type": "contrarian_controlled",
       "numbers": [
-        7,
-        18,
-        24,
-        27,
-        29,
-        30
+        21,
+        22,
+        26,
+        41,
+        43,
+        56
       ],
       "roles": {
-        "7": [
+        "21": [
           "anchor",
+          "activated_block",
           "block_completion",
-          "bridge_pair_lag"
-        ],
-        "18": [
-          "support",
-          "block_completion",
-          "bridge_pair_lag",
+          "cold_companion",
           "gap_echo"
         ],
-        "24": [
+        "22": [
           "support",
-          "gap_echo"
-        ],
-        "27": [
-          "support",
-          "block_completion",
-          "bridge_pair_lag",
-          "gap_echo"
-        ],
-        "29": [
-          "support",
+          "activated_block",
           "block_completion"
         ],
-        "30": [
+        "26": [
           "support",
+          "activated_block",
+          "block_completion",
+          "gap_echo"
+        ],
+        "41": [
+          "support",
+          "activated_block",
+          "block_completion",
+          "gap_echo"
+        ],
+        "43": [
+          "support",
+          "activated_block",
+          "block_completion",
+          "gap_echo"
+        ],
+        "56": [
+          "support",
+          "activated_block",
+          "block_completion",
           "gap_echo"
         ]
       },
       "reasons": {
-        "7": [
-          "Strong pair-lag bridge from 54 to 7: 12/23 within lag <= 3."
+        "21": [
+          "Located inside activated 21_30 block by unique activation.",
+          "Gap echo: current gap 22, historical median gap 15.",
+          "Controlled cold companion attached to bridge/block evidence."
         ],
-        "18": [
-          "Strong pair-lag bridge from 3 to 18: 10/17 within lag <= 3.",
-          "Gap echo: current gap 4, historical median gap 5."
+        "22": [
+          "Located inside activated 21_30 block by unique activation."
         ],
-        "24": [
-          "Gap echo: current gap 9, historical median gap 8."
+        "26": [
+          "Located inside activated 21_30 block by unique activation.",
+          "Gap echo: current gap 8, historical median gap 8.5."
         ],
-        "27": [
-          "Strong pair-lag bridge from 39 to 27: 10/20 within lag <= 3.",
-          "Gap echo: current gap 3, historical median gap 5.0.",
-          "4217 learning: 27 is explicitly watched as pair-lag/block bridge candidate."
+        "41": [
+          "Located inside activated 41_56 block by unique activation.",
+          "Gap echo: current gap 7, historical median gap 6."
         ],
-        "29": [
-          "Selected by V4.3 composition role balance."
+        "43": [
+          "Located inside activated 41_56 block by unique activation.",
+          "Gap echo: current gap 4, historical median gap 5.0."
         ],
-        "30": [
+        "56": [
+          "Located inside activated 41_56 block by unique activation.",
           "Gap echo: current gap 7, historical median gap 6.0."
         ]
       },
@@ -260,80 +289,95 @@
           "even": 3,
           "odd": 3
         },
-        "sum": 135,
+        "sum": 209,
         "blocks": {
-          "1_10": 1,
-          "11_20": 1,
-          "21_30": 4,
+          "1_10": 0,
+          "11_20": 0,
+          "21_30": 3,
           "31_40": 0,
-          "41_56": 0
+          "41_56": 3
         },
         "immediate_overlap_previous_draw": 0
       },
       "reason": "Composed by V4.3 roles: bridge/block/gap/cold companion with parity and sum as soft checks.",
       "risk_notes": [
         "Review-default composition slate.",
-        "Not a probability estimate."
+        "Outcome-neutral review layer."
       ]
     },
     {
       "ticket_id": "pair_lag_bridge_3",
       "ticket_type": "pair_lag_bridge",
       "numbers": [
-        6,
+        14,
+        16,
         23,
-        26,
-        35,
-        54,
-        55
+        42,
+        49,
+        53
       ],
       "roles": {
-        "6": [
+        "14": [
           "anchor",
+          "activated_block",
+          "block_completion",
+          "cold_companion"
+        ],
+        "16": [
+          "support",
+          "activated_block",
+          "block_completion",
           "gap_echo"
         ],
         "23": [
           "support",
+          "activated_block",
           "block_completion",
-          "bridge_pair_lag"
+          "cold_companion"
         ],
-        "26": [
+        "42": [
           "support",
+          "activated_block",
+          "block_completion",
           "gap_echo"
         ],
-        "35": [
+        "49": [
           "support",
+          "activated_block",
           "block_completion",
-          "bridge_pair_lag"
+          "gap_echo"
         ],
-        "54": [
+        "53": [
           "support",
+          "activated_block",
           "block_completion",
-          "bridge_pair_lag"
-        ],
-        "55": [
-          "support",
           "gap_echo"
         ]
       },
       "reasons": {
-        "6": [
-          "Gap echo: current gap 7, historical median gap 7.5."
+        "14": [
+          "Located inside activated 11_20 block by unique activation.",
+          "Controlled cold companion attached to bridge/block evidence."
+        ],
+        "16": [
+          "Located inside activated 11_20 block by unique activation.",
+          "Gap echo: current gap 3, historical median gap 4.5."
         ],
         "23": [
-          "Strong pair-lag bridge from 19 to 23: 8/15 within lag <= 3."
+          "Active block 21_30 by recent unique activation.",
+          "Controlled cold companion connected to active local evidence."
         ],
-        "26": [
-          "Gap echo: current gap 6, historical median gap 8.5."
+        "42": [
+          "Located inside activated 41_56 block by unique activation.",
+          "Gap echo: current gap 6, historical median gap 9.5."
         ],
-        "35": [
-          "Strong pair-lag bridge from 54 to 35: 12/23 within lag <= 3."
+        "49": [
+          "Located inside activated 41_56 block by unique activation.",
+          "Gap echo: current gap 4, historical median gap 7."
         ],
-        "54": [
-          "Strong pair-lag bridge from 3 to 54: 9/17 within lag <= 3."
-        ],
-        "55": [
-          "Gap echo: current gap 5, historical median gap 7."
+        "53": [
+          "Located inside activated 41_56 block by unique activation.",
+          "Gap echo: current gap 11, historical median gap 8."
         ]
       },
       "composition": {
@@ -341,115 +385,128 @@
           "even": 3,
           "odd": 3
         },
-        "sum": 199,
+        "sum": 197,
         "blocks": {
-          "1_10": 1,
-          "11_20": 0,
-          "21_30": 2,
-          "31_40": 1,
-          "41_56": 2
+          "1_10": 0,
+          "11_20": 2,
+          "21_30": 1,
+          "31_40": 0,
+          "41_56": 3
         },
         "immediate_overlap_previous_draw": 1
       },
       "reason": "Fallback V4.3 role composition variant to keep the review slate broad but still role-scored.",
       "risk_notes": [
         "Review-default composition slate.",
-        "Not a probability estimate."
+        "Outcome-neutral review layer."
       ]
     },
     {
       "ticket_id": "balanced_hybrid_4",
       "ticket_type": "balanced_hybrid",
       "numbers": [
-        2,
-        6,
-        8,
-        33,
-        41,
-        56
+        15,
+        16,
+        18,
+        45,
+        46,
+        47
       ],
       "roles": {
-        "2": [
+        "15": [
           "anchor",
+          "activated_block",
+          "block_completion",
+          "support"
+        ],
+        "16": [
+          "support",
+          "activated_block",
+          "block_completion",
           "gap_echo"
         ],
-        "6": [
-          "support",
-          "gap_echo"
+        "18": [
+          "activated_block",
+          "block_completion",
+          "support"
         ],
-        "8": [
-          "support",
-          "gap_echo"
+        "45": [
+          "activated_block",
+          "block_completion",
+          "support"
         ],
-        "33": [
+        "46": [
           "support",
-          "gap_echo"
+          "activated_block",
+          "block_completion"
         ],
-        "41": [
-          "support",
-          "gap_echo"
-        ],
-        "56": [
-          "support",
-          "gap_echo"
+        "47": [
+          "activated_block",
+          "block_completion",
+          "support"
         ]
       },
       "reasons": {
-        "2": [
-          "Gap echo: current gap 6, historical median gap 6."
+        "15": [
+          "Pair-lag evidence downgraded to support by walk-forward validation.",
+          "Located inside activated 11_20 block by unique activation."
         ],
-        "6": [
-          "Gap echo: current gap 7, historical median gap 7.5."
+        "16": [
+          "Located inside activated 11_20 block by unique activation.",
+          "Gap echo: current gap 3, historical median gap 4.5."
         ],
-        "8": [
-          "Gap echo: current gap 6, historical median gap 7."
+        "18": [
+          "Pair-lag evidence downgraded to support by walk-forward validation.",
+          "Located inside activated 11_20 block by unique activation."
         ],
-        "33": [
-          "Gap echo: current gap 8, historical median gap 8."
+        "45": [
+          "Pair-lag evidence downgraded to support by walk-forward validation.",
+          "Located inside activated 41_56 block by unique activation."
         ],
-        "41": [
-          "Gap echo: current gap 5, historical median gap 6.5."
+        "46": [
+          "Located inside activated 41_56 block by unique activation."
         ],
-        "56": [
-          "Gap echo: current gap 5, historical median gap 6.0."
+        "47": [
+          "Pair-lag evidence downgraded to support by walk-forward validation.",
+          "Located inside activated 41_56 block by unique activation."
         ]
       },
       "composition": {
         "parity": {
-          "even": 4,
-          "odd": 2
+          "even": 3,
+          "odd": 3
         },
-        "sum": 146,
+        "sum": 187,
         "blocks": {
-          "1_10": 3,
-          "11_20": 0,
+          "1_10": 0,
+          "11_20": 3,
           "21_30": 0,
-          "31_40": 1,
-          "41_56": 2
+          "31_40": 0,
+          "41_56": 3
         },
         "immediate_overlap_previous_draw": 0
       },
       "reason": "Fallback V4.3 role composition variant to keep the review slate broad but still role-scored.",
       "risk_notes": [
         "Review-default composition slate.",
-        "Not a probability estimate."
+        "Outcome-neutral review layer."
       ]
     }
   ],
   "validation_summary": {
     "available": true,
     "draws_evaluated": 60,
-    "avg_hits_per_ticket": 0.64,
-    "best_ticket_hits_per_draw": 1.45,
-    "hit_ge_1_rate": 0.48,
-    "hit_ge_2_rate": 0.133333,
-    "hit_ge_3_rate": 0.026667,
-    "zero_rate": 0.52,
+    "avg_hits_per_ticket": 0.68,
+    "best_ticket_hits_per_draw": 1.55,
+    "hit_ge_1_rate": 0.516667,
+    "hit_ge_2_rate": 0.153333,
+    "hit_ge_3_rate": 0.01,
+    "zero_rate": 0.483333,
     "rescued_winners_outside_v42_top10": null,
-    "activated_block_hit_rate": 0.071429,
+    "activated_block_hit_rate": 0.114055,
     "pair_lag_bridge_hit_rate": 0.0,
-    "immediate_carryover_hit_rate": 0.0,
-    "composition_pattern_match_rate": 0.423333
+    "immediate_carryover_hit_rate": 0.166667,
+    "composition_pattern_match_rate": 0.31
   },
   "warnings": [
     "resultados.json contains conflict markers; V4.3 running CSV-only."

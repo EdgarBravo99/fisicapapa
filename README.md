@@ -695,6 +695,8 @@ v4_hybrid_composition_slate.json
 
 La salida principal `v4_hybrid_composition_slate.json` contiene 4 a 6 tickets maximos, todos con 6 numeros unicos, roles por numero, razones, resumen de composicion y `production_status = review_default`. No reemplaza `resultados.json`, no cambia `score_kind`, no activa priors y no modifica el motor base.
 
+El pase de produccion de PR #32 mantiene el aprendizaje 4217 como regla generica, no como boost fijo a un numero. La activacion de bloque usa `unique_activation` para decidir bloques activos y deja `hit_density` como metadata. La senal `pair_lag` se valida walk-forward contra frecuencia reciente, gap echo y candidatos visuales neutrales; si no supera esas referencias queda como `support_only` o `disabled_by_validation`, nunca como promotor duro.
+
 El panel `v4-decision-audit-panel.js` carga estos JSON como auxiliares opcionales. Si faltan o son invalidos, la web no se cae: muestra un estado pequeno de V4.3 no disponible. Los tickets se muestran como tarjetas compactas con role chips y detalles colapsables para mantener lectura rapida en movil.
 
 ## Legacy Snapshot Classifier

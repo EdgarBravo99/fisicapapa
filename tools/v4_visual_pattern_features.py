@@ -98,16 +98,37 @@ def pair_lag_scores(draws: list[dict[str, Any]], triggers: list[int]) -> dict[in
     return output
 
 
-def zone_activation(draws: list[dict[str, Any]]) -> dict[str, float]:
+def zone_activation(draws: list[dict[str, Any]]) -> dict[str, dict[str, float | int]]:
     recent = draws[-RECENT_DRAWS:]
     counts: Counter[str] = Counter()
+    unique_seen: dict[str, set[int]] = {name: set() for name in BLOCKS}
     for draw in recent:
         for number in draw["numbers"]:
-            counts[_block_name(number)] += 1
+            block = _block_name(number)
+            counts[block] += 1
+            unique_seen.setdefault(block, set()).add(number)
     return {
-        name: round(counts[name] / max(len(recent) * len(list(values)), 1), 6)
+        name: {
+            "unique_activation": round(len(unique_seen.get(name, set())) / max(len(list(values)), 1), 6),
+            "hit_density": round(counts[name] / max(len(recent) * len(list(values)), 1), 6),
+            "unique_seen": len(unique_seen.get(name, set())),
+            "total_hits": counts[name],
+        }
         for name, values in BLOCKS.items()
     }
+
+
+def _activation_metric(activation: dict[str, Any], block: str, key: str) -> float:
+    row = activation.get(block, {})
+    if isinstance(row, dict):
+        try:
+            return float(row.get(key, 0.0) or 0.0)
+        except (TypeError, ValueError):
+            return 0.0
+    try:
+        return float(row or 0.0)
+    except (TypeError, ValueError):
+        return 0.0
 
 
 def recent_z_scores(draws: list[dict[str, Any]]) -> dict[int, float]:
@@ -119,6 +140,111 @@ def recent_z_scores(draws: list[dict[str, Any]]) -> dict[int, float]:
     return {
         number: round((recent_counts[number] - expected) / (expected ** 0.5), 6)
         for number in range(1, MAX_NUMBER + 1)
+    }
+
+
+def _rank_by_recent_frequency(draws: list[dict[str, Any]], window: int = 15) -> list[int]:
+    recent = draws[-window:]
+    counts = Counter(number for draw in recent for number in draw["numbers"])
+    return [
+        number
+        for number, _ in sorted(
+            ((number, counts[number]) for number in range(1, MAX_NUMBER + 1)),
+            key=lambda item: (-item[1], item[0]),
+        )
+    ]
+
+
+def _rank_by_gap_echo(draws: list[dict[str, Any]]) -> list[int]:
+    scored = []
+    for number in range(1, MAX_NUMBER + 1):
+        score, _ = gap_echo_score(draws, number)
+        scored.append((number, score))
+    return [number for number, _ in sorted(scored, key=lambda item: (-item[1], item[0]))]
+
+
+def _rank_by_neutral_visual(draws: list[dict[str, Any]]) -> list[int]:
+    activation = zone_activation(draws)
+    frequency = Counter(number for draw in draws[-15:] for number in draw["numbers"])
+    scored = []
+    for number in range(1, MAX_NUMBER + 1):
+        block = _block_name(number)
+        zone_score = _activation_metric(activation, block, "unique_activation")
+        gap_score, _ = gap_echo_score(draws, number)
+        frequency_score = frequency[number] / max(len(draws[-15:]), 1)
+        scored.append((number, zone_score * 0.45 + gap_score * 0.35 + frequency_score * 0.20))
+    return [number for number, _ in sorted(scored, key=lambda item: (-item[1], item[0]))]
+
+
+def _avg_top_hits(candidate_sets: list[list[int]], targets: list[list[int]]) -> float:
+    if not candidate_sets or not targets:
+        return 0.0
+    hits = [len(set(candidates[:10]) & set(target)) for candidates, target in zip(candidate_sets, targets)]
+    return round(sum(hits) / len(hits), 6) if hits else 0.0
+
+
+def pair_lag_validation(draws: list[dict[str, Any]], window: int = 60) -> dict[str, Any]:
+    if len(draws) < 25:
+        return {
+            "status": "disabled_by_validation",
+            "records_evaluated": 0,
+            "reason": "Insufficient history for pair-lag walk-forward validation.",
+        }
+
+    start = max(20, len(draws) - window)
+    pair_sets: list[list[int]] = []
+    frequency_sets: list[list[int]] = []
+    gap_sets: list[list[int]] = []
+    neutral_sets: list[list[int]] = []
+    targets: list[list[int]] = []
+
+    for index in range(start, len(draws)):
+        pre = draws[:index]
+        if len(pre) < 2:
+            continue
+        target = draws[index]["numbers"]
+        pair_scores = pair_lag_scores(pre[:-1], pre[-1]["numbers"])
+        pair_rank = [
+            number
+            for number, row in sorted(
+                pair_scores.items(),
+                key=lambda item: (-float(item[1].get("score", 0.0)), item[0]),
+            )
+        ]
+        if not pair_rank:
+            continue
+        pair_sets.append(pair_rank[:10])
+        frequency_sets.append(_rank_by_recent_frequency(pre)[:10])
+        gap_sets.append(_rank_by_gap_echo(pre)[:10])
+        neutral_sets.append(_rank_by_neutral_visual(pre)[:10])
+        targets.append(target)
+
+    pair_hits = _avg_top_hits(pair_sets, targets)
+    frequency_hits = _avg_top_hits(frequency_sets, targets)
+    gap_hits = _avg_top_hits(gap_sets, targets)
+    neutral_hits = _avg_top_hits(neutral_sets, targets)
+    best_baseline = max(frequency_hits, gap_hits, neutral_hits)
+    edge = round(pair_hits - best_baseline, 6)
+
+    if not targets or pair_hits <= 0:
+        status = "disabled_by_validation"
+        reason = "Pair-lag candidates produced no positive walk-forward contribution."
+    elif edge > 0.02:
+        status = "promoter"
+        reason = "Pair-lag outperformed the simple candidate baselines in walk-forward validation."
+    else:
+        status = "support_only"
+        reason = "Pair-lag had evidence but did not beat the simple candidate baselines."
+
+    return {
+        "status": status,
+        "records_evaluated": len(targets),
+        "pair_lag_top10_avg_hits": pair_hits,
+        "recent_frequency_top10_avg_hits": frequency_hits,
+        "gap_echo_top10_avg_hits": gap_hits,
+        "neutral_visual_top10_avg_hits": neutral_hits,
+        "pair_lag_minus_best_baseline": edge,
+        "reason": reason,
     }
 
 
@@ -136,6 +262,8 @@ def build_visual_features(
     activation = zone_activation(draws)
     z_scores = recent_z_scores(draws)
     pair_scores = pair_lag_scores(draws[:-1], latest["numbers"])
+    pair_validation = pair_lag_validation(draws)
+    pair_lag_mode = pair_validation.get("status", "disabled_by_validation")
     latest_numbers = set(latest["numbers"])
 
     candidates: list[dict[str, Any]] = []
@@ -145,20 +273,25 @@ def build_visual_features(
         gap_score, gap_reason = gap_echo_score(draws, number)
         pair = pair_scores.get(number, {"score": 0.0, "strong": False, "hit_rate": 0.0, "triggers": 0})
         block = _block_name(number)
-        zone_score = activation.get(block, 0.0)
-        block_score = 1.0 if zone_score >= 0.40 or z_scores[number] > 2 or pair.get("strong") else _clamp(zone_score * 2)
-        carryover_penalty = 0.22 if number in latest_numbers and not pair.get("strong") and gap_score < 0.70 else 0.0
-        cold_score = 0.20 if _current_gap(draws, number) >= 18 and (pair.get("strong") or zone_score >= 0.25) else 0.0
+        zone_score = _activation_metric(activation, block, "unique_activation")
+        hit_density = _activation_metric(activation, block, "hit_density")
+        generic_bridge_support = bool(pair.get("strong") and zone_score >= 0.40 and (gap_score >= 0.35 or number not in latest_numbers))
+        block_score = 1.0 if zone_score >= 0.40 or z_scores[number] > 2 or generic_bridge_support else _clamp(zone_score * 1.5)
+        carryover_penalty = 0.22 if number in latest_numbers and not generic_bridge_support and gap_score < 0.70 else 0.0
+        cold_score = 0.20 if _current_gap(draws, number) >= 18 and (generic_bridge_support or zone_score >= 0.35) else 0.0
 
-        if pair.get("strong"):
+        if generic_bridge_support and pair_lag_mode == "promoter":
             roles.append("bridge_pair_lag")
             reasons.append(
-                f"Strong pair-lag bridge from {pair.get('best_trigger')} to {number}: "
+                f"Validated pair-lag bridge from {pair.get('best_trigger')} to {number}: "
                 f"{pair.get('hits')}/{pair.get('triggers')} within lag <= 3."
             )
-        if zone_score >= 0.18:
+        elif pair.get("strong") and pair_lag_mode == "support_only":
+            roles.append("support")
+            reasons.append("Pair-lag evidence downgraded to support by walk-forward validation.")
+        if zone_score >= 0.40:
             roles.append("activated_block")
-            reasons.append(f"Located inside activated {block} block.")
+            reasons.append(f"Located inside activated {block} block by unique activation.")
         if block_score >= 0.70:
             roles.append("block_completion")
         if gap_reason:
@@ -173,15 +306,13 @@ def build_visual_features(
 
         visual_score = (
             gap_score * 0.22
-            + float(pair.get("score", 0.0)) * 0.34
-            + zone_score * 1.10
+            + float(pair.get("score", 0.0)) * (0.34 if pair_lag_mode == "promoter" else 0.12 if pair_lag_mode == "support_only" else 0.02)
+            + zone_score * 0.95
+            + hit_density * 0.20
             + block_score * 0.16
             + cold_score
             - carryover_penalty
         )
-        if number == 27:
-            visual_score += 0.06
-            reasons.append("4217 learning: 27 is explicitly watched as pair-lag/block bridge candidate.")
         if not roles:
             roles.append("support")
         candidates.append(
@@ -193,6 +324,8 @@ def build_visual_features(
                     "gap_echo": gap_score,
                     "pair_lag": float(pair.get("score", 0.0)),
                     "zone_activation": zone_score,
+                    "unique_activation": zone_score,
+                    "hit_density": hit_density,
                     "block_completion": round(block_score, 6),
                     "carryover_penalty": carryover_penalty,
                     "cold_companion": cold_score,
@@ -214,6 +347,8 @@ def build_visual_features(
             "history_draws": len(draws),
         },
         "zone_activation": activation,
+        "pair_lag_validation": pair_validation,
+        "pair_lag_mode": pair_lag_mode,
         "top_visual_candidates": candidates[:30],
         "warnings": warnings,
     }

@@ -168,7 +168,7 @@
 
   function roleChips(roles) {
     if (!Array.isArray(roles) || !roles.length) return '<span class="taste-chip">support</span>';
-    return roles.slice(0, 3).map(role => `<span class="taste-chip">${esc(role)}</span>`).join('');
+    return roles.slice(0, 3).map(role => `<span class="taste-chip v43-role-chip v43-role-${esc(role).replace(/[^a-z0-9_-]/gi, '-')}">${esc(role)}</span>`).join('');
   }
 
   function renderV43HybridComposition(slate, visual, audit) {
@@ -179,44 +179,54 @@
     const warnings = Array.isArray(slate.warnings) ? slate.warnings : [];
     const validation = slate.validation_summary || {};
     const source = slate.source_policy || {};
+    const pairLagMode = source.pair_lag_mode || visual?.pair_lag_mode || 'support_only';
+    const zone = visual?.zone_activation || {};
+    const activeBlocks = Object.entries(zone)
+      .filter(([, row]) => Number(row?.unique_activation || 0) >= 0.40)
+      .map(([name, row]) => `${name} ${fmt(row?.unique_activation, 2)}`);
     return `
-      <article class="taste-card">
-        <div class="taste-card-heading">
+      <article class="taste-card v43-slate-card" id="v43-hybrid-slate">
+        <div class="taste-card-heading v43-slate-heading">
           <div>
             <p class="taste-eyebrow">V4.3 Hybrid Composition</p>
-            <h3>Slate por roles</h3>
+            <h3>Slate de revision rapida</h3>
+            <p class="v43-slate-subcopy">Capa separada para revisar composicion: no reemplaza el output oficial V4.2.</p>
           </div>
           <span class="taste-chip taste-chip-warn">${esc(slate.production_status || 'review_default')}</span>
         </div>
-        <div class="bento-status-grid mt-4">
+        <div class="v43-status-strip mt-4">
           <article class="taste-metric"><span>Tickets</span><b>${fmt(tickets.length, 0)}</b></article>
           <article class="taste-metric"><span>Modo</span><b>${esc(source.fallback_mode || visual?.mode || 'csv_plus_v42_signal')}</b></article>
           <article class="taste-metric"><span>Latest draw</span><b>${fmt(slate.latest_draw || visual?.latest_draw || audit?.history?.latest_draw, 0)}</b></article>
-          <article class="taste-metric"><span>Best hits WF</span><b>${fmt(validation.best_ticket_hits_per_draw, 2)}</b></article>
+          <article class="taste-metric"><span>Pair-lag</span><b>${esc(pairLagMode)}</b></article>
         </div>
-        <p class="mt-3 text-xs leading-5 text-slate-400">Review-default composition slate. Not a probability or guarantee. V4.2 remains an optional signal, not the ticket composer.</p>
-        <div class="grid gap-3 mt-4 lg:grid-cols-2">
+        <div class="v43-policy-strip">
+          <span>Review-default</span>
+          <span>V4.2 signal optional</span>
+          <span>Active blocks: ${esc(activeBlocks.join(' | ') || 'N/D')}</span>
+        </div>
+        <div class="v43-ticket-grid mt-4">
           ${tickets.map(ticket => {
             const roles = ticket.roles || {};
             return `
-              <section class="taste-panel-muted">
-                <div class="flex flex-wrap items-center justify-between gap-3">
+              <section class="v43-ticket-card">
+                <div class="v43-ticket-head">
                   <div>
                     <p class="taste-eyebrow">${esc(ticket.ticket_type || 'composition')}</p>
-                    <p class="text-sm text-slate-400">${esc(ticket.ticket_id || '')}</p>
+                    <p class="v43-ticket-id">${esc(ticket.ticket_id || '')}</p>
                   </div>
-                  <span class="taste-chip">${esc(ticket.composition?.sum || 'N/D')}</span>
+                  <span class="taste-chip">sum ${esc(ticket.composition?.sum || 'N/D')}</span>
                 </div>
-                <div class="mt-3">${comboBalls(ticket.numbers)}</div>
-                <div class="mt-3 grid gap-2">
+                <div class="v43-ticket-numbers">${comboBalls(ticket.numbers)}</div>
+                <div class="v43-role-grid">
                   ${(Array.isArray(ticket.numbers) ? ticket.numbers : []).map(number => `
-                    <div class="flex flex-wrap items-center gap-2 text-xs text-slate-300">
-                      <b class="min-w-6 text-slate-100">${esc(number)}</b>
+                    <div class="v43-role-row">
+                      <b>${esc(number)}</b>
                       ${roleChips(roles[String(number)])}
                     </div>`).join('')}
                 </div>
-                <details class="mt-3 text-sm leading-6 text-slate-300">
-                  <summary class="cursor-pointer text-slate-200">Composition details</summary>
+                <details class="v43-ticket-details">
+                  <summary>Razonamiento</summary>
                   <p class="mt-2">${esc(ticket.reason || 'Role-composed ticket.')}</p>
                   <p class="mt-1">Blocks: ${esc(JSON.stringify(ticket.composition?.blocks || {}))}</p>
                   <p class="mt-1">Overlap previo: ${fmt(ticket.composition?.immediate_overlap_previous_draw, 0)}</p>
@@ -224,18 +234,19 @@
               </section>`;
           }).join('') || '<p class="text-sm text-slate-400">No V4.3 tickets available.</p>'}
         </div>
-        <div class="grid gap-3 mt-4 lg:grid-cols-3">
-          <section class="taste-panel-muted">
+        <div class="v43-support-grid mt-4">
+          <section class="taste-panel-muted v43-compact-panel">
             <p class="taste-eyebrow">Source policy</p>
             <p class="text-sm leading-6 text-slate-300">Primary: ${esc(source.primary_source || 'revancha.csv')}</p>
             <p class="text-sm leading-6 text-slate-300">V4.2 signal: ${source.v42_signal_available ? 'available' : 'not used'}</p>
           </section>
-          <section class="taste-panel-muted">
+          <section class="taste-panel-muted v43-compact-panel">
             <p class="taste-eyebrow">Validation</p>
+            <p class="text-sm leading-6 text-slate-300">Best hits WF: ${fmt(validation.best_ticket_hits_per_draw, 2)}</p>
             <p class="text-sm leading-6 text-slate-300">Avg hits/ticket: ${fmt(validation.avg_hits_per_ticket, 2)}</p>
             <p class="text-sm leading-6 text-slate-300">GE2 rate: ${fmt(validation.hit_ge_2_rate, 3)}</p>
           </section>
-          <section class="taste-panel-muted">
+          <section class="taste-panel-muted v43-compact-panel">
             <p class="taste-eyebrow">Warnings</p>
             <p class="text-sm leading-6 text-slate-300">${warnings.slice(0, 2).map(item => esc(item)).join(' | ') || 'Sin warnings V4.3.'}</p>
           </section>

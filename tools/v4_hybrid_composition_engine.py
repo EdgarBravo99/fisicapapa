@@ -9,7 +9,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-from v4_visual_pattern_features import gap_echo_score, pair_lag_scores, recent_z_scores, zone_activation
+from v4_visual_pattern_features import gap_echo_score, pair_lag_scores, pair_lag_validation, recent_z_scores, zone_activation
 from v4_winner_composition_audit import (
     BLOCKS,
     DRAW_SIZE,
@@ -24,7 +24,7 @@ from v4_winner_composition_audit import (
 
 ENGINE_VERSION = "V4.3-hybrid-composition"
 PRODUCTION_STATUS = "review_default"
-DISCLAIMER = "Experimental composition ranking, not probability or guarantee."
+DISCLAIMER = "Experimental composition ranking for review only."
 TICKET_TYPES = [
     "composition_main",
     "activated_block_main",
@@ -55,7 +55,24 @@ def _avg(values: list[float]) -> float:
     return round(sum(values) / len(values), 6) if values else 0.0
 
 
-def _candidate_rows_from_draws(draws: list[dict[str, Any]], ranking: list[int] | None = None) -> list[dict[str, Any]]:
+def _activation_metric(activation: dict[str, Any], block: str, key: str) -> float:
+    row = activation.get(block, {})
+    if isinstance(row, dict):
+        try:
+            return float(row.get(key, 0.0) or 0.0)
+        except (TypeError, ValueError):
+            return 0.0
+    try:
+        return float(row or 0.0)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def _candidate_rows_from_draws(
+    draws: list[dict[str, Any]],
+    ranking: list[int] | None = None,
+    pair_lag_mode: str | None = None,
+) -> list[dict[str, Any]]:
     if not draws:
         return []
     ranking = ranking or []
@@ -63,6 +80,9 @@ def _candidate_rows_from_draws(draws: list[dict[str, Any]], ranking: list[int] |
     activation = zone_activation(draws)
     z_scores = recent_z_scores(draws)
     pair_scores = pair_lag_scores(draws[:-1], latest["numbers"])
+    if pair_lag_mode is None:
+        pair_validation = pair_lag_validation(draws)
+        pair_lag_mode = str(pair_validation.get("status", "disabled_by_validation"))
     latest_numbers = set(latest["numbers"])
     rows: list[dict[str, Any]] = []
     frequency = Counter(number for draw in draws[-15:] for number in draw["numbers"])
@@ -73,18 +93,23 @@ def _candidate_rows_from_draws(draws: list[dict[str, Any]], ranking: list[int] |
         gap_score, gap_reason = gap_echo_score(draws, number)
         pair = pair_scores.get(number, {"score": 0.0, "strong": False, "hit_rate": 0.0, "triggers": 0, "hits": 0})
         block = _block_name(number)
-        zone_score = activation.get(block, 0.0)
-        block_score = 1.0 if zone_score >= 0.40 or z_scores[number] > 2 or pair.get("strong") else min(zone_score * 2, 1.0)
-        carryover_penalty = 0.22 if number in latest_numbers and not pair.get("strong") and gap_score < 0.70 else 0.0
-        cold_score = 0.20 if frequency[number] <= 1 and len(draws) >= 18 and (pair.get("strong") or zone_score >= 0.20) else 0.0
+        zone_score = _activation_metric(activation, block, "unique_activation")
+        hit_density = _activation_metric(activation, block, "hit_density")
+        generic_bridge_support = bool(pair.get("strong") and zone_score >= 0.40 and (gap_score >= 0.35 or number not in latest_numbers))
+        block_score = 1.0 if zone_score >= 0.40 or z_scores[number] > 2 or generic_bridge_support else min(zone_score * 1.5, 1.0)
+        carryover_penalty = 0.22 if number in latest_numbers and not generic_bridge_support and gap_score < 0.70 else 0.0
+        cold_score = 0.20 if frequency[number] <= 1 and len(draws) >= 18 and (generic_bridge_support or zone_score >= 0.35) else 0.0
         support_score = frequency[number] / max(len(draws[-15:]), 1)
 
-        if pair.get("strong"):
+        if generic_bridge_support and pair_lag_mode == "promoter":
             roles.add("bridge_pair_lag")
-            reasons.append(f"Pair-lag bridge from {pair.get('best_trigger')} with {pair.get('hits')}/{pair.get('triggers')} lag hits.")
-        if zone_score >= 0.18:
+            reasons.append(f"Validated pair-lag bridge from {pair.get('best_trigger')} with {pair.get('hits')}/{pair.get('triggers')} lag hits.")
+        elif pair.get("strong") and pair_lag_mode == "support_only":
+            roles.add("support")
+            reasons.append("Pair-lag evidence downgraded to support by walk-forward validation.")
+        if zone_score >= 0.40:
             roles.add("activated_block")
-            reasons.append(f"Active block {block} in recent window.")
+            reasons.append(f"Active block {block} by recent unique activation.")
         if block_score >= 0.70:
             roles.add("block_completion")
         if gap_reason:
@@ -99,8 +124,9 @@ def _candidate_rows_from_draws(draws: list[dict[str, Any]], ranking: list[int] |
             roles.add("support")
 
         score = (
-            float(pair.get("score", 0.0)) * 0.36
-            + zone_score * 1.05
+            float(pair.get("score", 0.0)) * (0.36 if pair_lag_mode == "promoter" else 0.12 if pair_lag_mode == "support_only" else 0.02)
+            + zone_score * 0.92
+            + hit_density * 0.18
             + block_score * 0.17
             + gap_score * 0.18
             + support_score * 0.18
@@ -116,6 +142,8 @@ def _candidate_rows_from_draws(draws: list[dict[str, Any]], ranking: list[int] |
                     "gap_echo": gap_score,
                     "pair_lag": float(pair.get("score", 0.0)),
                     "zone_activation": zone_score,
+                    "unique_activation": zone_score,
+                    "hit_density": hit_density,
                     "block_completion": round(block_score, 6),
                     "carryover_penalty": carryover_penalty,
                     "cold_companion": cold_score,
@@ -225,7 +253,7 @@ def _ticket(
         "reason": reason,
         "risk_notes": [
             "Review-default composition slate.",
-            "Not a probability estimate.",
+            "Outcome-neutral review layer.",
         ],
     }
 
@@ -327,7 +355,7 @@ def _pattern_match(ticket: list[int], target: list[int]) -> bool:
     return sum(abs(ticket_blocks[key] - target_blocks[key]) for key in BLOCKS) <= 4
 
 
-def walk_forward_validation(draws: list[dict[str, Any]], ranking: list[int]) -> dict[str, Any]:
+def walk_forward_validation(draws: list[dict[str, Any]], ranking: list[int], pair_lag_mode: str | None = None) -> dict[str, Any]:
     if len(draws) < 35:
         return {"available": False, "reason": "insufficient history for walk-forward validation"}
     start = max(30, len(draws) - 60)
@@ -343,7 +371,7 @@ def walk_forward_validation(draws: list[dict[str, Any]], ranking: list[int]) -> 
     for index in range(start, len(draws)):
         pre = draws[:index]
         target = draws[index]["numbers"]
-        rows = _candidate_rows_from_draws(pre, ranking)
+        rows = _candidate_rows_from_draws(pre, ranking, pair_lag_mode=pair_lag_mode)
         slate = compose_slate_from_rows(rows, pre[-1]["numbers"])
         if not slate:
             continue
@@ -401,7 +429,8 @@ def build_slate(
     ranking, v42_available, v42_warning = load_v42_ranking(resultados_path)
     audit = _load_json(audit_path)
     visual = _load_json(visual_path)
-    rows = _merge_visual_rows(visual, _candidate_rows_from_draws(draws, ranking))
+    pair_lag_mode = visual.get("pair_lag_mode") if isinstance(visual, dict) else pair_lag_validation(draws).get("status")
+    rows = _merge_visual_rows(visual, _candidate_rows_from_draws(draws, ranking, pair_lag_mode=pair_lag_mode))
     slate = compose_slate_from_rows(rows, draws[-1]["numbers"])
     warnings = []
     if v42_warning:
@@ -410,7 +439,7 @@ def build_slate(
         warnings.append("Composition audit not available; engine used direct CSV features.")
     if visual is None:
         warnings.append("Visual pattern output not available; engine recomputed direct CSV features.")
-    validation = walk_forward_validation(draws, ranking)
+    validation = walk_forward_validation(draws, ranking, pair_lag_mode=pair_lag_mode)
 
     return {
         "generated_at": utc_now(),
@@ -420,6 +449,7 @@ def build_slate(
             "v42_signal_available": v42_available,
             "v42_signal_used_as": "auxiliary_optional" if v42_available else "not_used",
             "fallback_mode": None if v42_available else "csv_visual_composition_only",
+            "pair_lag_mode": pair_lag_mode,
         },
         "production_status": PRODUCTION_STATUS,
         "disclaimer": DISCLAIMER,
