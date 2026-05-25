@@ -29,12 +29,12 @@ TICKET_TYPES = [
     "composition_main",
     "activated_block_main",
     "pair_lag_bridge",
+    "pair_lag_support",
+    "visual_support",
     "balanced_hybrid",
     "contrarian_controlled",
     "cold_companion_high_edge",
 ]
-FORBIDDEN_LANGUAGE = ("guaranteed", "probability_model", "winning_model", "winning chance")
-
 
 def _block_name(number: int) -> str:
     for name, values in BLOCKS.items():
@@ -258,6 +258,14 @@ def _ticket(
     }
 
 
+def _pair_lag_ticket_type(pair_lag_mode: str | None) -> str:
+    if pair_lag_mode == "promoter":
+        return "pair_lag_bridge"
+    if pair_lag_mode == "support_only":
+        return "pair_lag_support"
+    return "visual_support"
+
+
 def _unique_text(values: list[str]) -> list[str]:
     output: list[str] = []
     for value in values:
@@ -266,7 +274,11 @@ def _unique_text(values: list[str]) -> list[str]:
     return output
 
 
-def compose_slate_from_rows(rows: list[dict[str, Any]], previous_draw: list[int]) -> list[dict[str, Any]]:
+def compose_slate_from_rows(
+    rows: list[dict[str, Any]],
+    previous_draw: list[int],
+    pair_lag_mode: str | None = None,
+) -> list[dict[str, Any]]:
     previous_numbers = set(previous_draw)
     role_index = _role_index(rows)
     top = [row["number"] for row in rows]
@@ -277,11 +289,12 @@ def compose_slate_from_rows(rows: list[dict[str, Any]], previous_draw: list[int]
     gap = role_index.get("gap_echo", [])
     cold = role_index.get("cold_companion", [])
     v42 = role_index.get("v42_signal_optional", [])
+    pair_ticket_type = _pair_lag_ticket_type(pair_lag_mode)
 
     seeds = [
         ("composition_main", _unique((bridge[:2] + focus_numbers[:2] + gap[:1] + cold[:1] + top[:6]))),
         ("activated_block_main", _unique((focus_numbers[:3] + bridge[:2] + top[:6]))),
-        ("pair_lag_bridge", _unique((bridge[:3] + gap[:2] + focus_numbers[:2] + top[:6]))),
+        (pair_ticket_type, _unique((bridge[:3] + gap[:2] + focus_numbers[:2] + top[:6]))),
         ("balanced_hybrid", _unique((top[:2] + focus_numbers[:2] + gap[:1] + v42[:1] + cold[:1] + top[:10]))),
         ("contrarian_controlled", _unique((cold[:1] + gap[:2] + bridge[:1] + top[8:18] + top[:6]))),
         ("cold_companion_high_edge", _unique((cold[:2] + bridge[:2] + focus_numbers[:2] + top[:8]))),
@@ -310,7 +323,15 @@ def compose_slate_from_rows(rows: list[dict[str, Any]], previous_draw: list[int]
         )
     if len(tickets) < 5:
         used_types = {ticket["ticket_type"] for ticket in tickets}
-        for idx, ticket_type in enumerate(TICKET_TYPES, start=1):
+        fallback_types = [
+            "composition_main",
+            "activated_block_main",
+            pair_ticket_type,
+            "balanced_hybrid",
+            "contrarian_controlled",
+            "cold_companion_high_edge",
+        ]
+        for idx, ticket_type in enumerate(fallback_types, start=1):
             if ticket_type in used_types:
                 continue
             offset = min(idx * 5, max(len(rows) - 1, 0))
@@ -372,7 +393,7 @@ def walk_forward_validation(draws: list[dict[str, Any]], ranking: list[int], pai
         pre = draws[:index]
         target = draws[index]["numbers"]
         rows = _candidate_rows_from_draws(pre, ranking, pair_lag_mode=pair_lag_mode)
-        slate = compose_slate_from_rows(rows, pre[-1]["numbers"])
+        slate = compose_slate_from_rows(rows, pre[-1]["numbers"], pair_lag_mode=pair_lag_mode)
         if not slate:
             continue
         draw_best = 0
@@ -431,7 +452,7 @@ def build_slate(
     visual = _load_json(visual_path)
     pair_lag_mode = visual.get("pair_lag_mode") if isinstance(visual, dict) else pair_lag_validation(draws).get("status")
     rows = _merge_visual_rows(visual, _candidate_rows_from_draws(draws, ranking, pair_lag_mode=pair_lag_mode))
-    slate = compose_slate_from_rows(rows, draws[-1]["numbers"])
+    slate = compose_slate_from_rows(rows, draws[-1]["numbers"], pair_lag_mode=pair_lag_mode)
     warnings = []
     if v42_warning:
         warnings.append(v42_warning)

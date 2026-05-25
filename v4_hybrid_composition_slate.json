@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-25T07:00:19.872366+00:00",
+  "generated_at": "2026-05-25T07:14:04.770050+00:00",
   "engine_version": "V4.3-hybrid-composition",
   "source_policy": {
     "primary_source": "revancha.csv",
@@ -306,8 +306,8 @@
       ]
     },
     {
-      "ticket_id": "pair_lag_bridge_3",
-      "ticket_type": "pair_lag_bridge",
+      "ticket_id": "pair_lag_support_3",
+      "ticket_type": "pair_lag_support",
       "numbers": [
         14,
         16,

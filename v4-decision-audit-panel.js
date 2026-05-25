@@ -266,7 +266,7 @@
             <p class="taste-eyebrow">Diversidad de combinaciones</p>
             <h3>Ranking diversificado</h3>
           </div>
-          <span class="taste-chip taste-chip-warn">No es probabilidad de ganar</span>
+          <span class="taste-chip taste-chip-warn">revision diagnostica</span>
         </div>
         <div class="bento-status-grid mt-4">
           <article class="taste-metric"><span>Overlap original</span><b>${fmt(data.average_pairwise_jaccard_original, 3)}</b></article>
@@ -284,7 +284,7 @@
               <div class="mt-3">${comboBalls(combo.numbers)}</div>
             </div>`).join('')}
         </div>
-        <p class="mt-3 text-xs leading-5 text-slate-400">${esc((data.quality_notes || []).join(' ') || 'Ranking diversificado. No es probabilidad de ganar.')}</p>
+        <p class="mt-3 text-xs leading-5 text-slate-400">${esc((data.quality_notes || []).join(' ') || 'Ranking diversificado para revision diagnostica.')}</p>
       </article>`;
   }
 
@@ -346,7 +346,7 @@
           <div class="taste-panel-muted"><p class="taste-eyebrow">Frecuencia</p><p class="text-sm text-slate-300">${baselineStatus(baselines.frequency_baseline, 'Sin baseline de frecuencia')}</p></div>
           <div class="taste-panel-muted"><p class="taste-eyebrow">Recencia</p><p class="text-sm text-slate-300">${baselineStatus(baselines.recency_baseline, 'Sin baseline de recencia')}</p></div>
         </div>
-        <p class="mt-3 text-xs leading-5 text-slate-400">Benchmark diagnostico. No activa prior. Brier desactivado: ${esc(data.experimental_brier?.reason || 'Scores internos no son probabilidades calibradas.')}</p>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Benchmark diagnostico. No activa prior. Brier desactivado: ${esc(data.experimental_brier?.reason || 'Scores internos no tienen calibracion real.')}</p>
       </article>`;
   }
 
@@ -382,7 +382,7 @@
           <p class="taste-eyebrow">Lectura</p>
           <p class="text-sm leading-6 text-slate-300">${esc(summary?.reason || calibration?.reason || 'Benchmark endurecido pendiente de datos suficientes.')}</p>
         </div>
-        <p class="mt-3 text-xs leading-5 text-slate-400">Benchmark endurecido. No activa prior. Scores internos no son probabilidades. Ventaja sobre baseline requiere estabilidad, no solo una muestra.</p>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Benchmark endurecido. No activa prior. Scores internos son ranking de revision. Ventaja sobre baseline requiere estabilidad, no solo una muestra.</p>
       </article>`;
   }
 
@@ -451,7 +451,7 @@
           <p class="taste-eyebrow">Lectura</p>
           <p class="text-sm leading-6 text-slate-300">${esc(summary?.reason || 'Experimento pendiente de datos.')}</p>
         </div>
-        <p class="mt-3 text-xs leading-5 text-slate-400">Experimento de reparacion de ranking. No modifica el motor. Este experimento no activa prior ni cambia resultados oficiales. Una mejora diagnostica no equivale a probabilidad de ganar. Accion: ${esc(summary?.recommended_next_action || 'diagnostic_only')}</p>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Experimento de reparacion de ranking. No modifica el motor. Este experimento no activa prior ni cambia resultados oficiales. Una mejora diagnostica no equivale a autorizacion operativa. Accion: ${esc(summary?.recommended_next_action || 'diagnostic_only')}</p>
       </article>`;
   }
 
@@ -535,7 +535,7 @@
 
   function renderPostRankingControlledLayer(summary, layer, comparison, futureLog) {
     if (!summary && !layer && !comparison && !futureLog) {
-      return emptyCard('Post-Ranking Controlled Layer', 'Sin capa controlada. Review-only. Does not replace official V4.2 output. Not a probability of winning.');
+      return emptyCard('Post-Ranking Controlled Layer', 'Sin capa controlada. Review-only. Does not replace official V4.2 output. Outcome-neutral review view.');
     }
     const controlledStatus = summary?.controlled_layer_status || layer?.status || 'blocked';
     const overlap = comparison?.overlap || {};
@@ -550,8 +550,8 @@
           <span class="taste-chip taste-chip-warn">${summary?.usable_in_app ? 'review_only' : 'bloqueada'}</span>
         </div>
         <p class="mt-3 text-sm leading-6 text-slate-300">Controlled post-ranking layer. Review-only. Does not replace official V4.2 output.</p>
-        <p class="text-sm leading-6 text-slate-300">Production ready remains false. Replay prior remains blocked. Not a probability of winning.</p>
-        <p class="mt-2 text-sm leading-6 text-slate-300">Review-only. Does not replace official V4.2 output. Not a probability of winning.</p>
+        <p class="text-sm leading-6 text-slate-300">Production ready remains false. Replay prior remains blocked. Outcome-neutral review view.</p>
+        <p class="mt-2 text-sm leading-6 text-slate-300">Review-only. Does not replace official V4.2 output.</p>
         <div class="grid gap-4 mt-4 lg:grid-cols-2">
           <section class="taste-panel-muted">
             <p class="taste-eyebrow">Official V4.2 Output</p>
@@ -712,7 +712,7 @@
 
   function renderSlate(data) {
     if (!data) {
-      return emptyCard('Decision Slate', 'Sin v4_decision_slate.json. Set de revision diagnostico. No es probabilidad de ganar.');
+      return emptyCard('Decision Slate', 'Sin v4_decision_slate.json. Set de revision diagnostico.');
     }
     const balanced = data.review_sets?.balanced_review_set;
     const rows = Array.isArray(balanced) ? balanced : [];
@@ -736,7 +736,7 @@
               <div class="mt-3">${comboBalls(row.numbers)}</div>
             </div>`).join('') || '<p class="text-sm text-slate-400">Sin slate disponible.</p>'}
         </div>
-        <p class="mt-3 text-xs leading-5 text-slate-400">Set de revision diagnostico. No es probabilidad de ganar. ${esc(warnings.join(' ') || data.language_guardrail)}</p>
+        <p class="mt-3 text-xs leading-5 text-slate-400">Set de revision diagnostico. ${esc(warnings.join(' ') || 'Revision read-only.')}</p>
       </article>`;
   }
 

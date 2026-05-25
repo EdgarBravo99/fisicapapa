@@ -174,11 +174,22 @@ def build_audit(
 
     recent = history[-5:]
     recent_block_hits: dict[str, int] = defaultdict(int)
+    recent_unique_seen: dict[str, set[int]] = {name: set() for name in BLOCKS}
     for draw in recent:
         for name, count in block_counts(draw["numbers"]).items():
             recent_block_hits[name] += count
+        for number in draw["numbers"]:
+            for name, values in BLOCKS.items():
+                if number in values:
+                    recent_unique_seen[name].add(number)
+                    break
     recent_activation = {
-        name: round(recent_block_hits[name] / max(len(recent) * len(list(BLOCKS[name])), 1), 6)
+        name: {
+            "unique_activation": round(len(recent_unique_seen[name]) / max(len(list(BLOCKS[name])), 1), 6),
+            "hit_density": round(recent_block_hits[name] / max(len(recent) * len(list(BLOCKS[name])), 1), 6),
+            "unique_seen": len(recent_unique_seen[name]),
+            "total_hits": recent_block_hits[name],
+        }
         for name in BLOCKS
     }
 
@@ -212,7 +223,7 @@ def build_audit(
             "activated_blocks": {
                 "recent_window_draws": len(recent),
                 "recent_activation": recent_activation,
-                "active_blocks": [name for name, score in recent_activation.items() if score >= 0.40],
+                "active_blocks": [name for name, row in recent_activation.items() if row["unique_activation"] >= 0.40],
             },
             "v42_ranking_distribution": dict(v42_buckets.most_common()) if v42_available else {},
         },

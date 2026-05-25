@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-25T06:59:59.708031+00:00",
+  "generated_at": "2026-05-25T07:13:49.901502+00:00",
   "source": {
     "revancha_csv": "revancha.csv",
     "resultados_json_available": false,
@@ -88,13 +88,42 @@
     "activated_blocks": {
       "recent_window_draws": 5,
       "recent_activation": {
-        "1_10": 0.1,
-        "11_20": 0.1,
-        "21_30": 0.14,
-        "31_40": 0.06,
-        "41_56": 0.125
+        "1_10": {
+          "unique_activation": 0.3,
+          "hit_density": 0.1,
+          "unique_seen": 3,
+          "total_hits": 5
+        },
+        "11_20": {
+          "unique_activation": 0.4,
+          "hit_density": 0.1,
+          "unique_seen": 4,
+          "total_hits": 5
+        },
+        "21_30": {
+          "unique_activation": 0.6,
+          "hit_density": 0.14,
+          "unique_seen": 6,
+          "total_hits": 7
+        },
+        "31_40": {
+          "unique_activation": 0.2,
+          "hit_density": 0.06,
+          "unique_seen": 2,
+          "total_hits": 3
+        },
+        "41_56": {
+          "unique_activation": 0.4375,
+          "hit_density": 0.125,
+          "unique_seen": 7,
+          "total_hits": 10
+        }
       },
-      "active_blocks": []
+      "active_blocks": [
+        "11_20",
+        "21_30",
+        "41_56"
+      ]
     },
     "v42_ranking_distribution": {}
   },

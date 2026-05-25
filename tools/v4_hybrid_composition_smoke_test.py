@@ -97,6 +97,26 @@ def main() -> int:
         assert isinstance(row, dict), "zone activation must expose separate metrics"
         assert "unique_activation" in row and "hit_density" in row
 
+    audit = _load("v4_winner_composition_audit.json")
+    audit_blocks = set(audit.get("composition_profile", {}).get("activated_blocks", {}).get("active_blocks", []))
+    visual_blocks = {
+        name
+        for name, row in zone_activation.items()
+        if float(row.get("unique_activation", 0.0) or 0.0) >= 0.40
+    }
+    assert audit_blocks == visual_blocks, f"audit/visual active blocks differ: {audit_blocks} vs {visual_blocks}"
+
+    ticket_types = {ticket.get("ticket_type") for ticket in tickets}
+    pair_lag_mode = visual.get("pair_lag_mode")
+    if pair_lag_mode == "promoter":
+        assert "pair_lag_bridge" in ticket_types
+    elif pair_lag_mode == "support_only":
+        assert "pair_lag_bridge" not in ticket_types
+        assert "pair_lag_support" in ticket_types
+    else:
+        assert "pair_lag_bridge" not in ticket_types
+        assert "visual_support" in ticket_types
+
     with tempfile.TemporaryDirectory() as tmp:
         invalid = Path(tmp) / "bad_resultados.json"
         invalid.write_text("{\n<<<<<<< bad\n", encoding="utf-8")
