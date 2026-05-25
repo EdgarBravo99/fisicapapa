@@ -61,6 +61,47 @@
     throw new Error(message);
   }
 
+  function parseJsonText(rawText, label, url) {
+    const raw = String(rawText ?? '');
+    const cleaned = raw.replace(/^\uFEFF/, '').trim();
+
+    if (!cleaned) {
+      throw new Error(`${label} llegó vacío. URL: ${url}`);
+    }
+
+    if (cleaned[0] === '<') {
+      throw new Error(
+        `${label} no parece JSON; parece HTML o una respuesta de error. ` +
+        `URL: ${url}. Preview: ${cleaned.slice(0, 240).replace(/\s+/g, ' ')}`
+      );
+    }
+
+    try {
+      return JSON.parse(cleaned);
+    } catch (err) {
+      const preview = cleaned.slice(0, 240).replace(/\s+/g, ' ');
+      throw new Error(
+        `No se pudo parsear ${label}. ${err.message}. ` +
+        `URL: ${url}. Preview recibido: ${preview}`
+      );
+    }
+  }
+
+  async function fetchJsonFile(path, label, queryKey = 'v42') {
+    const url = `${path}?${queryKey}=${Date.now()}`;
+    const response = await fetch(url, {
+      cache: 'no-store',
+      headers: { 'Accept': 'application/json,text/plain,*/*' },
+    });
+
+    if (!response.ok) {
+      throw new Error(`No se pudo cargar ${label}. HTTP ${response.status}. URL: ${url}`);
+    }
+
+    const rawText = await response.text();
+    return parseJsonText(rawText, label, url);
+  }
+
   function validateV42(jsonData) {
     if (!jsonData || typeof jsonData !== 'object') fatal('resultados.json no contiene un objeto JSON válido. La Web V2 solo acepta salidas V4.2.', jsonData);
     const feedback = getFeedbackLoop(jsonData);
@@ -389,9 +430,8 @@
 
   async function loadJsonAndInit() {
     hide($('fatal-error')); show($('loading-panel')); hide($('dashboard'));
-    const response = await fetch(`resultados.json?v42=${Date.now()}`, { cache: 'no-store' });
-    if (!response.ok) fatal(`No se pudo cargar resultados.json. HTTP ${response.status}.`, null);
-    const jsonData = await response.json(); initApp(jsonData);
+    const jsonData = await fetchJsonFile('resultados.json', 'resultados.json', 'v42');
+    initApp(jsonData);
   }
 
   function bindEvents() {

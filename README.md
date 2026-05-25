@@ -674,6 +674,50 @@ No modifica `resultados.json`, no modifica `v4_replay_memory.json`, no cambia sc
 
 `v4_future_unseen_validation_log.json` queda vacio a proposito. Solo debe recibir registros despues de sorteos reales futuros, y no puede usarse para generar predicciones actuales ni activar prior en PR #30.
 
+## V4.3 Hybrid Composition Engine
+
+V4.3 separa la senal del motor V4.2 de la composicion final de tickets. `revancha.csv` es la fuente primaria; `resultados.json` solo se usa como senal auxiliar si es JSON valido. Si falta, esta vacio, esta corrupto o contiene conflict markers, V4.3 continua en modo `csv_visual_composition_only` y escribe warnings en sus outputs.
+
+```powershell
+py .\tools\v4_winner_composition_audit.py
+py .\tools\v4_visual_pattern_features.py
+py .\tools\v4_hybrid_composition_engine.py
+py .\tools\v4_hybrid_composition_smoke_test.py
+```
+
+Outputs:
+
+```txt
+v4_winner_composition_audit.json
+v4_visual_pattern_output.json
+v4_hybrid_composition_slate.json
+```
+
+La salida principal `v4_hybrid_composition_slate.json` contiene 4 a 6 tickets maximos, todos con 6 numeros unicos, roles por numero, razones, resumen de composicion y `production_status = review_default`. No reemplaza `resultados.json`, no cambia `score_kind`, no activa priors y no modifica el motor base.
+
+El pase de produccion de PR #32 mantiene el aprendizaje 4217 como regla generica, no como boost fijo a un numero. La activacion de bloque usa `unique_activation` para decidir bloques activos y deja `hit_density` como metadata. La senal `pair_lag` se valida walk-forward contra frecuencia reciente, gap echo y candidatos visuales neutrales; si no supera esas referencias queda como `support_only` o `disabled_by_validation`, nunca como promotor duro.
+
+El panel `v4-decision-audit-panel.js` carga estos JSON como auxiliares opcionales. Si faltan o son invalidos, la web no se cae: muestra un estado pequeno de V4.3 no disponible. Los tickets se muestran como tarjetas compactas con role chips y detalles colapsables para mantener lectura rapida en movil.
+
+## V4.3 Refresh Runner
+
+`tools/v4_refresh.py` regenera los outputs V4.3 en orden y corre el smoke test operativo. Por ahora solo soporta Revancha.
+
+```powershell
+python tools/v4_refresh.py --game revancha
+```
+
+El runner ejecuta:
+
+```txt
+tools/v4_winner_composition_audit.py
+tools/v4_visual_pattern_features.py
+tools/v4_hybrid_composition_engine.py
+tools/v4_hybrid_composition_smoke_test.py
+```
+
+Si un paso falla, se detiene con exit code distinto de cero. Al terminar confirma que existen `v4_winner_composition_audit.json`, `v4_visual_pattern_output.json` y `v4_hybrid_composition_slate.json`, y resume `latest_draw`, `production_status`, `pair_lag_mode`, cantidad de tickets, `fallback_mode` y warnings.
+
 ## Legacy Snapshot Classifier
 
 `tools/v4_legacy_snapshot_classifier.py` clasifica snapshots antiguos para conservar diagnostico sin contaminar memoria aplicada.
