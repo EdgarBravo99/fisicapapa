@@ -101,30 +101,66 @@
         headers: { Accept: 'application/json,text/plain,*/*' },
       });
       if (!response.ok) {
-        return { path, ok: false, status: response.status, error: `HTTP ${response.status}`, ms: performance.now() - startedAt, data: null };
+        const preview = (await response.text()).replace(/^\uFEFF/, '').trim().slice(0, 80);
+        const lookedLikeHtml = preview.startsWith('<');
+        return {
+          path,
+          ok: false,
+          status: response.status,
+          error: `HTTP ${response.status}`,
+          lookedLikeHtml,
+          nonJson: lookedLikeHtml,
+          preview,
+          ms: performance.now() - startedAt,
+          data: null,
+        };
       }
       const raw = (await response.text()).replace(/^\uFEFF/, '').trim();
       if (!raw || raw[0] === '<') {
-        return { path, ok: false, status: response.status, error: raw ? 'non-JSON response' : 'empty response', ms: performance.now() - startedAt, data: null };
+        return {
+          path,
+          ok: false,
+          status: response.status,
+          error: raw ? 'non-JSON response' : 'empty response',
+          lookedLikeHtml: raw.startsWith('<'),
+          nonJson: Boolean(raw),
+          preview: raw.slice(0, 80),
+          ms: performance.now() - startedAt,
+          data: null,
+        };
       }
-      return { path, ok: true, status: response.status, error: null, ms: performance.now() - startedAt, data: JSON.parse(raw) };
+      try {
+        return { path, ok: true, status: response.status, error: null, lookedLikeHtml: false, nonJson: false, preview: '', ms: performance.now() - startedAt, data: JSON.parse(raw) };
+      } catch (err) {
+        return {
+          path,
+          ok: false,
+          status: response.status,
+          error: err?.message || String(err),
+          lookedLikeHtml: false,
+          nonJson: true,
+          preview: raw.slice(0, 80),
+          ms: performance.now() - startedAt,
+          data: null,
+        };
+      }
     } catch (err) {
-      return { path, ok: false, status: 0, error: err?.message || String(err), ms: performance.now() - startedAt, data: null };
+      return { path, ok: false, status: 0, error: err?.message || String(err), lookedLikeHtml: false, nonJson: false, preview: '', ms: performance.now() - startedAt, data: null };
     }
   }
 
   function expectedCommand(key, targetDraw) {
     const commands = {
-      slate: 'python tools/v4_refresh.py --game revancha --sync-history-from-pakin --export-visual-matrix --pair-companion-audit --snapshot-predraw',
-      pair: 'python tools/v4_pair_companion_audit.py',
-      postDraw: `python tools/v4_post_draw_audit.py --target-draw ${targetDraw || '<draw>'}`,
-      historySync: 'python tools/v4_history_sync_from_pakin.py --game revancha --dry-run',
-      winnerAudit: 'python tools/v4_winner_composition_audit.py',
-      visual: 'python tools/v4_visual_pattern_features.py',
-      matrix: 'python tools/v4_visual_matrix_export.py',
-      resultados: 'python local_cruncher_v4_2_calibrated.py',
+      slate: 'py tools\\v4_refresh.py --game revancha --sync-history-from-pakin --export-visual-matrix --pair-companion-audit --snapshot-predraw',
+      pair: 'py tools\\v4_refresh.py --game revancha --pair-companion-audit',
+      postDraw: `py tools\\v4_post_draw_audit.py --target-draw ${targetDraw || '<draw>'}`,
+      historySync: 'py tools\\v4_history_sync_from_pakin.py --game revancha',
+      winnerAudit: 'py tools\\v4_refresh.py --game revancha',
+      visual: 'py tools\\v4_refresh.py --game revancha --export-visual-matrix',
+      matrix: 'py tools\\v4_refresh.py --game revancha --export-visual-matrix',
+      resultados: 'py local_cruncher_v4_2_calibrated.py',
     };
-    return commands[key] || 'python tools/v4_refresh.py --game revancha';
+    return commands[key] || 'py tools\\v4_refresh.py --game revancha';
   }
 
   function inferTargetDraw(data) {
@@ -148,6 +184,25 @@
     return CRITICAL_SOURCE_KEYS
       .filter(key => !state.sources[key]?.ok)
       .map(key => FILES[key]);
+  }
+
+  function renderSourceLoadErrors() {
+    const failed = Object.entries(state.sources).filter(([, source]) => !source.ok);
+    if (!failed.length) return '';
+    return `
+      <div class="cockpit-panel cockpit-panel-wide">
+        <h3>Source load errors</h3>
+        <ul>
+          ${failed.map(([key, source]) => `
+            <li>
+              <b>${esc(source.path || FILES[key] || key)}</b>
+              <span>HTTP ${esc(source.status || 'not available')}</span>
+              <span>${esc(source.error || 'not available')}</span>
+              <span>${source.lookedLikeHtml || source.nonJson ? 'non-JSON or HTML-like response' : 'fetch/load error'}</span>
+              ${source.preview ? `<code>${esc(source.preview)}</code>` : ''}
+            </li>`).join('')}
+        </ul>
+      </div>`;
   }
 
   function emptyState(section, filename, command) {
@@ -263,8 +318,9 @@
     const auditSnapshot = postDraw?.leakage_check ? `Audit leakage: ${clean(postDraw.leakage_check.status)}` : 'Audit not loaded';
     const currentPairLagMode = pairLagMode(data);
     const missingCritical = missingCriticalSources();
+    const slateRefreshCommand = expectedCommand('slate');
     const slateMissingNote = !state.sources.slate?.ok
-      ? '<p class="cockpit-note">Missing v4_hybrid_composition_slate.json. Run: python tools/v4_refresh.py --game revancha --sync-history-from-pakin --export-visual-matrix --pair-companion-audit --snapshot-predraw</p>'
+      ? `<p class="cockpit-note">Missing v4_hybrid_composition_slate.json. Run: ${esc(slateRefreshCommand)}</p>`
       : '';
     const pairLagNote = currentPairLagMode === 'not loaded'
       ? '<p class="cockpit-note">Pair-lag mode comes from v4_visual_pattern_output.json or v4_hybrid_composition_slate.json.</p>'
@@ -296,6 +352,7 @@
         </div>
         ${slateMissingNote}
         ${pairLagNote}
+        ${renderSourceLoadErrors()}
       </section>`;
   }
 
@@ -438,7 +495,7 @@
             <strong>No post-draw audit available.</strong>
             <span>To audit draw ${esc(targetDraw || '<draw>')}:</span>
             <code>1. Add official result to revancha.csv</code>
-            <code>2. Run: python tools/v4_post_draw_audit.py --target-draw ${esc(targetDraw || '<draw>')}</code>
+            <code>2. Run: ${esc(expectedCommand('postDraw', targetDraw))}</code>
             <code>3. Refresh this page.</code>
           </article>
         </section>`;
