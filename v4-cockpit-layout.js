@@ -17,37 +17,38 @@
   };
 
   const ROLE_LABELS = {
-    activated_block: 'Active block',
-    block_completion: 'Block fill',
+    activated_block: 'Bloque activo',
+    block_completion: 'Relleno de bloque',
     bridge_pair_lag: 'Pair-lag',
-    pair_lag_support: 'Pair support',
+    pair_lag_support: 'Soporte de par',
     co_travel_companion: 'Co-travel',
-    block_bridge_pair: 'Bridge pair',
+    block_bridge_pair: 'Par puente',
     harmonic_cluster: 'Cluster',
-    anti_pair_risk: 'Warning: Anti-pair',
-    cold_companion: 'Cold',
-    gap_echo: 'Gap echo',
-    v42_signal_optional: 'V4.2 signal',
-    contrarian_controlled: 'Contrarian',
-    sum_band_guardrail: 'Sum guard',
-    harmonic_support: 'Harmonic',
-    anchor: 'Anchor',
-    support: 'Support',
+    anti_pair_risk: 'Riesgo anti-par',
+    cold_companion: 'Frio',
+    gap_echo: 'Eco de gap',
+    v42_signal_optional: 'Senal V4.2',
+    contrarian_controlled: 'Contraria',
+    sum_band_guardrail: 'Guardia de suma',
+    harmonic_support: 'Armonico',
+    anchor: 'Ancla',
+    support: 'Soporte',
   };
 
   const TICKET_TYPE_LABELS = {
-    composition_main: 'Main harmonic ticket',
-    activated_block_main: 'Active block ticket',
-    pair_lag_bridge: 'Pair-lag bridge ticket',
-    pair_lag_support: 'Pair support ticket',
-    visual_support: 'Visual support ticket',
-    balanced_hybrid: 'Balanced harmonic ticket',
-    contrarian_controlled: 'Contrarian review ticket',
-    cold_companion_high_edge: 'Companion edge ticket',
+    composition_main: 'Boleto armonico principal',
+    activated_block_main: 'Boleto de bloque activo',
+    pair_lag_bridge: 'Boleto puente pair-lag',
+    pair_lag_support: 'Boleto con soporte de par',
+    visual_support: 'Boleto de soporte visual',
+    balanced_hybrid: 'Boleto armonico balanceado',
+    contrarian_controlled: 'Boleto contraria de revision',
+    cold_companion_high_edge: 'Boleto companion de borde',
   };
 
   const SUM_BANDS = ['low_tail', 'historical_core', 'upper_core', 'high_tail', 'extreme_high'];
   const CRITICAL_SOURCE_KEYS = ['slate', 'visual', 'pair'];
+  const OPTIONAL_SOURCE_KEYS = ['postDraw', 'matrix', 'resultados', 'winnerAudit', 'historySync'];
 
   const state = {
     sources: {},
@@ -59,10 +60,10 @@
   const byId = id => document.getElementById(id);
   const isObject = value => value && typeof value === 'object' && !Array.isArray(value);
   const finite = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
-  const fmt = (value, digits = 2) => finite(value) ? Number(value).toFixed(digits) : 'not available';
-  const intText = value => finite(value) ? String(Math.trunc(Number(value))) : 'not available';
+  const fmt = (value, digits = 2) => finite(value) ? Number(value).toFixed(digits) : 'no disponible';
+  const intText = value => finite(value) ? String(Math.trunc(Number(value))) : 'no disponible';
   const clean = value => {
-    if (value === null || value === undefined || value === '' || Number.isNaN(value)) return 'not available';
+    if (value === null || value === undefined || value === '' || Number.isNaN(value)) return 'no disponible';
     if (Array.isArray(value)) return value.map(clean).join(', ');
     if (typeof value === 'object') return Object.entries(value).map(([key, item]) => `${key}: ${clean(item)}`).join(', ');
     return String(value);
@@ -84,7 +85,7 @@
     const output = [];
     for (const item of safeArray(items)) {
       const text = clean(item);
-      if (!seen.has(text) && text !== 'not available') {
+      if (!seen.has(text) && text !== 'no disponible') {
         seen.add(text);
         output.push(text);
       }
@@ -173,11 +174,11 @@
 
   function targetDrawText(data) {
     const targetDraw = inferTargetDraw(data);
-    return targetDraw || 'not available';
+    return targetDraw || 'no disponible';
   }
 
   function pairLagMode(data) {
-    return data?.slate?.source_policy?.pair_lag_mode || data?.visual?.pair_lag_mode || 'not loaded';
+    return data?.slate?.source_policy?.pair_lag_mode || data?.visual?.pair_lag_mode || 'no cargado';
   }
 
   function missingCriticalSources() {
@@ -187,18 +188,18 @@
   }
 
   function renderSourceLoadErrors() {
-    const failed = Object.entries(state.sources).filter(([, source]) => !source.ok);
+    const failed = Object.entries(state.sources).filter(([key, source]) => CRITICAL_SOURCE_KEYS.includes(key) && !source.ok);
     if (!failed.length) return '';
     return `
       <div class="cockpit-panel cockpit-panel-wide">
-        <h3>Source load errors</h3>
+        <h3>Errores de carga de fuentes</h3>
         <ul>
           ${failed.map(([key, source]) => `
             <li>
               <b>${esc(source.path || FILES[key] || key)}</b>
-              <span>HTTP ${esc(source.status || 'not available')}</span>
-              <span>${esc(source.error || 'not available')}</span>
-              <span>${source.lookedLikeHtml || source.nonJson ? 'non-JSON or HTML-like response' : 'fetch/load error'}</span>
+              <span>HTTP ${esc(source.status || 'no disponible')}</span>
+              <span>${esc(source.error || 'no disponible')}</span>
+              <span>${source.lookedLikeHtml || source.nonJson ? 'respuesta HTML o no JSON' : 'error de carga'}</span>
               ${source.preview ? `<code>${esc(source.preview)}</code>` : ''}
             </li>`).join('')}
         </ul>
@@ -218,9 +219,13 @@
     return `<article class="cockpit-metric ${extraClass}"><span>${esc(label)}</span><b>${esc(value)}</b></article>`;
   }
 
+  function metricHtml(label, html, extraClass = '') {
+    return `<article class="cockpit-metric ${extraClass}"><span>${esc(label)}</span><b>${html}</b></article>`;
+  }
+
   function numberBalls(numbers, hitNumbers = []) {
     const hitSet = new Set(safeArray(hitNumbers).map(Number));
-    if (!Array.isArray(numbers) || numbers.length === 0) return '<span class="cockpit-muted">not available</span>';
+    if (!Array.isArray(numbers) || numbers.length === 0) return '<span class="cockpit-muted">no disponible</span>';
     return `<div class="cockpit-balls">${numbers.map(number => `<span class="cockpit-ball${hitSet.has(Number(number)) ? ' is-hit' : ''}">${esc(number)}</span>`).join('')}</div>`;
   }
 
@@ -231,13 +236,13 @@
 
   function rolePills(roles) {
     const allRoles = unique(roles);
-    if (!allRoles.length) return '<span class="cockpit-pill" title="support">Support</span>';
+    if (!allRoles.length) return '<span class="cockpit-pill" title="support">Soporte</span>';
     const visible = allRoles.slice(0, 4);
     const hidden = allRoles.length - visible.length;
     return `
       <div class="cockpit-role-pills">
         ${visible.map(role => `<span class="cockpit-pill cockpit-role" title="${esc(role)}">${esc(ROLE_LABELS[role] || role.replace(/_/g, ' '))}</span>`).join('')}
-        ${hidden > 0 ? `<span class="cockpit-pill" title="${esc(allRoles.slice(4).join(', '))}">+${hidden} more</span>` : ''}
+        ${hidden > 0 ? `<span class="cockpit-pill" title="${esc(allRoles.slice(4).join(', '))}">+${hidden} mas</span>` : ''}
       </div>`;
   }
 
@@ -255,13 +260,13 @@
       ticket?.human_explanation,
       ...notes,
       ticket?.reason,
-      'Ticket included for V4.3 harmonic review using existing composition fields.',
+      'Boleto incluido para revision armonica V4.3 usando campos de composicion ya generados.',
     ];
     return unique(candidates).slice(0, 5);
   }
 
   function blockText(blocks) {
-    if (!isObject(blocks)) return 'not available';
+    if (!isObject(blocks)) return 'no disponible';
     return Object.entries(blocks).map(([key, value]) => `${key}:${value}`).join(' ');
   }
 
@@ -270,7 +275,7 @@
     if (!value) return;
     navigator.clipboard?.writeText(value).then(() => {
       const original = button.textContent;
-      button.textContent = 'Copied';
+      button.textContent = 'Copiado';
       window.setTimeout(() => { button.textContent = original; }, 1200);
     }).catch(() => {
       button.textContent = value;
@@ -310,44 +315,44 @@
     const postDraw = data.postDraw;
     const sourcePolicy = slate?.source_policy || {};
     const tickets = safeArray(slate?.slate);
-    const latestDraw = slate?.latest_draw || visual?.latest_draw || history?.latest_draw || 'not available';
+    const latestDraw = slate?.latest_draw || visual?.latest_draw || history?.latest_draw || 'no disponible';
     const targetDraw = targetDrawText(data);
     const loaded = Object.values(state.sources).filter(source => source.ok).length;
     const total = Object.values(FILES).length + (snapshot ? 1 : 0);
-    const snapshotText = snapshot?.ok ? `Snapshot frozen for ${targetDraw}` : 'Snapshot not loaded / unknown';
-    const auditSnapshot = postDraw?.leakage_check ? `Audit leakage: ${clean(postDraw.leakage_check.status)}` : 'Audit not loaded';
+    const snapshotText = snapshot?.ok ? `Snapshot congelado para ${targetDraw}` : 'Snapshot no cargado / desconocido';
+    const auditSnapshot = postDraw?.leakage_check ? `Leakage auditoria: ${clean(postDraw.leakage_check.status)}` : 'Auditoria no cargada';
     const currentPairLagMode = pairLagMode(data);
     const missingCritical = missingCriticalSources();
     const slateRefreshCommand = expectedCommand('slate');
     const slateMissingNote = !state.sources.slate?.ok
-      ? `<p class="cockpit-note">Missing v4_hybrid_composition_slate.json. Run: ${esc(slateRefreshCommand)}</p>`
+      ? `<p class="cockpit-note">Falta v4_hybrid_composition_slate.json. Ejecuta: ${esc(slateRefreshCommand)}</p>`
       : '';
-    const pairLagNote = currentPairLagMode === 'not loaded'
-      ? '<p class="cockpit-note">Pair-lag mode comes from v4_visual_pattern_output.json or v4_hybrid_composition_slate.json.</p>'
+    const pairLagNote = currentPairLagMode === 'no cargado'
+      ? '<p class="cockpit-note">El modo pair-lag viene de v4_visual_pattern_output.json o v4_hybrid_composition_slate.json.</p>'
       : '';
     return `
       <section id="cockpit-mission" class="cockpit-zone cockpit-mission">
         <div class="cockpit-zone-heading">
-          <p class="cockpit-kicker">Mission Control</p>
-          <h2>V4.3 Decision Cockpit</h2>
-          <p>Review the current harmonic candidate slate, support signals, risks, and post-draw accountability from already-generated JSON.</p>
+          <p class="cockpit-kicker">Control</p>
+          <h2>Control del sistema V4.3</h2>
+          <p>Revisa el conjunto armonico actual, sus senales de soporte, riesgos y auditoria post-sorteo desde JSON ya generados.</p>
         </div>
         <div class="cockpit-status-grid">
-          ${metric('Last draw read', latestDraw, 'mono')}
-          ${metric('Target draw', targetDraw, 'mono')}
-          ${metric('System state', slate?.production_status || 'review_default')}
-          ${metric('Sources loaded', `${loaded}/${total}`, 'mono')}
-          ${metric('Ticket count', state.sources.slate?.ok ? tickets.length : 'Slate not loaded', 'mono')}
-          ${metric('Pair-lag mode', currentPairLagMode)}
-          ${metric('History sync latest', history?.latest_draw || 'not available', 'mono')}
-          ${metric('Sync time', history?.generated_at || 'not available')}
-          ${metric('V4.2 signal active', sourcePolicy.v42_signal_available || resultados?.number_scores ? 'yes' : 'no')}
-          ${metric('Fallback mode', sourcePolicy.fallback_mode || 'none')}
-          ${metric('Snapshot status', snapshotText)}
-          ${metric('Post-draw status', auditSnapshot)}
+          ${metric('Ultimo sorteo leido', latestDraw, 'mono')}
+          ${metric('Sorteo objetivo', targetDraw, 'mono')}
+          ${metric('Estado del sistema', slate?.production_status || 'review_default')}
+          ${metric('Fuentes cargadas', `${loaded}/${total}`, 'mono')}
+          ${metric('Boletos', state.sources.slate?.ok ? tickets.length : 'Slate no cargado', 'mono')}
+          ${metric('Modo pair-lag', currentPairLagMode)}
+          ${metric('Ultimo sync historico', history?.latest_draw || 'no disponible', 'mono')}
+          ${metric('Hora de sync', history?.generated_at || 'no disponible')}
+          ${metric('Senal V4.2 activa', sourcePolicy.v42_signal_available || resultados?.number_scores ? 'si' : 'no')}
+          ${metric('Modo fallback', sourcePolicy.fallback_mode || 'ninguno')}
+          ${metric('Estado snapshot', snapshotText)}
+          ${metric('Estado post-sorteo', auditSnapshot)}
         </div>
         <div class="cockpit-role-pills mt-3">
-          <span class="cockpit-pill">Missing critical sources</span>
+          <span class="cockpit-pill">Fuentes criticas faltantes</span>
           ${missingCritical.length ? missingCritical.map(path => `<span class="cockpit-pill">${esc(path)}</span>`).join('') : '<span class="cockpit-pill">none</span>'}
         </div>
         ${slateMissingNote}
@@ -367,49 +372,49 @@
       <article class="cockpit-ticket">
         <header class="cockpit-ticket-header">
           <div>
-            <p class="cockpit-kicker">Ticket ${index + 1}</p>
+            <p class="cockpit-kicker">Boleto ${index + 1}</p>
             <h3 title="${esc(type)}">${esc(TICKET_TYPE_LABELS[type] || type.replace(/_/g, ' '))}</h3>
           </div>
           <div class="cockpit-ticket-score">
-            <span>harmonic coherence</span>
+            <span>coherencia armonica</span>
             <b>${fmt(harmonic.score, 3)}</b>
-            ${finite(ticket?.selection_score) ? `<small>selection ${fmt(ticket.selection_score, 3)}</small>` : ''}
+            ${finite(ticket?.selection_score) ? `<small>seleccion ${fmt(ticket.selection_score, 3)}</small>` : ''}
           </div>
         </header>
         <div class="cockpit-ticket-numbers">
           ${numberBalls(numbers)}
-          <button class="cockpit-copy" type="button" data-copy="${esc(numbers.join(' '))}">Copy numbers</button>
+          <button class="cockpit-copy" type="button" data-copy="${esc(numbers.join(' '))}">Copiar numeros</button>
         </div>
         <div class="cockpit-ticket-meta">
-          ${metric('Sum', composition.sum || 'not available', 'mono')}
-          ${metric('Sum band', composition.sum_band ? bandPill(composition.sum_band) : 'not available')}
-          ${metric('Immediate overlap', composition.immediate_overlap_previous_draw ?? 'not available', 'mono')}
-          ${metric('Blocks', blockText(composition.blocks))}
+          ${metric('Suma', composition.sum || 'no disponible', 'mono')}
+          ${composition.sum_band ? metricHtml('Banda de suma', bandPill(composition.sum_band)) : metric('Banda de suma', 'no disponible')}
+          ${metric('Repetidos del sorteo anterior', composition.immediate_overlap_previous_draw ?? 'no disponible', 'mono')}
+          ${metric('Bloques', blockText(composition.blocks))}
         </div>
         ${rolePills(ticketRoles(ticket))}
         <details class="cockpit-ticket-why" open>
-          <summary>Why this ticket exists</summary>
+          <summary>Por que existe este boleto</summary>
           <ul>${whyItems.map(item => `<li>${esc(item)}</li>`).join('')}</ul>
         </details>
-        ${risks.length ? `<div class="cockpit-risk"><b>Risk notes</b><ul>${risks.map(item => `<li>${esc(item)}</li>`).join('')}</ul></div>` : ''}
+        ${risks.length ? `<div class="cockpit-risk"><b>Notas de riesgo</b><ul>${risks.map(item => `<li>${esc(item)}</li>`).join('')}</ul></div>` : ''}
       </article>`;
   }
 
   function renderRecommendedSlate(data) {
     const slate = data.slate;
     if (!slate) {
-      return `<section id="cockpit-slate" class="cockpit-zone">${emptyState('Recommended Slate', FILES.slate, expectedCommand('slate'))}</section>`;
+      return `<section id="cockpit-slate" class="cockpit-zone">${emptyState('Boletos sugeridos', FILES.slate, expectedCommand('slate'))}</section>`;
     }
     const tickets = safeArray(slate.slate);
     return `
       <section id="cockpit-slate" class="cockpit-zone cockpit-slate">
         <div class="cockpit-zone-heading">
-          <p class="cockpit-kicker">Recommended Slate</p>
-          <h2>Tickets to review today</h2>
-          <p>Each card shows existing V4.3 composition support, visible roles, and risk notes.</p>
+          <p class="cockpit-kicker">Boletos sugeridos</p>
+          <h2>Boletos para revisar hoy</h2>
+          <p>Cada tarjeta muestra soporte de composicion V4.3, roles visibles y notas de riesgo ya generadas.</p>
         </div>
         <div class="cockpit-ticket-grid">
-          ${tickets.map(renderTicket).join('') || emptyState('Recommended Slate', FILES.slate, expectedCommand('slate'))}
+          ${tickets.map(renderTicket).join('') || emptyState('Boletos sugeridos', FILES.slate, expectedCommand('slate'))}
         </div>
       </section>`;
   }
@@ -434,44 +439,44 @@
     const body = `
       <div class="cockpit-diagnostics-grid">
         <article class="cockpit-panel">
-          <h3>Sum band distribution</h3>
+          <h3>Distribucion de bandas de suma</h3>
           <div class="cockpit-band-row">${SUM_BANDS.map(band => `<span>${bandPill(band)} <b>${intText(sumBands[band] || 0)}</b></span>`).join('')}</div>
-          ${(tooManyExtreme || sameBand) ? `<p class="cockpit-note">Review note: ${tooManyExtreme ? 'more than one extreme_high ticket. ' : ''}${sameBand ? 'all tickets share one sum band.' : ''}</p>` : ''}
+          ${(tooManyExtreme || sameBand) ? `<p class="cockpit-note">Nota de revision: ${tooManyExtreme ? 'mas de un boleto extreme_high. ' : ''}${sameBand ? 'todos los boletos comparten una banda de suma.' : ''}</p>` : ''}
         </article>
         <article class="cockpit-panel">
-          <h3>Pair companion summary</h3>
+          <h3>Resumen de pares companion</h3>
           <div class="cockpit-mini-grid">
             ${metric('Co-travel pairs', pairSummary.top_co_travel_pairs ?? safeArray(pair?.top_co_travel_pairs).length, 'mono')}
-            ${metric('Bridge pairs', pairSummary.top_block_bridge_pairs ?? safeArray(pair?.top_block_bridge_pairs).length, 'mono')}
+            ${metric('Pares puente', pairSummary.top_block_bridge_pairs ?? safeArray(pair?.top_block_bridge_pairs).length, 'mono')}
             ${metric('Anti-pairs', pairSummary.anti_pairs ?? safeArray(pair?.anti_pairs).length, 'mono')}
             ${metric('Clusters', safeArray(pair?.cluster_companions).length, 'mono')}
           </div>
         </article>
         <article class="cockpit-panel">
-          <h3>Block distribution</h3>
+          <h3>Distribucion por bloques</h3>
           <p>${esc(blockText(blocks.counts))}</p>
-          ${oneBlockDominates ? '<p class="cockpit-note">Review note: one block carries more than half of visible ticket positions.</p>' : ''}
+          ${oneBlockDominates ? '<p class="cockpit-note">Nota de revision: un bloque concentra mas de la mitad de las posiciones visibles.</p>' : ''}
         </article>
         <article class="cockpit-panel">
-          <h3>Thesis diversity</h3>
+          <h3>Diversidad de tesis</h3>
           <p>${esc(blockText(typeCounts))}</p>
-          <p class="cockpit-note">${Object.keys(typeCounts).length > 2 ? 'Slate has multiple ticket theses.' : 'Slate is concentrated by ticket type.'}</p>
+          <p class="cockpit-note">${Object.keys(typeCounts).length > 2 ? 'El conjunto tiene multiples tesis de boleto.' : 'El conjunto esta concentrado por tipo de boleto.'}</p>
         </article>
         <article class="cockpit-panel cockpit-panel-wide">
-          <h3>Slate risk notes</h3>
-          ${risks.length ? `<ul>${risks.map(item => `<li>${esc(item)}</li>`).join('')}</ul>` : '<p>No visible risk notes in loaded slate.</p>'}
+          <h3>Riesgos del conjunto</h3>
+          ${risks.length ? `<ul>${risks.map(item => `<li>${esc(item)}</li>`).join('')}</ul>` : '<p>Sin notas de riesgo visibles en el conjunto cargado.</p>'}
         </article>
         <article class="cockpit-panel cockpit-panel-wide">
-          <h3>Visual matrix export</h3>
-          ${data.matrix ? renderMatrixPaths(data.matrix) : emptyState('Visual matrix export', FILES.matrix, expectedCommand('matrix'))}
+          <h3>Exportacion matriz visual</h3>
+          ${data.matrix ? renderMatrixPaths(data.matrix) : emptyState('Exportacion matriz visual', FILES.matrix, expectedCommand('matrix'))}
         </article>
       </div>`;
     return `
       <details id="cockpit-diagnostics" class="cockpit-zone cockpit-details" open>
         <summary>
           <span>
-            <small class="cockpit-kicker">Slate Diagnostics</small>
-            <b>Composition support, risk and source diagnostics</b>
+            <small class="cockpit-kicker">Diagnostico del conjunto</small>
+            <b>Soporte de composicion, riesgo y diagnostico de fuentes</b>
           </span>
         </summary>
         ${body}
@@ -480,9 +485,9 @@
 
   function renderMatrixPaths(matrix) {
     const paths = matrix?.paths;
-    if (!isObject(paths)) return '<p>Visual matrix paths not available.</p>';
+    if (!isObject(paths)) return '<p>Rutas de matriz visual no disponibles.</p>';
     return `<ul>${Object.entries(paths).map(([key, value]) => `<li><b>${esc(key)}:</b> ${esc(value)}</li>`).join('')}</ul>
-      <p class="cockpit-note">visual_exports paths are diagnostics only, not canonical history.</p>`;
+      <p class="cockpit-note">Las rutas visual_exports son solo diagnostico, no historia canonica.</p>`;
   }
 
   function renderPostDraw(data, targetDraw) {
@@ -490,13 +495,13 @@
     if (!audit) {
       return `
         <section id="cockpit-audit" class="cockpit-zone cockpit-audit">
-          ${emptyState('Post-draw audit', FILES.postDraw, expectedCommand('postDraw', targetDraw))}
+          ${emptyState('Auditoria post-sorteo', FILES.postDraw, expectedCommand('postDraw', targetDraw))}
           <article class="cockpit-empty">
-            <strong>No post-draw audit available.</strong>
-            <span>To audit draw ${esc(targetDraw || '<draw>')}:</span>
-            <code>1. Add official result to revancha.csv</code>
-            <code>2. Run: ${esc(expectedCommand('postDraw', targetDraw))}</code>
-            <code>3. Refresh this page.</code>
+            <strong>Auditoria post-sorteo no disponible.</strong>
+            <span>Para auditar el sorteo ${esc(targetDraw || '<draw>')}:</span>
+            <code>1. Agrega el resultado oficial a revancha.csv</code>
+            <code>2. Ejecuta: ${esc(expectedCommand('postDraw', targetDraw))}</code>
+            <code>3. Refresca esta pagina.</code>
           </article>
         </section>`;
     }
@@ -508,44 +513,44 @@
     return `
       <section id="cockpit-audit" class="cockpit-zone cockpit-audit">
         <div class="cockpit-zone-heading">
-          <p class="cockpit-kicker">Post-Draw Audit</p>
-          <h2>Draw ${esc(audit.target_draw || 'not available')} review</h2>
-          <p>Audit generated at ${esc(audit.generated_at || 'not available')}. Leakage status: ${esc(leakage.status || 'not available')}.</p>
+          <p class="cockpit-kicker">Auditoria post-sorteo</p>
+          <h2>Revision del sorteo ${esc(audit.target_draw || 'no disponible')}</h2>
+          <p>Auditoria generada en ${esc(audit.generated_at || 'no disponible')}. Estado leakage: ${esc(leakage.status || 'no disponible')}.</p>
         </div>
-        ${leakage.status && leakage.status !== 'ok' ? `<p class="cockpit-note">Leakage check note: ${esc(leakage.reason || leakage.status)}</p>` : ''}
+        ${leakage.status && leakage.status !== 'ok' ? `<p class="cockpit-note">Nota de leakage: ${esc(leakage.reason || leakage.status)}</p>` : ''}
         <div class="cockpit-status-grid">
-          ${metric('Best ticket hits', audit.best_ticket_hits ?? 'not available', 'mono')}
-          ${metric('Avg hits', fmt(audit.avg_hits, 2), 'mono')}
-          ${metric('Zero-ticket count', audit.zero_ticket_count ?? 'not available', 'mono')}
-          ${metric('Hit >= 1', audit.hit_ge_1_count ?? 'not available', 'mono')}
-          ${metric('Hit >= 2', audit.hit_ge_2_count ?? 'not available', 'mono')}
-          ${metric('Hit >= 3', audit.hit_ge_3_count ?? 'not available', 'mono')}
+          ${metric('Mejor boleto en matches', audit.best_ticket_hits ?? 'no disponible', 'mono')}
+          ${metric('Promedio de matches', fmt(audit.avg_hits, 2), 'mono')}
+          ${metric('Boletos en cero', audit.zero_ticket_count ?? 'no disponible', 'mono')}
+          ${metric('Matches >= 1', audit.hit_ge_1_count ?? 'no disponible', 'mono')}
+          ${metric('Matches >= 2', audit.hit_ge_2_count ?? 'no disponible', 'mono')}
+          ${metric('Matches >= 3', audit.hit_ge_3_count ?? 'no disponible', 'mono')}
         </div>
         <div class="cockpit-audit-grid">
           ${results.map(result => `
             <article class="cockpit-result-card">
               <h3>${esc(result.ticket_id || 'ticket')}</h3>
-              <p>${esc(result.ticket_type || 'not available')}</p>
+              <p>${esc(result.ticket_type || 'no disponible')}</p>
               ${numberBalls(result.numbers, result.hit_numbers)}
-              <p><b>${intText(result.hits)}</b> matches. Sum band: ${esc(result.sum_band || 'not available')}</p>
+              <p><b>${intText(result.hits)}</b> matches. Banda de suma: ${esc(result.sum_band || 'no disponible')}</p>
             </article>`).join('')}
         </div>
         <div class="cockpit-diagnostics-grid">
           <article class="cockpit-panel">
-            <h3>Roles with matches</h3>
-            ${matchedRoles.length ? `<ul>${matchedRoles.map(([role, row]) => `<li>${esc(role)}: ${intText(row.hits)} / ${intText(row.total)}</li>`).join('')}</ul>` : '<p>not available</p>'}
+            <h3>Roles con matches</h3>
+            ${matchedRoles.length ? `<ul>${matchedRoles.map(([role, row]) => `<li>${esc(role)}: ${intText(row.hits)} / ${intText(row.total)}</li>`).join('')}</ul>` : '<p>no disponible</p>'}
           </article>
           <article class="cockpit-panel">
-            <h3>Roles with zero matches</h3>
-            ${zeroRoles.length ? `<ul>${zeroRoles.map(([role, row]) => `<li>${esc(role)}: 0 / ${intText(row.total)}</li>`).join('')}</ul>` : '<p>not available</p>'}
+            <h3>Roles sin matches</h3>
+            ${zeroRoles.length ? `<ul>${zeroRoles.map(([role, row]) => `<li>${esc(role)}: 0 / ${intText(row.total)}</li>`).join('')}</ul>` : '<p>no disponible</p>'}
           </article>
           <article class="cockpit-panel cockpit-panel-wide">
-            <h3>Thesis result</h3>
-            <p>Block profile: ${esc(blockText(audit.actual_draw_block_profile))}</p>
-            <p>Pair/co-travel profile: ${esc(clean(audit.actual_draw_pair_co_travel_profile))}</p>
-            <p>Sum band result: ${esc(clean(audit.sum_band_result))}</p>
-            <p>Matched slate thesis: ${esc(audit.actual_draw_matched_slate_thesis ?? 'not available')}</p>
-            <p>New harmonic pattern to review: ${esc(audit.new_harmonic_pattern_to_review ?? 'not available')}</p>
+            <h3>Resultado de tesis</h3>
+            <p>Perfil de bloques: ${esc(blockText(audit.actual_draw_block_profile))}</p>
+            <p>Perfil par/co-travel: ${esc(clean(audit.actual_draw_pair_co_travel_profile))}</p>
+            <p>Resultado banda de suma: ${esc(clean(audit.sum_band_result))}</p>
+            <p>Tesis del conjunto alineada: ${esc(audit.actual_draw_matched_slate_thesis ?? 'no disponible')}</p>
+            <p>Nuevo patron armonico para revisar: ${esc(audit.new_harmonic_pattern_to_review ?? 'no disponible')}</p>
           </article>
         </div>
       </section>`;
@@ -553,27 +558,41 @@
 
   function renderSystemDiagnostics(data, snapshot) {
     const loaded = Object.entries(state.sources).filter(([, source]) => source.ok);
-    const missing = Object.entries(state.sources).filter(([, source]) => !source.ok);
+    const failedCritical = Object.entries(state.sources).filter(([key, source]) => CRITICAL_SOURCE_KEYS.includes(key) && !source.ok);
+    const failedOptional = Object.entries(state.sources).filter(([key, source]) => OPTIONAL_SOURCE_KEYS.includes(key) && !source.ok);
+    const failedOther = Object.entries(state.sources).filter(([key, source]) => !CRITICAL_SOURCE_KEYS.includes(key) && !OPTIONAL_SOURCE_KEYS.includes(key) && !source.ok);
     return `
       <details id="cockpit-system" class="cockpit-zone cockpit-details">
         <summary>
           <span>
-            <small class="cockpit-kicker">System Diagnostics</small>
-            <b>JSON loading, source paths and optional artifacts</b>
+            <small class="cockpit-kicker">Diagnostico del sistema</small>
+            <b>Carga JSON, rutas de fuentes y artefactos opcionales</b>
           </span>
         </summary>
         <div class="cockpit-diagnostics-grid">
           <article class="cockpit-panel">
-            <h3>JSONs loaded</h3>
+            <h3>JSON cargados</h3>
             <ul>${loaded.map(([key, source]) => `<li>${esc(key)}: ${esc(source.path)} (${fmt(source.ms, 0)} ms)</li>`).join('') || '<li>none</li>'}</ul>
           </article>
           <article class="cockpit-panel">
-            <h3>JSONs missing</h3>
-            <ul>${missing.map(([key, source]) => `<li>${esc(key)}: ${esc(source.path)} (${esc(source.error || source.status)})</li>`).join('') || '<li>none</li>'}</ul>
+            <h3>Fuentes criticas con error</h3>
+            <ul>${failedCritical.map(([key, source]) => `<li>${esc(key)}: ${esc(source.path)} (${esc(source.error || source.status)})</li>`).join('') || '<li>none</li>'}</ul>
           </article>
           <article class="cockpit-panel cockpit-panel-wide">
             <h3>Snapshot</h3>
-            <p>${snapshot?.ok ? `Loaded ${esc(snapshot.path)}` : `Snapshot not loaded / unknown (${esc(snapshot?.path || 'not attempted')})`}</p>
+            <p>${snapshot?.ok ? `Cargado ${esc(snapshot.path)}` : `Snapshot no cargado / desconocido (${esc(snapshot?.path || 'no intentado')})`}</p>
+          </article>
+          <article class="cockpit-panel cockpit-panel-wide">
+            <details>
+              <summary>Fuentes opcionales no cargadas</summary>
+              <ul>${failedOptional.map(([key, source]) => `<li>${esc(key)}: ${esc(source.path)} (${esc(source.error || source.status)})</li>`).join('') || '<li>none</li>'}</ul>
+            </details>
+          </article>
+          <article class="cockpit-panel cockpit-panel-wide">
+            <details>
+              <summary>Otras fuentes no cargadas</summary>
+              <ul>${failedOther.map(([key, source]) => `<li>${esc(key)}: ${esc(source.path)} (${esc(source.error || source.status)})</li>`).join('') || '<li>none</li>'}</ul>
+            </details>
           </article>
         </div>
       </details>`;
