@@ -252,6 +252,211 @@ def composition_for_ticket(
     }
 
 
+def signal_count(numbers: list[int], signals: dict[int, set[str]], signal: str) -> int:
+    return sum(1 for number in numbers if signal in signals.get(number, set()))
+
+
+def profile_targets(inputs: dict[str, dict[str, Any]]) -> set[str]:
+    recent = inputs["recent"]
+    winner = inputs["winner"]
+    return {
+        str(recent.get("sum_profile", {}).get("dominant_sum_band")),
+        str(winner.get("sum_profile", {}).get("dominant_sum_band")),
+        str(recent.get("presence_signature_profile", {}).get("dominant_presence_signature")),
+        str(recent.get("presence_signature_profile", {}).get("second_presence_signature")),
+        str(winner.get("presence_signature_profile", {}).get("dominant_presence_signature")),
+    }
+
+
+def evaluate_candidate_ticket(
+    numbers: list[int],
+    ticket_type: str,
+    latest_numbers: list[int],
+    inputs: dict[str, dict[str, Any]],
+    signals: dict[int, set[str]],
+    companion_pairs: set[tuple[int, int]],
+    lag_pairs: set[tuple[int, int]],
+    previous_tickets: list[list[int]],
+    weights: dict[int, float] | None = None,
+) -> dict[str, Any]:
+    reasons_es: list[str] = []
+    risks_es: list[str] = []
+    relaxations_es: list[str] = []
+    clean_numbers = [int(number) for number in numbers if isinstance(number, int) or str(number).isdigit()]
+    if len(clean_numbers) != DRAW_SIZE:
+        return {"accepted": False, "score": -1000.0, "reasons_es": ["El candidato no tiene exactamente 6 números."], "risk_notes_es": risks_es, "relaxation_notes_es": relaxations_es, "composition": {}}
+    if len(set(clean_numbers)) != DRAW_SIZE:
+        return {"accepted": False, "score": -1000.0, "reasons_es": ["El candidato contiene números repetidos internos."], "risk_notes_es": risks_es, "relaxation_notes_es": relaxations_es, "composition": {}}
+    if any(number < 1 or number > MAX_NUMBER for number in clean_numbers):
+        return {"accepted": False, "score": -1000.0, "reasons_es": ["El candidato contiene números fuera de rango 1-56."], "risk_notes_es": risks_es, "relaxation_notes_es": relaxations_es, "composition": {}}
+    missing_signals = [number for number in clean_numbers if not signals.get(number)]
+    if missing_signals:
+        return {"accepted": False, "score": -1000.0, "reasons_es": [f"Números sin señales activas: {missing_signals}."], "risk_notes_es": risks_es, "relaxation_notes_es": relaxations_es, "composition": {}}
+
+    numbers_sorted = sorted(clean_numbers)
+    composition = composition_for_ticket(numbers_sorted, latest_numbers, inputs, companion_pairs, lag_pairs)
+    overlaps = [len(set(numbers_sorted) & set(ticket)) for ticket in previous_tickets]
+    max_overlap = max(overlaps) if overlaps else 0
+    composition["overlap_with_previous_tickets"] = overlaps
+    composition["diversity_ok"] = max_overlap <= 3
+
+    structure_count = signal_count(numbers_sorted, signals, "structure_completion")
+    block_count = signal_count(numbers_sorted, signals, "block_completion")
+    pair_companion_count = int(composition["pair_companion_count"])
+    pair_lag_relation_count = int(composition["pair_lag_relation_count"])
+    profile_match = bool(composition["matches_recent_profile"] or composition["matches_winner_profile"])
+    internal_pair_support = pair_companion_count > 0 or pair_lag_relation_count > 0
+    structural_support = structure_count >= 3 or block_count >= 2
+    immediate_overlap = int(composition["immediate_overlap_previous_draw"])
+    accepted = True
+
+    if not composition["diversity_ok"]:
+        accepted = False
+        risks_es.append(f"Comparte {max_overlap} números con un boleto previo.")
+    if not profile_match:
+        accepted = False
+        risks_es.append("No coincide con perfil reciente ni perfil ganador histórico.")
+    if ticket_type == "pair_companion_bridge" and pair_companion_count <= 0:
+        accepted = False
+        risks_es.append("La tesis pair_companion_bridge requiere al menos una relacion pair_companion interna.")
+    if ticket_type == "block_completion_main" and not structural_support:
+        accepted = False
+        risks_es.append("La tesis block_completion_main requiere cierre estructural real antes de aceptarse.")
+    if ticket_type == "controlled_contrarian":
+        if structure_count < 4:
+            accepted = False
+            risks_es.append("La tesis contraria no alcanza 4 números con cierre estructural.")
+        if not internal_pair_support:
+            reasons_es.append("No se usaron pares internos; se aceptó como tesis contraria por cierre estructural y coincidencia de perfil.")
+            risks_es.append("Tesis contraria con relación interna de pares débil.")
+    elif not (internal_pair_support or structural_support):
+        accepted = False
+        risks_es.append("No tiene relación interna de pares ni cierre estructural suficiente.")
+
+    if pair_companion_count > 0:
+        reasons_es.append("Se añadió relación pair_companion observada en las últimas 30 combinaciones.")
+    if pair_lag_relation_count > 0:
+        reasons_es.append("Se añadió relación pair_lag trigger → candidato desde ventana histórica.")
+    if structural_support:
+        reasons_es.append("Se aceptó por cierre estructural con señales block_completion o structure_completion.")
+    if immediate_overlap <= 1:
+        reasons_es.append(f"Repetidos inmediatos controlados: {composition['immediate_overlap_label_es']}.")
+    elif immediate_overlap == 2:
+        if internal_pair_support and profile_match:
+            reasons_es.append("Se permitieron 2 repetidos inmediatos porque ambos tenían señales activas y la estructura seguía alineada.")
+        else:
+            accepted = False
+            risks_es.append("2 repetidos inmediatos sin relación interna o perfil suficiente.")
+    elif ticket_type == "controlled_contrarian":
+        risks_es.append(f"{immediate_overlap} repetidos inmediatos: riesgo fuerte aceptado solo como tesis contraria estructural.")
+        relaxations_es.append("Se permitió repetición inmediata alta por tesis contraria estructural con señales activas.")
+    else:
+        accepted = False
+        risks_es.append(f"{immediate_overlap} repetidos inmediatos rechazados fuera de tesis contraria.")
+
+    targets = profile_targets(inputs)
+    if str(composition["sum_band"]) not in targets:
+        relaxations_es.append("Se permitió banda de suma adyacente para preservar señales activas y diversidad.")
+    if str(composition["block_presence_signature"]) not in targets:
+        relaxations_es.append("Se permitió firma de presencia alternativa para mantener diversidad entre boletos.")
+
+    score = sum((weights or {}).get(number, 0.0) for number in numbers_sorted)
+    score += pair_companion_count * 1.35
+    score += pair_lag_relation_count * 0.85
+    score += structure_count * 0.45
+    score += block_count * 0.35
+    score += 1.1 if composition["matches_recent_profile"] else 0.0
+    score += 0.7 if composition["matches_winner_profile"] else 0.0
+    score -= max_overlap * 0.8
+    score -= max(immediate_overlap - 1, 0) * 0.55
+    return {
+        "accepted": accepted,
+        "score": round(score, 6),
+        "reasons_es": reasons_es or ["Candidato evaluado contra restricciones reales de composición."],
+        "risk_notes_es": risks_es,
+        "relaxation_notes_es": relaxations_es,
+        "composition": composition,
+    }
+
+
+def complete_seed(seed: list[int], fill_candidates: list[int], signals: dict[int, set[str]]) -> list[int] | None:
+    selected: list[int] = []
+    for number in seed + fill_candidates:
+        if number in selected or not signals.get(number):
+            continue
+        selected.append(number)
+        if len(selected) == DRAW_SIZE:
+            return sorted(selected)
+    return None
+
+
+def generate_candidate_numbers(
+    ticket_type: str,
+    ordered_candidates: list[int],
+    signals: dict[int, set[str]],
+    inputs: dict[str, dict[str, Any]],
+    companion_pairs: set[tuple[int, int]],
+    lag_pairs: set[tuple[int, int]],
+    previous_tickets: list[list[int]],
+) -> list[list[int]]:
+    generated: list[list[int]] = []
+    seen: set[tuple[int, ...]] = set()
+
+    def add(seed: list[int], fill: list[int]) -> None:
+        ticket = complete_seed(seed, fill, signals)
+        if ticket is None:
+            return
+        key = tuple(ticket)
+        if key not in seen:
+            seen.add(key)
+            generated.append(ticket)
+
+    candidates = list(ordered_candidates)
+    companion_list = [list(pair) for pair in companion_pairs if all(number in signals for number in pair)]
+    lag_list = [[trigger, candidate] for trigger, candidate in lag_pairs if trigger in signals and candidate in signals]
+    block_groups = inputs["block_completion"].get("groups", [])
+    signature_numbers = [int(number) for number in inputs["signature"].get("numbers_after", {}).keys() if int(number) in signals]
+    recent_numbers = [int(row["number"]) for row in inputs["recent"].get("top_recent_numbers", []) if int(row["number"]) in signals]
+    diversity_fill = [number for number in candidates if all(number not in ticket for ticket in previous_tickets)]
+
+    if ticket_type == "pair_sum_structure":
+        for pair in companion_list[:18]:
+            for lag in lag_list[:18]:
+                add(pair + lag, signature_numbers + recent_numbers + candidates)
+        for pair in companion_list[:30]:
+            add(pair, signature_numbers + candidates)
+    elif ticket_type == "pair_companion_bridge":
+        for first, second in itertools.combinations(companion_list[:18], 2):
+            add(first + second, recent_numbers + candidates)
+        for pair in companion_list[:30]:
+            add(pair, recent_numbers + signature_numbers + candidates)
+    elif ticket_type == "block_completion_main":
+        for row in block_groups[:45]:
+            seed = [int(number) for number in row.get("missing", []) + row.get("recent_seen", [])[:3]]
+            add(seed, signature_numbers + recent_numbers + candidates)
+    elif ticket_type == "recent_signature_fit":
+        target = target_signature_counts(inputs["recent"].get("presence_signature_profile", {}).get("dominant_presence_signature"))
+        primary = [
+            number for number in candidates
+            if target.get(next(block for block in BLOCK_ORDER if number in range_from_block(block)))
+        ]
+        for offset in range(0, min(len(primary), 28), 2):
+            add(primary[offset: offset + 4], signature_numbers + recent_numbers + candidates)
+    elif ticket_type == "controlled_contrarian":
+        structural = [
+            number for number in reversed(candidates)
+            if "structure_completion" in signals.get(number, set()) or "block_completion" in signals.get(number, set())
+        ]
+        for offset in range(0, min(len(structural), 34), 2):
+            add(structural[offset: offset + 5], diversity_fill + signature_numbers + candidates)
+
+    thematic_pools = [candidates, signature_numbers + candidates, recent_numbers + candidates, diversity_fill + candidates]
+    for pool in thematic_pools:
+        for offset in range(0, min(len(pool), 28), 3):
+            add(pool[offset: offset + 3], pool[offset + 3:] + candidates)
+    return generated[:800]
+
+
 def pick_ticket(
     ticket_type: str,
     ordered_candidates: list[int],
@@ -308,27 +513,17 @@ def build_ticket(
     ticket_type: str,
     numbers: list[int],
     signals: dict[int, set[str]],
-    latest_numbers: list[int],
-    inputs: dict[str, dict[str, Any]],
-    companion_pairs: set[tuple[int, int]],
-    lag_pairs: set[tuple[int, int]],
-    relaxation_notes: list[str],
+    evaluation: dict[str, Any],
 ) -> dict[str, Any]:
-    composition = composition_for_ticket(numbers, latest_numbers, inputs, companion_pairs, lag_pairs)
+    composition = dict(evaluation["composition"])
     signal_map = {str(number): sorted(signals[number]) for number in numbers}
-    trace = [
-        "Se inició con números que tienen al menos una señal activa real.",
-        "Se revisó relación interna de pares pair_lag y pair_companion.",
-        "Se ajustó suma, paridad y firma visual contra perfiles histórico y reciente.",
-        "Se midieron repetidos inmediatos sin prohibirlos automáticamente.",
-        "Se mantuvo diversidad frente a los otros boletos del conjunto.",
-        *relaxation_notes,
-        "Se mantuvo estado review_default.",
-    ]
+    trace = [*evaluation.get("reasons_es", []), *evaluation.get("relaxation_notes_es", [])]
+    trace.append("Se mantuvo estado review_default.")
     risks = [
         "Revisar que la estructura no dependa de una sola familia de señales.",
         "Usar como formación de revisión, no como promesa de resultado.",
         *composition.pop("overlap_risk_notes_es", []),
+        *evaluation.get("risk_notes_es", []),
     ]
     if composition["sum_band"] in {"extreme_high", "low_tail"}:
         risks.append("La banda de suma queda en una cola histórica y requiere revisión contextual.")
@@ -346,6 +541,7 @@ def build_ticket(
         "signals": signal_map,
         "composition": composition,
         "construction_trace_es": trace,
+        "constructor_acceptance_score": evaluation.get("score", 0.0),
         "reason_es": reason,
         "thesis_es": thesis,
         "risk_notes_es": risks,
@@ -372,33 +568,35 @@ def build_constructor_output(paths: dict[str, str]) -> dict[str, Any]:
     tickets: list[dict[str, Any]] = []
     raw_numbers: list[list[int]] = []
     relaxation_summary: list[str] = []
-    attempts = 0
     for ticket_type in TICKET_TYPES:
-        found: list[int] | None = None
-        local_notes: list[str] = []
-        for offset in range(0, min(len(ordered), 35)):
-            attempts += 1
-            candidate = pick_ticket(ticket_type, ordered, signals, weights, latest_numbers, inputs, companion_pairs, lag_pairs, raw_numbers, offset)
-            if any(set(candidate) == set(existing) for existing in raw_numbers):
+        candidates = generate_candidate_numbers(ticket_type, ordered, signals, inputs, companion_pairs, lag_pairs, raw_numbers)
+        evaluated: list[tuple[float, list[int], dict[str, Any]]] = []
+        two_overlap_count = sum(1 for ticket in tickets if int(ticket["composition"].get("immediate_overlap_previous_draw", 0)) == 2)
+        for candidate in candidates:
+            evaluation = evaluate_candidate_ticket(
+                candidate,
+                ticket_type,
+                latest_numbers,
+                inputs,
+                signals,
+                companion_pairs,
+                lag_pairs,
+                raw_numbers,
+                weights,
+            )
+            if not evaluation["accepted"]:
                 continue
-            overlaps = [len(set(candidate) & set(existing)) for existing in raw_numbers]
-            if overlaps and max(overlaps) > 3:
-                local_notes = ["Se usó offset alterno para mantener máximo 3 números compartidos entre boletos."]
+            if two_overlap_count >= 2 and int(evaluation["composition"].get("immediate_overlap_previous_draw", 0)) == 2:
                 continue
-            found = candidate
-            break
-        if found is None:
-            for offset in range(35, min(len(ordered), 55)):
-                candidate = pick_ticket(ticket_type, ordered, signals, weights, latest_numbers, inputs, companion_pairs, lag_pairs, raw_numbers, offset)
-                if not any(set(candidate) == set(existing) for existing in raw_numbers):
-                    found = candidate
-                    local_notes = ["Se relajó diversidad de tesis para completar 5 boletos con señales activas."]
-                    relaxation_summary.extend(local_notes)
-                    break
-        if found is None:
-            raise SystemExit("No se pudieron construir 5 boletos sin inventar señales.")
-        raw_numbers.append(found)
-        tickets.append(build_ticket(f"constructor_{len(tickets) + 1}", ticket_type, found, signals, latest_numbers, inputs, companion_pairs, lag_pairs, local_notes))
+            evaluated.append((float(evaluation["score"]), candidate, evaluation))
+        if not evaluated:
+            raise SystemExit("No se pudieron construir 5 boletos sin inventar señales ni violar restricciones reales.")
+        evaluated.sort(key=lambda item: (-item[0], item[1]))
+        _, found_candidate, accepted_evaluation = evaluated[0]
+        if accepted_evaluation.get("relaxation_notes_es"):
+            relaxation_summary.extend(accepted_evaluation["relaxation_notes_es"])
+        raw_numbers.append(found_candidate)
+        tickets.append(build_ticket(f"constructor_{len(tickets) + 1}", ticket_type, found_candidate, signals, accepted_evaluation))
 
     immediate_distribution = Counter(str(ticket["composition"]["immediate_overlap_previous_draw"]) for ticket in tickets)
     presence_distribution = Counter(ticket["composition"]["block_presence_signature"] for ticket in tickets)

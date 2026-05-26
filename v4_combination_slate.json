@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-26T07:43:30.166817+00:00",
+  "generated_at": "2026-05-26T17:16:02.927981+00:00",
   "engine_version": "v4.4-combination-constructor",
   "production_status": "review_default",
   "latest_draw": 4217,
@@ -15,13 +15,13 @@
     "csv": "revancha.csv"
   },
   "source_sha256": {
-    "winner": "ee785ac8a2f4b12d7f4c13b8456a9159867a845d41a34253ed92506e0f155ec0",
-    "gap": "ad0a5fccd959c52eb592d6770e6d4566f97caa0bebb6792f8a53b9fee35b937c",
-    "pair_lag": "a8aa4e198de309fcb08d2241e83c6ba75f92cd957f6d3108c6d6e6249c3bd48d",
-    "block_completion": "b420149470658d8d89f08702aedf2549ff9143adca2b45060932cbef614614b2",
-    "signature": "c08cf6df9cc7f570520f14dce261fa310e79ff52ce5fe4904878bb1cdb1f09f5",
-    "recent": "33d3aca4113fa800633c4f48e58f1e614e0bcdfa28a956f5e0e4158721450e79",
-    "history_matrix": "9f32871f1f3155c0e387ddc80c69d26413c2b7c90a68522e0e2a711a24678e29",
+    "winner": "b091f84e64b07529303533b1f4fa9cfedf2d9c327ad27578fa1b35acc70f4bc8",
+    "gap": "f2da211cd0ae8179493dfba834a9e41182d123ace17a857fbc7f58cc260efb76",
+    "pair_lag": "f18f76e46fc8556cb38fc1078a44e9220f192b49416be0aeeee794529178d8f4",
+    "block_completion": "5dcb27782a9aa354a0ba430cee5f42946d85b48cc7000a2ecb37ee48f53a5241",
+    "signature": "69e44b8b0b491b3296a442bd36c337fc0c86eea461dc687695a9ff768ef98dc8",
+    "recent": "0ff2f340d0653d79e9f615e6dbe0c4f7327298b070e455d045640550e9729e6d",
+    "history_matrix": "9b1d3e332829e68723b816fe2ffa30c5d6a71589192a58d9df4c2ef2d61dac60",
     "csv": "c17309c08b602b9178af4a1bc59e5349427b38c31558f3333077cede439d9ae5"
   },
   "recent_composition_profile_used": {
@@ -33,21 +33,21 @@
   },
   "slate_structure_summary": {
     "recent_alignment_summary_es": "El conjunto fue formado usando relación de pares, suma objetivo y cierre de estructura observados en las últimas 30 combinaciones.",
-    "pair_companion_usage_count": 5,
-    "pair_lag_usage_count": 22,
-    "structure_completion_usage_count": 5,
+    "pair_companion_usage_count": 16,
+    "pair_lag_usage_count": 25,
+    "structure_completion_usage_count": 3,
     "immediate_overlap_distribution": {
-      "2": 3,
-      "0": 2
+      "1": 3,
+      "0": 1,
+      "2": 1
     },
     "block_presence_distribution": {
-      "1-0-1-1-1": 2,
-      "1-1-1-0-0": 1,
-      "1-1-0-1-0": 1,
-      "1-1-1-0-1": 1
+      "1-1-1-0-1": 1,
+      "1-1-1-1-0": 3,
+      "1-0-1-1-1": 1
     },
     "diversity_summary_es": "Los boletos se formaron con tesis distintas y control de máximo 3 números compartidos cuando el pool lo permitió.",
-    "relaxation_summary_es": "No se requirió relajación fuerte de restricciones.",
+    "relaxation_summary_es": "Se permitió banda de suma adyacente para preservar señales activas y diversidad. Se permitió banda de suma adyacente para preservar señales activas y diversidad. Se permitió firma de presencia alternativa para mantener diversidad entre boletos. Se permitió banda de suma adyacente para preservar señales activas y diversidad. Se permitió firma de presencia alternativa para mantener diversidad entre boletos. Se permitió banda de suma adyacente para preservar señales activas y diversidad. Se permitió firma de presencia alternativa para mantener diversidad entre boletos.",
     "winner_profile_reference_es": "Perfil histórico dominante: high_tail y 3_even_3_odd."
   },
   "tickets": [
@@ -55,17 +55,39 @@
       "ticket_id": "constructor_1",
       "ticket_type": "pair_sum_structure",
       "numbers": [
-        5,
+        7,
+        15,
+        16,
         27,
         29,
-        40,
-        52,
-        53
+        45
       ],
       "signals": {
-        "5": [
+        "7": [
+          "pair_companion",
           "pair_lag_candidate",
           "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "15": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "16": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
           "signature_history",
           "structure_completion",
           "winner_profile_fit",
@@ -91,15 +113,7 @@
           "winner_profile_fit",
           "zone_fit"
         ],
-        "40": [
-          "block_completion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit"
-        ],
-        "52": [
+        "45": [
           "pair_companion",
           "pair_lag_candidate",
           "pair_lag_trigger",
@@ -108,55 +122,47 @@
           "structure_completion",
           "winner_profile_fit",
           "zone_fit"
-        ],
-        "53": [
-          "block_completion",
-          "pair_companion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
         ]
       },
       "composition": {
-        "parity": "2_even_4_odd",
-        "sum": 206,
-        "sum_band": "extreme_high",
-        "sum_band_es": "extremo alto",
-        "block_signature": "1-0-2-1-2",
-        "block_presence_signature": "1-0-1-1-1",
-        "visual_structure_label_es": "Presencia visual 1-0-1-1-1",
+        "parity": "1_even_5_odd",
+        "sum": 139,
+        "sum_band": "historical_core",
+        "sum_band_es": "núcleo histórico",
+        "block_signature": "1-2-2-0-1",
+        "block_presence_signature": "1-1-1-0-1",
+        "visual_structure_label_es": "Presencia visual 1-1-1-0-1",
         "blocks": {
           "1_10": 1,
-          "11_20": 0,
+          "11_20": 2,
           "21_30": 2,
-          "31_40": 1,
-          "41_56": 2
+          "31_40": 0,
+          "41_56": 1
         },
-        "immediate_overlap_previous_draw": 2,
-        "immediate_overlap_label_es": "2 repetidos inmediatos permitidos por soporte de señales activas",
-        "immediate_overlap_reason_es": "Se permitieron 2 repetidos inmediatos por soporte de perfil reciente o relación interna.",
-        "pair_companion_count": 1,
-        "pair_lag_relation_count": 7,
+        "immediate_overlap_previous_draw": 1,
+        "immediate_overlap_label_es": "1 repetido inmediato dentro de rango histórico normal",
+        "immediate_overlap_reason_es": "Se permitió 1 repetido inmediato por soporte de señales activas.",
+        "pair_companion_count": 10,
+        "pair_lag_relation_count": 5,
         "matches_winner_profile": true,
-        "matches_recent_profile": true
+        "matches_recent_profile": true,
+        "overlap_with_previous_tickets": [],
+        "diversity_ok": true
       },
       "construction_trace_es": [
-        "Se inició con números que tienen al menos una señal activa real.",
-        "Se revisó relación interna de pares pair_lag y pair_companion.",
-        "Se ajustó suma, paridad y firma visual contra perfiles histórico y reciente.",
-        "Se midieron repetidos inmediatos sin prohibirlos automáticamente.",
-        "Se mantuvo diversidad frente a los otros boletos del conjunto.",
+        "Se añadió relación pair_companion observada en las últimas 30 combinaciones.",
+        "Se añadió relación pair_lag trigger → candidato desde ventana histórica.",
+        "Se aceptó por cierre estructural con señales block_completion o structure_completion.",
+        "Repetidos inmediatos controlados: 1 repetido inmediato dentro de rango histórico normal.",
+        "Se permitió banda de suma adyacente para preservar señales activas y diversidad.",
         "Se mantuvo estado review_default."
       ],
+      "constructor_acceptance_score": 69.750366,
       "reason_es": "Boleto construido desde señales activas, relación de pares, suma objetivo y formación de estructura.",
-      "thesis_es": "Composición pair_sum_structure con firma 1-0-2-1-2, presencia 1-0-1-1-1 y banda extremo alto.",
+      "thesis_es": "Composición pair_sum_structure con firma 1-2-2-0-1, presencia 1-1-1-0-1 y banda núcleo histórico.",
       "risk_notes_es": [
         "Revisar que la estructura no dependa de una sola familia de señales.",
-        "Usar como formación de revisión, no como promesa de resultado.",
-        "La banda de suma queda en una cola histórica y requiere revisión contextual."
+        "Usar como formación de revisión, no como promesa de resultado."
       ],
       "production_status": "review_default"
     },
@@ -167,9 +173,9 @@
         4,
         5,
         15,
-        23,
-        24,
-        29
+        29,
+        39,
+        40
       ],
       "signals": {
         "4": [
@@ -184,6 +190,237 @@
         "5": [
           "pair_lag_candidate",
           "pair_lag_trigger",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "15": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "29": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "39": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit"
+        ],
+        "40": [
+          "block_completion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit"
+        ]
+      },
+      "composition": {
+        "parity": "2_even_4_odd",
+        "sum": 132,
+        "sum_band": "historical_core",
+        "sum_band_es": "núcleo histórico",
+        "block_signature": "2-1-1-2-0",
+        "block_presence_signature": "1-1-1-1-0",
+        "visual_structure_label_es": "Presencia visual 1-1-1-1-0",
+        "blocks": {
+          "1_10": 2,
+          "11_20": 1,
+          "21_30": 1,
+          "31_40": 2,
+          "41_56": 0
+        },
+        "immediate_overlap_previous_draw": 0,
+        "immediate_overlap_label_es": "sin repetidos inmediatos",
+        "immediate_overlap_reason_es": "No se usaron repetidos inmediatos porque el pool mantuvo señales suficientes.",
+        "pair_companion_count": 0,
+        "pair_lag_relation_count": 3,
+        "matches_winner_profile": true,
+        "matches_recent_profile": true,
+        "overlap_with_previous_tickets": [
+          2
+        ],
+        "diversity_ok": true
+      },
+      "construction_trace_es": [
+        "Se añadió relación pair_lag trigger → candidato desde ventana histórica.",
+        "Se aceptó por cierre estructural con señales block_completion o structure_completion.",
+        "Repetidos inmediatos controlados: sin repetidos inmediatos.",
+        "Se permitió banda de suma adyacente para preservar señales activas y diversidad.",
+        "Se permitió firma de presencia alternativa para mantener diversidad entre boletos.",
+        "Se mantuvo estado review_default."
+      ],
+      "constructor_acceptance_score": 63.215329,
+      "reason_es": "Boleto construido desde señales activas, relación de pares, suma objetivo y formación de estructura.",
+      "thesis_es": "Composición recent_signature_fit con firma 2-1-1-2-0, presencia 1-1-1-1-0 y banda núcleo histórico.",
+      "risk_notes_es": [
+        "Revisar que la estructura no dependa de una sola familia de señales.",
+        "Usar como formación de revisión, no como promesa de resultado."
+      ],
+      "production_status": "review_default"
+    },
+    {
+      "ticket_id": "constructor_3",
+      "ticket_type": "block_completion_main",
+      "numbers": [
+        7,
+        16,
+        18,
+        23,
+        29,
+        39
+      ],
+      "signals": {
+        "7": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "16": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "18": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "23": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "29": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "39": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit"
+        ]
+      },
+      "composition": {
+        "parity": "2_even_4_odd",
+        "sum": 132,
+        "sum_band": "historical_core",
+        "sum_band_es": "núcleo histórico",
+        "block_signature": "1-2-2-1-0",
+        "block_presence_signature": "1-1-1-1-0",
+        "visual_structure_label_es": "Presencia visual 1-1-1-1-0",
+        "blocks": {
+          "1_10": 1,
+          "11_20": 2,
+          "21_30": 2,
+          "31_40": 1,
+          "41_56": 0
+        },
+        "immediate_overlap_previous_draw": 1,
+        "immediate_overlap_label_es": "1 repetido inmediato dentro de rango histórico normal",
+        "immediate_overlap_reason_es": "Se permitió 1 repetido inmediato por soporte de señales activas.",
+        "pair_companion_count": 5,
+        "pair_lag_relation_count": 5,
+        "matches_winner_profile": true,
+        "matches_recent_profile": true,
+        "overlap_with_previous_tickets": [
+          3,
+          2
+        ],
+        "diversity_ok": true
+      },
+      "construction_trace_es": [
+        "Se añadió relación pair_companion observada en las últimas 30 combinaciones.",
+        "Se añadió relación pair_lag trigger → candidato desde ventana histórica.",
+        "Se aceptó por cierre estructural con señales block_completion o structure_completion.",
+        "Repetidos inmediatos controlados: 1 repetido inmediato dentro de rango histórico normal.",
+        "Se permitió banda de suma adyacente para preservar señales activas y diversidad.",
+        "Se permitió firma de presencia alternativa para mantener diversidad entre boletos.",
+        "Se mantuvo estado review_default."
+      ],
+      "constructor_acceptance_score": 63.150282,
+      "reason_es": "Boleto construido desde señales activas, relación de pares, suma objetivo y formación de estructura.",
+      "thesis_es": "Composición block_completion_main con firma 1-2-2-1-0, presencia 1-1-1-1-0 y banda núcleo histórico.",
+      "risk_notes_es": [
+        "Revisar que la estructura no dependa de una sola familia de señales.",
+        "Usar como formación de revisión, no como promesa de resultado."
+      ],
+      "production_status": "review_default"
+    },
+    {
+      "ticket_id": "constructor_4",
+      "ticket_type": "pair_companion_bridge",
+      "numbers": [
+        4,
+        7,
+        15,
+        23,
+        24,
+        40
+      ],
+      "signals": {
+        "4": [
+          "block_completion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "7": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
           "signature_history",
           "structure_completion",
           "winner_profile_fit",
@@ -219,112 +456,6 @@
           "winner_profile_fit",
           "zone_fit"
         ],
-        "29": [
-          "pair_companion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "recent_frequency",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ]
-      },
-      "composition": {
-        "parity": "2_even_4_odd",
-        "sum": 100,
-        "sum_band": "historical_core",
-        "sum_band_es": "núcleo histórico",
-        "block_signature": "2-1-3-0-0",
-        "block_presence_signature": "1-1-1-0-0",
-        "visual_structure_label_es": "Escalera baja-media hasta 21_30",
-        "blocks": {
-          "1_10": 2,
-          "11_20": 1,
-          "21_30": 3,
-          "31_40": 0,
-          "41_56": 0
-        },
-        "immediate_overlap_previous_draw": 2,
-        "immediate_overlap_label_es": "2 repetidos inmediatos permitidos por soporte de señales activas",
-        "immediate_overlap_reason_es": "Se permitieron 2 repetidos inmediatos por soporte de perfil reciente o relación interna.",
-        "pair_companion_count": 0,
-        "pair_lag_relation_count": 7,
-        "matches_winner_profile": true,
-        "matches_recent_profile": true
-      },
-      "construction_trace_es": [
-        "Se inició con números que tienen al menos una señal activa real.",
-        "Se revisó relación interna de pares pair_lag y pair_companion.",
-        "Se ajustó suma, paridad y firma visual contra perfiles histórico y reciente.",
-        "Se midieron repetidos inmediatos sin prohibirlos automáticamente.",
-        "Se mantuvo diversidad frente a los otros boletos del conjunto.",
-        "Se mantuvo estado review_default."
-      ],
-      "reason_es": "Boleto construido desde señales activas, relación de pares, suma objetivo y formación de estructura.",
-      "thesis_es": "Composición recent_signature_fit con firma 2-1-3-0-0, presencia 1-1-1-0-0 y banda núcleo histórico.",
-      "risk_notes_es": [
-        "Revisar que la estructura no dependa de una sola familia de señales.",
-        "Usar como formación de revisión, no como promesa de resultado."
-      ],
-      "production_status": "review_default"
-    },
-    {
-      "ticket_id": "constructor_3",
-      "ticket_type": "block_completion_main",
-      "numbers": [
-        5,
-        7,
-        15,
-        33,
-        37,
-        40
-      ],
-      "signals": {
-        "5": [
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "7": [
-          "pair_companion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "recent_frequency",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "15": [
-          "pair_companion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "recent_frequency",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "33": [
-          "block_completion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit"
-        ],
-        "37": [
-          "block_completion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit"
-        ],
         "40": [
           "block_completion",
           "pair_lag_candidate",
@@ -335,38 +466,46 @@
         ]
       },
       "composition": {
-        "parity": "1_even_5_odd",
-        "sum": 137,
+        "parity": "3_even_3_odd",
+        "sum": 113,
         "sum_band": "historical_core",
         "sum_band_es": "núcleo histórico",
-        "block_signature": "2-1-0-3-0",
-        "block_presence_signature": "1-1-0-1-0",
-        "visual_structure_label_es": "Presencia visual 1-1-0-1-0",
+        "block_signature": "2-1-2-1-0",
+        "block_presence_signature": "1-1-1-1-0",
+        "visual_structure_label_es": "Presencia visual 1-1-1-1-0",
         "blocks": {
           "1_10": 2,
           "11_20": 1,
-          "21_30": 0,
-          "31_40": 3,
+          "21_30": 2,
+          "31_40": 1,
           "41_56": 0
         },
-        "immediate_overlap_previous_draw": 0,
-        "immediate_overlap_label_es": "sin repetidos inmediatos",
-        "immediate_overlap_reason_es": "No se usaron repetidos inmediatos porque el pool mantuvo señales suficientes.",
+        "immediate_overlap_previous_draw": 2,
+        "immediate_overlap_label_es": "2 repetidos inmediatos permitidos por soporte de señales activas",
+        "immediate_overlap_reason_es": "Se permitieron 2 repetidos inmediatos por soporte de perfil reciente o relación interna.",
         "pair_companion_count": 1,
-        "pair_lag_relation_count": 3,
+        "pair_lag_relation_count": 4,
         "matches_winner_profile": true,
-        "matches_recent_profile": true
+        "matches_recent_profile": true,
+        "overlap_with_previous_tickets": [
+          2,
+          3,
+          2
+        ],
+        "diversity_ok": true
       },
       "construction_trace_es": [
-        "Se inició con números que tienen al menos una señal activa real.",
-        "Se revisó relación interna de pares pair_lag y pair_companion.",
-        "Se ajustó suma, paridad y firma visual contra perfiles histórico y reciente.",
-        "Se midieron repetidos inmediatos sin prohibirlos automáticamente.",
-        "Se mantuvo diversidad frente a los otros boletos del conjunto.",
+        "Se añadió relación pair_companion observada en las últimas 30 combinaciones.",
+        "Se añadió relación pair_lag trigger → candidato desde ventana histórica.",
+        "Se aceptó por cierre estructural con señales block_completion o structure_completion.",
+        "Se permitieron 2 repetidos inmediatos porque ambos tenían señales activas y la estructura seguía alineada.",
+        "Se permitió banda de suma adyacente para preservar señales activas y diversidad.",
+        "Se permitió firma de presencia alternativa para mantener diversidad entre boletos.",
         "Se mantuvo estado review_default."
       ],
+      "constructor_acceptance_score": 58.964898,
       "reason_es": "Boleto construido desde señales activas, relación de pares, suma objetivo y formación de estructura.",
-      "thesis_es": "Composición block_completion_main con firma 2-1-0-3-0, presencia 1-1-0-1-0 y banda núcleo histórico.",
+      "thesis_es": "Composición pair_companion_bridge con firma 2-1-2-1-0, presencia 1-1-1-1-0 y banda núcleo histórico.",
       "risk_notes_es": [
         "Revisar que la estructura no dependa de una sola familia de señales.",
         "Usar como formación de revisión, no como promesa de resultado."
@@ -374,40 +513,20 @@
       "production_status": "review_default"
     },
     {
-      "ticket_id": "constructor_4",
-      "ticket_type": "pair_companion_bridge",
+      "ticket_id": "constructor_5",
+      "ticket_type": "controlled_contrarian",
       "numbers": [
         5,
-        24,
-        25,
         27,
-        35,
-        53
+        37,
+        39,
+        40,
+        50
       ],
       "signals": {
         "5": [
           "pair_lag_candidate",
           "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "24": [
-          "pair_companion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "recent_frequency",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "25": [
-          "pair_companion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "recent_frequency",
           "signature_history",
           "structure_completion",
           "winner_profile_fit",
@@ -423,8 +542,15 @@
           "winner_profile_fit",
           "zone_fit"
         ],
-        "35": [
+        "37": [
           "block_completion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit"
+        ],
+        "39": [
           "pair_companion",
           "pair_lag_candidate",
           "pair_lag_trigger",
@@ -433,8 +559,16 @@
           "structure_completion",
           "winner_profile_fit"
         ],
-        "53": [
+        "40": [
           "block_completion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit"
+        ],
+        "50": [
+          "gap_echo",
           "pair_companion",
           "pair_lag_candidate",
           "pair_lag_trigger",
@@ -445,146 +579,47 @@
         ]
       },
       "composition": {
-        "parity": "1_even_5_odd",
-        "sum": 169,
-        "sum_band": "upper_core",
-        "sum_band_es": "núcleo alto",
-        "block_signature": "1-0-3-1-1",
+        "parity": "2_even_4_odd",
+        "sum": 198,
+        "sum_band": "high_tail",
+        "sum_band_es": "cola alta",
+        "block_signature": "1-0-1-3-1",
         "block_presence_signature": "1-0-1-1-1",
         "visual_structure_label_es": "Presencia visual 1-0-1-1-1",
         "blocks": {
           "1_10": 1,
           "11_20": 0,
-          "21_30": 3,
-          "31_40": 1,
+          "21_30": 1,
+          "31_40": 3,
           "41_56": 1
         },
-        "immediate_overlap_previous_draw": 2,
-        "immediate_overlap_label_es": "2 repetidos inmediatos permitidos por soporte de señales activas",
-        "immediate_overlap_reason_es": "Se permitieron 2 repetidos inmediatos por soporte de perfil reciente o relación interna.",
-        "pair_companion_count": 3,
-        "pair_lag_relation_count": 5,
+        "immediate_overlap_previous_draw": 1,
+        "immediate_overlap_label_es": "1 repetido inmediato dentro de rango histórico normal",
+        "immediate_overlap_reason_es": "Se permitió 1 repetido inmediato por soporte de señales activas.",
+        "pair_companion_count": 0,
+        "pair_lag_relation_count": 8,
         "matches_winner_profile": true,
-        "matches_recent_profile": true
+        "matches_recent_profile": true,
+        "overlap_with_previous_tickets": [
+          1,
+          3,
+          1,
+          1
+        ],
+        "diversity_ok": true
       },
       "construction_trace_es": [
-        "Se inició con números que tienen al menos una señal activa real.",
-        "Se revisó relación interna de pares pair_lag y pair_companion.",
-        "Se ajustó suma, paridad y firma visual contra perfiles histórico y reciente.",
-        "Se midieron repetidos inmediatos sin prohibirlos automáticamente.",
-        "Se mantuvo diversidad frente a los otros boletos del conjunto.",
+        "Se añadió relación pair_lag trigger → candidato desde ventana histórica.",
+        "Se aceptó por cierre estructural con señales block_completion o structure_completion.",
+        "Repetidos inmediatos controlados: 1 repetido inmediato dentro de rango histórico normal.",
         "Se mantuvo estado review_default."
       ],
+      "constructor_acceptance_score": 60.514168,
       "reason_es": "Boleto construido desde señales activas, relación de pares, suma objetivo y formación de estructura.",
-      "thesis_es": "Composición pair_companion_bridge con firma 1-0-3-1-1, presencia 1-0-1-1-1 y banda núcleo alto.",
+      "thesis_es": "Composición controlled_contrarian con firma 1-0-1-3-1, presencia 1-0-1-1-1 y banda cola alta.",
       "risk_notes_es": [
         "Revisar que la estructura no dependa de una sola familia de señales.",
         "Usar como formación de revisión, no como promesa de resultado."
-      ],
-      "production_status": "review_default"
-    },
-    {
-      "ticket_id": "constructor_5",
-      "ticket_type": "controlled_contrarian",
-      "numbers": [
-        10,
-        12,
-        14,
-        21,
-        28,
-        47
-      ],
-      "signals": {
-        "10": [
-          "block_completion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "12": [
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "14": [
-          "block_completion",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "21": [
-          "block_completion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "28": [
-          "block_completion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "47": [
-          "pair_companion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "recent_frequency",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ]
-      },
-      "composition": {
-        "parity": "4_even_2_odd",
-        "sum": 132,
-        "sum_band": "historical_core",
-        "sum_band_es": "núcleo histórico",
-        "block_signature": "1-2-2-0-1",
-        "block_presence_signature": "1-1-1-0-1",
-        "visual_structure_label_es": "Presencia visual 1-1-1-0-1",
-        "blocks": {
-          "1_10": 1,
-          "11_20": 2,
-          "21_30": 2,
-          "31_40": 0,
-          "41_56": 1
-        },
-        "immediate_overlap_previous_draw": 0,
-        "immediate_overlap_label_es": "sin repetidos inmediatos",
-        "immediate_overlap_reason_es": "No se usaron repetidos inmediatos porque el pool mantuvo señales suficientes.",
-        "pair_companion_count": 0,
-        "pair_lag_relation_count": 0,
-        "matches_winner_profile": true,
-        "matches_recent_profile": true
-      },
-      "construction_trace_es": [
-        "Se inició con números que tienen al menos una señal activa real.",
-        "Se revisó relación interna de pares pair_lag y pair_companion.",
-        "Se ajustó suma, paridad y firma visual contra perfiles histórico y reciente.",
-        "Se midieron repetidos inmediatos sin prohibirlos automáticamente.",
-        "Se mantuvo diversidad frente a los otros boletos del conjunto.",
-        "Se mantuvo estado review_default."
-      ],
-      "reason_es": "Boleto construido desde señales activas, relación de pares, suma objetivo y formación de estructura.",
-      "thesis_es": "Composición controlled_contrarian con firma 1-2-2-0-1, presencia 1-1-1-0-1 y banda núcleo histórico.",
-      "risk_notes_es": [
-        "Revisar que la estructura no dependa de una sola familia de señales.",
-        "Usar como formación de revisión, no como promesa de resultado.",
-        "La relación interna de pares es débil en este boleto."
       ],
       "production_status": "review_default"
     }
@@ -594,17 +629,39 @@
       "ticket_id": "constructor_1",
       "ticket_type": "pair_sum_structure",
       "numbers": [
-        5,
+        7,
+        15,
+        16,
         27,
         29,
-        40,
-        52,
-        53
+        45
       ],
       "signals": {
-        "5": [
+        "7": [
+          "pair_companion",
           "pair_lag_candidate",
           "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "15": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "16": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
           "signature_history",
           "structure_completion",
           "winner_profile_fit",
@@ -630,15 +687,7 @@
           "winner_profile_fit",
           "zone_fit"
         ],
-        "40": [
-          "block_completion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit"
-        ],
-        "52": [
+        "45": [
           "pair_companion",
           "pair_lag_candidate",
           "pair_lag_trigger",
@@ -647,55 +696,47 @@
           "structure_completion",
           "winner_profile_fit",
           "zone_fit"
-        ],
-        "53": [
-          "block_completion",
-          "pair_companion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
         ]
       },
       "composition": {
-        "parity": "2_even_4_odd",
-        "sum": 206,
-        "sum_band": "extreme_high",
-        "sum_band_es": "extremo alto",
-        "block_signature": "1-0-2-1-2",
-        "block_presence_signature": "1-0-1-1-1",
-        "visual_structure_label_es": "Presencia visual 1-0-1-1-1",
+        "parity": "1_even_5_odd",
+        "sum": 139,
+        "sum_band": "historical_core",
+        "sum_band_es": "núcleo histórico",
+        "block_signature": "1-2-2-0-1",
+        "block_presence_signature": "1-1-1-0-1",
+        "visual_structure_label_es": "Presencia visual 1-1-1-0-1",
         "blocks": {
           "1_10": 1,
-          "11_20": 0,
+          "11_20": 2,
           "21_30": 2,
-          "31_40": 1,
-          "41_56": 2
+          "31_40": 0,
+          "41_56": 1
         },
-        "immediate_overlap_previous_draw": 2,
-        "immediate_overlap_label_es": "2 repetidos inmediatos permitidos por soporte de señales activas",
-        "immediate_overlap_reason_es": "Se permitieron 2 repetidos inmediatos por soporte de perfil reciente o relación interna.",
-        "pair_companion_count": 1,
-        "pair_lag_relation_count": 7,
+        "immediate_overlap_previous_draw": 1,
+        "immediate_overlap_label_es": "1 repetido inmediato dentro de rango histórico normal",
+        "immediate_overlap_reason_es": "Se permitió 1 repetido inmediato por soporte de señales activas.",
+        "pair_companion_count": 10,
+        "pair_lag_relation_count": 5,
         "matches_winner_profile": true,
-        "matches_recent_profile": true
+        "matches_recent_profile": true,
+        "overlap_with_previous_tickets": [],
+        "diversity_ok": true
       },
       "construction_trace_es": [
-        "Se inició con números que tienen al menos una señal activa real.",
-        "Se revisó relación interna de pares pair_lag y pair_companion.",
-        "Se ajustó suma, paridad y firma visual contra perfiles histórico y reciente.",
-        "Se midieron repetidos inmediatos sin prohibirlos automáticamente.",
-        "Se mantuvo diversidad frente a los otros boletos del conjunto.",
+        "Se añadió relación pair_companion observada en las últimas 30 combinaciones.",
+        "Se añadió relación pair_lag trigger → candidato desde ventana histórica.",
+        "Se aceptó por cierre estructural con señales block_completion o structure_completion.",
+        "Repetidos inmediatos controlados: 1 repetido inmediato dentro de rango histórico normal.",
+        "Se permitió banda de suma adyacente para preservar señales activas y diversidad.",
         "Se mantuvo estado review_default."
       ],
+      "constructor_acceptance_score": 69.750366,
       "reason_es": "Boleto construido desde señales activas, relación de pares, suma objetivo y formación de estructura.",
-      "thesis_es": "Composición pair_sum_structure con firma 1-0-2-1-2, presencia 1-0-1-1-1 y banda extremo alto.",
+      "thesis_es": "Composición pair_sum_structure con firma 1-2-2-0-1, presencia 1-1-1-0-1 y banda núcleo histórico.",
       "risk_notes_es": [
         "Revisar que la estructura no dependa de una sola familia de señales.",
-        "Usar como formación de revisión, no como promesa de resultado.",
-        "La banda de suma queda en una cola histórica y requiere revisión contextual."
+        "Usar como formación de revisión, no como promesa de resultado."
       ],
       "production_status": "review_default"
     },
@@ -706,9 +747,9 @@
         4,
         5,
         15,
-        23,
-        24,
-        29
+        29,
+        39,
+        40
       ],
       "signals": {
         "4": [
@@ -723,6 +764,237 @@
         "5": [
           "pair_lag_candidate",
           "pair_lag_trigger",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "15": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "29": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "39": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit"
+        ],
+        "40": [
+          "block_completion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit"
+        ]
+      },
+      "composition": {
+        "parity": "2_even_4_odd",
+        "sum": 132,
+        "sum_band": "historical_core",
+        "sum_band_es": "núcleo histórico",
+        "block_signature": "2-1-1-2-0",
+        "block_presence_signature": "1-1-1-1-0",
+        "visual_structure_label_es": "Presencia visual 1-1-1-1-0",
+        "blocks": {
+          "1_10": 2,
+          "11_20": 1,
+          "21_30": 1,
+          "31_40": 2,
+          "41_56": 0
+        },
+        "immediate_overlap_previous_draw": 0,
+        "immediate_overlap_label_es": "sin repetidos inmediatos",
+        "immediate_overlap_reason_es": "No se usaron repetidos inmediatos porque el pool mantuvo señales suficientes.",
+        "pair_companion_count": 0,
+        "pair_lag_relation_count": 3,
+        "matches_winner_profile": true,
+        "matches_recent_profile": true,
+        "overlap_with_previous_tickets": [
+          2
+        ],
+        "diversity_ok": true
+      },
+      "construction_trace_es": [
+        "Se añadió relación pair_lag trigger → candidato desde ventana histórica.",
+        "Se aceptó por cierre estructural con señales block_completion o structure_completion.",
+        "Repetidos inmediatos controlados: sin repetidos inmediatos.",
+        "Se permitió banda de suma adyacente para preservar señales activas y diversidad.",
+        "Se permitió firma de presencia alternativa para mantener diversidad entre boletos.",
+        "Se mantuvo estado review_default."
+      ],
+      "constructor_acceptance_score": 63.215329,
+      "reason_es": "Boleto construido desde señales activas, relación de pares, suma objetivo y formación de estructura.",
+      "thesis_es": "Composición recent_signature_fit con firma 2-1-1-2-0, presencia 1-1-1-1-0 y banda núcleo histórico.",
+      "risk_notes_es": [
+        "Revisar que la estructura no dependa de una sola familia de señales.",
+        "Usar como formación de revisión, no como promesa de resultado."
+      ],
+      "production_status": "review_default"
+    },
+    {
+      "ticket_id": "constructor_3",
+      "ticket_type": "block_completion_main",
+      "numbers": [
+        7,
+        16,
+        18,
+        23,
+        29,
+        39
+      ],
+      "signals": {
+        "7": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "16": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "18": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "23": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "29": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "39": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit"
+        ]
+      },
+      "composition": {
+        "parity": "2_even_4_odd",
+        "sum": 132,
+        "sum_band": "historical_core",
+        "sum_band_es": "núcleo histórico",
+        "block_signature": "1-2-2-1-0",
+        "block_presence_signature": "1-1-1-1-0",
+        "visual_structure_label_es": "Presencia visual 1-1-1-1-0",
+        "blocks": {
+          "1_10": 1,
+          "11_20": 2,
+          "21_30": 2,
+          "31_40": 1,
+          "41_56": 0
+        },
+        "immediate_overlap_previous_draw": 1,
+        "immediate_overlap_label_es": "1 repetido inmediato dentro de rango histórico normal",
+        "immediate_overlap_reason_es": "Se permitió 1 repetido inmediato por soporte de señales activas.",
+        "pair_companion_count": 5,
+        "pair_lag_relation_count": 5,
+        "matches_winner_profile": true,
+        "matches_recent_profile": true,
+        "overlap_with_previous_tickets": [
+          3,
+          2
+        ],
+        "diversity_ok": true
+      },
+      "construction_trace_es": [
+        "Se añadió relación pair_companion observada en las últimas 30 combinaciones.",
+        "Se añadió relación pair_lag trigger → candidato desde ventana histórica.",
+        "Se aceptó por cierre estructural con señales block_completion o structure_completion.",
+        "Repetidos inmediatos controlados: 1 repetido inmediato dentro de rango histórico normal.",
+        "Se permitió banda de suma adyacente para preservar señales activas y diversidad.",
+        "Se permitió firma de presencia alternativa para mantener diversidad entre boletos.",
+        "Se mantuvo estado review_default."
+      ],
+      "constructor_acceptance_score": 63.150282,
+      "reason_es": "Boleto construido desde señales activas, relación de pares, suma objetivo y formación de estructura.",
+      "thesis_es": "Composición block_completion_main con firma 1-2-2-1-0, presencia 1-1-1-1-0 y banda núcleo histórico.",
+      "risk_notes_es": [
+        "Revisar que la estructura no dependa de una sola familia de señales.",
+        "Usar como formación de revisión, no como promesa de resultado."
+      ],
+      "production_status": "review_default"
+    },
+    {
+      "ticket_id": "constructor_4",
+      "ticket_type": "pair_companion_bridge",
+      "numbers": [
+        4,
+        7,
+        15,
+        23,
+        24,
+        40
+      ],
+      "signals": {
+        "4": [
+          "block_completion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit",
+          "zone_fit"
+        ],
+        "7": [
+          "pair_companion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "recent_frequency",
           "signature_history",
           "structure_completion",
           "winner_profile_fit",
@@ -758,112 +1030,6 @@
           "winner_profile_fit",
           "zone_fit"
         ],
-        "29": [
-          "pair_companion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "recent_frequency",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ]
-      },
-      "composition": {
-        "parity": "2_even_4_odd",
-        "sum": 100,
-        "sum_band": "historical_core",
-        "sum_band_es": "núcleo histórico",
-        "block_signature": "2-1-3-0-0",
-        "block_presence_signature": "1-1-1-0-0",
-        "visual_structure_label_es": "Escalera baja-media hasta 21_30",
-        "blocks": {
-          "1_10": 2,
-          "11_20": 1,
-          "21_30": 3,
-          "31_40": 0,
-          "41_56": 0
-        },
-        "immediate_overlap_previous_draw": 2,
-        "immediate_overlap_label_es": "2 repetidos inmediatos permitidos por soporte de señales activas",
-        "immediate_overlap_reason_es": "Se permitieron 2 repetidos inmediatos por soporte de perfil reciente o relación interna.",
-        "pair_companion_count": 0,
-        "pair_lag_relation_count": 7,
-        "matches_winner_profile": true,
-        "matches_recent_profile": true
-      },
-      "construction_trace_es": [
-        "Se inició con números que tienen al menos una señal activa real.",
-        "Se revisó relación interna de pares pair_lag y pair_companion.",
-        "Se ajustó suma, paridad y firma visual contra perfiles histórico y reciente.",
-        "Se midieron repetidos inmediatos sin prohibirlos automáticamente.",
-        "Se mantuvo diversidad frente a los otros boletos del conjunto.",
-        "Se mantuvo estado review_default."
-      ],
-      "reason_es": "Boleto construido desde señales activas, relación de pares, suma objetivo y formación de estructura.",
-      "thesis_es": "Composición recent_signature_fit con firma 2-1-3-0-0, presencia 1-1-1-0-0 y banda núcleo histórico.",
-      "risk_notes_es": [
-        "Revisar que la estructura no dependa de una sola familia de señales.",
-        "Usar como formación de revisión, no como promesa de resultado."
-      ],
-      "production_status": "review_default"
-    },
-    {
-      "ticket_id": "constructor_3",
-      "ticket_type": "block_completion_main",
-      "numbers": [
-        5,
-        7,
-        15,
-        33,
-        37,
-        40
-      ],
-      "signals": {
-        "5": [
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "7": [
-          "pair_companion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "recent_frequency",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "15": [
-          "pair_companion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "recent_frequency",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "33": [
-          "block_completion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit"
-        ],
-        "37": [
-          "block_completion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit"
-        ],
         "40": [
           "block_completion",
           "pair_lag_candidate",
@@ -874,38 +1040,46 @@
         ]
       },
       "composition": {
-        "parity": "1_even_5_odd",
-        "sum": 137,
+        "parity": "3_even_3_odd",
+        "sum": 113,
         "sum_band": "historical_core",
         "sum_band_es": "núcleo histórico",
-        "block_signature": "2-1-0-3-0",
-        "block_presence_signature": "1-1-0-1-0",
-        "visual_structure_label_es": "Presencia visual 1-1-0-1-0",
+        "block_signature": "2-1-2-1-0",
+        "block_presence_signature": "1-1-1-1-0",
+        "visual_structure_label_es": "Presencia visual 1-1-1-1-0",
         "blocks": {
           "1_10": 2,
           "11_20": 1,
-          "21_30": 0,
-          "31_40": 3,
+          "21_30": 2,
+          "31_40": 1,
           "41_56": 0
         },
-        "immediate_overlap_previous_draw": 0,
-        "immediate_overlap_label_es": "sin repetidos inmediatos",
-        "immediate_overlap_reason_es": "No se usaron repetidos inmediatos porque el pool mantuvo señales suficientes.",
+        "immediate_overlap_previous_draw": 2,
+        "immediate_overlap_label_es": "2 repetidos inmediatos permitidos por soporte de señales activas",
+        "immediate_overlap_reason_es": "Se permitieron 2 repetidos inmediatos por soporte de perfil reciente o relación interna.",
         "pair_companion_count": 1,
-        "pair_lag_relation_count": 3,
+        "pair_lag_relation_count": 4,
         "matches_winner_profile": true,
-        "matches_recent_profile": true
+        "matches_recent_profile": true,
+        "overlap_with_previous_tickets": [
+          2,
+          3,
+          2
+        ],
+        "diversity_ok": true
       },
       "construction_trace_es": [
-        "Se inició con números que tienen al menos una señal activa real.",
-        "Se revisó relación interna de pares pair_lag y pair_companion.",
-        "Se ajustó suma, paridad y firma visual contra perfiles histórico y reciente.",
-        "Se midieron repetidos inmediatos sin prohibirlos automáticamente.",
-        "Se mantuvo diversidad frente a los otros boletos del conjunto.",
+        "Se añadió relación pair_companion observada en las últimas 30 combinaciones.",
+        "Se añadió relación pair_lag trigger → candidato desde ventana histórica.",
+        "Se aceptó por cierre estructural con señales block_completion o structure_completion.",
+        "Se permitieron 2 repetidos inmediatos porque ambos tenían señales activas y la estructura seguía alineada.",
+        "Se permitió banda de suma adyacente para preservar señales activas y diversidad.",
+        "Se permitió firma de presencia alternativa para mantener diversidad entre boletos.",
         "Se mantuvo estado review_default."
       ],
+      "constructor_acceptance_score": 58.964898,
       "reason_es": "Boleto construido desde señales activas, relación de pares, suma objetivo y formación de estructura.",
-      "thesis_es": "Composición block_completion_main con firma 2-1-0-3-0, presencia 1-1-0-1-0 y banda núcleo histórico.",
+      "thesis_es": "Composición pair_companion_bridge con firma 2-1-2-1-0, presencia 1-1-1-1-0 y banda núcleo histórico.",
       "risk_notes_es": [
         "Revisar que la estructura no dependa de una sola familia de señales.",
         "Usar como formación de revisión, no como promesa de resultado."
@@ -913,40 +1087,20 @@
       "production_status": "review_default"
     },
     {
-      "ticket_id": "constructor_4",
-      "ticket_type": "pair_companion_bridge",
+      "ticket_id": "constructor_5",
+      "ticket_type": "controlled_contrarian",
       "numbers": [
         5,
-        24,
-        25,
         27,
-        35,
-        53
+        37,
+        39,
+        40,
+        50
       ],
       "signals": {
         "5": [
           "pair_lag_candidate",
           "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "24": [
-          "pair_companion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "recent_frequency",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "25": [
-          "pair_companion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "recent_frequency",
           "signature_history",
           "structure_completion",
           "winner_profile_fit",
@@ -962,8 +1116,15 @@
           "winner_profile_fit",
           "zone_fit"
         ],
-        "35": [
+        "37": [
           "block_completion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit"
+        ],
+        "39": [
           "pair_companion",
           "pair_lag_candidate",
           "pair_lag_trigger",
@@ -972,8 +1133,16 @@
           "structure_completion",
           "winner_profile_fit"
         ],
-        "53": [
+        "40": [
           "block_completion",
+          "pair_lag_candidate",
+          "pair_lag_trigger",
+          "signature_history",
+          "structure_completion",
+          "winner_profile_fit"
+        ],
+        "50": [
+          "gap_echo",
           "pair_companion",
           "pair_lag_candidate",
           "pair_lag_trigger",
@@ -984,146 +1153,47 @@
         ]
       },
       "composition": {
-        "parity": "1_even_5_odd",
-        "sum": 169,
-        "sum_band": "upper_core",
-        "sum_band_es": "núcleo alto",
-        "block_signature": "1-0-3-1-1",
+        "parity": "2_even_4_odd",
+        "sum": 198,
+        "sum_band": "high_tail",
+        "sum_band_es": "cola alta",
+        "block_signature": "1-0-1-3-1",
         "block_presence_signature": "1-0-1-1-1",
         "visual_structure_label_es": "Presencia visual 1-0-1-1-1",
         "blocks": {
           "1_10": 1,
           "11_20": 0,
-          "21_30": 3,
-          "31_40": 1,
+          "21_30": 1,
+          "31_40": 3,
           "41_56": 1
         },
-        "immediate_overlap_previous_draw": 2,
-        "immediate_overlap_label_es": "2 repetidos inmediatos permitidos por soporte de señales activas",
-        "immediate_overlap_reason_es": "Se permitieron 2 repetidos inmediatos por soporte de perfil reciente o relación interna.",
-        "pair_companion_count": 3,
-        "pair_lag_relation_count": 5,
+        "immediate_overlap_previous_draw": 1,
+        "immediate_overlap_label_es": "1 repetido inmediato dentro de rango histórico normal",
+        "immediate_overlap_reason_es": "Se permitió 1 repetido inmediato por soporte de señales activas.",
+        "pair_companion_count": 0,
+        "pair_lag_relation_count": 8,
         "matches_winner_profile": true,
-        "matches_recent_profile": true
+        "matches_recent_profile": true,
+        "overlap_with_previous_tickets": [
+          1,
+          3,
+          1,
+          1
+        ],
+        "diversity_ok": true
       },
       "construction_trace_es": [
-        "Se inició con números que tienen al menos una señal activa real.",
-        "Se revisó relación interna de pares pair_lag y pair_companion.",
-        "Se ajustó suma, paridad y firma visual contra perfiles histórico y reciente.",
-        "Se midieron repetidos inmediatos sin prohibirlos automáticamente.",
-        "Se mantuvo diversidad frente a los otros boletos del conjunto.",
+        "Se añadió relación pair_lag trigger → candidato desde ventana histórica.",
+        "Se aceptó por cierre estructural con señales block_completion o structure_completion.",
+        "Repetidos inmediatos controlados: 1 repetido inmediato dentro de rango histórico normal.",
         "Se mantuvo estado review_default."
       ],
+      "constructor_acceptance_score": 60.514168,
       "reason_es": "Boleto construido desde señales activas, relación de pares, suma objetivo y formación de estructura.",
-      "thesis_es": "Composición pair_companion_bridge con firma 1-0-3-1-1, presencia 1-0-1-1-1 y banda núcleo alto.",
+      "thesis_es": "Composición controlled_contrarian con firma 1-0-1-3-1, presencia 1-0-1-1-1 y banda cola alta.",
       "risk_notes_es": [
         "Revisar que la estructura no dependa de una sola familia de señales.",
         "Usar como formación de revisión, no como promesa de resultado."
-      ],
-      "production_status": "review_default"
-    },
-    {
-      "ticket_id": "constructor_5",
-      "ticket_type": "controlled_contrarian",
-      "numbers": [
-        10,
-        12,
-        14,
-        21,
-        28,
-        47
-      ],
-      "signals": {
-        "10": [
-          "block_completion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "12": [
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "14": [
-          "block_completion",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "21": [
-          "block_completion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "28": [
-          "block_completion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ],
-        "47": [
-          "pair_companion",
-          "pair_lag_candidate",
-          "pair_lag_trigger",
-          "recent_frequency",
-          "signature_history",
-          "structure_completion",
-          "winner_profile_fit",
-          "zone_fit"
-        ]
-      },
-      "composition": {
-        "parity": "4_even_2_odd",
-        "sum": 132,
-        "sum_band": "historical_core",
-        "sum_band_es": "núcleo histórico",
-        "block_signature": "1-2-2-0-1",
-        "block_presence_signature": "1-1-1-0-1",
-        "visual_structure_label_es": "Presencia visual 1-1-1-0-1",
-        "blocks": {
-          "1_10": 1,
-          "11_20": 2,
-          "21_30": 2,
-          "31_40": 0,
-          "41_56": 1
-        },
-        "immediate_overlap_previous_draw": 0,
-        "immediate_overlap_label_es": "sin repetidos inmediatos",
-        "immediate_overlap_reason_es": "No se usaron repetidos inmediatos porque el pool mantuvo señales suficientes.",
-        "pair_companion_count": 0,
-        "pair_lag_relation_count": 0,
-        "matches_winner_profile": true,
-        "matches_recent_profile": true
-      },
-      "construction_trace_es": [
-        "Se inició con números que tienen al menos una señal activa real.",
-        "Se revisó relación interna de pares pair_lag y pair_companion.",
-        "Se ajustó suma, paridad y firma visual contra perfiles histórico y reciente.",
-        "Se midieron repetidos inmediatos sin prohibirlos automáticamente.",
-        "Se mantuvo diversidad frente a los otros boletos del conjunto.",
-        "Se mantuvo estado review_default."
-      ],
-      "reason_es": "Boleto construido desde señales activas, relación de pares, suma objetivo y formación de estructura.",
-      "thesis_es": "Composición controlled_contrarian con firma 1-2-2-0-1, presencia 1-1-1-0-1 y banda núcleo histórico.",
-      "risk_notes_es": [
-        "Revisar que la estructura no dependa de una sola familia de señales.",
-        "Usar como formación de revisión, no como promesa de resultado.",
-        "La relación interna de pares es débil en este boleto."
       ],
       "production_status": "review_default"
     }

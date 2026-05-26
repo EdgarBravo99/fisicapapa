@@ -204,8 +204,35 @@ def _assert_v44_outputs() -> None:
     tickets = slate.get("tickets")
     assert isinstance(tickets, list) and tickets, "V4.4 tickets missing"
     assert len(tickets) == 5, f"V4.4 constructor should produce exactly 5 tickets, got {len(tickets)}"
+    trace_texts = []
+    two_overlap_count = 0
     for ticket in tickets:
         _assert_v44_ticket(ticket)
+        trace = " ".join(ticket.get("construction_trace_es", []))
+        trace_texts.append(trace)
+        assert any(
+            phrase in trace
+            for phrase in (
+                "pair_companion",
+                "pair_lag",
+                "cierre estructural",
+                "tesis contraria",
+                "Repetidos inmediatos",
+                "repetidos inmediatos",
+            )
+        ), f"construction_trace_es lacks specific evidence: {ticket.get('ticket_id')}"
+        composition = ticket["composition"]
+        if composition.get("pair_companion_count") == 0 and composition.get("pair_lag_relation_count") == 0:
+            risk = " ".join(ticket.get("risk_notes_es", [])).lower()
+            assert "par" in risk or "contraria" in trace.lower(), "zero-pair ticket must justify pair weakness"
+        if int(composition.get("immediate_overlap_previous_draw", 0)) == 2:
+            two_overlap_count += 1
+            reason = str(composition.get("immediate_overlap_reason_es", ""))
+            structure_count = sum(1 for values in ticket["signals"].values() if "structure_completion" in values)
+            assert reason and reason != "no disponible", "2-overlap ticket needs explicit immediate overlap reason"
+            assert composition.get("pair_companion_count", 0) > 0 or composition.get("pair_lag_relation_count", 0) > 0 or structure_count >= 4
+    assert len(set(trace_texts)) > 1, "all V4.4 tickets have identical construction_trace_es"
+    assert two_overlap_count <= 2, "slate should not contain more than two tickets with 2 immediate repeats"
     for left, right in itertools.combinations(tickets, 2):
         overlap = len(set(left["numbers"]) & set(right["numbers"]))
         if overlap > 3:
