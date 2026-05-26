@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import itertools
 import json
 import subprocess
 import tempfile
@@ -130,6 +132,88 @@ def _assert_no_forbidden_file_diff() -> None:
         assert result.stdout == "", f"forbidden file modified: {path}"
 
 
+def _assert_v44_ticket(ticket: dict) -> None:
+    assert ticket.get("production_status") == "review_default", "V4.4 ticket production_status must be review_default"
+    numbers = ticket.get("numbers")
+    assert isinstance(numbers, list) and len(numbers) == 6, f"V4.4 ticket must have 6 numbers: {numbers}"
+    assert len(set(numbers)) == 6, f"V4.4 ticket has duplicates: {numbers}"
+    assert all(isinstance(number, int) and 1 <= number <= 56 for number in numbers), numbers
+    signals = ticket.get("signals")
+    assert isinstance(signals, dict) and signals, "V4.4 ticket signals missing"
+    for number in numbers:
+        active = signals.get(str(number))
+        assert isinstance(active, list) and active, f"number {number} lacks active signals"
+    composition = ticket.get("composition")
+    assert isinstance(composition, dict), "V4.4 ticket composition missing"
+    for field in (
+        "parity",
+        "sum",
+        "sum_band",
+        "sum_band_es",
+        "block_signature",
+        "block_presence_signature",
+        "visual_structure_label_es",
+        "immediate_overlap_previous_draw",
+        "immediate_overlap_label_es",
+        "immediate_overlap_reason_es",
+        "pair_companion_count",
+        "pair_lag_relation_count",
+        "matches_winner_profile",
+        "matches_recent_profile",
+    ):
+        assert field in composition, f"V4.4 composition missing {field}"
+    assert isinstance(ticket.get("construction_trace_es"), list) and ticket["construction_trace_es"], "construction_trace_es missing"
+    assert ticket.get("reason_es"), "reason_es missing"
+    assert ticket.get("thesis_es"), "thesis_es missing"
+    assert isinstance(ticket.get("risk_notes_es"), list) and ticket["risk_notes_es"], "risk_notes_es missing"
+
+
+def _assert_v44_outputs() -> None:
+    required = [
+        "v4_history_matrix.json",
+        "v4_gap_echo_output.json",
+        "v4_signature_history.json",
+        "v4_pair_lag_signals.json",
+        "v4_block_completion_signals.json",
+        "v4_winner_profile.json",
+        "v4_recent_composition_profile.json",
+        "v4_combination_slate.json",
+    ]
+    if not (ROOT / "v4_combination_slate.json").exists():
+        return
+    for path in required:
+        assert (ROOT / path).exists(), f"missing V4.4 output: {path}"
+        data = _load(path)
+        assert data.get("production_status") == "review_default", f"{path} production_status must be review_default"
+        _assert_no_forbidden_language(data)
+
+    recent = _load("v4_recent_composition_profile.json")
+    winner = _load("v4_winner_profile.json")
+    slate = _load("v4_combination_slate.json")
+    assert recent.get("window") == 30, "recent composition window must be 30"
+    assert recent.get("latest_draw") == slate.get("latest_draw"), "latest_draw mismatch between recent profile and slate"
+    assert recent.get("source_sha256") == winner.get("source_sha256"), "source sha mismatch"
+    assert recent.get("source_sha256") == hashlib.sha256((ROOT / "revancha.csv").read_bytes()).hexdigest()
+    assert recent.get("sum_profile", {}).get("sum_band_distribution"), "recent sum distribution missing"
+    assert recent.get("parity_profile", {}).get("parity_distribution"), "recent parity distribution missing"
+    assert recent.get("presence_signature_profile", {}).get("dominant_presence_signature"), "recent dominant presence missing"
+    assert isinstance(recent.get("pair_companion_profile", {}).get("top_pair_companions"), list), "top_pair_companions missing"
+    assert isinstance(recent.get("number_frequency_recent_30"), dict), "number_frequency_recent_30 missing"
+    assert isinstance(slate.get("recent_composition_profile_used"), dict), "recent_composition_profile_used missing"
+    assert isinstance(slate.get("slate_structure_summary"), dict), "slate_structure_summary missing"
+    tickets = slate.get("tickets")
+    assert isinstance(tickets, list) and tickets, "V4.4 tickets missing"
+    assert len(tickets) == 5, f"V4.4 constructor should produce exactly 5 tickets, got {len(tickets)}"
+    for ticket in tickets:
+        _assert_v44_ticket(ticket)
+    for left, right in itertools.combinations(tickets, 2):
+        overlap = len(set(left["numbers"]) & set(right["numbers"]))
+        if overlap > 3:
+            trace = " ".join(left.get("construction_trace_es", []) + right.get("construction_trace_es", [])).lower()
+            assert "relaj" in trace or "compartidos" in trace, f"ticket overlap {overlap} lacks justification"
+    _assert_spanish_contract_language(slate)
+
+
 def main() -> int:
     draws = read_revancha_csv(ROOT / "revancha.csv")
     assert draws, "revancha.csv must parse"
@@ -247,6 +331,7 @@ def main() -> int:
         assert '"score_kind": "v4_2_deep_stacking_meta_score"' in text
 
     _assert_no_forbidden_file_diff()
+    _assert_v44_outputs()
     print("v4 hybrid composition smoke ok")
     return 0
 

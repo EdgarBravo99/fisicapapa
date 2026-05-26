@@ -804,6 +804,54 @@ py tools\v4_post_draw_audit.py --target-draw <draw>
 
 Post-draw audit reads the frozen pre-draw snapshot and can compare actual block signatures against ticket signatures. It remains diagnostic-only.
 
+## V4.4 Full Constructor + Decision Cockpit
+
+V4.4 agrega una capa nueva de constructor de combinaciones. V4.2 sigue siendo el motor oficial opcional de señal individual y V4.3 queda como fallback/legacy. V4.4 no modifica `resultados.json`, no toca los crunchers V4.2, no cambia `score_kind` y no activa priors.
+
+Comando integrado V4.4:
+
+```powershell
+py tools\v4_refresh.py --game revancha --scrape --reconstruct --full-signals --recent-composition --construct
+```
+
+Ese flujo ejecuta, en orden:
+
+```txt
+tools/v4_scraper_pakin.py              descarga Pakin en v4_scraper_raw.csv
+tools/v4_csv_reconstructor.py          reconstruye revancha.csv canonico
+tools/v4_matrix_builder.py             crea v4_history_matrix.json
+tools/v4_gap_echo_engine.py            crea v4_gap_echo_output.json
+tools/v4_signature_history_engine.py   crea v4_signature_history.json
+tools/v4_pair_lag_constructor.py       crea v4_pair_lag_signals.json
+tools/v4_block_completion_engine.py    crea v4_block_completion_signals.json
+tools/v4_winner_profile_engine.py      crea v4_winner_profile.json
+tools/v4_recent_composition_engine.py  crea v4_recent_composition_profile.json
+tools/v4_combination_constructor.py    crea v4_combination_slate.json
+```
+
+`v4_combination_slate.json` es la salida principal V4.4. Contiene exactamente cinco boletos cuando el pool tiene suficientes señales. Cada boleto se forma con señales activas, relación de pares, suma objetivo, paridad, firma visual, perfil ganador, perfil reciente, repetidos inmediatos medidos y trazabilidad en español. No es un ranking top 6 por score.
+
+`v4_recent_composition_profile.json` analiza las últimas 30 combinaciones ganadoras. Resume bandas de suma, paridad, firmas de presencia, repetidos inmediatos, pares companion y frecuencia reciente. La frecuencia reciente es señal secundaria, no ranking único.
+
+`pair_companion` y `pair_lag` no significan lo mismo:
+
+- `pair_companion`: dos números aparecen juntos dentro del mismo sorteo.
+- `pair_lag`: un número aparece y otro aparece dentro de los siguientes tres sorteos.
+
+`block_presence_signature` describe qué bloques tienen presencia. Con bloques `1_10`, `11_20`, `21_30`, `31_40`, `41_56`, la firma `0-0-1-0-1` significa presencia en `21_30` y `41_56` solamente. `block_signature` guarda los conteos exactos por bloque.
+
+`construction_trace_es` explica cómo se formó cada boleto: señales activas, pares, suma, paridad, estructura, repetidos inmediatos y cualquier relajación aplicada. Los repetidos inmediatos no se prohíben: se miden, se justifican cuando aparecen y se marcan como riesgo cuando son altos.
+
+La web principal ahora es el cockpit V4.4 limpio. Lee `v4_combination_slate.json` como fuente primaria y cae a `v4_hybrid_composition_slate.json` solo si falta la salida V4.4. La web no calcula ranking de modelo, no genera boletos, no modifica JSON y no usa `resultados.json` como verdad histórica.
+
+Estado operativo:
+
+```txt
+production_status = review_default
+```
+
+Uso experimental de revisión. No hay promesa de resultado ni certeza operativa.
+
 ## Legacy Snapshot Classifier
 
 `tools/v4_legacy_snapshot_classifier.py` clasifica snapshots antiguos para conservar diagnostico sin contaminar memoria aplicada.

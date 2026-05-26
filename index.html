@@ -4,281 +4,40 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#030712" />
-  <title>Fisicapapa Personal Quant Desk · Web V2 · V4.2</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Outfit', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-            display: ['Space Grotesk', 'Outfit', 'ui-sans-serif', 'system-ui'],
-            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
-          },
-          colors: {
-            desk: { bg: '#030712', panel: '#08111f', card: '#0f172a', line: 'rgba(148,163,184,.16)', cyan: '#22d3ee' },
-          },
-        },
-      },
-    };
-  </script>
-  <link rel="stylesheet" href="v4-visual-system.css" />
+  <title>Fisicapapa Cockpit V4.4</title>
   <link rel="stylesheet" href="v4-cockpit.css" />
 </head>
-<body class="taste-bg min-h-[100dvh] text-slate-100 selection:bg-cyan-300 selection:text-slate-950">
-  <div class="taste-atmosphere" aria-hidden="true"></div>
-
-  <main id="app-root" class="taste-shell mx-auto flex w-full max-w-[1440px] flex-col gap-5 px-4 py-4 sm:px-6 lg:px-8">
-    <nav class="cockpit-nav" aria-label="Navegacion principal V4.3">
-      <a class="cockpit-brand" href="#cockpit-mission" aria-label="Ir a Control">
-        <span class="taste-live-dot" aria-hidden="true"></span>
-        <span>Fisicapapa Cockpit</span>
-        <b>V4.3</b>
+<body>
+  <main id="app-root" class="cockpit-shell">
+    <nav class="cockpit-nav" aria-label="Navegación principal V4.4">
+      <a class="cockpit-brand" href="#cockpit-control">
+        <span>Fisicapapa</span>
+        <b>V4.4</b>
       </a>
       <div class="cockpit-nav-links" role="list">
-        <a role="listitem" href="#cockpit-mission">Control</a>
+        <a role="listitem" href="#cockpit-control">Control</a>
         <a role="listitem" href="#cockpit-slate">Boletos</a>
-        <a role="listitem" href="#cockpit-diagnostics">Diagnostico</a>
-        <a role="listitem" href="#cockpit-audit">Auditoria</a>
+        <a role="listitem" href="#cockpit-diagnostics">Diagnóstico</a>
+        <a role="listitem" href="#cockpit-audit">Auditoría</a>
       </div>
     </nav>
 
-    <header class="taste-header taste-motion-in">
-      <div class="taste-header-copy">
-        <p class="taste-eyebrow">V4.3 Decision Cockpit · Web V2 · Lectura personal</p>
-        <h1>Fisicapapa Harmonic Review Desk</h1>
-        <p>Cabina diaria para revisar tickets, soporte armonico, riesgos y auditoria post-draw sin confundir score interno con certeza de resultado.</p>
-      </div>
-      <section class="taste-header-metrics" aria-label="Resumen del modelo">
-        <article class="taste-metric">
-          <span>Actualizacion</span>
-          <b id="header-last-update">Esperando JSON</b>
-        </article>
-        <article class="taste-metric">
-          <span>Modo</span>
-          <b id="header-game-mode">N/D</b>
-        </article>
-        <article class="taste-metric">
-          <span>Modelo</span>
-          <b id="header-model-version">N/D</b>
-        </article>
-      </section>
+    <header class="cockpit-hero">
+      <p class="cockpit-kicker">V4.4 Full Constructor</p>
+      <h1>Harmonic Decision Cockpit</h1>
+      <p>Formación de boletos por relación de pares, suma objetivo, paridad, firmas visuales, perfil ganador y composición reciente. Estado: <b>review_default</b>.</p>
+      <p class="cockpit-note">Este sistema es experimental. Las composiciones son métricas de revisión interna, no promesas ni certeza de resultado.</p>
     </header>
 
-    <section id="fatal-error" class="taste-alert taste-alert-danger hidden">
-      <div>
-        <p class="taste-eyebrow">Ejecucion detenida</p>
-        <h2>JSON incompatible con Web V2</h2>
-        <p id="fatal-error-message"></p>
-      </div>
-      <strong>V4.2 requerido</strong>
-    </section>
-
-    <section id="loading-panel" class="taste-loading">
-      <div class="taste-loading-skeleton"></div>
-      <div>
-        <p class="taste-eyebrow">Arranque de cabina</p>
-        <p>Cargando resultados.json y validando contrato V4.2.</p>
-      </div>
-    </section>
-
-    <section id="v43-cockpit-root" class="v43-cockpit-root" aria-label="V4.3 Decision Cockpit">
+    <section id="v44-cockpit-root" class="v43-cockpit-root" aria-label="V4.4 Decision Cockpit">
       <article class="cockpit-zone">
-        <p class="cockpit-kicker">V4.3 Decision Cockpit</p>
-        <h2>Cargando cockpit read-only</h2>
-        <p class="cockpit-muted">Leyendo JSONs existentes. El navegador no calcula senales de modelo ni modifica resultados oficiales.</p>
+        <p class="cockpit-kicker">Arranque</p>
+        <h2>Cargando fuentes V4.4</h2>
+        <p class="cockpit-muted">El navegador solo lee JSON generado. No calcula modelo, no modifica resultados oficiales y no escribe archivos.</p>
       </article>
-    </section>
-
-    <section id="dashboard" class="hidden grid gap-5">
-      <section id="personal-center" class="taste-section-hero taste-motion-in">
-        <div class="taste-hero-grid">
-          <div class="taste-hero-main">
-            <div class="taste-hero-kicker">
-              <span>Centro Personal V4.2</span>
-              <span id="personal-center-status" class="taste-chip">Esperando JSON</span>
-            </div>
-            <h2>Decision rapida del dia</h2>
-            <p>Primero mira estado, mejor combinacion, mejor numero y que revisar antes de bajar a detalles.</p>
-            <div id="personal-center-panel" class="taste-hero-panel"></div>
-          </div>
-          <aside class="taste-hero-side" aria-label="Kpis del sistema">
-            <article class="taste-metric">
-              <span>Score Kind</span>
-              <b id="kpi-score-kind">N/D</b>
-            </article>
-            <article class="taste-metric">
-              <span>Feedback Loop</span>
-              <b id="kpi-feedback-loop">N/D</b>
-            </article>
-            <article class="taste-metric">
-              <span>Walk-Forward</span>
-              <b id="kpi-walk-forward">N/D</b>
-            </article>
-            <article class="taste-metric">
-              <span>Generator Pool</span>
-              <b id="kpi-generator-pool">N/D</b>
-            </article>
-          </aside>
-        </div>
-      </section>
-
-      <details class="taste-section cockpit-secondary-details" aria-labelledby="results-title">
-        <summary class="taste-section-heading">
-          <div>
-            <p class="taste-eyebrow">V4.2 individual number scores — legacy diagnostics</p>
-            <h2 id="results-title">Tickets de decision</h2>
-          </div>
-          <p>Top combinaciones y ranking de numeros en una lectura compacta para escritorio o celular.</p>
-        </summary>
-        <div class="taste-results-grid">
-          <section id="top-combinations-section" class="taste-card taste-card-large">
-            <div class="taste-card-heading">
-              <div>
-                <p class="taste-eyebrow">Generator pool</p>
-                <h3>Mejores combinaciones</h3>
-              </div>
-              <span id="top-combos-label" class="taste-chip">N/D</span>
-            </div>
-            <div id="top-combinations-panel" class="taste-stack"></div>
-          </section>
-
-          <section class="taste-card">
-            <div class="taste-card-heading">
-              <div>
-                <p class="taste-eyebrow">Ranking por numero</p>
-                <h3>Top 10 V4.2</h3>
-              </div>
-            </div>
-            <div id="top-numbers-panel" class="taste-stack"></div>
-          </section>
-        </div>
-      </details>
-
-      <details id="manual-evaluator-section" class="taste-section taste-section-evaluator cockpit-secondary-details">
-        <summary class="taste-section-heading">
-          <div>
-            <p class="taste-eyebrow">Evaluador manual</p>
-            <h2>Score web, cruncher y componentes</h2>
-          </div>
-        </summary>
-        <div class="taste-action-row mb-4">
-          <button id="btn-evaluate-manual" class="taste-action" aria-label="Evaluar combinacion manual V4.2">Evaluar</button>
-        </div>
-        <div class="taste-input-deck" aria-label="Ingresar seis numeros">
-          <label for="manual-n1"><span>Numero 1</span><input id="manual-n1" type="number" min="1" max="56" placeholder="N1" /></label>
-          <label for="manual-n2"><span>Numero 2</span><input id="manual-n2" type="number" min="1" max="56" placeholder="N2" /></label>
-          <label for="manual-n3"><span>Numero 3</span><input id="manual-n3" type="number" min="1" max="56" placeholder="N3" /></label>
-          <label for="manual-n4"><span>Numero 4</span><input id="manual-n4" type="number" min="1" max="56" placeholder="N4" /></label>
-          <label for="manual-n5"><span>Numero 5</span><input id="manual-n5" type="number" min="1" max="56" placeholder="N5" /></label>
-          <label for="manual-n6"><span>Numero 6</span><input id="manual-n6" type="number" min="1" max="56" placeholder="N6" /></label>
-        </div>
-        <div id="manual-error" class="taste-alert taste-alert-danger mt-4 hidden"></div>
-        <div id="manual-result" class="mt-5 hidden"></div>
-      </details>
-
-      <details id="combo-comparator-section" class="taste-section taste-comparator cockpit-secondary-details">
-        <summary class="taste-section-heading">
-          <div>
-            <p class="taste-eyebrow">Mesa de decision</p>
-            <h2>Comparador de 2 a 5 combinaciones</h2>
-          </div>
-        </summary>
-        <div class="taste-action-row mb-4">
-          <div class="taste-action-row">
-            <button id="btn-save-current-combo" class="taste-ghost">Guardar actual</button>
-            <button id="btn-copy-comparator-report" class="taste-ghost">Copiar reporte</button>
-            <button id="btn-clear-comparator" class="taste-danger">Limpiar</button>
-          </div>
-        </div>
-        <div id="combo-comparator-panel" class="taste-stack"></div>
-      </details>
-
-      <section id="physics-section" class="taste-section taste-physics">
-        <div class="taste-section-heading">
-          <div>
-            <p class="taste-eyebrow">Fisica de esferas</p>
-            <h2>Laboratorio fisico calibrado</h2>
-          </div>
-          <div id="physics-summary-label" class="taste-chip taste-chip-ok">Esperando fisica</div>
-        </div>
-        <div id="physics-grid" class="taste-physics-grid"></div>
-      </section>
-
-      <section class="taste-section taste-memory-preview">
-        <div class="taste-section-heading">
-          <div>
-            <p class="taste-eyebrow">Memoria / GitHub</p>
-            <h2>Preparado para examenes calificados</h2>
-          </div>
-          <a class="taste-ghost" href="https://github.com/EdgarBravo99/fisicapapa/commits/main/resultados.json" target="_blank" rel="noopener">Historial JSON</a>
-        </div>
-        <div id="feedback-memory-panel" class="taste-panel-muted">
-          <p class="taste-eyebrow">Memoria pendiente</p>
-          <p>Aun no hay examenes calificados en esta web. El panel activo se agregara despues de integrar la memoria del runner.</p>
-        </div>
-      </section>
-
-      <details id="decision-audit-section" class="taste-section taste-decision-audit cockpit-secondary-details">
-        <summary class="taste-section-heading">
-          <div>
-            <p class="taste-eyebrow">V4.2 legacy diagnostics</p>
-            <h2>Auditorias historicas y diagnosticos secundarios</h2>
-          </div>
-          <span class="taste-chip taste-chip-warn">diagnostic_only</span>
-        </summary>
-        <div id="decision-audit-panel" class="taste-stack">
-          <div class="taste-panel-muted">
-            <p class="taste-eyebrow">Audit pendiente</p>
-            <p>Ejecuta el refresh V4.3 para generar diagnosticos read-only y composicion armonica.</p>
-          </div>
-        </div>
-      </details>
-
-      <details id="auditor-section" class="taste-terminal">
-        <summary>Auditor V4.2</summary>
-        <p>Conteos, advertencias, escalas detectadas y muestras crudas para revisar contrato sin saturar el flujo diario.</p>
-        <div id="auditor-panel" class="taste-stack"></div>
-      </details>
-
-      <section class="taste-section taste-system-grid">
-        <article class="taste-terminal taste-terminal-card">
-          <div class="taste-card-heading">
-            <div>
-              <p class="taste-eyebrow">Contrato V4.2 validado</p>
-              <h3>Vista cruda controlada</h3>
-            </div>
-            <button id="btn-reload-json" class="taste-ghost">Recargar JSON</button>
-          </div>
-          <pre id="contract-preview"></pre>
-        </article>
-
-        <article class="taste-card">
-          <div class="taste-card-heading">
-            <div>
-              <p class="taste-eyebrow">Diagnostico de datos</p>
-              <h3>Estado del sistema V4.2</h3>
-            </div>
-            <span id="system-diagnostics-status" class="taste-chip">Esperando JSON</span>
-          </div>
-          <div id="system-diagnostics-panel" class="taste-stack"></div>
-        </article>
-      </section>
     </section>
   </main>
 
-  <script src="data.js"></script>
-  <script src="pakin-remote-loader.js"></script>
-  <script src="v4-clean-app.js"></script>
-  <script src="v4-results-panels.js"></script>
-  <script src="v4-under40-verifier.js"></script>
-  <script src="v4-system-diagnostics.js"></script>
-  <script src="v4-combo-comparator.js"></script>
-  <script src="v4-feedback-memory-panel.js"></script>
   <script src="v4-cockpit-layout.js"></script>
-  <script src="v4-decision-audit-panel.js"></script>
 </body>
 </html>
