@@ -285,7 +285,7 @@
     const practicalAlerts = [];
     if (slate.production_status && slate.production_status !== 'review_default') practicalAlerts.push(`production_status es ${slate.production_status}; revisar estado antes de usar la vista.`);
     if (microShift) practicalAlerts.push('La ventana de 5 sorteos cambió contra ventanas mayores. Conviene revisar concentración por banda y firma.');
-    if (lowCount) practicalAlerts.push(`${lowCount} boleto(s) quedan en prioridad baja por soporte limitado o desalineaciÃ³n.`);
+    if (lowCount) practicalAlerts.push(`${lowCount} boleto(s) quedan en prioridad baja por soporte limitado o desalineación.`);
     if (reviewCount) practicalAlerts.push(`${reviewCount} boleto(s) requieren revisión antes de jugar por repetidos, suma o ventana corta.`);
     duplicateAlerts.forEach(alert => practicalAlerts.push(alert.text));
     if (!tickets.length) practicalAlerts.push('No hay boletos cargados para traducir a decisión operativa.');
