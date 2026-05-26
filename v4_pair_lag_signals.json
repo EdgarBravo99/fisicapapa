@@ -1,0 +1,3551 @@
+{
+  "generated_at": "2026-05-26T17:16:00.799711+00:00",
+  "engine_version": "v4.4-pair-lag",
+  "production_status": "review_default",
+  "latest_draw": 4217,
+  "lag_window": 3,
+  "signals": [
+    {
+      "trigger": 33,
+      "candidate": 26,
+      "historical_matches": 92,
+      "total_opportunities": 230,
+      "pair_lag_score": 0.4
+    },
+    {
+      "trigger": 43,
+      "candidate": 15,
+      "historical_matches": 86,
+      "total_opportunities": 218,
+      "pair_lag_score": 0.394495
+    },
+    {
+      "trigger": 28,
+      "candidate": 4,
+      "historical_matches": 89,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.393805
+    },
+    {
+      "trigger": 49,
+      "candidate": 37,
+      "historical_matches": 89,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.393805
+    },
+    {
+      "trigger": 20,
+      "candidate": 37,
+      "historical_matches": 80,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.384615
+    },
+    {
+      "trigger": 47,
+      "candidate": 46,
+      "historical_matches": 83,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.384259
+    },
+    {
+      "trigger": 33,
+      "candidate": 17,
+      "historical_matches": 88,
+      "total_opportunities": 230,
+      "pair_lag_score": 0.382609
+    },
+    {
+      "trigger": 43,
+      "candidate": 4,
+      "historical_matches": 83,
+      "total_opportunities": 218,
+      "pair_lag_score": 0.380734
+    },
+    {
+      "trigger": 49,
+      "candidate": 4,
+      "historical_matches": 86,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.380531
+    },
+    {
+      "trigger": 14,
+      "candidate": 29,
+      "historical_matches": 79,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.379808
+    },
+    {
+      "trigger": 38,
+      "candidate": 55,
+      "historical_matches": 85,
+      "total_opportunities": 225,
+      "pair_lag_score": 0.377778
+    },
+    {
+      "trigger": 29,
+      "candidate": 16,
+      "historical_matches": 92,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.377049
+    },
+    {
+      "trigger": 42,
+      "candidate": 4,
+      "historical_matches": 78,
+      "total_opportunities": 207,
+      "pair_lag_score": 0.376812
+    },
+    {
+      "trigger": 9,
+      "candidate": 49,
+      "historical_matches": 80,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.375587
+    },
+    {
+      "trigger": 53,
+      "candidate": 29,
+      "historical_matches": 86,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.375546
+    },
+    {
+      "trigger": 39,
+      "candidate": 37,
+      "historical_matches": 89,
+      "total_opportunities": 237,
+      "pair_lag_score": 0.375527
+    },
+    {
+      "trigger": 16,
+      "candidate": 46,
+      "historical_matches": 85,
+      "total_opportunities": 227,
+      "pair_lag_score": 0.374449
+    },
+    {
+      "trigger": 52,
+      "candidate": 37,
+      "historical_matches": 80,
+      "total_opportunities": 214,
+      "pair_lag_score": 0.373832
+    },
+    {
+      "trigger": 38,
+      "candidate": 40,
+      "historical_matches": 84,
+      "total_opportunities": 225,
+      "pair_lag_score": 0.373333
+    },
+    {
+      "trigger": 5,
+      "candidate": 29,
+      "historical_matches": 93,
+      "total_opportunities": 250,
+      "pair_lag_score": 0.372
+    },
+    {
+      "trigger": 6,
+      "candidate": 39,
+      "historical_matches": 82,
+      "total_opportunities": 221,
+      "pair_lag_score": 0.371041
+    },
+    {
+      "trigger": 22,
+      "candidate": 30,
+      "historical_matches": 80,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.37037
+    },
+    {
+      "trigger": 35,
+      "candidate": 8,
+      "historical_matches": 87,
+      "total_opportunities": 235,
+      "pair_lag_score": 0.370213
+    },
+    {
+      "trigger": 35,
+      "candidate": 13,
+      "historical_matches": 87,
+      "total_opportunities": 235,
+      "pair_lag_score": 0.370213
+    },
+    {
+      "trigger": 35,
+      "candidate": 22,
+      "historical_matches": 87,
+      "total_opportunities": 235,
+      "pair_lag_score": 0.370213
+    },
+    {
+      "trigger": 14,
+      "candidate": 31,
+      "historical_matches": 77,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.370192
+    },
+    {
+      "trigger": 14,
+      "candidate": 37,
+      "historical_matches": 77,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.370192
+    },
+    {
+      "trigger": 16,
+      "candidate": 15,
+      "historical_matches": 84,
+      "total_opportunities": 227,
+      "pair_lag_score": 0.370044
+    },
+    {
+      "trigger": 24,
+      "candidate": 29,
+      "historical_matches": 92,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.369478
+    },
+    {
+      "trigger": 38,
+      "candidate": 24,
+      "historical_matches": 83,
+      "total_opportunities": 225,
+      "pair_lag_score": 0.368889
+    },
+    {
+      "trigger": 46,
+      "candidate": 5,
+      "historical_matches": 87,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.368644
+    },
+    {
+      "trigger": 55,
+      "candidate": 44,
+      "historical_matches": 85,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.367965
+    },
+    {
+      "trigger": 11,
+      "candidate": 30,
+      "historical_matches": 75,
+      "total_opportunities": 204,
+      "pair_lag_score": 0.367647
+    },
+    {
+      "trigger": 19,
+      "candidate": 23,
+      "historical_matches": 84,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.366812
+    },
+    {
+      "trigger": 17,
+      "candidate": 46,
+      "historical_matches": 88,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.366667
+    },
+    {
+      "trigger": 2,
+      "candidate": 39,
+      "historical_matches": 85,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.366379
+    },
+    {
+      "trigger": 48,
+      "candidate": 29,
+      "historical_matches": 85,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.366379
+    },
+    {
+      "trigger": 54,
+      "candidate": 39,
+      "historical_matches": 80,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.365297
+    },
+    {
+      "trigger": 21,
+      "candidate": 55,
+      "historical_matches": 81,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.364865
+    },
+    {
+      "trigger": 51,
+      "candidate": 39,
+      "historical_matches": 81,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.364865
+    },
+    {
+      "trigger": 29,
+      "candidate": 24,
+      "historical_matches": 89,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.364754
+    },
+    {
+      "trigger": 52,
+      "candidate": 2,
+      "historical_matches": 78,
+      "total_opportunities": 214,
+      "pair_lag_score": 0.364486
+    },
+    {
+      "trigger": 52,
+      "candidate": 4,
+      "historical_matches": 78,
+      "total_opportunities": 214,
+      "pair_lag_score": 0.364486
+    },
+    {
+      "trigger": 28,
+      "candidate": 26,
+      "historical_matches": 82,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.362832
+    },
+    {
+      "trigger": 11,
+      "candidate": 6,
+      "historical_matches": 74,
+      "total_opportunities": 204,
+      "pair_lag_score": 0.362745
+    },
+    {
+      "trigger": 11,
+      "candidate": 50,
+      "historical_matches": 74,
+      "total_opportunities": 204,
+      "pair_lag_score": 0.362745
+    },
+    {
+      "trigger": 48,
+      "candidate": 15,
+      "historical_matches": 84,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.362069
+    },
+    {
+      "trigger": 9,
+      "candidate": 17,
+      "historical_matches": 77,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.361502
+    },
+    {
+      "trigger": 4,
+      "candidate": 13,
+      "historical_matches": 90,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.361446
+    },
+    {
+      "trigger": 22,
+      "candidate": 55,
+      "historical_matches": 78,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.361111
+    },
+    {
+      "trigger": 3,
+      "candidate": 5,
+      "historical_matches": 79,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.360731
+    },
+    {
+      "trigger": 3,
+      "candidate": 36,
+      "historical_matches": 79,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.360731
+    },
+    {
+      "trigger": 12,
+      "candidate": 36,
+      "historical_matches": 75,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.360577
+    },
+    {
+      "trigger": 31,
+      "candidate": 5,
+      "historical_matches": 84,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.360515
+    },
+    {
+      "trigger": 31,
+      "candidate": 15,
+      "historical_matches": 84,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.360515
+    },
+    {
+      "trigger": 34,
+      "candidate": 24,
+      "historical_matches": 80,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.36036
+    },
+    {
+      "trigger": 51,
+      "candidate": 5,
+      "historical_matches": 80,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.36036
+    },
+    {
+      "trigger": 15,
+      "candidate": 46,
+      "historical_matches": 85,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.360169
+    },
+    {
+      "trigger": 52,
+      "candidate": 45,
+      "historical_matches": 77,
+      "total_opportunities": 214,
+      "pair_lag_score": 0.359813
+    },
+    {
+      "trigger": 36,
+      "candidate": 46,
+      "historical_matches": 87,
+      "total_opportunities": 242,
+      "pair_lag_score": 0.359504
+    },
+    {
+      "trigger": 17,
+      "candidate": 29,
+      "historical_matches": 86,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.358333
+    },
+    {
+      "trigger": 17,
+      "candidate": 30,
+      "historical_matches": 86,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.358333
+    },
+    {
+      "trigger": 45,
+      "candidate": 35,
+      "historical_matches": 82,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.358079
+    },
+    {
+      "trigger": 53,
+      "candidate": 15,
+      "historical_matches": 82,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.358079
+    },
+    {
+      "trigger": 43,
+      "candidate": 17,
+      "historical_matches": 78,
+      "total_opportunities": 218,
+      "pair_lag_score": 0.357798
+    },
+    {
+      "trigger": 2,
+      "candidate": 46,
+      "historical_matches": 83,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.357759
+    },
+    {
+      "trigger": 32,
+      "candidate": 29,
+      "historical_matches": 83,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.357759
+    },
+    {
+      "trigger": 42,
+      "candidate": 40,
+      "historical_matches": 74,
+      "total_opportunities": 207,
+      "pair_lag_score": 0.357488
+    },
+    {
+      "trigger": 13,
+      "candidate": 37,
+      "historical_matches": 84,
+      "total_opportunities": 235,
+      "pair_lag_score": 0.357447
+    },
+    {
+      "trigger": 35,
+      "candidate": 24,
+      "historical_matches": 84,
+      "total_opportunities": 235,
+      "pair_lag_score": 0.357447
+    },
+    {
+      "trigger": 9,
+      "candidate": 38,
+      "historical_matches": 76,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.356808
+    },
+    {
+      "trigger": 44,
+      "candidate": 4,
+      "historical_matches": 83,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.356223
+    },
+    {
+      "trigger": 5,
+      "candidate": 27,
+      "historical_matches": 89,
+      "total_opportunities": 250,
+      "pair_lag_score": 0.356
+    },
+    {
+      "trigger": 34,
+      "candidate": 28,
+      "historical_matches": 79,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.355856
+    },
+    {
+      "trigger": 36,
+      "candidate": 4,
+      "historical_matches": 86,
+      "total_opportunities": 242,
+      "pair_lag_score": 0.355372
+    },
+    {
+      "trigger": 52,
+      "candidate": 40,
+      "historical_matches": 76,
+      "total_opportunities": 214,
+      "pair_lag_score": 0.35514
+    },
+    {
+      "trigger": 50,
+      "candidate": 23,
+      "historical_matches": 88,
+      "total_opportunities": 248,
+      "pair_lag_score": 0.354839
+    },
+    {
+      "trigger": 8,
+      "candidate": 44,
+      "historical_matches": 80,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.353982
+    },
+    {
+      "trigger": 8,
+      "candidate": 50,
+      "historical_matches": 80,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.353982
+    },
+    {
+      "trigger": 49,
+      "candidate": 13,
+      "historical_matches": 80,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.353982
+    },
+    {
+      "trigger": 49,
+      "candidate": 29,
+      "historical_matches": 80,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.353982
+    },
+    {
+      "trigger": 45,
+      "candidate": 26,
+      "historical_matches": 81,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.353712
+    },
+    {
+      "trigger": 53,
+      "candidate": 24,
+      "historical_matches": 81,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.353712
+    },
+    {
+      "trigger": 32,
+      "candidate": 4,
+      "historical_matches": 82,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.353448
+    },
+    {
+      "trigger": 48,
+      "candidate": 40,
+      "historical_matches": 82,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.353448
+    },
+    {
+      "trigger": 48,
+      "candidate": 55,
+      "historical_matches": 82,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.353448
+    },
+    {
+      "trigger": 4,
+      "candidate": 40,
+      "historical_matches": 88,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.353414
+    },
+    {
+      "trigger": 29,
+      "candidate": 13,
+      "historical_matches": 86,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.352459
+    },
+    {
+      "trigger": 41,
+      "candidate": 4,
+      "historical_matches": 75,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.352113
+    },
+    {
+      "trigger": 18,
+      "candidate": 28,
+      "historical_matches": 82,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.351931
+    },
+    {
+      "trigger": 18,
+      "candidate": 30,
+      "historical_matches": 82,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.351931
+    },
+    {
+      "trigger": 3,
+      "candidate": 2,
+      "historical_matches": 77,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.351598
+    },
+    {
+      "trigger": 54,
+      "candidate": 40,
+      "historical_matches": 77,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.351598
+    },
+    {
+      "trigger": 21,
+      "candidate": 40,
+      "historical_matches": 78,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.351351
+    },
+    {
+      "trigger": 34,
+      "candidate": 18,
+      "historical_matches": 78,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.351351
+    },
+    {
+      "trigger": 34,
+      "candidate": 50,
+      "historical_matches": 78,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.351351
+    },
+    {
+      "trigger": 38,
+      "candidate": 19,
+      "historical_matches": 79,
+      "total_opportunities": 225,
+      "pair_lag_score": 0.351111
+    },
+    {
+      "trigger": 12,
+      "candidate": 32,
+      "historical_matches": 73,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.350962
+    },
+    {
+      "trigger": 12,
+      "candidate": 37,
+      "historical_matches": 73,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.350962
+    },
+    {
+      "trigger": 12,
+      "candidate": 50,
+      "historical_matches": 73,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.350962
+    },
+    {
+      "trigger": 20,
+      "candidate": 41,
+      "historical_matches": 73,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.350962
+    },
+    {
+      "trigger": 23,
+      "candidate": 13,
+      "historical_matches": 81,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.350649
+    },
+    {
+      "trigger": 55,
+      "candidate": 13,
+      "historical_matches": 81,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.350649
+    },
+    {
+      "trigger": 27,
+      "candidate": 37,
+      "historical_matches": 84,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.35
+    },
+    {
+      "trigger": 27,
+      "candidate": 45,
+      "historical_matches": 84,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.35
+    },
+    {
+      "trigger": 8,
+      "candidate": 46,
+      "historical_matches": 79,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.349558
+    },
+    {
+      "trigger": 37,
+      "candidate": 49,
+      "historical_matches": 87,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.349398
+    },
+    {
+      "trigger": 13,
+      "candidate": 16,
+      "historical_matches": 82,
+      "total_opportunities": 235,
+      "pair_lag_score": 0.348936
+    },
+    {
+      "trigger": 43,
+      "candidate": 39,
+      "historical_matches": 76,
+      "total_opportunities": 218,
+      "pair_lag_score": 0.348624
+    },
+    {
+      "trigger": 6,
+      "candidate": 45,
+      "historical_matches": 77,
+      "total_opportunities": 221,
+      "pair_lag_score": 0.348416
+    },
+    {
+      "trigger": 11,
+      "candidate": 46,
+      "historical_matches": 71,
+      "total_opportunities": 204,
+      "pair_lag_score": 0.348039
+    },
+    {
+      "trigger": 7,
+      "candidate": 34,
+      "historical_matches": 80,
+      "total_opportunities": 230,
+      "pair_lag_score": 0.347826
+    },
+    {
+      "trigger": 42,
+      "candidate": 50,
+      "historical_matches": 72,
+      "total_opportunities": 207,
+      "pair_lag_score": 0.347826
+    },
+    {
+      "trigger": 31,
+      "candidate": 4,
+      "historical_matches": 81,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.347639
+    },
+    {
+      "trigger": 44,
+      "candidate": 39,
+      "historical_matches": 81,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.347639
+    },
+    {
+      "trigger": 41,
+      "candidate": 22,
+      "historical_matches": 74,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.347418
+    },
+    {
+      "trigger": 41,
+      "candidate": 45,
+      "historical_matches": 74,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.347418
+    },
+    {
+      "trigger": 1,
+      "candidate": 26,
+      "historical_matches": 75,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.347222
+    },
+    {
+      "trigger": 1,
+      "candidate": 27,
+      "historical_matches": 75,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.347222
+    },
+    {
+      "trigger": 22,
+      "candidate": 10,
+      "historical_matches": 75,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.347222
+    },
+    {
+      "trigger": 47,
+      "candidate": 40,
+      "historical_matches": 75,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.347222
+    },
+    {
+      "trigger": 36,
+      "candidate": 6,
+      "historical_matches": 84,
+      "total_opportunities": 242,
+      "pair_lag_score": 0.347107
+    },
+    {
+      "trigger": 3,
+      "candidate": 23,
+      "historical_matches": 76,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.347032
+    },
+    {
+      "trigger": 54,
+      "candidate": 26,
+      "historical_matches": 76,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.347032
+    },
+    {
+      "trigger": 56,
+      "candidate": 4,
+      "historical_matches": 76,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.347032
+    },
+    {
+      "trigger": 56,
+      "candidate": 39,
+      "historical_matches": 76,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.347032
+    },
+    {
+      "trigger": 26,
+      "candidate": 18,
+      "historical_matches": 85,
+      "total_opportunities": 245,
+      "pair_lag_score": 0.346939
+    },
+    {
+      "trigger": 26,
+      "candidate": 22,
+      "historical_matches": 85,
+      "total_opportunities": 245,
+      "pair_lag_score": 0.346939
+    },
+    {
+      "trigger": 51,
+      "candidate": 27,
+      "historical_matches": 77,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.346847
+    },
+    {
+      "trigger": 51,
+      "candidate": 49,
+      "historical_matches": 77,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.346847
+    },
+    {
+      "trigger": 50,
+      "candidate": 18,
+      "historical_matches": 86,
+      "total_opportunities": 248,
+      "pair_lag_score": 0.346774
+    },
+    {
+      "trigger": 50,
+      "candidate": 37,
+      "historical_matches": 86,
+      "total_opportunities": 248,
+      "pair_lag_score": 0.346774
+    },
+    {
+      "trigger": 38,
+      "candidate": 36,
+      "historical_matches": 78,
+      "total_opportunities": 225,
+      "pair_lag_score": 0.346667
+    },
+    {
+      "trigger": 23,
+      "candidate": 15,
+      "historical_matches": 80,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.34632
+    },
+    {
+      "trigger": 55,
+      "candidate": 17,
+      "historical_matches": 80,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.34632
+    },
+    {
+      "trigger": 20,
+      "candidate": 49,
+      "historical_matches": 72,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.346154
+    },
+    {
+      "trigger": 39,
+      "candidate": 16,
+      "historical_matches": 82,
+      "total_opportunities": 237,
+      "pair_lag_score": 0.345992
+    },
+    {
+      "trigger": 37,
+      "candidate": 4,
+      "historical_matches": 86,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.345382
+    },
+    {
+      "trigger": 37,
+      "candidate": 39,
+      "historical_matches": 86,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.345382
+    },
+    {
+      "trigger": 25,
+      "candidate": 24,
+      "historical_matches": 77,
+      "total_opportunities": 223,
+      "pair_lag_score": 0.345291
+    },
+    {
+      "trigger": 8,
+      "candidate": 18,
+      "historical_matches": 78,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.345133
+    },
+    {
+      "trigger": 8,
+      "candidate": 27,
+      "historical_matches": 78,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.345133
+    },
+    {
+      "trigger": 32,
+      "candidate": 54,
+      "historical_matches": 80,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.344828
+    },
+    {
+      "trigger": 13,
+      "candidate": 23,
+      "historical_matches": 81,
+      "total_opportunities": 235,
+      "pair_lag_score": 0.344681
+    },
+    {
+      "trigger": 35,
+      "candidate": 39,
+      "historical_matches": 81,
+      "total_opportunities": 235,
+      "pair_lag_score": 0.344681
+    },
+    {
+      "trigger": 35,
+      "candidate": 44,
+      "historical_matches": 81,
+      "total_opportunities": 235,
+      "pair_lag_score": 0.344681
+    },
+    {
+      "trigger": 10,
+      "candidate": 24,
+      "historical_matches": 72,
+      "total_opportunities": 209,
+      "pair_lag_score": 0.344498
+    },
+    {
+      "trigger": 16,
+      "candidate": 17,
+      "historical_matches": 78,
+      "total_opportunities": 227,
+      "pair_lag_score": 0.343612
+    },
+    {
+      "trigger": 7,
+      "candidate": 29,
+      "historical_matches": 79,
+      "total_opportunities": 230,
+      "pair_lag_score": 0.343478
+    },
+    {
+      "trigger": 31,
+      "candidate": 55,
+      "historical_matches": 80,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.343348
+    },
+    {
+      "trigger": 44,
+      "candidate": 26,
+      "historical_matches": 80,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.343348
+    },
+    {
+      "trigger": 44,
+      "candidate": 37,
+      "historical_matches": 80,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.343348
+    },
+    {
+      "trigger": 11,
+      "candidate": 27,
+      "historical_matches": 70,
+      "total_opportunities": 204,
+      "pair_lag_score": 0.343137
+    },
+    {
+      "trigger": 9,
+      "candidate": 27,
+      "historical_matches": 73,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.342723
+    },
+    {
+      "trigger": 47,
+      "candidate": 18,
+      "historical_matches": 74,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.342593
+    },
+    {
+      "trigger": 47,
+      "candidate": 29,
+      "historical_matches": 74,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.342593
+    },
+    {
+      "trigger": 3,
+      "candidate": 45,
+      "historical_matches": 75,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.342466
+    },
+    {
+      "trigger": 21,
+      "candidate": 48,
+      "historical_matches": 76,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.342342
+    },
+    {
+      "trigger": 34,
+      "candidate": 17,
+      "historical_matches": 76,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.342342
+    },
+    {
+      "trigger": 23,
+      "candidate": 5,
+      "historical_matches": 79,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.341991
+    },
+    {
+      "trigger": 23,
+      "candidate": 29,
+      "historical_matches": 79,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.341991
+    },
+    {
+      "trigger": 23,
+      "candidate": 30,
+      "historical_matches": 79,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.341991
+    },
+    {
+      "trigger": 23,
+      "candidate": 44,
+      "historical_matches": 79,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.341991
+    },
+    {
+      "trigger": 23,
+      "candidate": 55,
+      "historical_matches": 79,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.341991
+    },
+    {
+      "trigger": 39,
+      "candidate": 27,
+      "historical_matches": 81,
+      "total_opportunities": 237,
+      "pair_lag_score": 0.341772
+    },
+    {
+      "trigger": 17,
+      "candidate": 4,
+      "historical_matches": 82,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.341667
+    },
+    {
+      "trigger": 17,
+      "candidate": 23,
+      "historical_matches": 82,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.341667
+    },
+    {
+      "trigger": 24,
+      "candidate": 33,
+      "historical_matches": 85,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.341365
+    },
+    {
+      "trigger": 14,
+      "candidate": 15,
+      "historical_matches": 71,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.341346
+    },
+    {
+      "trigger": 20,
+      "candidate": 26,
+      "historical_matches": 71,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.341346
+    },
+    {
+      "trigger": 52,
+      "candidate": 30,
+      "historical_matches": 73,
+      "total_opportunities": 214,
+      "pair_lag_score": 0.341121
+    },
+    {
+      "trigger": 25,
+      "candidate": 17,
+      "historical_matches": 76,
+      "total_opportunities": 223,
+      "pair_lag_score": 0.340807
+    },
+    {
+      "trigger": 8,
+      "candidate": 23,
+      "historical_matches": 77,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.340708
+    },
+    {
+      "trigger": 28,
+      "candidate": 53,
+      "historical_matches": 77,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.340708
+    },
+    {
+      "trigger": 19,
+      "candidate": 38,
+      "historical_matches": 78,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.340611
+    },
+    {
+      "trigger": 19,
+      "candidate": 53,
+      "historical_matches": 78,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.340611
+    },
+    {
+      "trigger": 45,
+      "candidate": 40,
+      "historical_matches": 78,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.340611
+    },
+    {
+      "trigger": 53,
+      "candidate": 26,
+      "historical_matches": 78,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.340611
+    },
+    {
+      "trigger": 30,
+      "candidate": 19,
+      "historical_matches": 83,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.340164
+    },
+    {
+      "trigger": 40,
+      "candidate": 5,
+      "historical_matches": 83,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.340164
+    },
+    {
+      "trigger": 40,
+      "candidate": 17,
+      "historical_matches": 83,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.340164
+    },
+    {
+      "trigger": 40,
+      "candidate": 33,
+      "historical_matches": 83,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.340164
+    },
+    {
+      "trigger": 40,
+      "candidate": 52,
+      "historical_matches": 83,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.340164
+    },
+    {
+      "trigger": 5,
+      "candidate": 53,
+      "historical_matches": 85,
+      "total_opportunities": 250,
+      "pair_lag_score": 0.34
+    },
+    {
+      "trigger": 5,
+      "candidate": 55,
+      "historical_matches": 85,
+      "total_opportunities": 250,
+      "pair_lag_score": 0.34
+    },
+    {
+      "trigger": 5,
+      "candidate": 56,
+      "historical_matches": 85,
+      "total_opportunities": 250,
+      "pair_lag_score": 0.34
+    },
+    {
+      "trigger": 10,
+      "candidate": 49,
+      "historical_matches": 71,
+      "total_opportunities": 209,
+      "pair_lag_score": 0.339713
+    },
+    {
+      "trigger": 6,
+      "candidate": 19,
+      "historical_matches": 75,
+      "total_opportunities": 221,
+      "pair_lag_score": 0.339367
+    },
+    {
+      "trigger": 16,
+      "candidate": 13,
+      "historical_matches": 77,
+      "total_opportunities": 227,
+      "pair_lag_score": 0.339207
+    },
+    {
+      "trigger": 16,
+      "candidate": 45,
+      "historical_matches": 77,
+      "total_opportunities": 227,
+      "pair_lag_score": 0.339207
+    },
+    {
+      "trigger": 7,
+      "candidate": 40,
+      "historical_matches": 78,
+      "total_opportunities": 230,
+      "pair_lag_score": 0.33913
+    },
+    {
+      "trigger": 18,
+      "candidate": 29,
+      "historical_matches": 79,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.339056
+    },
+    {
+      "trigger": 15,
+      "candidate": 24,
+      "historical_matches": 80,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.338983
+    },
+    {
+      "trigger": 46,
+      "candidate": 50,
+      "historical_matches": 80,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.338983
+    },
+    {
+      "trigger": 36,
+      "candidate": 55,
+      "historical_matches": 82,
+      "total_opportunities": 242,
+      "pair_lag_score": 0.338843
+    },
+    {
+      "trigger": 50,
+      "candidate": 6,
+      "historical_matches": 84,
+      "total_opportunities": 248,
+      "pair_lag_score": 0.33871
+    },
+    {
+      "trigger": 11,
+      "candidate": 24,
+      "historical_matches": 69,
+      "total_opportunities": 204,
+      "pair_lag_score": 0.338235
+    },
+    {
+      "trigger": 42,
+      "candidate": 29,
+      "historical_matches": 70,
+      "total_opportunities": 207,
+      "pair_lag_score": 0.338164
+    },
+    {
+      "trigger": 42,
+      "candidate": 39,
+      "historical_matches": 70,
+      "total_opportunities": 207,
+      "pair_lag_score": 0.338164
+    },
+    {
+      "trigger": 42,
+      "candidate": 49,
+      "historical_matches": 70,
+      "total_opportunities": 207,
+      "pair_lag_score": 0.338164
+    },
+    {
+      "trigger": 9,
+      "candidate": 3,
+      "historical_matches": 72,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.338028
+    },
+    {
+      "trigger": 9,
+      "candidate": 5,
+      "historical_matches": 72,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.338028
+    },
+    {
+      "trigger": 9,
+      "candidate": 24,
+      "historical_matches": 72,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.338028
+    },
+    {
+      "trigger": 41,
+      "candidate": 7,
+      "historical_matches": 72,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.338028
+    },
+    {
+      "trigger": 41,
+      "candidate": 27,
+      "historical_matches": 72,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.338028
+    },
+    {
+      "trigger": 41,
+      "candidate": 29,
+      "historical_matches": 72,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.338028
+    },
+    {
+      "trigger": 1,
+      "candidate": 46,
+      "historical_matches": 73,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.337963
+    },
+    {
+      "trigger": 54,
+      "candidate": 55,
+      "historical_matches": 74,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.3379
+    },
+    {
+      "trigger": 56,
+      "candidate": 26,
+      "historical_matches": 74,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.3379
+    },
+    {
+      "trigger": 56,
+      "candidate": 46,
+      "historical_matches": 74,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.3379
+    },
+    {
+      "trigger": 21,
+      "candidate": 50,
+      "historical_matches": 75,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.337838
+    },
+    {
+      "trigger": 34,
+      "candidate": 19,
+      "historical_matches": 75,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.337838
+    },
+    {
+      "trigger": 51,
+      "candidate": 24,
+      "historical_matches": 75,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.337838
+    },
+    {
+      "trigger": 51,
+      "candidate": 34,
+      "historical_matches": 75,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.337838
+    },
+    {
+      "trigger": 51,
+      "candidate": 40,
+      "historical_matches": 75,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.337838
+    },
+    {
+      "trigger": 38,
+      "candidate": 28,
+      "historical_matches": 76,
+      "total_opportunities": 225,
+      "pair_lag_score": 0.337778
+    },
+    {
+      "trigger": 55,
+      "candidate": 11,
+      "historical_matches": 78,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.337662
+    },
+    {
+      "trigger": 39,
+      "candidate": 50,
+      "historical_matches": 80,
+      "total_opportunities": 237,
+      "pair_lag_score": 0.337553
+    },
+    {
+      "trigger": 17,
+      "candidate": 15,
+      "historical_matches": 81,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.3375
+    },
+    {
+      "trigger": 17,
+      "candidate": 25,
+      "historical_matches": 81,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.3375
+    },
+    {
+      "trigger": 27,
+      "candidate": 29,
+      "historical_matches": 81,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.3375
+    },
+    {
+      "trigger": 4,
+      "candidate": 24,
+      "historical_matches": 84,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.337349
+    },
+    {
+      "trigger": 12,
+      "candidate": 30,
+      "historical_matches": 70,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.336538
+    },
+    {
+      "trigger": 12,
+      "candidate": 35,
+      "historical_matches": 70,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.336538
+    },
+    {
+      "trigger": 14,
+      "candidate": 44,
+      "historical_matches": 70,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.336538
+    },
+    {
+      "trigger": 20,
+      "candidate": 22,
+      "historical_matches": 70,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.336538
+    },
+    {
+      "trigger": 25,
+      "candidate": 27,
+      "historical_matches": 75,
+      "total_opportunities": 223,
+      "pair_lag_score": 0.336323
+    },
+    {
+      "trigger": 28,
+      "candidate": 24,
+      "historical_matches": 76,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.336283
+    },
+    {
+      "trigger": 28,
+      "candidate": 27,
+      "historical_matches": 76,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.336283
+    },
+    {
+      "trigger": 28,
+      "candidate": 37,
+      "historical_matches": 76,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.336283
+    },
+    {
+      "trigger": 19,
+      "candidate": 4,
+      "historical_matches": 77,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.336245
+    },
+    {
+      "trigger": 19,
+      "candidate": 26,
+      "historical_matches": 77,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.336245
+    },
+    {
+      "trigger": 2,
+      "candidate": 31,
+      "historical_matches": 78,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.336207
+    },
+    {
+      "trigger": 2,
+      "candidate": 40,
+      "historical_matches": 78,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.336207
+    },
+    {
+      "trigger": 13,
+      "candidate": 40,
+      "historical_matches": 79,
+      "total_opportunities": 235,
+      "pair_lag_score": 0.33617
+    },
+    {
+      "trigger": 35,
+      "candidate": 50,
+      "historical_matches": 79,
+      "total_opportunities": 235,
+      "pair_lag_score": 0.33617
+    },
+    {
+      "trigger": 43,
+      "candidate": 18,
+      "historical_matches": 73,
+      "total_opportunities": 218,
+      "pair_lag_score": 0.334862
+    },
+    {
+      "trigger": 43,
+      "candidate": 27,
+      "historical_matches": 73,
+      "total_opportunities": 218,
+      "pair_lag_score": 0.334862
+    },
+    {
+      "trigger": 6,
+      "candidate": 26,
+      "historical_matches": 74,
+      "total_opportunities": 221,
+      "pair_lag_score": 0.334842
+    },
+    {
+      "trigger": 6,
+      "candidate": 32,
+      "historical_matches": 74,
+      "total_opportunities": 221,
+      "pair_lag_score": 0.334842
+    },
+    {
+      "trigger": 6,
+      "candidate": 48,
+      "historical_matches": 74,
+      "total_opportunities": 221,
+      "pair_lag_score": 0.334842
+    },
+    {
+      "trigger": 16,
+      "candidate": 3,
+      "historical_matches": 76,
+      "total_opportunities": 227,
+      "pair_lag_score": 0.334802
+    },
+    {
+      "trigger": 16,
+      "candidate": 18,
+      "historical_matches": 76,
+      "total_opportunities": 227,
+      "pair_lag_score": 0.334802
+    },
+    {
+      "trigger": 16,
+      "candidate": 27,
+      "historical_matches": 76,
+      "total_opportunities": 227,
+      "pair_lag_score": 0.334802
+    },
+    {
+      "trigger": 15,
+      "candidate": 17,
+      "historical_matches": 79,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.334746
+    },
+    {
+      "trigger": 46,
+      "candidate": 27,
+      "historical_matches": 79,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.334746
+    },
+    {
+      "trigger": 36,
+      "candidate": 51,
+      "historical_matches": 81,
+      "total_opportunities": 242,
+      "pair_lag_score": 0.334711
+    },
+    {
+      "trigger": 50,
+      "candidate": 30,
+      "historical_matches": 83,
+      "total_opportunities": 248,
+      "pair_lag_score": 0.334677
+    },
+    {
+      "trigger": 50,
+      "candidate": 36,
+      "historical_matches": 83,
+      "total_opportunities": 248,
+      "pair_lag_score": 0.334677
+    },
+    {
+      "trigger": 4,
+      "candidate": 33,
+      "historical_matches": 83,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 24,
+      "candidate": 27,
+      "historical_matches": 83,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 37,
+      "candidate": 51,
+      "historical_matches": 83,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 17,
+      "candidate": 2,
+      "historical_matches": 80,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 17,
+      "candidate": 28,
+      "historical_matches": 80,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 39,
+      "candidate": 30,
+      "historical_matches": 79,
+      "total_opportunities": 237,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 55,
+      "candidate": 16,
+      "historical_matches": 77,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 55,
+      "candidate": 32,
+      "historical_matches": 77,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 55,
+      "candidate": 35,
+      "historical_matches": 77,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 55,
+      "candidate": 48,
+      "historical_matches": 77,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 38,
+      "candidate": 4,
+      "historical_matches": 75,
+      "total_opportunities": 225,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 38,
+      "candidate": 17,
+      "historical_matches": 75,
+      "total_opportunities": 225,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 38,
+      "candidate": 26,
+      "historical_matches": 75,
+      "total_opportunities": 225,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 38,
+      "candidate": 27,
+      "historical_matches": 75,
+      "total_opportunities": 225,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 21,
+      "candidate": 3,
+      "historical_matches": 74,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 21,
+      "candidate": 31,
+      "historical_matches": 74,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 51,
+      "candidate": 19,
+      "historical_matches": 74,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 51,
+      "candidate": 48,
+      "historical_matches": 74,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 3,
+      "candidate": 4,
+      "historical_matches": 73,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 54,
+      "candidate": 15,
+      "historical_matches": 73,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 54,
+      "candidate": 21,
+      "historical_matches": 73,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 54,
+      "candidate": 24,
+      "historical_matches": 73,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 1,
+      "candidate": 21,
+      "historical_matches": 72,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 1,
+      "candidate": 33,
+      "historical_matches": 72,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 1,
+      "candidate": 45,
+      "historical_matches": 72,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 22,
+      "candidate": 14,
+      "historical_matches": 72,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 47,
+      "candidate": 45,
+      "historical_matches": 72,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 41,
+      "candidate": 36,
+      "historical_matches": 71,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 41,
+      "candidate": 56,
+      "historical_matches": 71,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 42,
+      "candidate": 14,
+      "historical_matches": 69,
+      "total_opportunities": 207,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 42,
+      "candidate": 44,
+      "historical_matches": 69,
+      "total_opportunities": 207,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 42,
+      "candidate": 53,
+      "historical_matches": 69,
+      "total_opportunities": 207,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 11,
+      "candidate": 2,
+      "historical_matches": 68,
+      "total_opportunities": 204,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 11,
+      "candidate": 18,
+      "historical_matches": 68,
+      "total_opportunities": 204,
+      "pair_lag_score": 0.333333
+    },
+    {
+      "trigger": 5,
+      "candidate": 38,
+      "historical_matches": 83,
+      "total_opportunities": 250,
+      "pair_lag_score": 0.332
+    },
+    {
+      "trigger": 29,
+      "candidate": 30,
+      "historical_matches": 81,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.331967
+    },
+    {
+      "trigger": 30,
+      "candidate": 26,
+      "historical_matches": 81,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.331967
+    },
+    {
+      "trigger": 40,
+      "candidate": 16,
+      "historical_matches": 81,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.331967
+    },
+    {
+      "trigger": 40,
+      "candidate": 31,
+      "historical_matches": 81,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.331967
+    },
+    {
+      "trigger": 2,
+      "candidate": 15,
+      "historical_matches": 77,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.331897
+    },
+    {
+      "trigger": 2,
+      "candidate": 37,
+      "historical_matches": 77,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.331897
+    },
+    {
+      "trigger": 32,
+      "candidate": 18,
+      "historical_matches": 77,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.331897
+    },
+    {
+      "trigger": 32,
+      "candidate": 53,
+      "historical_matches": 77,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.331897
+    },
+    {
+      "trigger": 19,
+      "candidate": 5,
+      "historical_matches": 76,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.331878
+    },
+    {
+      "trigger": 19,
+      "candidate": 27,
+      "historical_matches": 76,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.331878
+    },
+    {
+      "trigger": 53,
+      "candidate": 27,
+      "historical_matches": 76,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.331878
+    },
+    {
+      "trigger": 49,
+      "candidate": 28,
+      "historical_matches": 75,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.331858
+    },
+    {
+      "trigger": 49,
+      "candidate": 51,
+      "historical_matches": 75,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.331858
+    },
+    {
+      "trigger": 25,
+      "candidate": 19,
+      "historical_matches": 74,
+      "total_opportunities": 223,
+      "pair_lag_score": 0.331839
+    },
+    {
+      "trigger": 52,
+      "candidate": 7,
+      "historical_matches": 71,
+      "total_opportunities": 214,
+      "pair_lag_score": 0.331776
+    },
+    {
+      "trigger": 14,
+      "candidate": 5,
+      "historical_matches": 69,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.331731
+    },
+    {
+      "trigger": 14,
+      "candidate": 17,
+      "historical_matches": 69,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.331731
+    },
+    {
+      "trigger": 50,
+      "candidate": 4,
+      "historical_matches": 82,
+      "total_opportunities": 248,
+      "pair_lag_score": 0.330645
+    },
+    {
+      "trigger": 26,
+      "candidate": 23,
+      "historical_matches": 81,
+      "total_opportunities": 245,
+      "pair_lag_score": 0.330612
+    },
+    {
+      "trigger": 36,
+      "candidate": 1,
+      "historical_matches": 80,
+      "total_opportunities": 242,
+      "pair_lag_score": 0.330579
+    },
+    {
+      "trigger": 36,
+      "candidate": 18,
+      "historical_matches": 80,
+      "total_opportunities": 242,
+      "pair_lag_score": 0.330579
+    },
+    {
+      "trigger": 46,
+      "candidate": 17,
+      "historical_matches": 78,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.330508
+    },
+    {
+      "trigger": 46,
+      "candidate": 18,
+      "historical_matches": 78,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.330508
+    },
+    {
+      "trigger": 46,
+      "candidate": 23,
+      "historical_matches": 78,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.330508
+    },
+    {
+      "trigger": 18,
+      "candidate": 7,
+      "historical_matches": 77,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.330472
+    },
+    {
+      "trigger": 18,
+      "candidate": 27,
+      "historical_matches": 77,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.330472
+    },
+    {
+      "trigger": 31,
+      "candidate": 45,
+      "historical_matches": 77,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.330472
+    },
+    {
+      "trigger": 44,
+      "candidate": 27,
+      "historical_matches": 77,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.330472
+    },
+    {
+      "trigger": 44,
+      "candidate": 32,
+      "historical_matches": 77,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.330472
+    },
+    {
+      "trigger": 7,
+      "candidate": 27,
+      "historical_matches": 76,
+      "total_opportunities": 230,
+      "pair_lag_score": 0.330435
+    },
+    {
+      "trigger": 7,
+      "candidate": 32,
+      "historical_matches": 76,
+      "total_opportunities": 230,
+      "pair_lag_score": 0.330435
+    },
+    {
+      "trigger": 33,
+      "candidate": 11,
+      "historical_matches": 76,
+      "total_opportunities": 230,
+      "pair_lag_score": 0.330435
+    },
+    {
+      "trigger": 33,
+      "candidate": 15,
+      "historical_matches": 76,
+      "total_opportunities": 230,
+      "pair_lag_score": 0.330435
+    },
+    {
+      "trigger": 16,
+      "candidate": 21,
+      "historical_matches": 75,
+      "total_opportunities": 227,
+      "pair_lag_score": 0.330396
+    },
+    {
+      "trigger": 16,
+      "candidate": 47,
+      "historical_matches": 75,
+      "total_opportunities": 227,
+      "pair_lag_score": 0.330396
+    },
+    {
+      "trigger": 6,
+      "candidate": 24,
+      "historical_matches": 73,
+      "total_opportunities": 221,
+      "pair_lag_score": 0.330317
+    },
+    {
+      "trigger": 6,
+      "candidate": 54,
+      "historical_matches": 73,
+      "total_opportunities": 221,
+      "pair_lag_score": 0.330317
+    },
+    {
+      "trigger": 10,
+      "candidate": 17,
+      "historical_matches": 69,
+      "total_opportunities": 209,
+      "pair_lag_score": 0.330144
+    },
+    {
+      "trigger": 24,
+      "candidate": 31,
+      "historical_matches": 82,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.329317
+    },
+    {
+      "trigger": 24,
+      "candidate": 36,
+      "historical_matches": 82,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.329317
+    },
+    {
+      "trigger": 27,
+      "candidate": 15,
+      "historical_matches": 79,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.329167
+    },
+    {
+      "trigger": 27,
+      "candidate": 46,
+      "historical_matches": 79,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.329167
+    },
+    {
+      "trigger": 27,
+      "candidate": 52,
+      "historical_matches": 79,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.329167
+    },
+    {
+      "trigger": 23,
+      "candidate": 21,
+      "historical_matches": 76,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.329004
+    },
+    {
+      "trigger": 23,
+      "candidate": 49,
+      "historical_matches": 76,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.329004
+    },
+    {
+      "trigger": 38,
+      "candidate": 23,
+      "historical_matches": 74,
+      "total_opportunities": 225,
+      "pair_lag_score": 0.328889
+    },
+    {
+      "trigger": 21,
+      "candidate": 2,
+      "historical_matches": 73,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.328829
+    },
+    {
+      "trigger": 21,
+      "candidate": 17,
+      "historical_matches": 73,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.328829
+    },
+    {
+      "trigger": 21,
+      "candidate": 39,
+      "historical_matches": 73,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.328829
+    },
+    {
+      "trigger": 21,
+      "candidate": 51,
+      "historical_matches": 73,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.328829
+    },
+    {
+      "trigger": 34,
+      "candidate": 4,
+      "historical_matches": 73,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.328829
+    },
+    {
+      "trigger": 34,
+      "candidate": 25,
+      "historical_matches": 73,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.328829
+    },
+    {
+      "trigger": 51,
+      "candidate": 21,
+      "historical_matches": 73,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.328829
+    },
+    {
+      "trigger": 51,
+      "candidate": 23,
+      "historical_matches": 73,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.328829
+    },
+    {
+      "trigger": 51,
+      "candidate": 29,
+      "historical_matches": 73,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.328829
+    },
+    {
+      "trigger": 54,
+      "candidate": 7,
+      "historical_matches": 72,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.328767
+    },
+    {
+      "trigger": 54,
+      "candidate": 17,
+      "historical_matches": 72,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.328767
+    },
+    {
+      "trigger": 54,
+      "candidate": 22,
+      "historical_matches": 72,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.328767
+    },
+    {
+      "trigger": 54,
+      "candidate": 48,
+      "historical_matches": 72,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.328767
+    },
+    {
+      "trigger": 56,
+      "candidate": 15,
+      "historical_matches": 72,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.328767
+    },
+    {
+      "trigger": 56,
+      "candidate": 29,
+      "historical_matches": 72,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.328767
+    },
+    {
+      "trigger": 1,
+      "candidate": 4,
+      "historical_matches": 71,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.328704
+    },
+    {
+      "trigger": 1,
+      "candidate": 18,
+      "historical_matches": 71,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.328704
+    },
+    {
+      "trigger": 1,
+      "candidate": 28,
+      "historical_matches": 71,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.328704
+    },
+    {
+      "trigger": 47,
+      "candidate": 4,
+      "historical_matches": 71,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.328704
+    },
+    {
+      "trigger": 47,
+      "candidate": 33,
+      "historical_matches": 71,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.328704
+    },
+    {
+      "trigger": 47,
+      "candidate": 34,
+      "historical_matches": 71,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.328704
+    },
+    {
+      "trigger": 47,
+      "candidate": 37,
+      "historical_matches": 71,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.328704
+    },
+    {
+      "trigger": 9,
+      "candidate": 39,
+      "historical_matches": 70,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.328638
+    },
+    {
+      "trigger": 41,
+      "candidate": 8,
+      "historical_matches": 70,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.328638
+    },
+    {
+      "trigger": 41,
+      "candidate": 37,
+      "historical_matches": 70,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.328638
+    },
+    {
+      "trigger": 41,
+      "candidate": 46,
+      "historical_matches": 70,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.328638
+    },
+    {
+      "trigger": 42,
+      "candidate": 24,
+      "historical_matches": 68,
+      "total_opportunities": 207,
+      "pair_lag_score": 0.328502
+    },
+    {
+      "trigger": 5,
+      "candidate": 30,
+      "historical_matches": 82,
+      "total_opportunities": 250,
+      "pair_lag_score": 0.328
+    },
+    {
+      "trigger": 5,
+      "candidate": 44,
+      "historical_matches": 82,
+      "total_opportunities": 250,
+      "pair_lag_score": 0.328
+    },
+    {
+      "trigger": 29,
+      "candidate": 5,
+      "historical_matches": 80,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.327869
+    },
+    {
+      "trigger": 30,
+      "candidate": 27,
+      "historical_matches": 80,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.327869
+    },
+    {
+      "trigger": 30,
+      "candidate": 46,
+      "historical_matches": 80,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.327869
+    },
+    {
+      "trigger": 40,
+      "candidate": 18,
+      "historical_matches": 80,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.327869
+    },
+    {
+      "trigger": 40,
+      "candidate": 39,
+      "historical_matches": 80,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.327869
+    },
+    {
+      "trigger": 2,
+      "candidate": 7,
+      "historical_matches": 76,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.327586
+    },
+    {
+      "trigger": 2,
+      "candidate": 10,
+      "historical_matches": 76,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.327586
+    },
+    {
+      "trigger": 32,
+      "candidate": 28,
+      "historical_matches": 76,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.327586
+    },
+    {
+      "trigger": 32,
+      "candidate": 51,
+      "historical_matches": 76,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.327586
+    },
+    {
+      "trigger": 48,
+      "candidate": 1,
+      "historical_matches": 76,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.327586
+    },
+    {
+      "trigger": 48,
+      "candidate": 17,
+      "historical_matches": 76,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.327586
+    },
+    {
+      "trigger": 48,
+      "candidate": 24,
+      "historical_matches": 76,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.327586
+    },
+    {
+      "trigger": 19,
+      "candidate": 24,
+      "historical_matches": 75,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.327511
+    },
+    {
+      "trigger": 19,
+      "candidate": 45,
+      "historical_matches": 75,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.327511
+    },
+    {
+      "trigger": 45,
+      "candidate": 49,
+      "historical_matches": 75,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.327511
+    },
+    {
+      "trigger": 45,
+      "candidate": 55,
+      "historical_matches": 75,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.327511
+    },
+    {
+      "trigger": 53,
+      "candidate": 14,
+      "historical_matches": 75,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.327511
+    },
+    {
+      "trigger": 8,
+      "candidate": 16,
+      "historical_matches": 74,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.327434
+    },
+    {
+      "trigger": 28,
+      "candidate": 7,
+      "historical_matches": 74,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.327434
+    },
+    {
+      "trigger": 49,
+      "candidate": 39,
+      "historical_matches": 74,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.327434
+    },
+    {
+      "trigger": 25,
+      "candidate": 39,
+      "historical_matches": 73,
+      "total_opportunities": 223,
+      "pair_lag_score": 0.327354
+    },
+    {
+      "trigger": 25,
+      "candidate": 53,
+      "historical_matches": 73,
+      "total_opportunities": 223,
+      "pair_lag_score": 0.327354
+    },
+    {
+      "trigger": 52,
+      "candidate": 22,
+      "historical_matches": 70,
+      "total_opportunities": 214,
+      "pair_lag_score": 0.327103
+    },
+    {
+      "trigger": 52,
+      "candidate": 36,
+      "historical_matches": 70,
+      "total_opportunities": 214,
+      "pair_lag_score": 0.327103
+    },
+    {
+      "trigger": 12,
+      "candidate": 8,
+      "historical_matches": 68,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.326923
+    },
+    {
+      "trigger": 12,
+      "candidate": 24,
+      "historical_matches": 68,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.326923
+    },
+    {
+      "trigger": 12,
+      "candidate": 29,
+      "historical_matches": 68,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.326923
+    },
+    {
+      "trigger": 14,
+      "candidate": 28,
+      "historical_matches": 68,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.326923
+    },
+    {
+      "trigger": 14,
+      "candidate": 34,
+      "historical_matches": 68,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.326923
+    },
+    {
+      "trigger": 14,
+      "candidate": 48,
+      "historical_matches": 68,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.326923
+    },
+    {
+      "trigger": 20,
+      "candidate": 36,
+      "historical_matches": 68,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.326923
+    },
+    {
+      "trigger": 26,
+      "candidate": 54,
+      "historical_matches": 80,
+      "total_opportunities": 245,
+      "pair_lag_score": 0.326531
+    },
+    {
+      "trigger": 15,
+      "candidate": 33,
+      "historical_matches": 77,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.326271
+    },
+    {
+      "trigger": 46,
+      "candidate": 32,
+      "historical_matches": 77,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.326271
+    },
+    {
+      "trigger": 46,
+      "candidate": 37,
+      "historical_matches": 77,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.326271
+    },
+    {
+      "trigger": 46,
+      "candidate": 40,
+      "historical_matches": 77,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.326271
+    },
+    {
+      "trigger": 31,
+      "candidate": 26,
+      "historical_matches": 76,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.32618
+    },
+    {
+      "trigger": 31,
+      "candidate": 32,
+      "historical_matches": 76,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.32618
+    },
+    {
+      "trigger": 44,
+      "candidate": 13,
+      "historical_matches": 76,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.32618
+    },
+    {
+      "trigger": 44,
+      "candidate": 33,
+      "historical_matches": 76,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.32618
+    },
+    {
+      "trigger": 7,
+      "candidate": 15,
+      "historical_matches": 75,
+      "total_opportunities": 230,
+      "pair_lag_score": 0.326087
+    },
+    {
+      "trigger": 7,
+      "candidate": 23,
+      "historical_matches": 75,
+      "total_opportunities": 230,
+      "pair_lag_score": 0.326087
+    },
+    {
+      "trigger": 7,
+      "candidate": 44,
+      "historical_matches": 75,
+      "total_opportunities": 230,
+      "pair_lag_score": 0.326087
+    },
+    {
+      "trigger": 33,
+      "candidate": 48,
+      "historical_matches": 75,
+      "total_opportunities": 230,
+      "pair_lag_score": 0.326087
+    },
+    {
+      "trigger": 16,
+      "candidate": 6,
+      "historical_matches": 74,
+      "total_opportunities": 227,
+      "pair_lag_score": 0.325991
+    },
+    {
+      "trigger": 16,
+      "candidate": 24,
+      "historical_matches": 74,
+      "total_opportunities": 227,
+      "pair_lag_score": 0.325991
+    },
+    {
+      "trigger": 6,
+      "candidate": 5,
+      "historical_matches": 72,
+      "total_opportunities": 221,
+      "pair_lag_score": 0.325792
+    },
+    {
+      "trigger": 6,
+      "candidate": 47,
+      "historical_matches": 72,
+      "total_opportunities": 221,
+      "pair_lag_score": 0.325792
+    },
+    {
+      "trigger": 43,
+      "candidate": 49,
+      "historical_matches": 71,
+      "total_opportunities": 218,
+      "pair_lag_score": 0.325688
+    },
+    {
+      "trigger": 10,
+      "candidate": 40,
+      "historical_matches": 68,
+      "total_opportunities": 209,
+      "pair_lag_score": 0.325359
+    },
+    {
+      "trigger": 4,
+      "candidate": 50,
+      "historical_matches": 81,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.325301
+    },
+    {
+      "trigger": 24,
+      "candidate": 4,
+      "historical_matches": 81,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.325301
+    },
+    {
+      "trigger": 24,
+      "candidate": 6,
+      "historical_matches": 81,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.325301
+    },
+    {
+      "trigger": 24,
+      "candidate": 50,
+      "historical_matches": 81,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.325301
+    },
+    {
+      "trigger": 37,
+      "candidate": 29,
+      "historical_matches": 81,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.325301
+    },
+    {
+      "trigger": 37,
+      "candidate": 32,
+      "historical_matches": 81,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.325301
+    },
+    {
+      "trigger": 17,
+      "candidate": 8,
+      "historical_matches": 78,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.325
+    },
+    {
+      "trigger": 27,
+      "candidate": 5,
+      "historical_matches": 78,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.325
+    },
+    {
+      "trigger": 27,
+      "candidate": 19,
+      "historical_matches": 78,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.325
+    },
+    {
+      "trigger": 27,
+      "candidate": 26,
+      "historical_matches": 78,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.325
+    },
+    {
+      "trigger": 23,
+      "candidate": 32,
+      "historical_matches": 75,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.324675
+    },
+    {
+      "trigger": 55,
+      "candidate": 30,
+      "historical_matches": 75,
+      "total_opportunities": 231,
+      "pair_lag_score": 0.324675
+    },
+    {
+      "trigger": 38,
+      "candidate": 8,
+      "historical_matches": 73,
+      "total_opportunities": 225,
+      "pair_lag_score": 0.324444
+    },
+    {
+      "trigger": 21,
+      "candidate": 15,
+      "historical_matches": 72,
+      "total_opportunities": 222,
+      "pair_lag_score": 0.324324
+    },
+    {
+      "trigger": 3,
+      "candidate": 27,
+      "historical_matches": 71,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.324201
+    },
+    {
+      "trigger": 3,
+      "candidate": 40,
+      "historical_matches": 71,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.324201
+    },
+    {
+      "trigger": 3,
+      "candidate": 48,
+      "historical_matches": 71,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.324201
+    },
+    {
+      "trigger": 54,
+      "candidate": 47,
+      "historical_matches": 71,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.324201
+    },
+    {
+      "trigger": 54,
+      "candidate": 50,
+      "historical_matches": 71,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.324201
+    },
+    {
+      "trigger": 56,
+      "candidate": 2,
+      "historical_matches": 71,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.324201
+    },
+    {
+      "trigger": 56,
+      "candidate": 44,
+      "historical_matches": 71,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.324201
+    },
+    {
+      "trigger": 56,
+      "candidate": 50,
+      "historical_matches": 71,
+      "total_opportunities": 219,
+      "pair_lag_score": 0.324201
+    },
+    {
+      "trigger": 1,
+      "candidate": 39,
+      "historical_matches": 70,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.324074
+    },
+    {
+      "trigger": 22,
+      "candidate": 2,
+      "historical_matches": 70,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.324074
+    },
+    {
+      "trigger": 22,
+      "candidate": 28,
+      "historical_matches": 70,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.324074
+    },
+    {
+      "trigger": 22,
+      "candidate": 37,
+      "historical_matches": 70,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.324074
+    },
+    {
+      "trigger": 47,
+      "candidate": 27,
+      "historical_matches": 70,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.324074
+    },
+    {
+      "trigger": 47,
+      "candidate": 48,
+      "historical_matches": 70,
+      "total_opportunities": 216,
+      "pair_lag_score": 0.324074
+    },
+    {
+      "trigger": 5,
+      "candidate": 19,
+      "historical_matches": 81,
+      "total_opportunities": 250,
+      "pair_lag_score": 0.324
+    },
+    {
+      "trigger": 5,
+      "candidate": 31,
+      "historical_matches": 81,
+      "total_opportunities": 250,
+      "pair_lag_score": 0.324
+    },
+    {
+      "trigger": 9,
+      "candidate": 36,
+      "historical_matches": 69,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.323944
+    },
+    {
+      "trigger": 41,
+      "candidate": 26,
+      "historical_matches": 69,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.323944
+    },
+    {
+      "trigger": 41,
+      "candidate": 47,
+      "historical_matches": 69,
+      "total_opportunities": 213,
+      "pair_lag_score": 0.323944
+    },
+    {
+      "trigger": 29,
+      "candidate": 23,
+      "historical_matches": 79,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.32377
+    },
+    {
+      "trigger": 40,
+      "candidate": 23,
+      "historical_matches": 79,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.32377
+    },
+    {
+      "trigger": 40,
+      "candidate": 25,
+      "historical_matches": 79,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.32377
+    },
+    {
+      "trigger": 40,
+      "candidate": 48,
+      "historical_matches": 79,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.32377
+    },
+    {
+      "trigger": 40,
+      "candidate": 50,
+      "historical_matches": 79,
+      "total_opportunities": 244,
+      "pair_lag_score": 0.32377
+    },
+    {
+      "trigger": 42,
+      "candidate": 27,
+      "historical_matches": 67,
+      "total_opportunities": 207,
+      "pair_lag_score": 0.323671
+    },
+    {
+      "trigger": 11,
+      "candidate": 45,
+      "historical_matches": 66,
+      "total_opportunities": 204,
+      "pair_lag_score": 0.323529
+    },
+    {
+      "trigger": 13,
+      "candidate": 30,
+      "historical_matches": 76,
+      "total_opportunities": 235,
+      "pair_lag_score": 0.323404
+    },
+    {
+      "trigger": 35,
+      "candidate": 17,
+      "historical_matches": 76,
+      "total_opportunities": 235,
+      "pair_lag_score": 0.323404
+    },
+    {
+      "trigger": 35,
+      "candidate": 37,
+      "historical_matches": 76,
+      "total_opportunities": 235,
+      "pair_lag_score": 0.323404
+    },
+    {
+      "trigger": 35,
+      "candidate": 49,
+      "historical_matches": 76,
+      "total_opportunities": 235,
+      "pair_lag_score": 0.323404
+    },
+    {
+      "trigger": 2,
+      "candidate": 5,
+      "historical_matches": 75,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.323276
+    },
+    {
+      "trigger": 2,
+      "candidate": 44,
+      "historical_matches": 75,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.323276
+    },
+    {
+      "trigger": 32,
+      "candidate": 7,
+      "historical_matches": 75,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.323276
+    },
+    {
+      "trigger": 32,
+      "candidate": 39,
+      "historical_matches": 75,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.323276
+    },
+    {
+      "trigger": 48,
+      "candidate": 36,
+      "historical_matches": 75,
+      "total_opportunities": 232,
+      "pair_lag_score": 0.323276
+    },
+    {
+      "trigger": 45,
+      "candidate": 34,
+      "historical_matches": 74,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.323144
+    },
+    {
+      "trigger": 45,
+      "candidate": 38,
+      "historical_matches": 74,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.323144
+    },
+    {
+      "trigger": 53,
+      "candidate": 2,
+      "historical_matches": 74,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.323144
+    },
+    {
+      "trigger": 53,
+      "candidate": 30,
+      "historical_matches": 74,
+      "total_opportunities": 229,
+      "pair_lag_score": 0.323144
+    },
+    {
+      "trigger": 28,
+      "candidate": 30,
+      "historical_matches": 73,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.323009
+    },
+    {
+      "trigger": 28,
+      "candidate": 39,
+      "historical_matches": 73,
+      "total_opportunities": 226,
+      "pair_lag_score": 0.323009
+    },
+    {
+      "trigger": 25,
+      "candidate": 5,
+      "historical_matches": 72,
+      "total_opportunities": 223,
+      "pair_lag_score": 0.32287
+    },
+    {
+      "trigger": 25,
+      "candidate": 56,
+      "historical_matches": 72,
+      "total_opportunities": 223,
+      "pair_lag_score": 0.32287
+    },
+    {
+      "trigger": 26,
+      "candidate": 4,
+      "historical_matches": 79,
+      "total_opportunities": 245,
+      "pair_lag_score": 0.322449
+    },
+    {
+      "trigger": 26,
+      "candidate": 8,
+      "historical_matches": 79,
+      "total_opportunities": 245,
+      "pair_lag_score": 0.322449
+    },
+    {
+      "trigger": 26,
+      "candidate": 17,
+      "historical_matches": 79,
+      "total_opportunities": 245,
+      "pair_lag_score": 0.322449
+    },
+    {
+      "trigger": 36,
+      "candidate": 13,
+      "historical_matches": 78,
+      "total_opportunities": 242,
+      "pair_lag_score": 0.322314
+    },
+    {
+      "trigger": 36,
+      "candidate": 23,
+      "historical_matches": 78,
+      "total_opportunities": 242,
+      "pair_lag_score": 0.322314
+    },
+    {
+      "trigger": 12,
+      "candidate": 26,
+      "historical_matches": 67,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.322115
+    },
+    {
+      "trigger": 12,
+      "candidate": 33,
+      "historical_matches": 67,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.322115
+    },
+    {
+      "trigger": 14,
+      "candidate": 19,
+      "historical_matches": 67,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.322115
+    },
+    {
+      "trigger": 14,
+      "candidate": 30,
+      "historical_matches": 67,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.322115
+    },
+    {
+      "trigger": 20,
+      "candidate": 4,
+      "historical_matches": 67,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.322115
+    },
+    {
+      "trigger": 20,
+      "candidate": 39,
+      "historical_matches": 67,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.322115
+    },
+    {
+      "trigger": 20,
+      "candidate": 40,
+      "historical_matches": 67,
+      "total_opportunities": 208,
+      "pair_lag_score": 0.322115
+    },
+    {
+      "trigger": 15,
+      "candidate": 23,
+      "historical_matches": 76,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.322034
+    },
+    {
+      "trigger": 46,
+      "candidate": 13,
+      "historical_matches": 76,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.322034
+    },
+    {
+      "trigger": 46,
+      "candidate": 30,
+      "historical_matches": 76,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.322034
+    },
+    {
+      "trigger": 46,
+      "candidate": 38,
+      "historical_matches": 76,
+      "total_opportunities": 236,
+      "pair_lag_score": 0.322034
+    },
+    {
+      "trigger": 18,
+      "candidate": 5,
+      "historical_matches": 75,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.321888
+    },
+    {
+      "trigger": 18,
+      "candidate": 36,
+      "historical_matches": 75,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.321888
+    },
+    {
+      "trigger": 18,
+      "candidate": 40,
+      "historical_matches": 75,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.321888
+    },
+    {
+      "trigger": 44,
+      "candidate": 35,
+      "historical_matches": 75,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.321888
+    },
+    {
+      "trigger": 44,
+      "candidate": 36,
+      "historical_matches": 75,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.321888
+    },
+    {
+      "trigger": 44,
+      "candidate": 46,
+      "historical_matches": 75,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.321888
+    },
+    {
+      "trigger": 44,
+      "candidate": 50,
+      "historical_matches": 75,
+      "total_opportunities": 233,
+      "pair_lag_score": 0.321888
+    },
+    {
+      "trigger": 33,
+      "candidate": 5,
+      "historical_matches": 74,
+      "total_opportunities": 230,
+      "pair_lag_score": 0.321739
+    },
+    {
+      "trigger": 16,
+      "candidate": 39,
+      "historical_matches": 73,
+      "total_opportunities": 227,
+      "pair_lag_score": 0.321586
+    },
+    {
+      "trigger": 4,
+      "candidate": 55,
+      "historical_matches": 80,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.321285
+    },
+    {
+      "trigger": 24,
+      "candidate": 39,
+      "historical_matches": 80,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.321285
+    },
+    {
+      "trigger": 37,
+      "candidate": 30,
+      "historical_matches": 80,
+      "total_opportunities": 249,
+      "pair_lag_score": 0.321285
+    },
+    {
+      "trigger": 6,
+      "candidate": 27,
+      "historical_matches": 71,
+      "total_opportunities": 221,
+      "pair_lag_score": 0.321267
+    },
+    {
+      "trigger": 17,
+      "candidate": 26,
+      "historical_matches": 77,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.320833
+    },
+    {
+      "trigger": 17,
+      "candidate": 27,
+      "historical_matches": 77,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.320833
+    },
+    {
+      "trigger": 17,
+      "candidate": 32,
+      "historical_matches": 77,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.320833
+    },
+    {
+      "trigger": 17,
+      "candidate": 37,
+      "historical_matches": 77,
+      "total_opportunities": 240,
+      "pair_lag_score": 0.320833
+    },
+    {
+      "trigger": 39,
+      "candidate": 8,
+      "historical_matches": 76,
+      "total_opportunities": 237,
+      "pair_lag_score": 0.320675
+    }
+  ],
+  "active_candidates": [
+    37,
+    29,
+    39,
+    2,
+    4,
+    5,
+    36,
+    45,
+    40,
+    13,
+    23,
+    26,
+    15,
+    30,
+    44,
+    55,
+    33,
+    27,
+    21,
+    24,
+    7,
+    31,
+    46,
+    52,
+    49,
+    17,
+    22,
+    48,
+    6,
+    50,
+    19,
+    32,
+    47,
+    25,
+    51,
+    9,
+    18,
+    16,
+    34,
+    56
+  ]
+}

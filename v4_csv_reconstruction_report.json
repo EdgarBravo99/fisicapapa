@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-05-26T17:16:00.126246+00:00",
+  "engine_version": "v4.4-csv-reconstructor",
+  "production_status": "review_default",
+  "input_file": "v4_scraper_raw.csv",
+  "output_file": "revancha.csv",
+  "rows_in": 2132,
+  "rows_out": 2132,
+  "latest_draw": 4217,
+  "duplicates_removed": 0,
+  "invalid_rows": [],
+  "sequence_gaps": [],
+  "source_sha256": "e8b942845c4d32330fe2a418ad61721e06912cf2895f15b7ccd618183cd44622",
+  "output_sha256": "e47023ec24024dcf2e06e1041583b31b2349bed75a37e74821eb7d825118858b"
+}

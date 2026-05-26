@@ -17,6 +17,17 @@ OUTPUT_FILES = (
     "v4_visual_pattern_output.json",
     "v4_hybrid_composition_slate.json",
 )
+V44_OUTPUT_FILES = (
+    "revancha.csv",
+    "v4_history_matrix.json",
+    "v4_gap_echo_output.json",
+    "v4_signature_history.json",
+    "v4_pair_lag_signals.json",
+    "v4_block_completion_signals.json",
+    "v4_winner_profile.json",
+    "v4_recent_composition_profile.json",
+    "v4_combination_slate.json",
+)
 BASE_STEPS = (
     ("winner composition audit", "tools/v4_winner_composition_audit.py"),
     ("visual pattern features", "tools/v4_visual_pattern_features.py"),
@@ -53,6 +64,13 @@ def confirm_outputs() -> None:
     if missing:
         raise RuntimeError(f"Missing expected V4.3 outputs: {', '.join(missing)}")
     print("[v4-refresh] confirmed outputs: " + ", ".join(OUTPUT_FILES), flush=True)
+
+
+def confirm_v44_outputs() -> None:
+    missing = [path for path in V44_OUTPUT_FILES if not (ROOT / path).exists()]
+    if missing:
+        raise RuntimeError(f"Missing expected V4.4 outputs: {', '.join(missing)}")
+    print("[v4-refresh] confirmed V4.4 outputs: " + ", ".join(V44_OUTPUT_FILES), flush=True)
 
 
 def _try_load(path: str) -> dict[str, Any]:
@@ -100,6 +118,23 @@ def summarize(history_sync_ran: bool = False, snapshot_ran: bool = False, visual
     print(f"  warnings: {warnings if warnings else 'none'}", flush=True)
 
 
+def summarize_v44() -> None:
+    slate = load_json(ROOT / "v4_combination_slate.json")
+    recent = _try_load("v4_recent_composition_profile.json")
+    tickets = slate.get("tickets") if isinstance(slate.get("tickets"), list) else []
+    summary = slate.get("slate_structure_summary") if isinstance(slate.get("slate_structure_summary"), dict) else {}
+    print("[v4-refresh] V4.4 summary", flush=True)
+    print(f"  latest_draw: {slate.get('latest_draw', 'N/D')}", flush=True)
+    print(f"  target_draw: {slate.get('target_draw', 'N/D')}", flush=True)
+    print(f"  production_status: {slate.get('production_status', 'N/D')}", flush=True)
+    print(f"  ticket_count: {len(tickets)}", flush=True)
+    print(f"  recent_window: {recent.get('window', 'N/D')}", flush=True)
+    print(f"  dominant_sum_band: {slate.get('recent_composition_profile_used', {}).get('dominant_sum_band', 'N/D')}", flush=True)
+    print(f"  pair_companion_usage_count: {summary.get('pair_companion_usage_count', 'N/D')}", flush=True)
+    print(f"  pair_lag_usage_count: {summary.get('pair_lag_usage_count', 'N/D')}", flush=True)
+    print(f"  immediate_overlap_distribution: {summary.get('immediate_overlap_distribution', 'N/D')}", flush=True)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Refresh V4.3 Revancha composition outputs.")
     parser.add_argument("--game", default="revancha", help="Game mode to refresh. Only 'revancha' is supported for now.")
@@ -107,6 +142,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--snapshot-predraw", action="store_true")
     parser.add_argument("--export-visual-matrix", action="store_true")
     parser.add_argument("--pair-companion-audit", action="store_true")
+    parser.add_argument("--scrape", action="store_true")
+    parser.add_argument("--reconstruct", action="store_true")
+    parser.add_argument("--full-signals", action="store_true")
+    parser.add_argument("--recent-composition", action="store_true")
+    parser.add_argument("--construct", action="store_true")
     return parser.parse_args()
 
 
@@ -117,6 +157,43 @@ def main() -> int:
         return 2
 
     try:
+        v44_requested = any((args.scrape, args.reconstruct, args.full_signals, args.recent_composition, args.construct))
+        if v44_requested:
+            print("[v4-refresh] starting V4.4 constructor refresh for revancha", flush=True)
+            if args.scrape:
+                run_step("Pakin scraper", "tools/v4_scraper_pakin.py")
+            if args.reconstruct:
+                run_step("CSV reconstructor", "tools/v4_csv_reconstructor.py")
+            if args.full_signals:
+                run_step("history matrix", "tools/v4_matrix_builder.py")
+                run_step("gap echo", "tools/v4_gap_echo_engine.py")
+                run_step("signature history", "tools/v4_signature_history_engine.py")
+                run_step("pair lag constructor", "tools/v4_pair_lag_constructor.py")
+                run_step("block completion", "tools/v4_block_completion_engine.py")
+                run_step("winner profile", "tools/v4_winner_profile_engine.py")
+            if args.recent_composition:
+                run_step("recent composition profile", "tools/v4_recent_composition_engine.py")
+            if args.construct:
+                if not args.full_signals:
+                    required = [
+                        "v4_gap_echo_output.json",
+                        "v4_signature_history.json",
+                        "v4_pair_lag_signals.json",
+                        "v4_block_completion_signals.json",
+                        "v4_winner_profile.json",
+                    ]
+                    missing = [path for path in required if not (ROOT / path).exists()]
+                    if missing:
+                        raise RuntimeError(f"--construct requires --full-signals or existing files: {', '.join(missing)}")
+                if not args.recent_composition and not (ROOT / "v4_recent_composition_profile.json").exists():
+                    raise RuntimeError("--construct requires --recent-composition or existing v4_recent_composition_profile.json")
+                run_step("combination constructor", "tools/v4_combination_constructor.py")
+            run_step("hybrid composition smoke test", "tools/v4_hybrid_composition_smoke_test.py")
+            confirm_v44_outputs()
+            summarize_v44()
+            print("[v4-refresh] done", flush=True)
+            return 0
+
         print("[v4-refresh] starting V4.3 refresh for revancha", flush=True)
         if args.sync_history_from_pakin:
             run_step("Pakin history sync", "tools/v4_history_sync_from_pakin.py", ["--game", "revancha"], allow_failure=True)

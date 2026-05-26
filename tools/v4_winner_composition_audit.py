@@ -50,8 +50,18 @@ def read_revancha_csv(path: str | Path = "revancha.csv") -> list[dict[str, Any]]
     with csv_path.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)
         for row in reader:
-            draw_id = parse_int(row.get("CONCURSO") or row.get("draw") or row.get("draw_id"))
-            numbers = clean_numbers([row.get(f"R{i}") for i in range(1, 7)])
+            lowered = {str(key or "").strip().lower(): value for key, value in row.items()}
+            draw_id = parse_int(
+                row.get("CONCURSO")
+                or row.get("draw")
+                or row.get("draw_id")
+                or row.get("sorteo")
+                or lowered.get("sorteo")
+                or lowered.get("concurso")
+            )
+            r_values = [row.get(f"R{i}") for i in range(1, 7)]
+            n_values = [row.get(f"n{i}") or lowered.get(f"n{i}") for i in range(1, 7)]
+            numbers = clean_numbers(r_values if any(value not in (None, "") for value in r_values) else n_values)
             if draw_id is None or not numbers:
                 continue
             rows.append({"draw_id": draw_id, "numbers": numbers, "raw": row})

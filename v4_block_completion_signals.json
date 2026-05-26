@@ -1,0 +1,1639 @@
+{
+  "generated_at": "2026-05-26T17:16:02.439079+00:00",
+  "engine_version": "v4.4-block-completion",
+  "production_status": "review_default",
+  "latest_draw": 4217,
+  "groups": [
+    {
+      "numbers": [
+        5,
+        7,
+        29,
+        37
+      ],
+      "historical_co_appearances": 17,
+      "recent_seen": [
+        5,
+        7,
+        29
+      ],
+      "missing": [
+        37
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.005203
+    },
+    {
+      "numbers": [
+        15,
+        33,
+        40,
+        54
+      ],
+      "historical_co_appearances": 15,
+      "recent_seen": [
+        15,
+        54
+      ],
+      "missing": [
+        33,
+        40
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.003096
+    },
+    {
+      "numbers": [
+        7,
+        8,
+        16,
+        17
+      ],
+      "historical_co_appearances": 14,
+      "recent_seen": [
+        7,
+        16
+      ],
+      "missing": [
+        8,
+        17
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002889
+    },
+    {
+      "numbers": [
+        15,
+        19,
+        33,
+        40
+      ],
+      "historical_co_appearances": 14,
+      "recent_seen": [
+        15,
+        19
+      ],
+      "missing": [
+        33,
+        40
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002889
+    },
+    {
+      "numbers": [
+        13,
+        15,
+        18,
+        40
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        15,
+        18
+      ],
+      "missing": [
+        13,
+        40
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002683
+    },
+    {
+      "numbers": [
+        5,
+        15,
+        31,
+        56
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        5,
+        15
+      ],
+      "missing": [
+        31,
+        56
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002683
+    },
+    {
+      "numbers": [
+        5,
+        7,
+        23,
+        37
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        5,
+        7,
+        23
+      ],
+      "missing": [
+        37
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003979
+    },
+    {
+      "numbers": [
+        5,
+        15,
+        38,
+        41
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        5,
+        15
+      ],
+      "missing": [
+        38,
+        41
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002683
+    },
+    {
+      "numbers": [
+        5,
+        6,
+        21,
+        25
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        5,
+        25
+      ],
+      "missing": [
+        6,
+        21
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002683
+    },
+    {
+      "numbers": [
+        3,
+        5,
+        7,
+        48
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        3,
+        5,
+        7
+      ],
+      "missing": [
+        48
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003979
+    },
+    {
+      "numbers": [
+        6,
+        24,
+        27,
+        36
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        24,
+        27
+      ],
+      "missing": [
+        6,
+        36
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002683
+    },
+    {
+      "numbers": [
+        2,
+        3,
+        16,
+        39
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        3,
+        16,
+        39
+      ],
+      "missing": [
+        2
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003979
+    },
+    {
+      "numbers": [
+        23,
+        25,
+        34,
+        48
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        23,
+        25
+      ],
+      "missing": [
+        34,
+        48
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002683
+    },
+    {
+      "numbers": [
+        5,
+        8,
+        29,
+        55
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        5,
+        29
+      ],
+      "missing": [
+        8,
+        55
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002683
+    },
+    {
+      "numbers": [
+        7,
+        18,
+        26,
+        33
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        7,
+        18
+      ],
+      "missing": [
+        26,
+        33
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002683
+    },
+    {
+      "numbers": [
+        2,
+        3,
+        39,
+        50
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        3,
+        39,
+        50
+      ],
+      "missing": [
+        2
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003979
+    },
+    {
+      "numbers": [
+        10,
+        21,
+        24,
+        39
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        24,
+        39
+      ],
+      "missing": [
+        10,
+        21
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002683
+    },
+    {
+      "numbers": [
+        24,
+        27,
+        32,
+        51
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        24,
+        27,
+        32
+      ],
+      "missing": [
+        51
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003979
+    },
+    {
+      "numbers": [
+        7,
+        18,
+        46,
+        53
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        7,
+        18
+      ],
+      "missing": [
+        46,
+        53
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002683
+    },
+    {
+      "numbers": [
+        2,
+        44,
+        47,
+        49
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        47,
+        49
+      ],
+      "missing": [
+        2,
+        44
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002683
+    },
+    {
+      "numbers": [
+        1,
+        7,
+        18,
+        45
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        7,
+        18,
+        45
+      ],
+      "missing": [
+        1
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003979
+    },
+    {
+      "numbers": [
+        5,
+        7,
+        14,
+        29
+      ],
+      "historical_co_appearances": 13,
+      "recent_seen": [
+        5,
+        7,
+        29
+      ],
+      "missing": [
+        14
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003979
+    },
+    {
+      "numbers": [
+        4,
+        24,
+        39,
+        40
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        24,
+        39
+      ],
+      "missing": [
+        4,
+        40
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        13,
+        15,
+        23,
+        40
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        15,
+        23
+      ],
+      "missing": [
+        13,
+        40
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        5,
+        7,
+        30,
+        31
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        5,
+        7
+      ],
+      "missing": [
+        30,
+        31
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        5,
+        23,
+        38,
+        40
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        5,
+        23
+      ],
+      "missing": [
+        38,
+        40
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        3,
+        18,
+        19,
+        40
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        3,
+        18,
+        19
+      ],
+      "missing": [
+        40
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003673
+    },
+    {
+      "numbers": [
+        7,
+        11,
+        14,
+        23
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        7,
+        23
+      ],
+      "missing": [
+        11,
+        14
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        7,
+        23,
+        25,
+        34
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        7,
+        23,
+        25
+      ],
+      "missing": [
+        34
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003673
+    },
+    {
+      "numbers": [
+        7,
+        23,
+        25,
+        30
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        7,
+        23,
+        25
+      ],
+      "missing": [
+        30
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003673
+    },
+    {
+      "numbers": [
+        32,
+        35,
+        39,
+        43
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        32,
+        39,
+        43
+      ],
+      "missing": [
+        35
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003673
+    },
+    {
+      "numbers": [
+        4,
+        5,
+        50,
+        52
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        5,
+        50,
+        52
+      ],
+      "missing": [
+        4
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003673
+    },
+    {
+      "numbers": [
+        23,
+        29,
+        32,
+        37
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        23,
+        29,
+        32
+      ],
+      "missing": [
+        37
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003673
+    },
+    {
+      "numbers": [
+        7,
+        29,
+        35,
+        37
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        7,
+        29
+      ],
+      "missing": [
+        35,
+        37
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        15,
+        16,
+        29,
+        40
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        15,
+        16,
+        29
+      ],
+      "missing": [
+        40
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003673
+    },
+    {
+      "numbers": [
+        9,
+        10,
+        49,
+        54
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        49,
+        54
+      ],
+      "missing": [
+        9,
+        10
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        2,
+        15,
+        40,
+        49
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        15,
+        49
+      ],
+      "missing": [
+        2,
+        40
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        21,
+        29,
+        44,
+        45
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        29,
+        45
+      ],
+      "missing": [
+        21,
+        44
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        4,
+        6,
+        19,
+        24
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        19,
+        24
+      ],
+      "missing": [
+        4,
+        6
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        3,
+        8,
+        16,
+        26
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        3,
+        16
+      ],
+      "missing": [
+        8,
+        26
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        5,
+        8,
+        16,
+        17
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        5,
+        16
+      ],
+      "missing": [
+        8,
+        17
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        2,
+        13,
+        15,
+        49
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        15,
+        49
+      ],
+      "missing": [
+        2,
+        13
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        3,
+        15,
+        31,
+        40
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        3,
+        15
+      ],
+      "missing": [
+        31,
+        40
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        4,
+        18,
+        19,
+        36
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        18,
+        19
+      ],
+      "missing": [
+        4,
+        36
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        2,
+        16,
+        17,
+        54
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        16,
+        54
+      ],
+      "missing": [
+        2,
+        17
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        5,
+        17,
+        24,
+        48
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        5,
+        24
+      ],
+      "missing": [
+        17,
+        48
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        27,
+        36
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        5,
+        18,
+        27
+      ],
+      "missing": [
+        36
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003673
+    },
+    {
+      "numbers": [
+        5,
+        7,
+        20,
+        37
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        5,
+        7
+      ],
+      "missing": [
+        20,
+        37
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        5,
+        7,
+        8,
+        29
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        5,
+        7,
+        29
+      ],
+      "missing": [
+        8
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003673
+    },
+    {
+      "numbers": [
+        10,
+        13,
+        16,
+        24
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        16,
+        24
+      ],
+      "missing": [
+        10,
+        13
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        5,
+        15,
+        38,
+        40
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        5,
+        15
+      ],
+      "missing": [
+        38,
+        40
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        4,
+        13,
+        16,
+        24
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        16,
+        24
+      ],
+      "missing": [
+        4,
+        13
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        5,
+        15,
+        30,
+        48
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        5,
+        15
+      ],
+      "missing": [
+        30,
+        48
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        21,
+        24,
+        31,
+        39
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        24,
+        39
+      ],
+      "missing": [
+        21,
+        31
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.002477
+    },
+    {
+      "numbers": [
+        5,
+        7,
+        23,
+        34
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        5,
+        7,
+        23
+      ],
+      "missing": [
+        34
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003673
+    },
+    {
+      "numbers": [
+        7,
+        9,
+        15,
+        19
+      ],
+      "historical_co_appearances": 12,
+      "recent_seen": [
+        7,
+        15,
+        19
+      ],
+      "missing": [
+        9
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003673
+    },
+    {
+      "numbers": [
+        5,
+        7,
+        9,
+        34
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        5,
+        7
+      ],
+      "missing": [
+        9,
+        34
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        5,
+        7,
+        23,
+        31
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        5,
+        7,
+        23
+      ],
+      "missing": [
+        31
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003367
+    },
+    {
+      "numbers": [
+        5,
+        18,
+        23,
+        31
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        5,
+        18,
+        23
+      ],
+      "missing": [
+        31
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003367
+    },
+    {
+      "numbers": [
+        15,
+        18,
+        31,
+        40
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        15,
+        18
+      ],
+      "missing": [
+        31,
+        40
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        5,
+        27,
+        28,
+        31
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        5,
+        27
+      ],
+      "missing": [
+        28,
+        31
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        19,
+        21,
+        26,
+        49
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        19,
+        49
+      ],
+      "missing": [
+        21,
+        26
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        4,
+        7,
+        10,
+        50
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        7,
+        50
+      ],
+      "missing": [
+        4,
+        10
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        7,
+        30,
+        32,
+        50
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        7,
+        32,
+        50
+      ],
+      "missing": [
+        30
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003367
+    },
+    {
+      "numbers": [
+        3,
+        27,
+        33,
+        34
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        3,
+        27
+      ],
+      "missing": [
+        33,
+        34
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        4,
+        13,
+        18,
+        19
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        18,
+        19
+      ],
+      "missing": [
+        4,
+        13
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        1,
+        16,
+        26,
+        39
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        16,
+        39
+      ],
+      "missing": [
+        1,
+        26
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        19,
+        32,
+        37,
+        39
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        19,
+        32,
+        39
+      ],
+      "missing": [
+        37
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003367
+    },
+    {
+      "numbers": [
+        1,
+        4,
+        16,
+        39
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        16,
+        39
+      ],
+      "missing": [
+        1,
+        4
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        1,
+        4,
+        32,
+        39
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        32,
+        39
+      ],
+      "missing": [
+        1,
+        4
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        6,
+        7,
+        9,
+        25
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        7,
+        25
+      ],
+      "missing": [
+        6,
+        9
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        7,
+        9,
+        25,
+        34
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        7,
+        25
+      ],
+      "missing": [
+        9,
+        34
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        13,
+        29,
+        37,
+        39
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        29,
+        39
+      ],
+      "missing": [
+        13,
+        37
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        13,
+        29,
+        30,
+        39
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        29,
+        39
+      ],
+      "missing": [
+        13,
+        30
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        1,
+        13,
+        16,
+        24
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        16,
+        24
+      ],
+      "missing": [
+        1,
+        13
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        4,
+        18,
+        19,
+        40
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        18,
+        19
+      ],
+      "missing": [
+        4,
+        40
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        3,
+        5,
+        19,
+        40
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        3,
+        5,
+        19
+      ],
+      "missing": [
+        40
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003367
+    },
+    {
+      "numbers": [
+        3,
+        5,
+        6,
+        33
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        3,
+        5
+      ],
+      "missing": [
+        6,
+        33
+      ],
+      "activation_ratio": 0.5,
+      "block_completion_score": 0.00227
+    },
+    {
+      "numbers": [
+        5,
+        7,
+        23,
+        30
+      ],
+      "historical_co_appearances": 11,
+      "recent_seen": [
+        5,
+        7,
+        23
+      ],
+      "missing": [
+        30
+      ],
+      "activation_ratio": 0.75,
+      "block_completion_score": 0.003367
+    }
+  ],
+  "candidates": [
+    {
+      "number": 40,
+      "group_count": 14
+    },
+    {
+      "number": 4,
+      "group_count": 10
+    },
+    {
+      "number": 13,
+      "group_count": 9
+    },
+    {
+      "number": 31,
+      "group_count": 8
+    },
+    {
+      "number": 37,
+      "group_count": 7
+    },
+    {
+      "number": 2,
+      "group_count": 6
+    },
+    {
+      "number": 34,
+      "group_count": 6
+    },
+    {
+      "number": 30,
+      "group_count": 6
+    },
+    {
+      "number": 33,
+      "group_count": 5
+    },
+    {
+      "number": 8,
+      "group_count": 5
+    },
+    {
+      "number": 6,
+      "group_count": 5
+    },
+    {
+      "number": 21,
+      "group_count": 5
+    },
+    {
+      "number": 1,
+      "group_count": 5
+    },
+    {
+      "number": 9,
+      "group_count": 5
+    },
+    {
+      "number": 17,
+      "group_count": 4
+    },
+    {
+      "number": 48,
+      "group_count": 4
+    },
+    {
+      "number": 26,
+      "group_count": 4
+    },
+    {
+      "number": 10,
+      "group_count": 4
+    },
+    {
+      "number": 38,
+      "group_count": 3
+    },
+    {
+      "number": 36,
+      "group_count": 3
+    },
+    {
+      "number": 44,
+      "group_count": 2
+    },
+    {
+      "number": 14,
+      "group_count": 2
+    },
+    {
+      "number": 35,
+      "group_count": 2
+    },
+    {
+      "number": 56,
+      "group_count": 1
+    },
+    {
+      "number": 41,
+      "group_count": 1
+    },
+    {
+      "number": 55,
+      "group_count": 1
+    },
+    {
+      "number": 51,
+      "group_count": 1
+    },
+    {
+      "number": 46,
+      "group_count": 1
+    },
+    {
+      "number": 53,
+      "group_count": 1
+    },
+    {
+      "number": 11,
+      "group_count": 1
+    },
+    {
+      "number": 20,
+      "group_count": 1
+    },
+    {
+      "number": 28,
+      "group_count": 1
+    }
+  ]
+}

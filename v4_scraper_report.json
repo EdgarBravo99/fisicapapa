@@ -1,0 +1,10 @@
+{
+  "generated_at": "2026-05-26T17:15:59.978357+00:00",
+  "engine_version": "v4.4-scraper-pakin",
+  "production_status": "review_default",
+  "source_url": "https://raw.githubusercontent.com/pakinja/pakin/master/Revancha.csv",
+  "rows_downloaded": 2132,
+  "latest_draw": 4217,
+  "output_file": "v4_scraper_raw.csv",
+  "source_sha256": "51e26c75a0e354a83c4aa6bc9e6e8917f05cc5519c417273ecb4ef24ac775e31"
+}
