@@ -1,11 +1,19 @@
 {
-  "generated_at": "2026-05-26T17:16:02.717348+00:00",
+  "generated_at": "2026-05-26T20:05:05.239843+00:00",
   "engine_version": "v4.4-recent-composition",
   "production_status": "review_default",
   "source_file": "revancha.csv",
   "source_sha256": "c17309c08b602b9178af4a1bc59e5349427b38c31558f3333077cede439d9ae5",
   "window": 30,
   "latest_draw": 4217,
+  "latest_draw_numbers": [
+    3,
+    23,
+    24,
+    27,
+    52,
+    54
+  ],
   "draws_used": [
     4188,
     4189,
@@ -49,7 +57,11 @@
       "high_tail": 7,
       "upper_core": 7
     },
-    "dominant_sum_band": "extreme_high"
+    "dominant_sum_band": "extreme_high",
+    "dominant_sum_bands": [
+      "extreme_high",
+      "historical_core"
+    ]
   },
   "parity_profile": {
     "parity_distribution": {
@@ -60,7 +72,10 @@
       "0_even_6_odd": 2,
       "6_even_0_odd": 1
     },
-    "dominant_parity": "3_even_3_odd"
+    "dominant_parity": "3_even_3_odd",
+    "dominant_parities": [
+      "3_even_3_odd"
+    ]
   },
   "presence_signature_profile": {
     "presence_signature_distribution": {
@@ -79,6 +94,9 @@
       "1-0-1-0-1": 1
     },
     "dominant_presence_signature": "1-1-1-0-1",
+    "dominant_presence_signatures": [
+      "1-1-1-0-1"
+    ],
     "second_presence_signature": "0-1-1-1-1"
   },
   "immediate_overlap_profile": {
@@ -88,7 +106,10 @@
       "2": 1
     },
     "avg_immediate_overlap": 0.466667,
-    "dominant_immediate_overlap": 0
+    "dominant_immediate_overlap": 0,
+    "dominant_immediate_overlaps": [
+      0
+    ]
   },
   "pair_companion_profile": {
     "pair_companion_counts": {
@@ -1061,5 +1082,2159 @@
       "recent_frequency_score": 0.1
     }
   ],
-  "summary_es": "Perfil reciente construido desde las últimas 30 combinaciones ganadoras para guiar composición, suma, pares compañeros y formación de estructura."
+  "summary_es": "Perfil reciente de ventana 30 construido para revisar suma, paridad, presencia visual, pares companion y repetidos inmediatos. Empate en banda de suma dominante: extreme_high, historical_core.",
+  "windows": {
+    "5": {
+      "window": 5,
+      "latest_draw": 4217,
+      "latest_draw_numbers": [
+        3,
+        23,
+        24,
+        27,
+        52,
+        54
+      ],
+      "draws_used": [
+        4213,
+        4214,
+        4215,
+        4216,
+        4217
+      ],
+      "sum_profile": {
+        "sum_min": 139,
+        "sum_max": 214,
+        "sum_avg": 177.4,
+        "sum_median": 183.0,
+        "sum_band_distribution": {
+          "high_tail": 2,
+          "extreme_high": 1,
+          "upper_core": 1,
+          "historical_core": 1
+        },
+        "dominant_sum_band": "high_tail",
+        "dominant_sum_bands": [
+          "high_tail"
+        ]
+      },
+      "parity_profile": {
+        "parity_distribution": {
+          "3_even_3_odd": 2,
+          "0_even_6_odd": 1,
+          "2_even_4_odd": 1,
+          "1_even_5_odd": 1
+        },
+        "dominant_parity": "3_even_3_odd",
+        "dominant_parities": [
+          "3_even_3_odd"
+        ]
+      },
+      "presence_signature_profile": {
+        "presence_signature_distribution": {
+          "1-0-1-1-1": 1,
+          "0-1-1-0-1": 1,
+          "1-1-0-1-1": 1,
+          "1-1-1-1-1": 1,
+          "1-0-1-0-1": 1
+        },
+        "dominant_presence_signature": "1-0-1-1-1",
+        "dominant_presence_signatures": [
+          "1-0-1-1-1",
+          "0-1-1-0-1",
+          "1-1-0-1-1",
+          "1-1-1-1-1",
+          "1-0-1-0-1"
+        ],
+        "second_presence_signature": "0-1-1-0-1"
+      },
+      "immediate_overlap_profile": {
+        "immediate_overlap_distribution": {
+          "1": 2,
+          "0": 2,
+          "2": 1
+        },
+        "avg_immediate_overlap": 0.8,
+        "dominant_immediate_overlap": 1,
+        "dominant_immediate_overlaps": [
+          1,
+          0
+        ]
+      },
+      "pair_companion_profile": {
+        "pair_companion_counts": {
+          "39-47": 2,
+          "3-54": 2
+        },
+        "top_pair_companions": [
+          {
+            "pair": [
+              39,
+              47
+            ],
+            "recent_co_appearances": 2,
+            "window": 5,
+            "pair_companion_score": 0.4
+          },
+          {
+            "pair": [
+              3,
+              54
+            ],
+            "recent_co_appearances": 2,
+            "window": 5,
+            "pair_companion_score": 0.4
+          }
+        ],
+        "pair_companion_candidates": [
+          {
+            "pair": [
+              39,
+              47
+            ],
+            "recent_co_appearances": 2,
+            "window": 5,
+            "pair_companion_score": 0.4
+          },
+          {
+            "pair": [
+              3,
+              54
+            ],
+            "recent_co_appearances": 2,
+            "window": 5,
+            "pair_companion_score": 0.4
+          }
+        ]
+      },
+      "number_frequency": {
+        "3": 2,
+        "5": 1,
+        "7": 2,
+        "15": 1,
+        "16": 1,
+        "18": 1,
+        "19": 2,
+        "22": 1,
+        "23": 1,
+        "24": 1,
+        "25": 1,
+        "27": 1,
+        "29": 2,
+        "32": 1,
+        "39": 2,
+        "43": 1,
+        "45": 2,
+        "47": 2,
+        "49": 1,
+        "50": 1,
+        "52": 1,
+        "54": 2
+      },
+      "top_recent_numbers": [
+        {
+          "number": 7,
+          "count": 2,
+          "recent_frequency_score": 0.4
+        },
+        {
+          "number": 29,
+          "count": 2,
+          "recent_frequency_score": 0.4
+        },
+        {
+          "number": 39,
+          "count": 2,
+          "recent_frequency_score": 0.4
+        },
+        {
+          "number": 47,
+          "count": 2,
+          "recent_frequency_score": 0.4
+        },
+        {
+          "number": 19,
+          "count": 2,
+          "recent_frequency_score": 0.4
+        },
+        {
+          "number": 45,
+          "count": 2,
+          "recent_frequency_score": 0.4
+        },
+        {
+          "number": 3,
+          "count": 2,
+          "recent_frequency_score": 0.4
+        },
+        {
+          "number": 54,
+          "count": 2,
+          "recent_frequency_score": 0.4
+        },
+        {
+          "number": 43,
+          "count": 1,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 49,
+          "count": 1,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 16,
+          "count": 1,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 25,
+          "count": 1,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 50,
+          "count": 1,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 5,
+          "count": 1,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 15,
+          "count": 1,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 18,
+          "count": 1,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 22,
+          "count": 1,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 32,
+          "count": 1,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 23,
+          "count": 1,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 24,
+          "count": 1,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 27,
+          "count": 1,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 52,
+          "count": 1,
+          "recent_frequency_score": 0.2
+        }
+      ],
+      "summary_es": "Perfil reciente de ventana 5 construido para revisar suma, paridad, presencia visual, pares companion y repetidos inmediatos. Empate en firma de presencia dominante: 1-0-1-1-1, 0-1-1-0-1, 1-1-0-1-1, 1-1-1-1-1, 1-0-1-0-1. Empate en repetidos inmediatos dominantes: 1, 0."
+    },
+    "20": {
+      "window": 20,
+      "latest_draw": 4217,
+      "latest_draw_numbers": [
+        3,
+        23,
+        24,
+        27,
+        52,
+        54
+      ],
+      "draws_used": [
+        4198,
+        4199,
+        4200,
+        4201,
+        4202,
+        4203,
+        4204,
+        4205,
+        4206,
+        4207,
+        4208,
+        4209,
+        4210,
+        4211,
+        4212,
+        4213,
+        4214,
+        4215,
+        4216,
+        4217
+      ],
+      "sum_profile": {
+        "sum_min": 130,
+        "sum_max": 265,
+        "sum_avg": 176.5,
+        "sum_median": 170.0,
+        "sum_band_distribution": {
+          "upper_core": 5,
+          "extreme_high": 5,
+          "historical_core": 5,
+          "high_tail": 5
+        },
+        "dominant_sum_band": "upper_core",
+        "dominant_sum_bands": [
+          "upper_core",
+          "extreme_high",
+          "historical_core",
+          "high_tail"
+        ]
+      },
+      "parity_profile": {
+        "parity_distribution": {
+          "3_even_3_odd": 8,
+          "4_even_2_odd": 4,
+          "1_even_5_odd": 4,
+          "2_even_4_odd": 2,
+          "6_even_0_odd": 1,
+          "0_even_6_odd": 1
+        },
+        "dominant_parity": "3_even_3_odd",
+        "dominant_parities": [
+          "3_even_3_odd"
+        ]
+      },
+      "presence_signature_profile": {
+        "presence_signature_distribution": {
+          "1-1-1-0-1": 6,
+          "1-1-1-1-1": 3,
+          "0-1-1-1-1": 2,
+          "1-1-0-1-1": 2,
+          "0-1-0-1-1": 1,
+          "0-0-1-0-1": 1,
+          "1-0-1-1-0": 1,
+          "1-0-0-1-1": 1,
+          "1-0-1-1-1": 1,
+          "0-1-1-0-1": 1,
+          "1-0-1-0-1": 1
+        },
+        "dominant_presence_signature": "1-1-1-0-1",
+        "dominant_presence_signatures": [
+          "1-1-1-0-1"
+        ],
+        "second_presence_signature": "1-1-1-1-1"
+      },
+      "immediate_overlap_profile": {
+        "immediate_overlap_distribution": {
+          "0": 13,
+          "1": 6,
+          "2": 1
+        },
+        "avg_immediate_overlap": 0.4,
+        "dominant_immediate_overlap": 0,
+        "dominant_immediate_overlaps": [
+          0
+        ]
+      },
+      "pair_companion_profile": {
+        "pair_companion_counts": {
+          "15-22": 3,
+          "9-49": 2,
+          "11-48": 2,
+          "7-15": 2,
+          "7-22": 2,
+          "7-45": 2,
+          "15-17": 2,
+          "15-45": 2,
+          "15-51": 2,
+          "17-51": 2,
+          "22-45": 2,
+          "42-48": 2,
+          "6-27": 2,
+          "15-27": 2,
+          "23-27": 2,
+          "32-41": 2,
+          "29-43": 2,
+          "20-42": 2,
+          "18-27": 2,
+          "18-45": 2,
+          "24-27": 2,
+          "7-27": 2,
+          "32-45": 2,
+          "7-18": 2,
+          "47-49": 2,
+          "39-47": 2,
+          "3-54": 2
+        },
+        "top_pair_companions": [
+          {
+            "pair": [
+              15,
+              22
+            ],
+            "recent_co_appearances": 3,
+            "window": 20,
+            "pair_companion_score": 0.15
+          },
+          {
+            "pair": [
+              9,
+              49
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              11,
+              48
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              7,
+              15
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              7,
+              22
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              7,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              15,
+              17
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              15,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              15,
+              51
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              17,
+              51
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              22,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              42,
+              48
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              6,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              15,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              23,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              32,
+              41
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              29,
+              43
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              20,
+              42
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              18,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              18,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              24,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              7,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              32,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              7,
+              18
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              47,
+              49
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              39,
+              47
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              3,
+              54
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          }
+        ],
+        "pair_companion_candidates": [
+          {
+            "pair": [
+              15,
+              22
+            ],
+            "recent_co_appearances": 3,
+            "window": 20,
+            "pair_companion_score": 0.15
+          },
+          {
+            "pair": [
+              9,
+              49
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              11,
+              48
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              7,
+              15
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              7,
+              22
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              7,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              15,
+              17
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              15,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              15,
+              51
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              17,
+              51
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              22,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              42,
+              48
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              6,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              15,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              23,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              32,
+              41
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              29,
+              43
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              20,
+              42
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              18,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              18,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              24,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              7,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              32,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              7,
+              18
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              47,
+              49
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              39,
+              47
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              3,
+              54
+            ],
+            "recent_co_appearances": 2,
+            "window": 20,
+            "pair_companion_score": 0.1
+          }
+        ]
+      },
+      "number_frequency": {
+        "1": 1,
+        "2": 1,
+        "3": 2,
+        "4": 2,
+        "5": 1,
+        "6": 3,
+        "7": 5,
+        "8": 1,
+        "9": 2,
+        "11": 3,
+        "12": 1,
+        "13": 1,
+        "15": 5,
+        "16": 3,
+        "17": 2,
+        "18": 3,
+        "19": 3,
+        "20": 3,
+        "22": 3,
+        "23": 3,
+        "24": 3,
+        "25": 1,
+        "26": 3,
+        "27": 6,
+        "29": 3,
+        "30": 2,
+        "32": 3,
+        "33": 1,
+        "34": 1,
+        "35": 1,
+        "36": 1,
+        "38": 2,
+        "39": 3,
+        "40": 1,
+        "41": 3,
+        "42": 3,
+        "43": 2,
+        "44": 1,
+        "45": 5,
+        "46": 2,
+        "47": 4,
+        "48": 4,
+        "49": 4,
+        "50": 2,
+        "51": 2,
+        "52": 2,
+        "53": 2,
+        "54": 3,
+        "55": 1,
+        "56": 1
+      },
+      "top_recent_numbers": [
+        {
+          "number": 27,
+          "count": 6,
+          "recent_frequency_score": 0.3
+        },
+        {
+          "number": 7,
+          "count": 5,
+          "recent_frequency_score": 0.25
+        },
+        {
+          "number": 15,
+          "count": 5,
+          "recent_frequency_score": 0.25
+        },
+        {
+          "number": 45,
+          "count": 5,
+          "recent_frequency_score": 0.25
+        },
+        {
+          "number": 49,
+          "count": 4,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 47,
+          "count": 4,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 48,
+          "count": 4,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 19,
+          "count": 3,
+          "recent_frequency_score": 0.15
+        },
+        {
+          "number": 26,
+          "count": 3,
+          "recent_frequency_score": 0.15
+        },
+        {
+          "number": 11,
+          "count": 3,
+          "recent_frequency_score": 0.15
+        },
+        {
+          "number": 22,
+          "count": 3,
+          "recent_frequency_score": 0.15
+        },
+        {
+          "number": 23,
+          "count": 3,
+          "recent_frequency_score": 0.15
+        },
+        {
+          "number": 42,
+          "count": 3,
+          "recent_frequency_score": 0.15
+        },
+        {
+          "number": 6,
+          "count": 3,
+          "recent_frequency_score": 0.15
+        },
+        {
+          "number": 16,
+          "count": 3,
+          "recent_frequency_score": 0.15
+        },
+        {
+          "number": 24,
+          "count": 3,
+          "recent_frequency_score": 0.15
+        },
+        {
+          "number": 32,
+          "count": 3,
+          "recent_frequency_score": 0.15
+        },
+        {
+          "number": 41,
+          "count": 3,
+          "recent_frequency_score": 0.15
+        },
+        {
+          "number": 29,
+          "count": 3,
+          "recent_frequency_score": 0.15
+        },
+        {
+          "number": 20,
+          "count": 3,
+          "recent_frequency_score": 0.15
+        },
+        {
+          "number": 39,
+          "count": 3,
+          "recent_frequency_score": 0.15
+        },
+        {
+          "number": 18,
+          "count": 3,
+          "recent_frequency_score": 0.15
+        },
+        {
+          "number": 54,
+          "count": 3,
+          "recent_frequency_score": 0.15
+        },
+        {
+          "number": 9,
+          "count": 2,
+          "recent_frequency_score": 0.1
+        },
+        {
+          "number": 38,
+          "count": 2,
+          "recent_frequency_score": 0.1
+        }
+      ],
+      "summary_es": "Perfil reciente de ventana 20 construido para revisar suma, paridad, presencia visual, pares companion y repetidos inmediatos. Empate en banda de suma dominante: upper_core, extreme_high, historical_core, high_tail."
+    },
+    "30": {
+      "window": 30,
+      "latest_draw": 4217,
+      "latest_draw_numbers": [
+        3,
+        23,
+        24,
+        27,
+        52,
+        54
+      ],
+      "draws_used": [
+        4188,
+        4189,
+        4190,
+        4191,
+        4192,
+        4193,
+        4194,
+        4195,
+        4196,
+        4197,
+        4198,
+        4199,
+        4200,
+        4201,
+        4202,
+        4203,
+        4204,
+        4205,
+        4206,
+        4207,
+        4208,
+        4209,
+        4210,
+        4211,
+        4212,
+        4213,
+        4214,
+        4215,
+        4216,
+        4217
+      ],
+      "sum_profile": {
+        "sum_min": 130,
+        "sum_max": 265,
+        "sum_avg": 175.0,
+        "sum_median": 170.0,
+        "sum_band_distribution": {
+          "extreme_high": 8,
+          "historical_core": 8,
+          "high_tail": 7,
+          "upper_core": 7
+        },
+        "dominant_sum_band": "extreme_high",
+        "dominant_sum_bands": [
+          "extreme_high",
+          "historical_core"
+        ]
+      },
+      "parity_profile": {
+        "parity_distribution": {
+          "3_even_3_odd": 9,
+          "2_even_4_odd": 7,
+          "4_even_2_odd": 6,
+          "1_even_5_odd": 5,
+          "0_even_6_odd": 2,
+          "6_even_0_odd": 1
+        },
+        "dominant_parity": "3_even_3_odd",
+        "dominant_parities": [
+          "3_even_3_odd"
+        ]
+      },
+      "presence_signature_profile": {
+        "presence_signature_distribution": {
+          "1-1-1-0-1": 7,
+          "0-1-1-1-1": 4,
+          "1-1-1-1-1": 4,
+          "1-0-1-1-1": 3,
+          "1-0-0-1-1": 2,
+          "0-1-1-0-1": 2,
+          "1-1-0-1-1": 2,
+          "0-1-1-1-0": 1,
+          "1-1-1-1-0": 1,
+          "0-1-0-1-1": 1,
+          "0-0-1-0-1": 1,
+          "1-0-1-1-0": 1,
+          "1-0-1-0-1": 1
+        },
+        "dominant_presence_signature": "1-1-1-0-1",
+        "dominant_presence_signatures": [
+          "1-1-1-0-1"
+        ],
+        "second_presence_signature": "0-1-1-1-1"
+      },
+      "immediate_overlap_profile": {
+        "immediate_overlap_distribution": {
+          "0": 17,
+          "1": 12,
+          "2": 1
+        },
+        "avg_immediate_overlap": 0.466667,
+        "dominant_immediate_overlap": 0,
+        "dominant_immediate_overlaps": [
+          0
+        ]
+      },
+      "pair_companion_profile": {
+        "pair_companion_counts": {
+          "29-43": 3,
+          "16-18": 3,
+          "7-27": 3,
+          "15-27": 3,
+          "15-22": 3,
+          "29-45": 2,
+          "13-15": 2,
+          "13-16": 2,
+          "15-18": 2,
+          "15-25": 2,
+          "19-25": 2,
+          "19-54": 2,
+          "52-54": 2,
+          "25-35": 2,
+          "25-45": 2,
+          "7-16": 2,
+          "7-29": 2,
+          "16-27": 2,
+          "16-29": 2,
+          "16-24": 2,
+          "16-50": 2,
+          "18-24": 2,
+          "13-41": 2,
+          "39-41": 2,
+          "15-43": 2,
+          "15-46": 2,
+          "27-53": 2,
+          "43-46": 2,
+          "9-49": 2,
+          "11-48": 2,
+          "7-15": 2,
+          "7-22": 2,
+          "7-45": 2,
+          "15-17": 2,
+          "15-45": 2,
+          "15-51": 2,
+          "17-51": 2,
+          "22-45": 2,
+          "42-48": 2,
+          "6-27": 2,
+          "23-27": 2,
+          "32-41": 2,
+          "20-42": 2,
+          "18-27": 2,
+          "18-45": 2,
+          "24-27": 2,
+          "32-45": 2,
+          "7-18": 2,
+          "47-49": 2,
+          "39-47": 2,
+          "3-54": 2
+        },
+        "top_pair_companions": [
+          {
+            "pair": [
+              29,
+              43
+            ],
+            "recent_co_appearances": 3,
+            "window": 30,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              16,
+              18
+            ],
+            "recent_co_appearances": 3,
+            "window": 30,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              7,
+              27
+            ],
+            "recent_co_appearances": 3,
+            "window": 30,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              15,
+              27
+            ],
+            "recent_co_appearances": 3,
+            "window": 30,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              15,
+              22
+            ],
+            "recent_co_appearances": 3,
+            "window": 30,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              29,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              13,
+              15
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              13,
+              16
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              15,
+              18
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              15,
+              25
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              19,
+              25
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              19,
+              54
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              52,
+              54
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              25,
+              35
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              25,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              7,
+              16
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              7,
+              29
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              16,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              16,
+              29
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              16,
+              24
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              16,
+              50
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              18,
+              24
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              13,
+              41
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              39,
+              41
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              15,
+              43
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              15,
+              46
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              27,
+              53
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              43,
+              46
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              9,
+              49
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              11,
+              48
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          }
+        ],
+        "pair_companion_candidates": [
+          {
+            "pair": [
+              29,
+              43
+            ],
+            "recent_co_appearances": 3,
+            "window": 30,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              16,
+              18
+            ],
+            "recent_co_appearances": 3,
+            "window": 30,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              7,
+              27
+            ],
+            "recent_co_appearances": 3,
+            "window": 30,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              15,
+              27
+            ],
+            "recent_co_appearances": 3,
+            "window": 30,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              15,
+              22
+            ],
+            "recent_co_appearances": 3,
+            "window": 30,
+            "pair_companion_score": 0.1
+          },
+          {
+            "pair": [
+              29,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              13,
+              15
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              13,
+              16
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              15,
+              18
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              15,
+              25
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              19,
+              25
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              19,
+              54
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              52,
+              54
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              25,
+              35
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              25,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              7,
+              16
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              7,
+              29
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              16,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              16,
+              29
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              16,
+              24
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              16,
+              50
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              18,
+              24
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              13,
+              41
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              39,
+              41
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              15,
+              43
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              15,
+              46
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              27,
+              53
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              43,
+              46
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              9,
+              49
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              11,
+              48
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              7,
+              15
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              7,
+              22
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              7,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              15,
+              17
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              15,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              15,
+              51
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              17,
+              51
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              22,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              42,
+              48
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              6,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              23,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              32,
+              41
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              20,
+              42
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              18,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              18,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              24,
+              27
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              32,
+              45
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              7,
+              18
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              47,
+              49
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              39,
+              47
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          },
+          {
+            "pair": [
+              3,
+              54
+            ],
+            "recent_co_appearances": 2,
+            "window": 30,
+            "pair_companion_score": 0.066667
+          }
+        ]
+      },
+      "number_frequency": {
+        "1": 2,
+        "2": 2,
+        "3": 2,
+        "4": 3,
+        "5": 2,
+        "6": 3,
+        "7": 6,
+        "8": 2,
+        "9": 3,
+        "11": 3,
+        "12": 1,
+        "13": 4,
+        "15": 9,
+        "16": 6,
+        "17": 2,
+        "18": 5,
+        "19": 4,
+        "20": 3,
+        "21": 1,
+        "22": 3,
+        "23": 5,
+        "24": 4,
+        "25": 4,
+        "26": 4,
+        "27": 8,
+        "28": 1,
+        "29": 5,
+        "30": 2,
+        "31": 1,
+        "32": 3,
+        "33": 2,
+        "34": 3,
+        "35": 4,
+        "36": 1,
+        "37": 1,
+        "38": 2,
+        "39": 5,
+        "40": 2,
+        "41": 5,
+        "42": 4,
+        "43": 4,
+        "44": 2,
+        "45": 7,
+        "46": 3,
+        "47": 4,
+        "48": 4,
+        "49": 4,
+        "50": 3,
+        "51": 3,
+        "52": 4,
+        "53": 3,
+        "54": 4,
+        "55": 1,
+        "56": 2
+      },
+      "top_recent_numbers": [
+        {
+          "number": 15,
+          "count": 9,
+          "recent_frequency_score": 0.3
+        },
+        {
+          "number": 27,
+          "count": 8,
+          "recent_frequency_score": 0.266667
+        },
+        {
+          "number": 45,
+          "count": 7,
+          "recent_frequency_score": 0.233333
+        },
+        {
+          "number": 16,
+          "count": 6,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 7,
+          "count": 6,
+          "recent_frequency_score": 0.2
+        },
+        {
+          "number": 29,
+          "count": 5,
+          "recent_frequency_score": 0.166667
+        },
+        {
+          "number": 18,
+          "count": 5,
+          "recent_frequency_score": 0.166667
+        },
+        {
+          "number": 23,
+          "count": 5,
+          "recent_frequency_score": 0.166667
+        },
+        {
+          "number": 39,
+          "count": 5,
+          "recent_frequency_score": 0.166667
+        },
+        {
+          "number": 41,
+          "count": 5,
+          "recent_frequency_score": 0.166667
+        },
+        {
+          "number": 43,
+          "count": 4,
+          "recent_frequency_score": 0.133333
+        },
+        {
+          "number": 52,
+          "count": 4,
+          "recent_frequency_score": 0.133333
+        },
+        {
+          "number": 13,
+          "count": 4,
+          "recent_frequency_score": 0.133333
+        },
+        {
+          "number": 19,
+          "count": 4,
+          "recent_frequency_score": 0.133333
+        },
+        {
+          "number": 25,
+          "count": 4,
+          "recent_frequency_score": 0.133333
+        },
+        {
+          "number": 54,
+          "count": 4,
+          "recent_frequency_score": 0.133333
+        },
+        {
+          "number": 35,
+          "count": 4,
+          "recent_frequency_score": 0.133333
+        },
+        {
+          "number": 42,
+          "count": 4,
+          "recent_frequency_score": 0.133333
+        },
+        {
+          "number": 24,
+          "count": 4,
+          "recent_frequency_score": 0.133333
+        },
+        {
+          "number": 26,
+          "count": 4,
+          "recent_frequency_score": 0.133333
+        },
+        {
+          "number": 49,
+          "count": 4,
+          "recent_frequency_score": 0.133333
+        },
+        {
+          "number": 47,
+          "count": 4,
+          "recent_frequency_score": 0.133333
+        },
+        {
+          "number": 48,
+          "count": 4,
+          "recent_frequency_score": 0.133333
+        },
+        {
+          "number": 9,
+          "count": 3,
+          "recent_frequency_score": 0.1
+        },
+        {
+          "number": 34,
+          "count": 3,
+          "recent_frequency_score": 0.1
+        }
+      ],
+      "summary_es": "Perfil reciente de ventana 30 construido para revisar suma, paridad, presencia visual, pares companion y repetidos inmediatos. Empate en banda de suma dominante: extreme_high, historical_core."
+    }
+  },
+  "recent_regime_summary": {
+    "window_5_vs_20_shift": true,
+    "window_20_vs_30_shift": true,
+    "sum_band_shift_es": "5 vs 20: high_tail frente a upper_core. | 20 vs 30: upper_core frente a extreme_high.",
+    "presence_shift_es": "5 vs 20: 1-0-1-1-1 frente a 1-1-1-0-1. | 20 vs 30: sin cambio.",
+    "pair_companion_shift_es": "Pares companion recientes cambian entre ventanas.",
+    "interpretation_es": "Lectura diagnóstica de cambio reciente de micro-régimen. No implica promesa de resultado futuro.",
+    "window_30_vs_historical_shift": true,
+    "historical_shift_es": "Ventana 30 comparada con histórico: suma extreme_high vs high_tail; presencia 1-1-1-0-1 vs 1-0-1-1-1."
+  }
 }

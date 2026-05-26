@@ -17,10 +17,11 @@
     recentComposition: 'v4_recent_composition_profile.json',
     postDraw: 'v4_post_draw_audit.json',
     matrix: 'v4_visual_matrix_export_report.json',
+    physicsMaintenance: 'v4_physics_maintenance_notes.json',
   };
 
   const CRITICAL_SOURCE_KEYS = ['slate', 'gapEcho', 'signatureHistory', 'pairLag', 'blockCompletion', 'winnerProfile', 'recentComposition'];
-  const OPTIONAL_SOURCE_KEYS = ['postDraw', 'matrix', 'pair', 'slateLegacy'];
+  const OPTIONAL_SOURCE_KEYS = ['postDraw', 'matrix', 'pair', 'slateLegacy', 'physicsMaintenance'];
   const ROOT_ID = 'v44-cockpit-root';
   const LEGACY_ROOT_ID = 'v43-cockpit-root';
   const SUM_BANDS = ['low_tail', 'historical_core', 'upper_core', 'high_tail', 'extreme_high'];
@@ -114,6 +115,7 @@
       recentComposition: 'py tools\\v4_recent_composition_engine.py',
       postDraw: `py tools\\v4_post_draw_audit.py --target-draw ${targetDraw || '<draw>'}`,
       matrix: 'py tools\\v4_visual_matrix_export.py',
+      physicsMaintenance: 'crear v4_physics_maintenance_notes.json manualmente',
       pair: 'py tools\\v4_pair_companion_audit.py',
       slateLegacy: 'py tools\\v4_refresh.py --game revancha --sync-history-from-pakin --export-visual-matrix --pair-companion-audit --snapshot-predraw',
     };
@@ -265,6 +267,96 @@
     return `<ul>${Object.entries(distribution).map(([key, value]) => `<li><b>${esc(key)}:</b> ${esc(value)}</li>`).join('')}</ul>`;
   }
 
+  function recentWindows(recent) {
+    if (isObject(recent?.windows)) return recent.windows;
+    if (!recent) return null;
+    return {
+      source: 'legacy_window_30_only',
+      30: {
+        window: recent.window || 30,
+        draws_used: safeArray(recent.draws_used),
+        sum_profile: recent.sum_profile || {},
+        parity_profile: recent.parity_profile || {},
+        presence_signature_profile: recent.presence_signature_profile || {},
+        immediate_overlap_profile: recent.immediate_overlap_profile || {},
+        pair_companion_profile: recent.pair_companion_profile || {},
+        top_recent_numbers: safeArray(recent.top_recent_numbers),
+      },
+    };
+  }
+
+  function renderPairList(rows, limit = 4) {
+    return safeArray(rows).slice(0, limit).map(row => safeArray(row.pair).join('-')).filter(Boolean).join(', ') || 'no disponible';
+  }
+
+  function renderTopNumbers(rows, limit = 8) {
+    return safeArray(rows).slice(0, limit).map(row => row.number).filter(value => value !== undefined).join(', ') || 'no disponible';
+  }
+
+  function renderRecentWindowsPanel(recent) {
+    const windows = recentWindows(recent);
+    if (!windows || windows.source === 'legacy_window_30_only') {
+      return `<article class="cockpit-panel cockpit-panel-wide"><h3>Ventanas recientes</h3><p>Ventanas múltiples no disponibles. Actualiza el pipeline con PR #40.</p><code>${esc(expectedCommand('slate'))}</code></article>`;
+    }
+    const rows = ['5', '20', '30'].map(key => {
+      const window = windows[key] || {};
+      return `<tr>
+        <td>Últimos ${esc(key)}</td>
+        <td>${esc(window.sum_profile?.dominant_sum_band || 'no disponible')}</td>
+        <td>${esc(window.parity_profile?.dominant_parity || 'no disponible')}</td>
+        <td><code>${esc(window.presence_signature_profile?.dominant_presence_signature || 'no disponible')}</code></td>
+        <td>${esc(window.immediate_overlap_profile?.dominant_immediate_overlap ?? 'no disponible')}</td>
+        <td>${esc(renderTopNumbers(window.top_recent_numbers, 6))}</td>
+        <td>${esc(renderPairList(window.pair_companion_profile?.top_pair_companions, 3))}</td>
+      </tr>`;
+    }).join('');
+    return `<article class="cockpit-panel cockpit-panel-wide">
+      <h3>Ventanas recientes</h3>
+      <div class="cockpit-table-wrap"><table class="cockpit-table">
+        <thead><tr><th>Ventana</th><th>Banda suma</th><th>Paridad</th><th>Firma presencia</th><th>Repetido dominante</th><th>Top números</th><th>Top pares companion</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>
+    </article>`;
+  }
+
+  function renderRegimePanel(recent) {
+    const regime = recent?.recent_regime_summary;
+    if (!isObject(regime)) return '';
+    return `<article class="cockpit-panel cockpit-panel-wide">
+      <h3>Micro-régimen reciente</h3>
+      <div class="cockpit-mini-grid">
+        ${metric('Cambio 5 vs 20', regime.window_5_vs_20_shift ? 'sí' : 'no')}
+        ${metric('Cambio 20 vs 30', regime.window_20_vs_30_shift ? 'sí' : 'no')}
+        ${'window_30_vs_historical_shift' in regime ? metric('30 vs histórico', regime.window_30_vs_historical_shift ? 'sí' : 'no') : ''}
+      </div>
+      <p>${esc(regime.sum_band_shift_es || 'sin cambio')}</p>
+      <p>${esc(regime.presence_shift_es || 'sin cambio')}</p>
+      <p>${esc(regime.pair_companion_shift_es || 'sin cambio')}</p>
+      ${regime.historical_shift_es ? `<p>${esc(regime.historical_shift_es)}</p>` : ''}
+      <p class="cockpit-note">${esc(regime.interpretation_es || 'Lectura diagnóstica de micro-régimen. No implica promesa de resultado futuro.')}</p>
+    </article>`;
+  }
+
+  function renderPhysicsPanel(data) {
+    const notes = safeArray(data.physicsMaintenance?.notes);
+    if (!notes.length) {
+      return `<article class="cockpit-panel cockpit-panel-wide"><h3>Física / mantenimiento</h3><p>Sin notas de mantenimiento cargadas.</p><p class="cockpit-note">Fuente opcional read-only. No afecta constructor ni señales.</p></article>`;
+    }
+    return `<article class="cockpit-panel cockpit-panel-wide">
+      <h3>Física / mantenimiento</h3>
+      <div class="cockpit-diagnostics-grid">
+        ${notes.map(note => `<article class="cockpit-panel">
+          <h4>${esc(note.type || 'nota manual')}</h4>
+          ${metric('Fecha', note.date || 'no disponible')}
+          ${metric('Sorteo', note.draw || 'no disponible')}
+          ${metric('Confianza', note.confidence || 'manual_note')}
+          <p>${esc(note.description_es || 'Sin descripción.')}</p>
+          <p class="cockpit-note">Nota manual. Estado: review_default. No afecta constructor ni señales.</p>
+        </article>`).join('')}
+      </div>
+    </article>`;
+  }
+
   function renderDiagnostics(data) {
     const { slate } = primarySlate(data);
     const recent = data.recentComposition || {};
@@ -314,8 +406,185 @@
           <h4>Bloques parcialmente activados</h4>
           <ul>${blockGroups.map(row => `<li>${esc(clean(row.numbers))}: vistos ${esc(clean(row.recent_seen))}, faltan ${esc(clean(row.missing))}</li>`).join('') || '<li>no disponible</li>'}</ul>
         </article>
+        ${renderRecentWindowsPanel(recent)}
+        ${renderRegimePanel(recent)}
+        ${renderPhysicsPanel(data)}
       </div>
     </section>`;
+  }
+
+  function blockName(number) {
+    const n = Number(number);
+    if (n <= 10) return '1_10';
+    if (n <= 20) return '11_20';
+    if (n <= 30) return '21_30';
+    if (n <= 40) return '31_40';
+    return '41_56';
+  }
+
+  function manualSumBand(total) {
+    if (total < 100) return 'low_tail';
+    if (total <= 140) return 'historical_core';
+    if (total <= 170) return 'upper_core';
+    if (total <= 200) return 'high_tail';
+    return 'extreme_high';
+  }
+
+  function manualSumBandEs(band) {
+    return {
+      low_tail: 'cola baja',
+      historical_core: 'núcleo histórico',
+      upper_core: 'núcleo alto',
+      high_tail: 'cola alta',
+      extreme_high: 'extremo alto',
+    }[band] || band;
+  }
+
+  function manualPresence(numbers) {
+    const blocks = { '1_10': 0, '11_20': 0, '21_30': 0, '31_40': 0, '41_56': 0 };
+    numbers.forEach(number => { blocks[blockName(number)] += 1; });
+    const values = ['1_10', '11_20', '21_30', '31_40', '41_56'].map(key => blocks[key]);
+    return {
+      blocks,
+      block_signature: values.join('-'),
+      block_presence_signature: values.map(value => value > 0 ? 1 : 0).join('-'),
+    };
+  }
+
+  function manualVisualLabel(presence) {
+    return {
+      '0-0-1-0-1': 'Activación media-alta: presencia en 21_30 y 41_56',
+      '0-1-1-0-1': 'Puente 11_20 + 21_30 + 41_56',
+      '0-1-0-0-1': 'Puente bajo-medio con bloque alto',
+      '1-0-1-0-1': 'Triángulo 1_10 + 21_30 + 41_56',
+      '1-1-1-0-0': 'Escalera baja-media hasta 21_30',
+      '0-1-1-1-0': 'Centro extendido 11_20 + 21_30 + 31_40',
+    }[presence] || `Presencia visual ${presence}`;
+  }
+
+  function signalsForNumber(number, data) {
+    const signals = [];
+    const n = Number(number);
+    const gapRow = data.gapEcho?.numbers?.[String(n)];
+    if (gapRow?.in_active_window || safeArray(data.gapEcho?.active_candidates).includes(n)) signals.push('gap_echo');
+    if (data.signatureHistory?.numbers_after?.[String(n)]) signals.push('signature_history');
+    if (safeArray(data.pairLag?.active_candidates).includes(n)) signals.push('pair_lag_candidate');
+    safeArray(data.pairLag?.signals).slice(0, 500).forEach(row => {
+      if (Number(row.trigger) === n) signals.push('pair_lag_trigger');
+      if (Number(row.candidate) === n) signals.push('pair_lag_candidate');
+    });
+    safeArray(data.blockCompletion?.groups).forEach(row => {
+      if (safeArray(row.missing).map(Number).includes(n)) signals.push('block_completion');
+      if (safeArray(row.recent_seen).map(Number).includes(n)) signals.push('structure_completion');
+    });
+    safeArray(data.recentComposition?.top_recent_numbers).forEach(row => {
+      if (Number(row.number) === n) signals.push('recent_frequency');
+    });
+    return unique(signals);
+  }
+
+  function evaluateManualNumbers(numbers, data) {
+    const total = numbers.reduce((sum, number) => sum + number, 0);
+    const band = manualSumBand(total);
+    const even = numbers.filter(number => number % 2 === 0).length;
+    const parity = `${even}_even_${6 - even}_odd`;
+    const structure = manualPresence(numbers);
+    const latestNumbers = safeArray(data.recentComposition?.latest_draw_numbers).map(Number).filter(Number.isFinite);
+    const immediateOverlap = latestNumbers.length ? numbers.filter(number => latestNumbers.includes(number)).length : null;
+    const numberSignals = Object.fromEntries(numbers.map(number => [String(number), signalsForNumber(number, data)]));
+    const pairKeys = new Set();
+    safeArray(data.recentComposition?.pair_companion_profile?.pair_companion_candidates).forEach(row => {
+      const pair = safeArray(row.pair).map(Number).sort((a, b) => a - b);
+      if (pair.length === 2) pairKeys.add(pair.join('-'));
+    });
+    const pairs = [];
+    for (let i = 0; i < numbers.length; i += 1) {
+      for (let j = i + 1; j < numbers.length; j += 1) {
+        pairs.push([numbers[i], numbers[j]].sort((a, b) => a - b).join('-'));
+      }
+    }
+    const pairCompanionCount = pairs.filter(pair => pairKeys.has(pair)).length;
+    const numberSet = new Set(numbers);
+    const pairLagCount = safeArray(data.pairLag?.signals).filter(row => numberSet.has(Number(row.trigger)) && numberSet.has(Number(row.candidate))).length;
+    const recent30 = recentWindows(data.recentComposition)?.['30'] || data.recentComposition || {};
+    const matchesRecent = Boolean(
+      recent30.sum_profile?.sum_band_distribution?.[band]
+      || recent30.presence_signature_profile?.presence_signature_distribution?.[structure.block_presence_signature]
+    );
+    const winner = data.winnerProfile || {};
+    const matchesWinner = Boolean(
+      winner.sum_profile?.sum_band_distribution?.[band]
+      || winner.presence_signature_profile?.presence_signature_distribution?.[structure.block_presence_signature]
+    );
+    const windowNotes = ['5', '20', '30'].map(key => {
+      const window = recentWindows(data.recentComposition)?.[key];
+      if (!window) return `Ventana ${key}: no disponible.`;
+      const aligned = window.sum_profile?.dominant_sum_band === band || window.presence_signature_profile?.dominant_presence_signature === structure.block_presence_signature;
+      return aligned ? `Esta combinación coincide con perfil ventana ${key}.` : `Esta combinación se aleja del perfil de últimos ${key}.`;
+    });
+    return {
+      total,
+      band,
+      parity,
+      structure,
+      numberSignals,
+      pairCompanionCount,
+      pairLagCount,
+      matchesRecent,
+      matchesWinner,
+      immediateOverlap,
+      windowNotes,
+    };
+  }
+
+  function renderManualEvaluator() {
+    return `<details id="manual-evaluator-v44" class="cockpit-zone cockpit-secondary-details">
+      <summary><span><b>Evaluador manual V4.4</b><small>Read-only, revisión interna desde JSONs cargados</small></span></summary>
+      <div id="manual-evaluator-v44-panel">
+        <label class="cockpit-manual-label" for="manual-v44-numbers">Escribe 6 números separados por espacios o comas</label>
+        <div class="cockpit-manual-row">
+          <input id="manual-v44-numbers" class="cockpit-manual-input" type="text" inputmode="numeric" placeholder="7 15 23 27 41 49" />
+          <button id="manual-v44-evaluate" class="cockpit-copy" type="button">Evaluar</button>
+        </div>
+        <p class="cockpit-note">Estado: review_default. Este diagnóstico es revisión interna.</p>
+        <div id="manual-v44-result" class="cockpit-panel cockpit-panel-wide">Ingresa una combinación para revisar señales, suma, paridad, firmas y ventanas recientes.</div>
+      </div>
+    </details>`;
+  }
+
+  function wireManualEvaluator(root, data) {
+    const button = root.querySelector('#manual-v44-evaluate');
+    const input = root.querySelector('#manual-v44-numbers');
+    const output = root.querySelector('#manual-v44-result');
+    if (!button || !input || !output) return;
+    button.addEventListener('click', () => {
+      const numbers = unique(String(input.value || '').split(/[\s,;]+/).map(value => Number(value)).filter(Number.isFinite)).map(Number).sort((a, b) => a - b);
+      if (numbers.length !== 6 || numbers.some(number => number < 1 || number > 56)) {
+        output.innerHTML = '<p>Ingresa exactamente 6 números únicos entre 1 y 56.</p><p class="cockpit-note">Estado: review_default. Este diagnóstico es revisión interna.</p>';
+        return;
+      }
+      const result = evaluateManualNumbers(numbers, data);
+      output.innerHTML = `<h3>Diagnóstico manual V4.4</h3>
+        ${numberBalls(numbers)}
+        <div class="cockpit-mini-grid">
+          ${metric('Suma', result.total, 'mono')}
+          ${metric('Banda', `${manualSumBandEs(result.band)} (${result.band})`)}
+          ${metric('Paridad', result.parity)}
+          ${metric('Firma de bloques', result.structure.block_signature, 'mono')}
+          ${metric('Presencia visual', result.structure.block_presence_signature, 'mono')}
+          ${metric('Lectura visual', manualVisualLabel(result.structure.block_presence_signature))}
+          ${metric('Pair companion', result.pairCompanionCount, 'mono')}
+          ${metric('Pair-lag', result.pairLagCount, 'mono')}
+          ${metric('Repetidos inmediatos', result.immediateOverlap === null ? 'no disponible' : result.immediateOverlap, 'mono')}
+          ${metric('Perfil ventana 30', result.matchesRecent ? 'alineado' : 'revisar')}
+          ${metric('Perfil histórico', result.matchesWinner ? 'alineado' : 'revisar')}
+        </div>
+        <h4>Señales por número</h4>
+        <div class="cockpit-diagnostics-grid">${numbers.map(number => `<article class="cockpit-panel"><h5>${esc(number)}</h5><div class="cockpit-role-pills">${signalChips(result.numberSignals[String(number)]) || '<span class="cockpit-pill">sin señal cargada</span>'}</div></article>`).join('')}</div>
+        <h4>Lectura por ventanas</h4>
+        <ul>${result.windowNotes.map(note => `<li>${esc(note)}</li>`).join('')}</ul>
+        <p class="cockpit-note">Relaciones internas detectadas: ${esc(result.pairCompanionCount + result.pairLagCount)}. Estado: review_default. Este diagnóstico es revisión interna.</p>`;
+    });
   }
 
   function renderAudit(data) {
@@ -385,11 +654,13 @@
       renderControl(data),
       renderSlate(data),
       renderDiagnostics(data),
+      renderManualEvaluator(data),
       renderAudit(data),
       renderSystemDiagnostics(),
-      '<footer class="cockpit-footer">Este sistema es experimental. Los scores y composiciones son métricas de auditoría interna, no promesas ni certeza de resultado. production_status: review_default.</footer>',
+      '<footer class="cockpit-footer">Este sistema es experimental. Los scores y composiciones son métricas de auditoría interna, no promesas de resultado. production_status: review_default.</footer>',
     ].join('');
     wireCopyButtons(root);
+    wireManualEvaluator(root, data);
   }
 
   if (document.readyState === 'loading') {

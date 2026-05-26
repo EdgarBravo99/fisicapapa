@@ -199,7 +199,26 @@ def _assert_v44_outputs() -> None:
     assert recent.get("presence_signature_profile", {}).get("dominant_presence_signature"), "recent dominant presence missing"
     assert isinstance(recent.get("pair_companion_profile", {}).get("top_pair_companions"), list), "top_pair_companions missing"
     assert isinstance(recent.get("number_frequency_recent_30"), dict), "number_frequency_recent_30 missing"
+    windows = recent.get("windows")
+    assert isinstance(windows, dict), "recent composition windows missing"
+    for key, expected_count in (("5", 5), ("20", 20), ("30", 30)):
+        window = windows.get(key)
+        assert isinstance(window, dict), f"recent window {key} missing"
+        assert len(window.get("draws_used", [])) == expected_count, f"recent window {key} draw count mismatch"
+        assert window.get("sum_profile", {}).get("dominant_sum_band"), f"window {key} dominant sum band missing"
+        assert window.get("parity_profile", {}).get("dominant_parity"), f"window {key} dominant parity missing"
+        assert window.get("presence_signature_profile", {}).get("dominant_presence_signature"), f"window {key} dominant presence missing"
+        assert "dominant_immediate_overlap" in window.get("immediate_overlap_profile", {}), f"window {key} immediate overlap missing"
+    assert windows["30"]["draws_used"] == recent.get("draws_used"), "root legacy window 30 must match windows['30']"
+    regime = recent.get("recent_regime_summary")
+    assert isinstance(regime, dict), "recent_regime_summary missing"
+    assert regime.get("interpretation_es"), "recent_regime_summary interpretation_es missing"
+    _assert_no_forbidden_language(regime)
     assert isinstance(slate.get("recent_composition_profile_used"), dict), "recent_composition_profile_used missing"
+    recent_windows_used = slate.get("recent_windows_used")
+    assert isinstance(recent_windows_used, dict), "recent_windows_used missing"
+    for key in ("5", "20", "30"):
+        assert key in recent_windows_used, f"recent_windows_used missing {key}"
     assert isinstance(slate.get("slate_structure_summary"), dict), "slate_structure_summary missing"
     tickets = slate.get("tickets")
     assert isinstance(tickets, list) and tickets, "V4.4 tickets missing"
@@ -239,6 +258,13 @@ def _assert_v44_outputs() -> None:
             trace = " ".join(left.get("construction_trace_es", []) + right.get("construction_trace_es", [])).lower()
             assert "relaj" in trace or "compartidos" in trace, f"ticket overlap {overlap} lacks justification"
     _assert_spanish_contract_language(slate)
+
+    physics_notes_path = ROOT / "v4_physics_maintenance_notes.json"
+    if physics_notes_path.exists():
+        physics_notes = _load("v4_physics_maintenance_notes.json")
+        assert physics_notes.get("production_status") == "review_default", "physics maintenance notes must be review_default"
+        assert isinstance(physics_notes.get("notes"), list), "physics maintenance notes must expose notes list"
+        _assert_no_forbidden_language(physics_notes)
 
 
 def main() -> int:

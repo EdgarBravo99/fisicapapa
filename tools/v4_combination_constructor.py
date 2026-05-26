@@ -268,6 +268,37 @@ def profile_targets(inputs: dict[str, dict[str, Any]]) -> set[str]:
     }
 
 
+def summarize_recent_windows(recent: dict[str, Any]) -> dict[str, Any]:
+    windows = recent.get("windows")
+    if not isinstance(windows, dict):
+        return {
+            "source": "legacy_window_30_only",
+            "30": {
+                "dominant_sum_band": recent.get("sum_profile", {}).get("dominant_sum_band", ""),
+                "dominant_parity": recent.get("parity_profile", {}).get("dominant_parity", ""),
+                "dominant_presence_signature": recent.get("presence_signature_profile", {}).get("dominant_presence_signature", ""),
+                "dominant_immediate_overlap": recent.get("immediate_overlap_profile", {}).get("dominant_immediate_overlap", 0),
+            },
+        }
+    summary: dict[str, Any] = {}
+    for key in ("5", "20", "30"):
+        window = windows.get(key, {})
+        summary[key] = {
+            "dominant_sum_band": window.get("sum_profile", {}).get("dominant_sum_band", ""),
+            "dominant_parity": window.get("parity_profile", {}).get("dominant_parity", ""),
+            "dominant_presence_signature": window.get("presence_signature_profile", {}).get("dominant_presence_signature", ""),
+            "dominant_immediate_overlap": window.get("immediate_overlap_profile", {}).get("dominant_immediate_overlap", 0),
+        }
+    return summary
+
+
+def recent_micro_shift_note(recent: dict[str, Any]) -> str | None:
+    regime = recent.get("recent_regime_summary") or {}
+    if regime.get("window_5_vs_20_shift") or regime.get("window_20_vs_30_shift"):
+        return "Se detectó cambio micro en últimos 5 sorteos respecto a ventanas 20 y 30. Se conserva revisión contra ventanas mayores."
+    return None
+
+
 def evaluate_candidate_ticket(
     numbers: list[int],
     ticket_type: str,
@@ -596,7 +627,11 @@ def build_constructor_output(paths: dict[str, str]) -> dict[str, Any]:
         if accepted_evaluation.get("relaxation_notes_es"):
             relaxation_summary.extend(accepted_evaluation["relaxation_notes_es"])
         raw_numbers.append(found_candidate)
-        tickets.append(build_ticket(f"constructor_{len(tickets) + 1}", ticket_type, found_candidate, signals, accepted_evaluation))
+        ticket = build_ticket(f"constructor_{len(tickets) + 1}", ticket_type, found_candidate, signals, accepted_evaluation)
+        micro_note = recent_micro_shift_note(inputs["recent"])
+        if micro_note and micro_note not in ticket["construction_trace_es"]:
+            ticket["construction_trace_es"].insert(-1, micro_note)
+        tickets.append(ticket)
 
     immediate_distribution = Counter(str(ticket["composition"]["immediate_overlap_previous_draw"]) for ticket in tickets)
     presence_distribution = Counter(ticket["composition"]["block_presence_signature"] for ticket in tickets)
@@ -625,6 +660,8 @@ def build_constructor_output(paths: dict[str, str]) -> dict[str, Any]:
             "dominant_presence_signature": recent["presence_signature_profile"]["dominant_presence_signature"],
             "dominant_immediate_overlap": recent["immediate_overlap_profile"]["dominant_immediate_overlap"],
         },
+        "recent_windows_used": summarize_recent_windows(recent),
+        "recent_regime_summary": recent.get("recent_regime_summary", {}),
         "slate_structure_summary": {
             "recent_alignment_summary_es": "El conjunto fue formado usando relación de pares, suma objetivo y cierre de estructura observados en las últimas 30 combinaciones.",
             "pair_companion_usage_count": pair_usage,
