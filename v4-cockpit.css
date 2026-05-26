@@ -437,6 +437,57 @@ body {
   grid-column: 1 / -1;
 }
 
+.cockpit-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.cockpit-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+.cockpit-table th,
+.cockpit-table td {
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.cockpit-table th {
+  color: var(--color-text-primary);
+  font-weight: 850;
+}
+
+.cockpit-manual-label {
+  display: block;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.cockpit-manual-row {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.cockpit-manual-input {
+  min-height: 42px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: rgba(3, 7, 18, .54);
+  color: var(--color-text-primary);
+  font: 700 14px/1.2 var(--font-mono);
+  padding: 0 12px;
+}
+
 .cockpit-empty {
   display: grid;
   gap: 8px;
@@ -516,6 +567,10 @@ body {
 
   .cockpit-copy {
     width: 100%;
+  }
+
+  .cockpit-manual-row {
+    grid-template-columns: 1fr;
   }
 
   .cockpit-details:not([open]) {

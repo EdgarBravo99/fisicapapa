@@ -218,6 +218,73 @@ CODEX_HANDOFF_V4_2.md
 
 Ese archivo manda sobre notas historicas: V4.2-only, no V3, no reglas nuevas dentro del cruncher sin validacion OOS.
 
+## V4.4 Recent Windows, Manual Evaluator y automatizacion
+
+V4.4 conserva a V4.2 como motor protegido y a V4.3 como fallback legacy. La capa V4.4 trabaja sobre artefactos generados y mantiene `production_status: review_default`.
+
+Comando local V4.4:
+
+```powershell
+py tools\v4_refresh.py --game revancha --scrape --reconstruct --full-signals --recent-composition --construct
+```
+
+El perfil reciente ahora calcula tres ventanas:
+
+- `windows["5"]`: micro-alerta reciente. Sirve para detectar cambios cortos, pero no debe dominar el constructor.
+- `windows["20"]`: tendencia corta con peso medio.
+- `windows["30"]`: perfil reciente base y compatibilidad legacy de la raiz del JSON.
+
+`recent_regime_summary` compara ventanas y describe si hay cambio de micro-regimen. `window_5_vs_20_shift` indica si la ventana 5 contradice o cambia contra la ventana 20. `window_20_vs_30_shift` hace lo mismo entre tendencia corta y base reciente. Si hay empate en campos dominantes, se conserva el campo singular y se agregan listas plurales como `dominant_sum_bands`, `dominant_parities`, `dominant_presence_signatures` o `dominant_immediate_overlaps`.
+
+El cockpit V4.4 incluye un evaluador manual read-only. Este evaluador:
+
+- calcula suma, banda, paridad, firmas de bloque y repetidos inmediatos;
+- lee señales ya cargadas desde los JSON V4.4;
+- compara contra ventanas 5, 20 y 30;
+- no escribe archivos;
+- no usa `resultados.json`;
+- no modifica scores, priors ni memoria.
+
+Archivo manual opcional de fisica/mantenimiento:
+
+```txt
+v4_physics_maintenance_notes.json
+```
+
+Estructura operativa inicial:
+
+```json
+{
+  "production_status": "review_default",
+  "generated_at": "manual",
+  "notes": []
+}
+```
+
+Ejemplo para uso manual futuro, no se debe colocar automaticamente por pipeline:
+
+```json
+{
+  "date": "2026-05-20",
+  "draw": 4210,
+  "type": "maintenance",
+  "description_es": "Posible mantenimiento o cambio operativo reportado manualmente.",
+  "confidence": "manual_note"
+}
+```
+
+Estas notas son solo lectura en la web. No afectan constructor, senales ni priors.
+
+GitHub Actions automatiza el pipeline V4.4 en:
+
+```txt
+.github/workflows/v44_pipeline.yml
+```
+
+Corre lunes, jueves y sabado a las 09:00 UTC para dar margen posterior a sorteos de domingo, miercoles y viernes. Tambien puede correrse manualmente desde GitHub con `workflow_dispatch`. El workflow usa `python`, corre pipeline y smoke test, y solo hace commit de artefactos generados permitidos si el smoke pasa. Nunca debe commitear `resultados.json`, `v4_replay_memory.json`, motores V4.2 ni `v4_physics_maintenance_notes.json`.
+
+Todo el flujo sigue siendo de revision interna. No hay promesa de resultado.
+
 ## Pipeline V4.3.1 de memoria tipo examen
 
 V4.3.1 no cambia el runner oficial ni crea otro programa principal. El flujo sigue entrando por:

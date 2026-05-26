@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-26T17:16:02.927981+00:00",
+  "generated_at": "2026-05-26T20:05:05.457199+00:00",
   "engine_version": "v4.4-combination-constructor",
   "production_status": "review_default",
   "latest_draw": 4217,
@@ -15,13 +15,13 @@
     "csv": "revancha.csv"
   },
   "source_sha256": {
-    "winner": "b091f84e64b07529303533b1f4fa9cfedf2d9c327ad27578fa1b35acc70f4bc8",
-    "gap": "f2da211cd0ae8179493dfba834a9e41182d123ace17a857fbc7f58cc260efb76",
-    "pair_lag": "f18f76e46fc8556cb38fc1078a44e9220f192b49416be0aeeee794529178d8f4",
-    "block_completion": "5dcb27782a9aa354a0ba430cee5f42946d85b48cc7000a2ecb37ee48f53a5241",
-    "signature": "69e44b8b0b491b3296a442bd36c337fc0c86eea461dc687695a9ff768ef98dc8",
-    "recent": "0ff2f340d0653d79e9f615e6dbe0c4f7327298b070e455d045640550e9729e6d",
-    "history_matrix": "9b1d3e332829e68723b816fe2ffa30c5d6a71589192a58d9df4c2ef2d61dac60",
+    "winner": "1c7e001c6c5c9ab01375937b143de823fa71815d0fb04342252244738c328ae4",
+    "gap": "b0c555b70819256b822a6f012c76febdb6059177151ebf5db845d530c4ea9503",
+    "pair_lag": "28c20e9f8866d442c9c6cefd6acd0a4f85bc61b84d8da4624e88ed5232255c41",
+    "block_completion": "1ffdae723acb338c188e0e4761227846c95e16ff8662139afa08388683189a2b",
+    "signature": "093099ee1b48614bf541137b00a2b6bf0240d807d8dcce9826cc54c6f1ab0571",
+    "recent": "040f5b80ed37bc6fd566630433f049b50c114df42e3152f3222e6c6b2634763f",
+    "history_matrix": "61ace5545429754e34f382f0cafb5d0075ab4856357fb8569f1ffd8aaaf401b8",
     "csv": "c17309c08b602b9178af4a1bc59e5349427b38c31558f3333077cede439d9ae5"
   },
   "recent_composition_profile_used": {
@@ -30,6 +30,36 @@
     "dominant_parity": "3_even_3_odd",
     "dominant_presence_signature": "1-1-1-0-1",
     "dominant_immediate_overlap": 0
+  },
+  "recent_windows_used": {
+    "5": {
+      "dominant_sum_band": "high_tail",
+      "dominant_parity": "3_even_3_odd",
+      "dominant_presence_signature": "1-0-1-1-1",
+      "dominant_immediate_overlap": 1
+    },
+    "20": {
+      "dominant_sum_band": "upper_core",
+      "dominant_parity": "3_even_3_odd",
+      "dominant_presence_signature": "1-1-1-0-1",
+      "dominant_immediate_overlap": 0
+    },
+    "30": {
+      "dominant_sum_band": "extreme_high",
+      "dominant_parity": "3_even_3_odd",
+      "dominant_presence_signature": "1-1-1-0-1",
+      "dominant_immediate_overlap": 0
+    }
+  },
+  "recent_regime_summary": {
+    "window_5_vs_20_shift": true,
+    "window_20_vs_30_shift": true,
+    "sum_band_shift_es": "5 vs 20: high_tail frente a upper_core. | 20 vs 30: upper_core frente a extreme_high.",
+    "presence_shift_es": "5 vs 20: 1-0-1-1-1 frente a 1-1-1-0-1. | 20 vs 30: sin cambio.",
+    "pair_companion_shift_es": "Pares companion recientes cambian entre ventanas.",
+    "interpretation_es": "Lectura diagnóstica de cambio reciente de micro-régimen. No implica promesa de resultado futuro.",
+    "window_30_vs_historical_shift": true,
+    "historical_shift_es": "Ventana 30 comparada con histórico: suma extreme_high vs high_tail; presencia 1-1-1-0-1 vs 1-0-1-1-1."
   },
   "slate_structure_summary": {
     "recent_alignment_summary_es": "El conjunto fue formado usando relación de pares, suma objetivo y cierre de estructura observados en las últimas 30 combinaciones.",
@@ -155,6 +185,7 @@
         "Se aceptó por cierre estructural con señales block_completion o structure_completion.",
         "Repetidos inmediatos controlados: 1 repetido inmediato dentro de rango histórico normal.",
         "Se permitió banda de suma adyacente para preservar señales activas y diversidad.",
+        "Se detectó cambio micro en últimos 5 sorteos respecto a ventanas 20 y 30. Se conserva revisión contra ventanas mayores.",
         "Se mantuvo estado review_default."
       ],
       "constructor_acceptance_score": 69.750366,
@@ -266,6 +297,7 @@
         "Repetidos inmediatos controlados: sin repetidos inmediatos.",
         "Se permitió banda de suma adyacente para preservar señales activas y diversidad.",
         "Se permitió firma de presencia alternativa para mantener diversidad entre boletos.",
+        "Se detectó cambio micro en últimos 5 sorteos respecto a ventanas 20 y 30. Se conserva revisión contra ventanas mayores.",
         "Se mantuvo estado review_default."
       ],
       "constructor_acceptance_score": 63.215329,
@@ -384,6 +416,7 @@
         "Repetidos inmediatos controlados: 1 repetido inmediato dentro de rango histórico normal.",
         "Se permitió banda de suma adyacente para preservar señales activas y diversidad.",
         "Se permitió firma de presencia alternativa para mantener diversidad entre boletos.",
+        "Se detectó cambio micro en últimos 5 sorteos respecto a ventanas 20 y 30. Se conserva revisión contra ventanas mayores.",
         "Se mantuvo estado review_default."
       ],
       "constructor_acceptance_score": 63.150282,
@@ -501,6 +534,7 @@
         "Se permitieron 2 repetidos inmediatos porque ambos tenían señales activas y la estructura seguía alineada.",
         "Se permitió banda de suma adyacente para preservar señales activas y diversidad.",
         "Se permitió firma de presencia alternativa para mantener diversidad entre boletos.",
+        "Se detectó cambio micro en últimos 5 sorteos respecto a ventanas 20 y 30. Se conserva revisión contra ventanas mayores.",
         "Se mantuvo estado review_default."
       ],
       "constructor_acceptance_score": 58.964898,
@@ -612,6 +646,7 @@
         "Se añadió relación pair_lag trigger → candidato desde ventana histórica.",
         "Se aceptó por cierre estructural con señales block_completion o structure_completion.",
         "Repetidos inmediatos controlados: 1 repetido inmediato dentro de rango histórico normal.",
+        "Se detectó cambio micro en últimos 5 sorteos respecto a ventanas 20 y 30. Se conserva revisión contra ventanas mayores.",
         "Se mantuvo estado review_default."
       ],
       "constructor_acceptance_score": 60.514168,
@@ -729,6 +764,7 @@
         "Se aceptó por cierre estructural con señales block_completion o structure_completion.",
         "Repetidos inmediatos controlados: 1 repetido inmediato dentro de rango histórico normal.",
         "Se permitió banda de suma adyacente para preservar señales activas y diversidad.",
+        "Se detectó cambio micro en últimos 5 sorteos respecto a ventanas 20 y 30. Se conserva revisión contra ventanas mayores.",
         "Se mantuvo estado review_default."
       ],
       "constructor_acceptance_score": 69.750366,
@@ -840,6 +876,7 @@
         "Repetidos inmediatos controlados: sin repetidos inmediatos.",
         "Se permitió banda de suma adyacente para preservar señales activas y diversidad.",
         "Se permitió firma de presencia alternativa para mantener diversidad entre boletos.",
+        "Se detectó cambio micro en últimos 5 sorteos respecto a ventanas 20 y 30. Se conserva revisión contra ventanas mayores.",
         "Se mantuvo estado review_default."
       ],
       "constructor_acceptance_score": 63.215329,
@@ -958,6 +995,7 @@
         "Repetidos inmediatos controlados: 1 repetido inmediato dentro de rango histórico normal.",
         "Se permitió banda de suma adyacente para preservar señales activas y diversidad.",
         "Se permitió firma de presencia alternativa para mantener diversidad entre boletos.",
+        "Se detectó cambio micro en últimos 5 sorteos respecto a ventanas 20 y 30. Se conserva revisión contra ventanas mayores.",
         "Se mantuvo estado review_default."
       ],
       "constructor_acceptance_score": 63.150282,
@@ -1075,6 +1113,7 @@
         "Se permitieron 2 repetidos inmediatos porque ambos tenían señales activas y la estructura seguía alineada.",
         "Se permitió banda de suma adyacente para preservar señales activas y diversidad.",
         "Se permitió firma de presencia alternativa para mantener diversidad entre boletos.",
+        "Se detectó cambio micro en últimos 5 sorteos respecto a ventanas 20 y 30. Se conserva revisión contra ventanas mayores.",
         "Se mantuvo estado review_default."
       ],
       "constructor_acceptance_score": 58.964898,
@@ -1186,6 +1225,7 @@
         "Se añadió relación pair_lag trigger → candidato desde ventana histórica.",
         "Se aceptó por cierre estructural con señales block_completion o structure_completion.",
         "Repetidos inmediatos controlados: 1 repetido inmediato dentro de rango histórico normal.",
+        "Se detectó cambio micro en últimos 5 sorteos respecto a ventanas 20 y 30. Se conserva revisión contra ventanas mayores.",
         "Se mantuvo estado review_default."
       ],
       "constructor_acceptance_score": 60.514168,
