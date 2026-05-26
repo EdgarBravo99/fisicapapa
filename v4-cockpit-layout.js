@@ -67,6 +67,7 @@
   const esc = value => clean(value).replace(/[&<>"']/g, mark => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[mark]));
   const fmt = (value, digits = 2) => finite(value) ? Number(value).toFixed(digits) : 'no disponible';
   const intText = value => finite(value) ? String(Math.trunc(Number(value))) : 'no disponible';
+  const classToken = value => clean(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\w-]+/g, '_').replace(/^_+|_+$/g, '');
 
   function unique(items) {
     const seen = new Set();
@@ -156,6 +157,159 @@
     return `<div class="cockpit-panel cockpit-panel-wide"><h3>Errores críticos de fuentes</h3><ul>${failed.map(([key, source]) => `<li><b>${esc(source.path || FILES[key])}</b>: HTTP ${esc(source.status || 'N/D')}, ${esc(source.error || 'no disponible')} ${source.nonJson ? '(HTML/no JSON)' : ''} ${source.preview ? `<code>${esc(source.preview)}</code>` : ''}</li>`).join('')}</ul></div>`;
   }
 
+  function countTicketSignal(ticket, names) {
+    const wanted = new Set(safeArray(names));
+    return Object.values(ticket.signals || {}).filter(items => safeArray(items).some(item => wanted.has(item))).length;
+  }
+
+  function matchesRecentWindow(ticket, recent, key) {
+    const window = recentWindows(recent)?.[String(key)];
+    const composition = ticket.composition || {};
+    if (!window) return false;
+    return Boolean(
+      window.sum_profile?.dominant_sum_band === composition.sum_band
+      || safeArray(window.sum_profile?.dominant_sum_bands).includes(composition.sum_band)
+      || window.presence_signature_profile?.dominant_presence_signature === composition.block_presence_signature
+      || safeArray(window.presence_signature_profile?.dominant_presence_signatures).includes(composition.block_presence_signature)
+    );
+  }
+
+  function ticketIntersections(tickets) {
+    const alerts = [];
+    for (let i = 0; i < safeArray(tickets).length; i += 1) {
+      for (let j = i + 1; j < safeArray(tickets).length; j += 1) {
+        const first = new Set(safeArray(tickets[i].numbers).map(Number));
+        const shared = safeArray(tickets[j].numbers).map(Number).filter(number => first.has(number));
+        if (shared.length === 3) {
+          alerts.push({ level: 'media', a: i + 1, b: j + 1, shared, text: `Boletos ${i + 1} y ${j + 1} se parecen bastante: comparten ${shared.join(', ')}.` });
+        } else if (shared.length > 3) {
+          alerts.push({ level: 'alta', a: i + 1, b: j + 1, shared, text: `Boletos ${i + 1} y ${j + 1}: no conviene jugar ambos salvo cobertura explícita. Comparten ${shared.join(', ')}.` });
+        }
+      }
+    }
+    return alerts;
+  }
+
+  function humanTicketDecision(ticket, data) {
+    const composition = ticket.composition || {};
+    const pairCompanion = Number(composition.pair_companion_count || 0);
+    const pairLag = Number(composition.pair_lag_relation_count || 0);
+    const overlap = finite(composition.immediate_overlap_previous_draw) ? Number(composition.immediate_overlap_previous_draw) : 0;
+    const structureStrongCount = countTicketSignal(ticket, ['structure_completion', 'block_completion', 'zone_fit']);
+    const hasPairs = pairCompanion > 0 || pairLag > 0;
+    const matchesRecent = composition.matches_recent_profile === true;
+    const matchesWinner = composition.matches_winner_profile === true;
+    const awayFromWindow5 = !matchesRecentWindow(ticket, data.recentComposition, '5');
+    const keepsWindow20Or30 = matchesRecentWindow(ticket, data.recentComposition, '20') || matchesRecentWindow(ticket, data.recentComposition, '30');
+    const extremeWithoutSupport = composition.sum_band === 'extreme_high' && !hasPairs && structureStrongCount < 3;
+    const coverageContrary = ticket.ticket_type === 'controlled_contrarian' || (awayFromWindow5 && keepsWindow20Or30);
+    const high = pairCompanion > 0 && pairLag > 0 && matchesRecent && overlap <= 1;
+    const medium = !high && (hasPairs || structureStrongCount >= 3) && (overlap === 2 || awayFromWindow5 || matchesRecent || matchesWinner);
+    const low = !high && !medium && ((!hasPairs && !matchesRecent) || extremeWithoutSupport);
+    const reviewBeforeUse = low || overlap >= 2 || extremeWithoutSupport;
+    const priority = high ? 'prioridad_alta' : medium ? 'prioridad_media' : low ? 'prioridad_baja' : 'prioridad_media';
+    const consider = [];
+    const review = [];
+    const avoid = [];
+    const role = [];
+
+    if (pairCompanion > 0) consider.push(`Tiene ${pairCompanion} relación(es) pair companion dentro del boleto.`);
+    if (pairLag > 0) consider.push(`Tiene ${pairLag} relación(es) pair-lag internas.`);
+    if (matchesRecent) consider.push('Conserva alineación con el perfil reciente cargado.');
+    if (matchesWinner) consider.push('Conserva alineación con el perfil histórico.');
+    if (structureStrongCount >= 3) consider.push(`Aporta cierre estructural en ${structureStrongCount} números.`);
+    if (!consider.length) consider.push('Sirve como lectura secundaria porque conserva señales cargadas, pero requiere comparación manual.');
+
+    if (overlap >= 2) review.push(`${overlap} repetidos inmediatos: revisar si esa exposición conviene dentro del conjunto.`);
+    if (awayFromWindow5) review.push('Se aleja de la ventana de 5 sorteos; revisar contra ventanas 20 y 30.');
+    if (composition.sum_band === 'extreme_high') review.push('Suma en extremo alto: revisar que no concentre todo el slate en la misma banda.');
+    if (!hasPairs) review.push('Pocos pares internos detectados; revisar si la estructura compensa esa falta.');
+    if (!review.length) review.push('Revisar duplicidad contra otros boletos antes de priorizarlo.');
+
+    if (extremeWithoutSupport) avoid.push('No usarlo como boleto principal si la suma extrema no tiene soporte operativo suficiente.');
+    if (!matchesRecent && !matchesWinner) avoid.push('No usarlo como prioridad si tampoco se alinea con perfil reciente ni histórico.');
+    if (overlap >= 3) avoid.push('No usarlo sin justificación fuerte por exceso de repetidos inmediatos.');
+    if (!avoid.length) avoid.push('No usarlo aislado de la lectura del slate completo.');
+
+    if (coverageContrary) role.push('Cobertura contraria: ayuda a no concentrar toda la revisión en la misma tesis.');
+    else if (high) role.push('Candidato principal de revisión por pares, perfil reciente y repetición controlada.');
+    else if (medium) role.push('Candidato secundario: tiene soporte, pero requiere una revisión de ventana o repetidos.');
+    else role.push('Candidato de baja prioridad: mantener solo si aporta cobertura que otros boletos no cubren.');
+
+    return {
+      priority,
+      coverageContrary,
+      reviewBeforeUse,
+      awayFromWindow5,
+      hasPairs,
+      structureStrongCount,
+      consider,
+      review,
+      avoid,
+      role,
+    };
+  }
+
+  function humanPriorityLabel(priority) {
+    return {
+      prioridad_alta: 'Prioridad alta',
+      prioridad_media: 'Prioridad media',
+      prioridad_baja: 'Prioridad baja',
+    }[priority] || 'Prioridad media';
+  }
+
+  function renderHumanDecisionBlock(decision) {
+    return `<section class="cockpit-human-read">
+      <div class="cockpit-human-flags">
+        <span class="cockpit-pill cockpit-priority-${esc(decision.priority)}">${esc(humanPriorityLabel(decision.priority))}</span>
+        ${decision.coverageContrary ? '<span class="cockpit-pill">Cobertura contraria</span>' : ''}
+        ${decision.reviewBeforeUse ? '<span class="cockpit-pill cockpit-pill-warning">Revisar antes de jugar</span>' : ''}
+      </div>
+      <div class="cockpit-human-grid">
+        <article><h4>Por qué considerarlo</h4><ul>${decision.consider.map(item => `<li>${esc(item)}</li>`).join('')}</ul></article>
+        <article><h4>Qué revisar</h4><ul>${decision.review.map(item => `<li>${esc(item)}</li>`).join('')}</ul></article>
+        <article><h4>Cuándo no usarlo</h4><ul>${decision.avoid.map(item => `<li>${esc(item)}</li>`).join('')}</ul></article>
+        <article><h4>Rol dentro del slate</h4><ul>${decision.role.map(item => `<li>${esc(item)}</li>`).join('')}</ul></article>
+      </div>
+    </section>`;
+  }
+
+  function buildDayDecision(data) {
+    const { slate, tickets } = primarySlate(data);
+    const regime = data.recentComposition?.recent_regime_summary || {};
+    const priorities = safeArray(tickets).map(ticket => humanTicketDecision(ticket, data));
+    const duplicateAlerts = ticketIntersections(tickets);
+    const lowCount = priorities.filter(item => item.priority === 'prioridad_baja').length;
+    const reviewCount = priorities.filter(item => item.reviewBeforeUse).length;
+    const microShift = Boolean(regime.window_5_vs_20_shift || regime.window_20_vs_30_shift);
+    const practicalAlerts = [];
+    if (slate.production_status && slate.production_status !== 'review_default') practicalAlerts.push(`production_status es ${slate.production_status}; revisar estado antes de usar la vista.`);
+    if (microShift) practicalAlerts.push('La ventana de 5 sorteos cambió contra ventanas mayores. Conviene revisar concentración por banda y firma.');
+    if (lowCount) practicalAlerts.push(`${lowCount} boleto(s) quedan en prioridad baja por soporte limitado o desalineaciÃ³n.`);
+    if (reviewCount) practicalAlerts.push(`${reviewCount} boleto(s) requieren revisión antes de jugar por repetidos, suma o ventana corta.`);
+    duplicateAlerts.forEach(alert => practicalAlerts.push(alert.text));
+    if (!tickets.length) practicalAlerts.push('No hay boletos cargados para traducir a decisión operativa.');
+
+    const status = !tickets.length || duplicateAlerts.some(alert => alert.level === 'alta') || lowCount >= 3
+      ? 'revisar antes de usar'
+      : microShift || reviewCount || duplicateAlerts.length
+        ? 'usable con revisión'
+        : 'usable';
+    const resumen = status === 'usable'
+      ? 'Hay señales suficientes para revisar el slate sin alertas prácticas fuertes. Mantén la lectura como review_default.'
+      : status === 'usable con revisión'
+        ? 'Hay señales suficientes para revisar el slate, pero conviene ajustar prioridad por micro-régimen, repetidos o duplicidad entre boletos.'
+        : 'El slate necesita revisión operativa antes de usarlo porque las alertas prácticas dominan la lectura.';
+
+    return {
+      estado_operativo_es: status,
+      resumen_decision_es: resumen,
+      alertas_practicas_es: practicalAlerts.length ? practicalAlerts : ['Sin alertas prácticas fuertes en la lectura cargada.'],
+      priorities,
+      duplicateAlerts,
+    };
+  }
+
   function renderControl(data) {
     const { slate, tickets, source } = primarySlate(data);
     const targetDraw = inferTargetDraw(data);
@@ -186,6 +340,48 @@
     </section>`;
   }
 
+  function renderDecisionDay(data) {
+    const decision = buildDayDecision(data);
+    const { tickets, slate } = primarySlate(data);
+    const summary = slate.slate_structure_summary || {};
+    const windowsUsed = slate.recent_windows_used || {};
+    return `<section id="cockpit-decision-day" class="cockpit-zone cockpit-human-zone">
+      <div class="cockpit-zone-heading">
+        <p class="cockpit-kicker">Decisión del día</p>
+        <h2>Lectura humana del slate</h2>
+        <p>Traducción operativa desde production_status, ventanas recientes, estructura del slate y boletos cargados. No modifica JSONs ni constructor.</p>
+      </div>
+      <div class="cockpit-decision-layout">
+        <article class="cockpit-decision-main">
+          <span class="cockpit-pill cockpit-priority-${esc(classToken(decision.estado_operativo_es))}">${esc(decision.estado_operativo_es)}</span>
+          <h3>${esc(decision.resumen_decision_es)}</h3>
+          <p>${esc(summary.recent_alignment_summary_es || 'Lectura de conjunto disponible solo desde los campos generados.')}</p>
+          <div class="cockpit-mini-grid">
+            ${metric('production_status', slate.production_status || 'review_default')}
+            ${metric('Ventana 5 usada', windowsUsed['5']?.dominant_sum_band || 'no disponible')}
+            ${metric('Ventana 20 usada', windowsUsed['20']?.dominant_sum_band || 'no disponible')}
+            ${metric('Ventana 30 usada', windowsUsed['30']?.dominant_sum_band || 'no disponible')}
+          </div>
+        </article>
+        <article class="cockpit-panel">
+          <h3>Prioridad por boleto</h3>
+          <ul class="cockpit-priority-list">
+            ${decision.priorities.map((item, index) => `<li><b>Boleto ${index + 1}:</b> ${esc(humanPriorityLabel(item.priority))}${item.coverageContrary ? ' · cobertura contraria' : ''}${item.reviewBeforeUse ? ' · revisar antes de jugar' : ''}</li>`).join('') || '<li>no disponible</li>'}
+          </ul>
+        </article>
+        <article class="cockpit-panel">
+          <h3>Alertas prácticas</h3>
+          <ul>${decision.alertas_practicas_es.map(item => `<li>${esc(item)}</li>`).join('')}</ul>
+        </article>
+        <article class="cockpit-panel">
+          <h3>Duplicidad entre boletos</h3>
+          <ul>${decision.duplicateAlerts.map(alert => `<li>${esc(alert.text)}</li>`).join('') || '<li>Sin duplicidad fuerte entre boletos cargados.</li>'}</ul>
+          <p class="cockpit-note">${esc(tickets.length ? 'Comparación read-only entre boletos del slate.' : 'Sin boletos cargados para comparar.')}</p>
+        </article>
+      </div>
+    </section>`;
+  }
+
   function numberBalls(numbers) {
     return `<div class="cockpit-balls">${safeArray(numbers).map(number => `<span class="cockpit-ball">${esc(number)}</span>`).join('')}</div>`;
   }
@@ -194,11 +390,12 @@
     return safeArray(signals).map(signal => `<span class="cockpit-pill" title="${esc(signal)}">${esc(SIGNAL_LABELS[signal] || signal)}</span>`).join('');
   }
 
-  function renderTicket(ticket, index) {
+  function renderTicket(ticket, index, data) {
     const numbers = safeArray(ticket.numbers);
     const composition = isObject(ticket.composition) ? ticket.composition : {};
     const trace = safeArray(ticket.construction_trace_es);
     const risks = unique(ticket.risk_notes_es).slice(0, 6);
+    const humanDecision = humanTicketDecision(ticket, data);
     const signalRows = numbers.map(number => {
       const signals = safeArray(ticket.signals?.[String(number)]);
       return `<article class="cockpit-panel"><h5>${esc(number)}</h5><div class="cockpit-role-pills">${signalChips(signals)}</div></article>`;
@@ -212,6 +409,9 @@
         <button class="cockpit-copy" data-copy="${esc(numbers.join(' '))}">Copiar</button>
       </div>
       ${numberBalls(numbers)}
+      ${renderHumanDecisionBlock(humanDecision)}
+      <details class="cockpit-ticket-why cockpit-tech-details">
+        <summary>Ver explicación técnica</summary>
       <div class="cockpit-mini-grid">
         ${metric('Suma', composition.sum || 'no disponible', 'mono')}
         ${metric('Banda', `${composition.sum_band_es || 'no disponible'} (${composition.sum_band || 'N/D'})`)}
@@ -240,6 +440,7 @@
         <div class="cockpit-diagnostics-grid">${signalRows}</div>
       </details>
       ${risks.length ? `<div class="cockpit-risk"><b>Notas de riesgo</b><ul>${risks.map(item => `<li>${esc(item)}</li>`).join('')}</ul></div>` : ''}
+      </details>
       <details class="cockpit-ticket-why">
         <summary>JSON crudo</summary>
         <pre>${esc(JSON.stringify(ticket, null, 2))}</pre>
@@ -258,7 +459,7 @@
         <h2>5 formaciones para revisión</h2>
         <p>${esc(source)}. Cada boleto muestra señales activas, composición, repetidos inmediatos y trazabilidad en español.</p>
       </div>
-      <div class="cockpit-ticket-grid">${tickets.slice(0, 5).map(renderTicket).join('')}</div>
+      <div class="cockpit-ticket-grid">${tickets.slice(0, 5).map((ticket, index) => renderTicket(ticket, index, data)).join('')}</div>
     </section>`;
   }
 
@@ -652,6 +853,7 @@
     const data = await loadAll();
     root.innerHTML = [
       renderControl(data),
+      renderDecisionDay(data),
       renderSlate(data),
       renderDiagnostics(data),
       renderManualEvaluator(data),
