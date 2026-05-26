@@ -49,6 +49,11 @@
   const SUM_BANDS = ['low_tail', 'historical_core', 'upper_core', 'high_tail', 'extreme_high'];
   const CRITICAL_SOURCE_KEYS = ['slate', 'visual', 'pair'];
   const OPTIONAL_SOURCE_KEYS = ['postDraw', 'matrix', 'resultados', 'winnerAudit', 'historySync'];
+  const LEGACY_VISIBLE_BOILERPLATE = [
+    'Review-default composition slate.',
+    'Outcome-neutral review layer.',
+    'Sum band guardrail',
+  ];
 
   const state = {
     sources: {},
@@ -91,6 +96,10 @@
       }
     }
     return output;
+  }
+
+  function visibleRiskNotes(items) {
+    return unique(items).filter(item => !LEGACY_VISIBLE_BOILERPLATE.some(boilerplate => item.includes(boilerplate)));
   }
 
   async function loadJson(path) {
@@ -234,6 +243,13 @@
     return `<span class="cockpit-pill cockpit-band cockpit-band-${safeBand}">${esc(band)}</span>`;
   }
 
+  function sumBandDisplay(composition) {
+    const band = composition?.sum_band;
+    if (!band) return 'no disponible';
+    const label = composition?.sum_band_es ? `${esc(composition.sum_band_es)} ` : '';
+    return `${label}(${bandPill(band)})`;
+  }
+
   function rolePills(roles) {
     const allRoles = unique(roles);
     if (!allRoles.length) return '<span class="cockpit-pill" title="support">Soporte</span>';
@@ -253,8 +269,14 @@
   }
 
   function ticketWhy(ticket) {
+    const explanation = ticket?.explanation_es;
+    if (isObject(explanation)) {
+      return unique(explanation.why_this_ticket || []).slice(0, 5);
+    }
+    if (Array.isArray(ticket?.reason_es)) return unique(ticket.reason_es).slice(0, 5);
+    if (ticket?.reason_es) return [ticket.reason_es];
     const harmonic = ticket?.composition?.harmonic_coherence;
-    const notes = safeArray(harmonic?.notes);
+    const notes = safeArray(harmonic?.notes_es);
     const candidates = [
       ticket?.thesis,
       ticket?.human_explanation,
@@ -263,6 +285,81 @@
       'Boleto incluido para revision armonica V4.3 usando campos de composicion ya generados.',
     ];
     return unique(candidates).slice(0, 5);
+  }
+
+  function renderExplanation(ticket) {
+    const explanation = ticket?.explanation_es;
+    if (!isObject(explanation)) {
+      const risks = visibleRiskNotes(ticket?.risk_notes_es || ticket?.risk_notes).slice(0, 5);
+      return `
+        <details class="cockpit-ticket-why" open>
+          <summary>Por que existe este boleto</summary>
+          <ul>${ticketWhy(ticket).map(item => `<li>${esc(item)}</li>`).join('')}</ul>
+        </details>
+        ${risks.length ? `<div class="cockpit-risk"><b>Notas de riesgo</b><ul>${risks.map(item => `<li>${esc(item)}</li>`).join('')}</ul></div>` : ''}`;
+    }
+    const why = unique(explanation.why_this_ticket).slice(0, 5);
+    const strengths = unique(explanation.strengths).slice(0, 6);
+    const risks = visibleRiskNotes(explanation.risks).slice(0, 6);
+    return `
+      <section class="cockpit-ticket-why">
+        <h4>${esc(explanation.headline || 'Lectura del boleto')}</h4>
+        <div class="cockpit-diagnostics-grid">
+          <article class="cockpit-panel">
+            <h5>Por que existe este boleto</h5>
+            <ul>${why.map(item => `<li>${esc(item)}</li>`).join('') || '<li>no disponible</li>'}</ul>
+          </article>
+          <article class="cockpit-panel">
+            <h5>Fortalezas</h5>
+            <ul>${strengths.map(item => `<li>${esc(item)}</li>`).join('') || '<li>no disponible</li>'}</ul>
+          </article>
+          <article class="cockpit-panel">
+            <h5>Riesgos</h5>
+            <ul>${risks.map(item => `<li>${esc(item)}</li>`).join('') || '<li>no disponible</li>'}</ul>
+          </article>
+        </div>
+        <p class="cockpit-note">${esc(explanation.review_focus || 'Revision diagnostica sin promesa de resultado.')}</p>
+      </section>`;
+  }
+
+  function renderNumberReasons(ticket) {
+    const numbers = safeArray(ticket?.numbers);
+    const roles = isObject(ticket?.roles) ? ticket.roles : {};
+    const reasonsEs = isObject(ticket?.reasons_es) ? ticket.reasons_es : {};
+    const reasons = isObject(ticket?.reasons) ? ticket.reasons : {};
+    return `
+      <details class="cockpit-ticket-why">
+        <summary>Razones por numero</summary>
+        <div class="cockpit-diagnostics-grid">
+          ${numbers.map(number => {
+            const key = String(number);
+            const numberRoles = safeArray(roles[key]);
+            const numberReasons = safeArray(reasonsEs[key]).length ? safeArray(reasonsEs[key]) : safeArray(reasons[key]);
+            return `
+              <article class="cockpit-panel">
+                <h5>${esc(number)}</h5>
+                ${rolePills(numberRoles)}
+                <ul>${numberReasons.slice(0, 5).map(item => `<li>${esc(item)}</li>`).join('') || '<li>no disponible</li>'}</ul>
+              </article>`;
+          }).join('')}
+        </div>
+      </details>`;
+  }
+
+  function renderRawFields(ticket) {
+    return `
+      <details class="cockpit-ticket-why">
+        <summary>Campos crudos</summary>
+        <p><b>reason:</b> ${esc(ticket?.reason || 'no disponible')}</p>
+        <p><b>risk_notes:</b> ${esc(clean(ticket?.risk_notes || []))}</p>
+      </details>`;
+  }
+
+  function renderDistribution(distribution) {
+    if (!isObject(distribution)) return '<p>no disponible</p>';
+    const rows = Object.entries(distribution);
+    if (!rows.length) return '<p>none</p>';
+    return `<ul>${rows.map(([key, value]) => `<li><b>${esc(key)}:</b> ${esc(value)}</li>`).join('')}</ul>`;
   }
 
   function blockText(blocks) {
@@ -366,8 +463,8 @@
     const harmonic = composition?.harmonic_coherence || {};
     const numbers = safeArray(ticket?.numbers);
     const type = ticket?.ticket_type || 'composition';
-    const whyItems = ticketWhy(ticket);
-    const risks = unique(ticket?.risk_notes).slice(0, 5);
+    const dominantMatch = composition.matches_dominant_presence_signature;
+    const overlapLabel = composition.immediate_overlap_label_es || composition.immediate_overlap_previous_draw || 'no disponible';
     return `
       <article class="cockpit-ticket">
         <header class="cockpit-ticket-header">
@@ -387,16 +484,19 @@
         </div>
         <div class="cockpit-ticket-meta">
           ${metric('Suma', composition.sum || 'no disponible', 'mono')}
-          ${composition.sum_band ? metricHtml('Banda de suma', bandPill(composition.sum_band)) : metric('Banda de suma', 'no disponible')}
-          ${metric('Repetidos del sorteo anterior', composition.immediate_overlap_previous_draw ?? 'no disponible', 'mono')}
+          ${composition.sum_band ? metricHtml('Banda de suma', sumBandDisplay(composition)) : metric('Banda de suma', 'no disponible')}
+          ${metric('Firma de bloques', composition.block_signature || 'no disponible', 'mono')}
+          ${metric('Presencia visual', composition.block_presence_signature || 'no disponible', 'mono')}
+          ${metric('Lectura visual', composition.visual_structure_label_es || 'no disponible')}
+          ${metric('Repetidos', overlapLabel, 'mono')}
           ${metric('Bloques', blockText(composition.blocks))}
+          ${metric('Dominante del conjunto', dominantMatch === true ? 'Coincide con estructura dominante' : dominantMatch === false ? 'Variante estructural' : 'no disponible')}
         </div>
         ${rolePills(ticketRoles(ticket))}
-        <details class="cockpit-ticket-why" open>
-          <summary>Por que existe este boleto</summary>
-          <ul>${whyItems.map(item => `<li>${esc(item)}</li>`).join('')}</ul>
-        </details>
-        ${risks.length ? `<div class="cockpit-risk"><b>Notas de riesgo</b><ul>${risks.map(item => `<li>${esc(item)}</li>`).join('')}</ul></div>` : ''}
+        <p class="cockpit-note">${esc(ticket?.decision_summary_es || ticket?.structure_summary_es || 'Boleto de revision diagnostica V4.3.')}</p>
+        ${renderExplanation(ticket)}
+        ${renderNumberReasons(ticket)}
+        ${renderRawFields(ticket)}
       </article>`;
   }
 
@@ -423,11 +523,16 @@
     const slate = data.slate;
     const tickets = safeArray(slate?.slate);
     const validation = slate?.validation_summary || {};
+    const structureSummary = slate?.slate_structure_summary || {};
     const sumBands = aggregateSumBands(tickets, validation);
     const pairSummary = validation.pair_companion_summary || {};
     const pair = data.pair;
     const blocks = aggregateBlocks(tickets);
-    const risks = unique(tickets.flatMap(ticket => safeArray(ticket?.risk_notes))).slice(0, 8);
+    const risks = visibleRiskNotes(tickets.flatMap(ticket => {
+      if (Array.isArray(ticket?.risk_notes_es) && ticket.risk_notes_es.length) return ticket.risk_notes_es;
+      if (Array.isArray(ticket?.explanation_es?.risks) && ticket.explanation_es.risks.length) return ticket.explanation_es.risks;
+      return ticket?.risk_notes || [];
+    })).slice(0, 8);
     const typeCounts = {};
     for (const ticket of tickets) {
       const type = ticket?.ticket_type || 'unknown';
@@ -438,6 +543,28 @@
     const tooManyExtreme = Number(sumBands.extreme_high || 0) > 1;
     const body = `
       <div class="cockpit-diagnostics-grid">
+        <article class="cockpit-panel cockpit-panel-wide">
+          <h3>Estructura visual del conjunto</h3>
+          <div class="cockpit-mini-grid">
+            ${metric('Firma dominante', structureSummary.dominant_presence_signature || 'no disponible', 'mono')}
+            ${metric('Lectura dominante', structureSummary.dominant_presence_label_es || 'no disponible')}
+            ${metric('Modo pair-lag', structureSummary.pair_lag_mode || validation.pair_lag_mode || 'no disponible')}
+          </div>
+          <p class="cockpit-note">${esc(structureSummary.summary_es || 'Lectura visual no disponible. Esta seccion describe arquitectura de revision, no promesa de resultado.')}</p>
+          <p>Lectura visual aplicada: ${esc(structureSummary.dominant_presence_signature || 'no disponible')}: ${esc(structureSummary.dominant_presence_label_es || 'no disponible')}. Esta lectura no predice el resultado; solo describe la arquitectura visual que V4.3 esta revisando.</p>
+        </article>
+        <article class="cockpit-panel">
+          <h3>Distribucion de presencia visual</h3>
+          ${renderDistribution(structureSummary.block_presence_distribution)}
+        </article>
+        <article class="cockpit-panel">
+          <h3>Distribucion de firmas de bloque</h3>
+          ${renderDistribution(structureSummary.block_signature_distribution)}
+        </article>
+        <article class="cockpit-panel">
+          <h3>Distribucion de repetidos inmediatos</h3>
+          ${renderDistribution(structureSummary.immediate_overlap_distribution)}
+        </article>
         <article class="cockpit-panel">
           <h3>Distribucion de bandas de suma</h3>
           <div class="cockpit-band-row">${SUM_BANDS.map(band => `<span>${bandPill(band)} <b>${intText(sumBands[band] || 0)}</b></span>`).join('')}</div>
@@ -599,7 +726,7 @@
   }
 
   function renderFooter() {
-    return '<footer class="cockpit-footer">Este sistema es experimental. Los scores y composiciones son metricas de auditoria interna, no probabilidades garantizadas. production_status: review_default.</footer>';
+    return '<footer class="cockpit-footer">Este sistema es experimental. Los scores y composiciones son metricas de auditoria interna, no promesas ni garantias de resultado. production_status: review_default.</footer>';
   }
 
   function render(data, snapshot) {

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-25T19:14:22.871197+00:00",
+  "generated_at": "2026-05-26T00:14:42.848108+00:00",
   "source": "revancha.csv",
   "draws_used": 2132,
   "latest_draw": 4217,
@@ -1281,8 +1281,837 @@
       "support_type": "recurring_triplet"
     }
   ],
-  "ticket_pair_audit": [],
-  "warnings": [
-    "No V4.3 slate available; ticket pair audit skipped."
-  ]
+  "ticket_pair_audit": [
+    {
+      "ticket_id": "activated_block_main_2",
+      "ticket_type": "activated_block_main",
+      "numbers": [
+        21,
+        26,
+        28,
+        41,
+        55,
+        56
+      ],
+      "co_travel_score": 0.075487,
+      "anti_pair_risk_count": 0,
+      "strong_pairs": [
+        {
+          "pair": [
+            55,
+            56
+          ],
+          "pair_key": "55-56",
+          "observed_count": 27,
+          "expected_count": 23.728424,
+          "lift": 1.1323,
+          "confidence": "medium",
+          "recent_pair_activation": 1,
+          "blocks": [
+            "41_56"
+          ],
+          "is_block_bridge": false,
+          "pair_type": "co_travel"
+        }
+      ],
+      "weak_pairs": [
+        {
+          "pair": [
+            21,
+            26
+          ],
+          "pair_key": "21-26",
+          "observed_count": 19,
+          "expected_count": 25.511257,
+          "lift": 0.754397,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30"
+          ],
+          "is_block_bridge": false,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            21,
+            28
+          ],
+          "pair_key": "21-28",
+          "observed_count": 19,
+          "expected_count": 23.532833,
+          "lift": 0.815234,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30"
+          ],
+          "is_block_bridge": false,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            21,
+            41
+          ],
+          "pair_key": "21-41",
+          "observed_count": 16,
+          "expected_count": 22.179174,
+          "lift": 0.733417,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            21,
+            55
+          ],
+          "pair_key": "21-55",
+          "observed_count": 22,
+          "expected_count": 24.053471,
+          "lift": 0.918036,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            21,
+            56
+          ],
+          "pair_key": "21-56",
+          "observed_count": 14,
+          "expected_count": 22.80394,
+          "lift": 0.630148,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            26,
+            28
+          ],
+          "pair_key": "26-28",
+          "observed_count": 21,
+          "expected_count": 25.970919,
+          "lift": 0.815693,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30"
+          ],
+          "is_block_bridge": false,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            26,
+            41
+          ],
+          "pair_key": "26-41",
+          "observed_count": 23,
+          "expected_count": 24.477017,
+          "lift": 0.942026,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            26,
+            55
+          ],
+          "pair_key": "26-55",
+          "observed_count": 24,
+          "expected_count": 26.545497,
+          "lift": 0.907589,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        }
+      ],
+      "block_bridge_pairs": [],
+      "cluster_companions": [],
+      "harmonic_notes": [
+        "1 same-draw companion pairs support this ticket."
+      ],
+      "risk_notes": []
+    },
+    {
+      "ticket_id": "pair_lag_support_3",
+      "ticket_type": "pair_lag_support",
+      "numbers": [
+        14,
+        16,
+        23,
+        42,
+        49,
+        53
+      ],
+      "co_travel_score": 0.0,
+      "anti_pair_risk_count": 0,
+      "strong_pairs": [],
+      "weak_pairs": [
+        {
+          "pair": [
+            14,
+            16
+          ],
+          "pair_key": "14-16",
+          "observed_count": 12,
+          "expected_count": 22.146341,
+          "lift": 0.561644,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "11_20"
+          ],
+          "is_block_bridge": false,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            14,
+            23
+          ],
+          "pair_key": "14-23",
+          "observed_count": 22,
+          "expected_count": 22.634146,
+          "lift": 0.973168,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "11_20",
+            "21_30"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            14,
+            42
+          ],
+          "pair_key": "14-42",
+          "observed_count": 19,
+          "expected_count": 20.195122,
+          "lift": 0.943613,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "11_20",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            14,
+            49
+          ],
+          "pair_key": "14-49",
+          "observed_count": 19,
+          "expected_count": 22.04878,
+          "lift": 0.867725,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "11_20",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            14,
+            53
+          ],
+          "pair_key": "14-53",
+          "observed_count": 24,
+          "expected_count": 22.341463,
+          "lift": 1.071055,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "11_20",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            16,
+            23
+          ],
+          "pair_key": "16-23",
+          "observed_count": 17,
+          "expected_count": 24.701689,
+          "lift": 0.700343,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "11_20",
+            "21_30"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            16,
+            42
+          ],
+          "pair_key": "16-42",
+          "observed_count": 11,
+          "expected_count": 22.039869,
+          "lift": 0.520836,
+          "confidence": "low",
+          "recent_pair_activation": 1,
+          "blocks": [
+            "11_20",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            16,
+            49
+          ],
+          "pair_key": "16-49",
+          "observed_count": 21,
+          "expected_count": 24.062852,
+          "lift": 0.877793,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "11_20",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        }
+      ],
+      "block_bridge_pairs": [],
+      "cluster_companions": [],
+      "harmonic_notes": [],
+      "risk_notes": []
+    },
+    {
+      "ticket_id": "balanced_hybrid_4",
+      "ticket_type": "balanced_hybrid",
+      "numbers": [
+        15,
+        16,
+        18,
+        45,
+        46,
+        47
+      ],
+      "co_travel_score": 0.0,
+      "anti_pair_risk_count": 0,
+      "strong_pairs": [],
+      "weak_pairs": [
+        {
+          "pair": [
+            15,
+            16
+          ],
+          "pair_key": "15-16",
+          "observed_count": 23,
+          "expected_count": 25.234053,
+          "lift": 0.914842,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "11_20"
+          ],
+          "is_block_bridge": false,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            15,
+            18
+          ],
+          "pair_key": "15-18",
+          "observed_count": 28,
+          "expected_count": 26.012195,
+          "lift": 1.073589,
+          "confidence": "low",
+          "recent_pair_activation": 1,
+          "blocks": [
+            "11_20"
+          ],
+          "is_block_bridge": false,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            15,
+            45
+          ],
+          "pair_key": "15-45",
+          "observed_count": 16,
+          "expected_count": 25.567542,
+          "lift": 0.639879,
+          "confidence": "low",
+          "recent_pair_activation": 1,
+          "blocks": [
+            "11_20",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            15,
+            46
+          ],
+          "pair_key": "15-46",
+          "observed_count": 26,
+          "expected_count": 26.234522,
+          "lift": 0.991389,
+          "confidence": "low",
+          "recent_pair_activation": 1,
+          "blocks": [
+            "11_20",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            15,
+            47
+          ],
+          "pair_key": "15-47",
+          "observed_count": 18,
+          "expected_count": 24.12242,
+          "lift": 0.756297,
+          "confidence": "low",
+          "recent_pair_activation": 1,
+          "blocks": [
+            "11_20",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            16,
+            18
+          ],
+          "pair_key": "16-18",
+          "observed_count": 22,
+          "expected_count": 24.914634,
+          "lift": 0.887529,
+          "confidence": "low",
+          "recent_pair_activation": 1,
+          "blocks": [
+            "11_20"
+          ],
+          "is_block_bridge": false,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            16,
+            45
+          ],
+          "pair_key": "16-45",
+          "observed_count": 19,
+          "expected_count": 24.488743,
+          "lift": 0.78466,
+          "confidence": "low",
+          "recent_pair_activation": 1,
+          "blocks": [
+            "11_20",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            16,
+            46
+          ],
+          "pair_key": "16-46",
+          "observed_count": 21,
+          "expected_count": 25.12758,
+          "lift": 0.842022,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "11_20",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        }
+      ],
+      "block_bridge_pairs": [],
+      "cluster_companions": [],
+      "harmonic_notes": [],
+      "risk_notes": []
+    },
+    {
+      "ticket_id": "contrarian_controlled_5",
+      "ticket_type": "contrarian_controlled",
+      "numbers": [
+        21,
+        22,
+        26,
+        41,
+        43,
+        56
+      ],
+      "co_travel_score": 0.0,
+      "anti_pair_risk_count": 0,
+      "strong_pairs": [],
+      "weak_pairs": [
+        {
+          "pair": [
+            21,
+            22
+          ],
+          "pair_key": "21-22",
+          "observed_count": 18,
+          "expected_count": 22.595685,
+          "lift": 0.805232,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30"
+          ],
+          "is_block_bridge": false,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            21,
+            26
+          ],
+          "pair_key": "21-26",
+          "observed_count": 19,
+          "expected_count": 25.511257,
+          "lift": 0.754397,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30"
+          ],
+          "is_block_bridge": false,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            21,
+            41
+          ],
+          "pair_key": "21-41",
+          "observed_count": 16,
+          "expected_count": 22.179174,
+          "lift": 0.733417,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            21,
+            43
+          ],
+          "pair_key": "21-43",
+          "observed_count": 11,
+          "expected_count": 22.699812,
+          "lift": 0.506333,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            21,
+            56
+          ],
+          "pair_key": "21-56",
+          "observed_count": 14,
+          "expected_count": 22.80394,
+          "lift": 0.630148,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            22,
+            26
+          ],
+          "pair_key": "22-26",
+          "observed_count": 19,
+          "expected_count": 24.936679,
+          "lift": 0.771109,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30"
+          ],
+          "is_block_bridge": false,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            22,
+            41
+          ],
+          "pair_key": "22-41",
+          "observed_count": 17,
+          "expected_count": 21.679644,
+          "lift": 0.793663,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            22,
+            43
+          ],
+          "pair_key": "22-43",
+          "observed_count": 22,
+          "expected_count": 22.188555,
+          "lift": 0.991869,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        }
+      ],
+      "block_bridge_pairs": [],
+      "cluster_companions": [],
+      "harmonic_notes": [],
+      "risk_notes": []
+    },
+    {
+      "ticket_id": "composition_main_1",
+      "ticket_type": "composition_main",
+      "numbers": [
+        21,
+        26,
+        28,
+        29,
+        41,
+        55
+      ],
+      "co_travel_score": 0.0,
+      "anti_pair_risk_count": 0,
+      "strong_pairs": [],
+      "weak_pairs": [
+        {
+          "pair": [
+            21,
+            26
+          ],
+          "pair_key": "21-26",
+          "observed_count": 19,
+          "expected_count": 25.511257,
+          "lift": 0.754397,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30"
+          ],
+          "is_block_bridge": false,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            21,
+            28
+          ],
+          "pair_key": "21-28",
+          "observed_count": 19,
+          "expected_count": 23.532833,
+          "lift": 0.815234,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30"
+          ],
+          "is_block_bridge": false,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            21,
+            29
+          ],
+          "pair_key": "21-29",
+          "observed_count": 23,
+          "expected_count": 25.407129,
+          "lift": 0.908845,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30"
+          ],
+          "is_block_bridge": false,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            21,
+            41
+          ],
+          "pair_key": "21-41",
+          "observed_count": 16,
+          "expected_count": 22.179174,
+          "lift": 0.733417,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            21,
+            55
+          ],
+          "pair_key": "21-55",
+          "observed_count": 22,
+          "expected_count": 24.053471,
+          "lift": 0.918036,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            26,
+            28
+          ],
+          "pair_key": "26-28",
+          "observed_count": 21,
+          "expected_count": 25.970919,
+          "lift": 0.815693,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30"
+          ],
+          "is_block_bridge": false,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            26,
+            29
+          ],
+          "pair_key": "26-29",
+          "observed_count": 31,
+          "expected_count": 28.0394,
+          "lift": 1.101951,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30"
+          ],
+          "is_block_bridge": false,
+          "pair_type": "co_travel"
+        },
+        {
+          "pair": [
+            26,
+            41
+          ],
+          "pair_key": "26-41",
+          "observed_count": 23,
+          "expected_count": 24.477017,
+          "lift": 0.942026,
+          "confidence": "low",
+          "recent_pair_activation": 0,
+          "blocks": [
+            "21_30",
+            "41_56"
+          ],
+          "is_block_bridge": true,
+          "pair_type": "co_travel"
+        }
+      ],
+      "block_bridge_pairs": [],
+      "cluster_companions": [],
+      "harmonic_notes": [],
+      "risk_notes": []
+    }
+  ],
+  "warnings": []
 }

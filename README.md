@@ -770,6 +770,40 @@ Important workflow rules:
 - High sums are not banned, but `sum_band` and `slate_sum_distribution` keep the slate from clustering blindly in high-tail territory.
 - `production_status` remains `review_default`.
 
+## V4.3 Harmonic Decision Cockpit Contract
+
+V4.2 remains the optional individual-number signal provider. V4.3 is the harmonic composition and cockpit layer: it reads generated JSON, explains ticket structure, and presents a review slate. The web does not compute model ranking and does not mutate `resultados.json`.
+
+Refresh the full V4.3 workflow with:
+
+```powershell
+py tools\v4_refresh.py --game revancha --sync-history-from-pakin --export-visual-matrix --pair-companion-audit --snapshot-predraw
+```
+
+The generated slate now exposes ticket-level structure:
+
+- `composition.block_signature`: exact counts by canonical blocks `1_10`, `11_20`, `21_30`, `31_40`, `41_56`.
+- `composition.block_presence_signature`: 1/0 presence by the same block order.
+- `composition.visual_structure_label_es`: Spanish reading of the visual structure.
+- `explanation_es`, `reason_es`, `risk_notes_es`, `decision_summary_es`, and `structure_summary_es`: Spanish-first review copy.
+- `slate_structure_summary`: slate-level distribution of block presence, block signatures, sum bands, immediate overlap, and dominant visual structure.
+
+Example:
+
+```txt
+0-0-1-0-1 = presence in 21_30 and 41_56 only.
+```
+
+That signature describes a visual architecture for review. It is not a result guarantee, not a probability, and not an automatic betting signal.
+
+After an official draw is added to `revancha.csv`, run:
+
+```powershell
+py tools\v4_post_draw_audit.py --target-draw <draw>
+```
+
+Post-draw audit reads the frozen pre-draw snapshot and can compare actual block signatures against ticket signatures. It remains diagnostic-only.
+
 ## Legacy Snapshot Classifier
 
 `tools/v4_legacy_snapshot_classifier.py` clasifica snapshots antiguos para conservar diagnostico sin contaminar memoria aplicada.
