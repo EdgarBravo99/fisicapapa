@@ -18,10 +18,11 @@
     postDraw: 'v4_post_draw_audit.json',
     matrix: 'v4_visual_matrix_export_report.json',
     physicsMaintenance: 'v4_physics_maintenance_notes.json',
+    videoWeightObservations: 'v4_ball_weight_observations.json',
   };
 
   const CRITICAL_SOURCE_KEYS = ['slate', 'gapEcho', 'signatureHistory', 'pairLag', 'blockCompletion', 'winnerProfile', 'recentComposition'];
-  const OPTIONAL_SOURCE_KEYS = ['postDraw', 'matrix', 'pair', 'slateLegacy', 'physicsMaintenance'];
+  const OPTIONAL_SOURCE_KEYS = ['postDraw', 'matrix', 'pair', 'slateLegacy', 'physicsMaintenance', 'videoWeightObservations'];
   const ROOT_ID = 'v44-cockpit-root';
   const LEGACY_ROOT_ID = 'v43-cockpit-root';
   const SUM_BANDS = ['low_tail', 'historical_core', 'upper_core', 'high_tail', 'extreme_high'];
@@ -117,6 +118,7 @@
       postDraw: `py tools\\v4_post_draw_audit.py --target-draw ${targetDraw || '<draw>'}`,
       matrix: 'py tools\\v4_visual_matrix_export.py',
       physicsMaintenance: 'crear v4_physics_maintenance_notes.json manualmente',
+      videoWeightObservations: 'py tools\\video_weight_lab\\run_video_weight_lab.py --draw <draw> --channel-url https://www.youtube.com/@LN_electronicos/streams --download true --fps-sample 1',
       pair: 'py tools\\v4_pair_companion_audit.py',
       slateLegacy: 'py tools\\v4_refresh.py --game revancha --sync-history-from-pakin --export-visual-matrix --pair-companion-audit --snapshot-predraw',
     };
@@ -540,8 +542,29 @@
 
   function renderPhysicsPanel(data) {
     const notes = safeArray(data.physicsMaintenance?.notes);
+    const observations = safeArray(data.videoWeightObservations?.observations);
+    const weightPanel = observations.length
+      ? `<article class="cockpit-panel cockpit-panel-wide">
+          <h3>Pesaje visual observado</h3>
+          <p class="cockpit-note">Observación visual review_default. No afecta constructor, scores ni señales.</p>
+          <div class="cockpit-diagnostics-grid">
+            ${observations.slice(0, 12).map(item => `<article class="cockpit-panel">
+              <h4>${esc(item.event_id || 'observación')}</h4>
+              ${metric('Sorteo', data.videoWeightObservations?.draw || item.draw || 'no disponible')}
+              ${metric('Bola', item.ball ?? 'revisión manual', 'mono')}
+              ${metric('Peso g', item.weight_g ?? 'revisión manual', 'mono')}
+              ${metric('Escena', item.scene_type || 'no disponible')}
+              ${metric('Confianza', item.confidence || 'low')}
+              ${metric('Review status', item.review_status || 'pending')}
+              ${metric('Revisión manual', item.needs_manual_review ? 'sí' : 'no')}
+              ${item.scale_display_crop_path ? `<p><a href="${esc(item.scale_display_crop_path)}">Crop display</a></p>` : ''}
+              ${item.ball_crop_path ? `<p><a href="${esc(item.ball_crop_path)}">Crop bola</a></p>` : ''}
+            </article>`).join('')}
+          </div>
+        </article>`
+      : `<article class="cockpit-panel cockpit-panel-wide"><h3>Pesaje visual observado</h3><p>Sin observaciones de pesaje visual cargadas.</p><p class="cockpit-note">Observación opcional. No afecta constructor, scores ni señales.</p></article>`;
     if (!notes.length) {
-      return `<article class="cockpit-panel cockpit-panel-wide"><h3>Física / mantenimiento</h3><p>Sin notas de mantenimiento cargadas.</p><p class="cockpit-note">Fuente opcional read-only. No afecta constructor ni señales.</p></article>`;
+      return `<article class="cockpit-panel cockpit-panel-wide"><h3>Física / mantenimiento</h3><p>Sin notas de mantenimiento cargadas.</p><p class="cockpit-note">Fuente opcional read-only. No afecta constructor ni señales.</p></article>${weightPanel}`;
     }
     return `<article class="cockpit-panel cockpit-panel-wide">
       <h3>Física / mantenimiento</h3>
@@ -555,7 +578,7 @@
           <p class="cockpit-note">Nota manual. Estado: review_default. No afecta constructor ni señales.</p>
         </article>`).join('')}
       </div>
-    </article>`;
+    </article>${weightPanel}`;
   }
 
   function renderDiagnostics(data) {
