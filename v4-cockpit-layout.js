@@ -49,6 +49,11 @@
   const SUM_BANDS = ['low_tail', 'historical_core', 'upper_core', 'high_tail', 'extreme_high'];
   const CRITICAL_SOURCE_KEYS = ['slate', 'visual', 'pair'];
   const OPTIONAL_SOURCE_KEYS = ['postDraw', 'matrix', 'resultados', 'winnerAudit', 'historySync'];
+  const LEGACY_VISIBLE_BOILERPLATE = [
+    'Review-default composition slate.',
+    'Outcome-neutral review layer.',
+    'Sum band guardrail',
+  ];
 
   const state = {
     sources: {},
@@ -91,6 +96,10 @@
       }
     }
     return output;
+  }
+
+  function visibleRiskNotes(items) {
+    return unique(items).filter(item => !LEGACY_VISIBLE_BOILERPLATE.some(boilerplate => item.includes(boilerplate)));
   }
 
   async function loadJson(path) {
@@ -281,7 +290,7 @@
   function renderExplanation(ticket) {
     const explanation = ticket?.explanation_es;
     if (!isObject(explanation)) {
-      const risks = unique(ticket?.risk_notes_es || ticket?.risk_notes).slice(0, 5);
+      const risks = visibleRiskNotes(ticket?.risk_notes_es || ticket?.risk_notes).slice(0, 5);
       return `
         <details class="cockpit-ticket-why" open>
           <summary>Por que existe este boleto</summary>
@@ -291,7 +300,7 @@
     }
     const why = unique(explanation.why_this_ticket).slice(0, 5);
     const strengths = unique(explanation.strengths).slice(0, 6);
-    const risks = unique(explanation.risks).slice(0, 6);
+    const risks = visibleRiskNotes(explanation.risks).slice(0, 6);
     return `
       <section class="cockpit-ticket-why">
         <h4>${esc(explanation.headline || 'Lectura del boleto')}</h4>
@@ -519,7 +528,11 @@
     const pairSummary = validation.pair_companion_summary || {};
     const pair = data.pair;
     const blocks = aggregateBlocks(tickets);
-    const risks = unique(tickets.flatMap(ticket => safeArray(ticket?.risk_notes))).slice(0, 8);
+    const risks = visibleRiskNotes(tickets.flatMap(ticket => {
+      if (Array.isArray(ticket?.risk_notes_es) && ticket.risk_notes_es.length) return ticket.risk_notes_es;
+      if (Array.isArray(ticket?.explanation_es?.risks) && ticket.explanation_es.risks.length) return ticket.explanation_es.risks;
+      return ticket?.risk_notes || [];
+    })).slice(0, 8);
     const typeCounts = {};
     for (const ticket of tickets) {
       const type = ticket?.ticket_type || 'unknown';
