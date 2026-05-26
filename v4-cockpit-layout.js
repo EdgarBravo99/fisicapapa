@@ -559,8 +559,8 @@
     if (!button || !input || !output) return;
     button.addEventListener('click', () => {
       const numbers = unique(String(input.value || '').split(/[\s,;]+/).map(value => Number(value)).filter(Number.isFinite)).map(Number).sort((a, b) => a - b);
-      if (numbers.length !== 6 || numbers.some(number => number < 1 || number > 56)) {
-        output.innerHTML = '<p>Ingresa exactamente 6 números únicos entre 1 y 56.</p><p class="cockpit-note">Estado: review_default. Este diagnóstico es revisión interna.</p>';
+      if (numbers.length !== 6 || numbers.some(number => !Number.isInteger(number) || number < 1 || number > 56)) {
+        output.innerHTML = '<p>Ingresa exactamente 6 números enteros únicos entre 1 y 56.</p><p class="cockpit-note">Estado: review_default. Este diagnóstico es revisión interna.</p>';
         return;
       }
       const result = evaluateManualNumbers(numbers, data);
