@@ -15,6 +15,15 @@ from v4_winner_composition_audit import block_counts, read_revancha_csv, utc_now
 
 ROOT = Path(__file__).resolve().parents[1]
 SNAPSHOT_DIR = ROOT / "v4_predraw_slate_snapshots"
+BLOCK_ORDER = ["1_10", "11_20", "21_30", "31_40", "41_56"]
+VISUAL_STRUCTURE_LABELS_ES = {
+    "0-0-1-0-1": "Activacion media-alta: presencia en 21_30 y 41_56",
+    "0-1-1-0-1": "Puente 11_20 + 21_30 + 41_56",
+    "0-1-0-0-1": "Puente bajo-medio con bloque alto",
+    "1-0-1-0-1": "Triangulo 1_10 + 21_30 + 41_56",
+    "1-1-1-0-0": "Escalera baja-media hasta 21_30",
+    "0-1-1-1-0": "Centro extendido 11_20 + 21_30 + 31_40",
+}
 ROLE_SUMMARY_KEYS = {
     "activated_block": "activated_block_hit_summary",
     "bridge_pair_lag": "pair_lag_support_hit_summary",
@@ -25,6 +34,26 @@ ROLE_SUMMARY_KEYS = {
     "gap_echo": "gap_echo_hit_summary",
     "cold_companion": "cold_companion_hit_summary",
 }
+
+
+def _signature(values: list[int]) -> str:
+    return "-".join(str(int(value)) for value in values)
+
+
+def _visual_structure_label_es(presence_signature: str) -> str:
+    return VISUAL_STRUCTURE_LABELS_ES.get(presence_signature, f"Presencia visual {presence_signature}")
+
+
+def _structure_fields(numbers: list[int]) -> dict[str, Any]:
+    blocks = block_counts(numbers)
+    block_vector = [int(blocks.get(block, 0) or 0) for block in BLOCK_ORDER]
+    presence_vector = [1 if value > 0 else 0 for value in block_vector]
+    presence_signature = _signature(presence_vector)
+    return {
+        "block_signature": _signature(block_vector),
+        "block_presence_signature": presence_signature,
+        "visual_structure_label_es": _visual_structure_label_es(presence_signature),
+    }
 
 
 def _load_json(path: str | Path) -> dict[str, Any]:
@@ -135,6 +164,7 @@ def build_post_draw_audit(
     type_hits: dict[str, list[int]] = defaultdict(list)
     hit_counts: list[int] = []
     target_set = set(actual_numbers)
+    actual_structure = _structure_fields(actual_numbers)
 
     for ticket in tickets:
         numbers = ticket.get("numbers") if isinstance(ticket, dict) else []
@@ -146,6 +176,16 @@ def build_post_draw_audit(
         ticket_type = str(ticket.get("ticket_type", "unknown"))
         type_hits[ticket_type].append(hits)
         roles = ticket.get("roles") if isinstance(ticket.get("roles"), dict) else {}
+        composition = ticket.get("composition") if isinstance(ticket.get("composition"), dict) else {}
+        ticket_structure = {
+            "block_signature": composition.get("block_signature"),
+            "block_presence_signature": composition.get("block_presence_signature"),
+            "visual_structure_label_es": composition.get("visual_structure_label_es"),
+        }
+        fallback_structure = _structure_fields(numbers)
+        for key, value in fallback_structure.items():
+            if not ticket_structure.get(key):
+                ticket_structure[key] = value
         for number in numbers:
             for role in roles.get(str(number), ["support"]):
                 role_total[role] += 1
@@ -162,6 +202,11 @@ def build_post_draw_audit(
                 "hit_numbers": hit_numbers,
                 "missed_numbers": missed_numbers,
                 "sum_band": ticket.get("composition", {}).get("sum_band"),
+                "sum_band_es": ticket.get("composition", {}).get("sum_band_es"),
+                "block_signature": ticket_structure["block_signature"],
+                "block_presence_signature": ticket_structure["block_presence_signature"],
+                "visual_structure_label_es": ticket_structure["visual_structure_label_es"],
+                "actual_draw_matched_ticket_presence_signature": actual_structure["block_presence_signature"] == ticket_structure["block_presence_signature"],
                 "harmonic_coherence": ticket.get("composition", {}).get("harmonic_coherence", {}),
             }
         )
@@ -194,6 +239,8 @@ def build_post_draw_audit(
     actual_blocks = block_counts(actual_numbers)
     matched_blocks = sum(min(actual_blocks[block], slate_blocks[block]) for block in actual_blocks)
 
+    structure_matches = sum(1 for ticket in ticket_results if ticket.get("actual_draw_matched_ticket_presence_signature"))
+
     return {
         "version": "V4.3-post-draw-audit",
         "generated_at": utc_now(),
@@ -218,9 +265,17 @@ def build_post_draw_audit(
             "ticket_sum_bands": Counter(str(ticket.get("sum_band", "unknown")) for ticket in ticket_results),
         },
         "actual_draw_block_profile": actual_blocks,
+        "actual_draw_block_signature": actual_structure["block_signature"],
+        "actual_draw_block_presence_signature": actual_structure["block_presence_signature"],
+        "actual_draw_visual_structure_label_es": actual_structure["visual_structure_label_es"],
         "actual_draw_pair_co_travel_profile": _actual_pair_profile(actual_numbers),
         "actual_draw_matched_slate_thesis": matched_blocks >= 4 or best_hits >= 2,
         "new_harmonic_pattern_to_review": best_hits < 2,
+        "post_draw_summary_es": f"El sorteo {final_target} tuvo mejor boleto con {best_hits} matches y promedio {round(sum(hit_counts) / len(hit_counts), 3) if hit_counts else 0.0}.",
+        "structure_match_summary_es": (
+            f"La estructura real fue {actual_structure['block_presence_signature']}: {actual_structure['visual_structure_label_es']}. "
+            f"{structure_matches} boletos compartieron esa presencia visual."
+        ),
         "recommendation": "diagnostic_only",
         "warnings": [],
     }

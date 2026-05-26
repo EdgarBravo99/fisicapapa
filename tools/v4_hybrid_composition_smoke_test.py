@@ -34,6 +34,21 @@ FORBIDDEN_WORDS = [
     "probability_model",
     "winning_model",
 ]
+FORBIDDEN_SPANISH_USER_FIELDS = [
+    "probabilidad garantizada",
+    "garantia de ganar",
+    "garantía de ganar",
+    "chance de ganar",
+    "seguro",
+    "certeza de resultado",
+]
+FORBIDDEN_ENGLISH_BOILERPLATE = [
+    "Review-default composition slate",
+    "Outcome-neutral review layer",
+    "Composed by V4.3 harmonic roles",
+    "Fallback V4.3 harmonic composition",
+    "Sum band guardrail",
+]
 
 
 def _load(path: str) -> dict:
@@ -51,13 +66,55 @@ def _assert_ticket(ticket: dict) -> None:
     assert isinstance(ticket.get("reasons"), dict) and ticket["reasons"], "ticket must include reasons"
     assert isinstance(ticket.get("composition"), dict) and ticket["composition"], "ticket must include composition"
     assert ticket["composition"].get("sum_band"), "ticket must include sum_band"
+    assert ticket["composition"].get("sum_band_es"), "ticket must include sum_band_es"
+    assert ticket["composition"].get("block_signature"), "ticket must include block_signature"
+    assert ticket["composition"].get("block_presence_signature"), "ticket must include block_presence_signature"
+    assert ticket["composition"].get("visual_structure_label_es"), "ticket must include visual_structure_label_es"
     harmonic = ticket["composition"].get("harmonic_coherence")
     assert isinstance(harmonic, dict) and harmonic, "ticket must include harmonic_coherence"
+    assert isinstance(harmonic.get("notes_es"), list), "ticket harmonic notes_es missing"
+    explanation_es = ticket.get("explanation_es")
+    assert isinstance(explanation_es, dict) and explanation_es, "ticket must include explanation_es"
+    assert isinstance(explanation_es.get("why_this_ticket"), list) and explanation_es["why_this_ticket"], "explanation_es why missing"
+    assert ticket.get("reason_es"), "ticket must include reason_es"
+    assert isinstance(ticket.get("risk_notes_es"), list) and ticket["risk_notes_es"], "ticket must include risk_notes_es"
+    assert ticket.get("thesis_es"), "ticket must include thesis_es"
+    assert ticket.get("decision_summary_es"), "ticket must include decision_summary_es"
+    assert ticket.get("structure_summary_es"), "ticket must include structure_summary_es"
+    assert isinstance(ticket.get("reasons_es"), dict) and ticket["reasons_es"], "ticket must include reasons_es"
     for number in numbers:
         roles = ticket["roles"].get(str(number))
         assert isinstance(roles, list) and roles, f"number {number} missing roles"
         reasons = ticket["reasons"].get(str(number))
         assert isinstance(reasons, list) and reasons, f"number {number} missing reasons"
+        reasons_es = ticket["reasons_es"].get(str(number))
+        assert isinstance(reasons_es, list) and reasons_es, f"number {number} missing Spanish reasons"
+
+
+def _spanish_field_text(payload: dict) -> str:
+    chunks: list[str] = []
+
+    def visit(value, key: str = "") -> None:
+        if isinstance(value, dict):
+            for child_key, child_value in value.items():
+                visit(child_value, str(child_key))
+        elif isinstance(value, list):
+            for item in value:
+                visit(item, key)
+        elif key.endswith("_es") or key == "explanation_es":
+            chunks.append(str(value))
+
+    visit(payload)
+    return "\n".join(chunks)
+
+
+def _assert_spanish_contract_language(payload: dict) -> None:
+    text = _spanish_field_text(payload)
+    lower = text.lower()
+    for phrase in FORBIDDEN_SPANISH_USER_FIELDS:
+        assert phrase not in lower, f"forbidden Spanish user-facing language found: {phrase}"
+    for phrase in FORBIDDEN_ENGLISH_BOILERPLATE:
+        assert phrase not in text, f"English boilerplate leaked into Spanish contract: {phrase}"
 
 
 def _assert_no_forbidden_language(payload: dict) -> None:
@@ -90,8 +147,14 @@ def main() -> int:
     slate = _load("v4_hybrid_composition_slate.json")
     tickets = slate.get("slate")
     assert isinstance(tickets, list), "slate must be a list"
+    assert tickets, "slate must not be empty"
     assert 4 <= len(tickets) <= 6, f"slate must contain 4-6 tickets, got {len(tickets)}"
     assert slate.get("production_status") == "review_default"
+    assert slate.get("visual_structure_contract_version"), "visual structure contract missing"
+    assert isinstance(slate.get("slate_structure_summary"), dict), "slate structure summary missing"
+    assert slate["slate_structure_summary"].get("dominant_presence_signature"), "dominant presence signature missing"
+    assert slate["slate_structure_summary"].get("summary_es"), "slate summary_es missing"
+    _assert_spanish_contract_language(slate)
     for ticket in tickets:
         _assert_ticket(ticket)
 
@@ -123,6 +186,7 @@ def main() -> int:
     validation = slate.get("validation_summary", {})
     assert isinstance(validation.get("slate_sum_distribution"), dict), "slate sum distribution missing"
     assert isinstance(validation.get("sum_band_percentiles"), dict), "sum band percentiles missing"
+    assert validation.get("visual_structure_contract_version"), "validation structure contract missing"
 
     ticket_types = {ticket.get("ticket_type") for ticket in tickets}
     pair_lag_mode = visual.get("pair_lag_mode")

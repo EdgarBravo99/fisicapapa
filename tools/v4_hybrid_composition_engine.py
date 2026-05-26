@@ -26,6 +26,7 @@ from v4_winner_composition_audit import (
 ENGINE_VERSION = "V4.3-hybrid-composition"
 PRODUCTION_STATUS = "review_default"
 DISCLAIMER = "Experimental composition ranking for review only."
+VISUAL_STRUCTURE_CONTRACT_VERSION = "v4.3-structure-signature-v1"
 TICKET_TYPES = [
     "composition_main",
     "activated_block_main",
@@ -38,6 +39,40 @@ TICKET_TYPES = [
 ]
 
 SUM_BAND_ORDER = ("low_tail", "historical_core", "upper_core", "high_tail", "extreme_high")
+BLOCK_ORDER = ["1_10", "11_20", "21_30", "31_40", "41_56"]
+SUM_BAND_ES = {
+    "low_tail": "cola baja",
+    "historical_core": "nucleo historico",
+    "upper_core": "nucleo alto",
+    "high_tail": "cola alta",
+    "extreme_high": "extremo alto",
+}
+VISUAL_STRUCTURE_LABELS_ES = {
+    "0-0-1-0-1": "Activacion media-alta: presencia en 21_30 y 41_56",
+    "0-1-1-0-1": "Puente 11_20 + 21_30 + 41_56",
+    "0-1-0-0-1": "Puente bajo-medio con bloque alto",
+    "1-0-1-0-1": "Triangulo 1_10 + 21_30 + 41_56",
+    "1-1-1-0-0": "Escalera baja-media hasta 21_30",
+    "0-1-1-1-0": "Centro extendido 11_20 + 21_30 + 31_40",
+}
+ROLE_REASON_ES = {
+    "anchor": "Ancla la lectura del boleto dentro de la composicion.",
+    "support": "Aporta soporte dentro del balance armonico del boleto.",
+    "activated_block": "Ubicado dentro de un bloque activo por activacion unica reciente.",
+    "block_completion": "Completa una tesis de bloque sin modificar el motor base.",
+    "bridge_pair_lag": "Tiene evidencia pair-lag validada como puente temporal.",
+    "pair_lag_support": "Tiene evidencia pair-lag usada solo como soporte.",
+    "gap_echo": "Presenta eco de gap compatible con su historial reciente.",
+    "cold_companion": "Companion frio controlado conectado a evidencia local.",
+    "v42_signal_optional": "Aporta senal V4.2 opcional como apoyo, no como fuente principal.",
+    "co_travel_companion": "Aparece dentro de pares companion con soporte de co-travel.",
+    "block_bridge_pair": "Participa en un par puente entre bloques complementarios.",
+    "harmonic_cluster": "Forma parte de un cluster armonico recurrente.",
+    "anti_pair_risk": "Incluye una marca de riesgo anti-par para revision.",
+    "sum_band_guardrail": "Queda bajo guardia de banda de suma.",
+    "harmonic_support": "Refuerza la coherencia armonica interna del boleto.",
+}
+
 
 def _block_name(number: int) -> str:
     for name, values in BLOCKS.items():
@@ -93,6 +128,169 @@ def _sum_band(total: int, policy: dict[str, Any]) -> str:
     if total < p95:
         return "high_tail"
     return "extreme_high"
+
+
+def _sum_band_es(band: str | None) -> str:
+    return SUM_BAND_ES.get(str(band or ""), str(band or "desconocida"))
+
+
+def _block_vector(block_profile: dict[str, int]) -> list[int]:
+    return [int(block_profile.get(block, 0) or 0) for block in BLOCK_ORDER]
+
+
+def _signature(values: list[int]) -> str:
+    return "-".join(str(int(value)) for value in values)
+
+
+def _presence_vector(block_profile: dict[str, int]) -> list[int]:
+    return [1 if int(block_profile.get(block, 0) or 0) > 0 else 0 for block in BLOCK_ORDER]
+
+
+def _visual_structure_label_es(presence_signature: str) -> str:
+    return VISUAL_STRUCTURE_LABELS_ES.get(presence_signature, f"Presencia visual {presence_signature}")
+
+
+def _immediate_overlap_label_es(overlap: int) -> str:
+    if overlap <= 0:
+        return "sin repetidos inmediatos"
+    if overlap == 1:
+        return "1 repetido inmediato controlado"
+    return f"{overlap} repetidos inmediatos: revisar riesgo"
+
+
+def _parity_signature(parity: dict[str, int]) -> str:
+    even = int(parity.get("even", 0) or 0)
+    odd = int(parity.get("odd", 0) or 0)
+    return f"{even} pares / {odd} impares"
+
+
+def _structure_fields(numbers: list[int], previous_numbers: set[int] | None = None) -> dict[str, Any]:
+    block_profile = block_counts(numbers)
+    vector = _block_vector(block_profile)
+    presence = _presence_vector(block_profile)
+    block_signature = _signature(vector)
+    presence_signature = _signature(presence)
+    overlap = len(set(numbers) & (previous_numbers or set()))
+    return {
+        "block_order": BLOCK_ORDER,
+        "block_vector": vector,
+        "block_signature": block_signature,
+        "block_presence_vector": presence,
+        "block_presence_signature": presence_signature,
+        "visual_structure_label_es": _visual_structure_label_es(presence_signature),
+        "immediate_overlap_label_es": _immediate_overlap_label_es(overlap),
+    }
+
+
+def _harmonic_notes_es(
+    strong_pairs: list[dict[str, Any]],
+    block_bridges: list[dict[str, Any]],
+    clusters: list[dict[str, Any]],
+    band: str,
+    anti_pairs: list[dict[str, Any]],
+) -> list[str]:
+    notes: list[str] = []
+    if strong_pairs:
+        notes.append(f"{len(strong_pairs)} par companion apoya la coherencia interna.")
+    if block_bridges:
+        notes.append(f"{len(block_bridges)} pares puente conectan bloques complementarios.")
+    if clusters:
+        notes.append(f"{len(clusters)} clusters companion recurrentes estan presentes.")
+    if band in {"high_tail", "extreme_high", "low_tail"}:
+        notes.append(f"Guardia de banda de suma: {_sum_band_es(band)} ({band}).")
+    if anti_pairs:
+        notes.append(f"{len(anti_pairs)} marcador de riesgo anti-par.")
+    return notes
+
+
+def _reason_es_from_roles(number: int, roles: list[str], row: dict[str, Any]) -> list[str]:
+    block = _block_name(number)
+    reasons: list[str] = []
+    for role in roles:
+        if role == "activated_block":
+            reasons.append(f"Ubicado dentro del bloque activo {block} por activacion unica reciente.")
+        elif role == "sum_band_guardrail":
+            continue
+        elif role in ROLE_REASON_ES:
+            reasons.append(ROLE_REASON_ES[role])
+    signals = row.get("signals") if isinstance(row.get("signals"), dict) else {}
+    if "gap_echo" in roles and signals.get("gap_echo") is not None:
+        reasons.append(f"Eco de gap con soporte diagnostico {round(float(signals.get('gap_echo') or 0.0), 3)}.")
+    if not reasons:
+        reasons.append("Seleccionado por balance de roles V4.3 y coherencia del boleto.")
+    return _unique_text(reasons)[:5]
+
+
+def _ticket_spanish_contract(
+    ticket_type: str,
+    numbers: list[int],
+    composition: dict[str, Any],
+    roles: dict[str, list[str]],
+    reasons_es: dict[str, list[str]],
+    reason_es: str,
+    risk_notes_es: list[str],
+) -> dict[str, Any]:
+    harmonic = composition.get("harmonic_coherence", {})
+    block_presence_signature = composition.get("block_presence_signature", "no disponible")
+    block_signature = composition.get("block_signature", "no disponible")
+    visual_label = composition.get("visual_structure_label_es", f"Presencia visual {block_presence_signature}")
+    sum_band = composition.get("sum_band", "desconocida")
+    sum_band_es = composition.get("sum_band_es", _sum_band_es(sum_band))
+    overlap_label = composition.get("immediate_overlap_label_es", "sin repetidos inmediatos")
+    active_blocks = [block for block, value in composition.get("blocks", {}).items() if value]
+    role_set = {role for role_list in roles.values() for role in role_list}
+    strengths: list[str] = [
+        f"Estructura visual {block_presence_signature}: {visual_label}.",
+        f"Firma de bloques {block_signature} con presencia en {', '.join(active_blocks) if active_blocks else 'sin bloque dominante'}.",
+        f"Banda de suma: {sum_band_es} ({sum_band}).",
+    ]
+    if "bridge_pair_lag" in role_set or "pair_lag_support" in role_set:
+        strengths.append("Incluye soporte pair-lag como evidencia de revision, no como prior aplicado.")
+    if "co_travel_companion" in role_set:
+        strengths.append("Incluye soporte co-travel companion dentro del boleto.")
+    if "gap_echo" in role_set:
+        strengths.append("Incluye eco de gap en numeros seleccionados.")
+    if "cold_companion" in role_set:
+        strengths.append("Incluye companion frio controlado con evidencia local.")
+    if harmonic.get("block_bridge_pair_count"):
+        strengths.append(f"{harmonic.get('block_bridge_pair_count')} pares puente sostienen bloques complementarios.")
+    if harmonic.get("cluster_support_count"):
+        strengths.append(f"{harmonic.get('cluster_support_count')} clusters armonicos aparecen en el boleto.")
+
+    why = [
+        reason_es,
+        f"Combina roles visibles con {visual_label}.",
+        f"Mantiene disciplina de suma en {sum_band_es} y {overlap_label}.",
+    ]
+    headline = f"{ticket_type.replace('_', ' ')} con {visual_label}"
+    decision_summary = (
+        f"Boleto {ticket_type.replace('_', ' ')} con presencia visual {block_presence_signature}, "
+        f"suma {sum_band} y soporte armonico en bloques {', '.join(active_blocks) if active_blocks else 'sin bloque dominante'}."
+    )
+    structure_summary = (
+        f"Firma de bloques {block_signature}; presencia visual {block_presence_signature}; "
+        f"{visual_label}; {overlap_label}."
+    )
+    thesis_es = (
+        f"Revisar una composicion de {visual_label.lower()} con soporte de roles V4.3, "
+        f"sin promesa de resultado."
+    )
+    return {
+        "reason_es": reason_es,
+        "risk_notes_es": risk_notes_es,
+        "thesis_es": thesis_es,
+        "decision_summary_es": decision_summary,
+        "structure_summary_es": structure_summary,
+        "explanation_es": {
+            "headline": headline,
+            "why_this_ticket": _unique_text(why),
+            "strengths": _unique_text(strengths),
+            "risks": risk_notes_es,
+            "review_focus": f"Revisar si la estructura {block_presence_signature} y la banda {sum_band_es} siguen aportando coherencia historica.",
+        },
+        "reasons_es": reasons_es,
+    }
+
 
 
 def _pair_key(pair: tuple[int, int] | list[int]) -> str:
@@ -349,6 +547,7 @@ def _harmonic_coherence(
         notes.append(f"Sum band guardrail: {band}.")
     if anti_pairs:
         notes.append(f"{len(anti_pairs)} anti-pair risk markers.")
+    notes_es = _harmonic_notes_es(strong_pairs, block_bridges, clusters, band, anti_pairs)
     return {
         "score": round(max(score, 0.0), 6),
         "co_travel_score": co_travel_score,
@@ -361,6 +560,7 @@ def _harmonic_coherence(
         "block_bridge_pairs": [row.get("pair") for row in block_bridges[:6]],
         "clusters": [row.get("numbers") for row in clusters],
         "notes": notes,
+        "notes_es": notes_es,
     }
 
 
@@ -374,13 +574,19 @@ def _composition(
     parity = parity_counts(numbers)
     total = sum(numbers)
     harmonic = _harmonic_coherence(numbers, rows or [], previous_numbers, sum_policy, pair_audit)
+    structure = _structure_fields(numbers, previous_numbers)
+    overlap = len(set(numbers) & previous_numbers)
     return {
         "parity": parity,
+        "parity_signature": _parity_signature(parity),
         "sum": total,
         "sum_band": harmonic["sum_band"],
+        "sum_band_es": _sum_band_es(harmonic["sum_band"]),
         "blocks": block_counts(numbers),
-        "immediate_overlap_previous_draw": len(set(numbers) & previous_numbers),
+        "immediate_overlap_previous_draw": overlap,
+        "immediate_overlap_label_es": _immediate_overlap_label_es(overlap),
         "harmonic_coherence": harmonic,
+        **structure,
     }
 
 
@@ -393,9 +599,11 @@ def _ticket(
     reason: str,
     sum_policy: dict[str, Any] | None = None,
     pair_audit: dict[str, Any] | None = None,
+    pair_lag_mode: str | None = None,
 ) -> dict[str, Any]:
     roles: dict[str, list[str]] = {}
     reasons: dict[str, list[str]] = {}
+    reasons_es: dict[str, list[str]] = {}
     harmonic = _harmonic_coherence(numbers, rows, previous_numbers, sum_policy, pair_audit)
     pair_numbers: set[int] = set()
     bridge_numbers: set[int] = set()
@@ -430,19 +638,45 @@ def _ticket(
             number_roles = _unique_text(["support"] + number_roles)
         roles[str(number)] = number_roles
         reasons[str(number)] = row.get("reasons") or ["Selected by V4.3 composition role balance."]
+        reasons_es[str(number)] = _reason_es_from_roles(number, number_roles, row)
+    composition = _composition(numbers, previous_numbers, rows, sum_policy, pair_audit)
+    reason_es = (
+        "Variante armonica de respaldo para mantener amplitud y coherencia del conjunto."
+        if "Fallback" in reason
+        else "Compuesto por roles armonicos V4.3: activacion de bloques, soporte de pares, eco de gap, companions y disciplina de suma."
+    )
+    if pair_lag_mode == "support_only":
+        reason_es += " El pair-lag queda como soporte, no como promotor principal."
+    elif pair_lag_mode == "promoter":
+        reason_es += " El pair-lag esta validado como puente promotor dentro de este corte."
+    elif pair_lag_mode:
+        reason_es += f" El pair-lag esta en modo {pair_lag_mode}."
+    risk_notes_es = [
+        "Conjunto en modo revision.",
+        "Capa de revision sin promesa de resultado.",
+        *composition.get("harmonic_coherence", {}).get("notes_es", [])[:3],
+    ]
+    spanish = _ticket_spanish_contract(ticket_type, numbers, composition, roles, reasons_es, reason_es, risk_notes_es)
     return {
         "ticket_id": f"{ticket_type}_{index}",
         "ticket_type": ticket_type,
         "numbers": numbers,
         "roles": roles,
         "reasons": reasons,
-        "composition": _composition(numbers, previous_numbers, rows, sum_policy, pair_audit),
+        "reasons_es": spanish["reasons_es"],
+        "composition": composition,
         "reason": reason,
+        "reason_es": spanish["reason_es"],
+        "thesis_es": spanish["thesis_es"],
+        "decision_summary_es": spanish["decision_summary_es"],
+        "structure_summary_es": spanish["structure_summary_es"],
+        "explanation_es": spanish["explanation_es"],
         "risk_notes": [
             "Review-default composition slate.",
             "Outcome-neutral review layer.",
             *harmonic.get("notes", [])[:3],
         ],
+        "risk_notes_es": spanish["risk_notes_es"],
     }
 
 
@@ -511,6 +745,7 @@ def compose_slate_from_rows(
                 "Composed by V4.3 harmonic roles: block activation, pair support, gap echo, companions, and sum discipline.",
                 sum_policy,
                 pair_audit,
+                pair_lag_mode,
             )
         )
     if len(tickets) < 5:
@@ -543,6 +778,7 @@ def compose_slate_from_rows(
                     "Fallback V4.3 harmonic composition variant to keep the review slate broad and coherent.",
                     sum_policy,
                     pair_audit,
+                    pair_lag_mode,
                 )
             )
             if len(tickets) >= 5:
@@ -571,9 +807,52 @@ def _apply_slate_harmonic_order(tickets: list[dict[str, Any]]) -> list[dict[str,
         ticket["selection_score"] = round(score, 6)
         if extreme_penalty:
             ticket.setdefault("risk_notes", []).append("Extreme-high sum kept only as a limited review thesis.")
+            ticket.setdefault("risk_notes_es", []).append("Suma extremo alto conservada solo como tesis limitada de revision.")
         used_theses[thesis_key] += 1
         scored.append(ticket)
     return sorted(scored, key=lambda ticket: (-float(ticket.get("selection_score", 0.0) or 0.0), ticket.get("ticket_id", "")))
+
+
+def _slate_structure_summary(tickets: list[dict[str, Any]], pair_lag_mode: str | None) -> dict[str, Any]:
+    presence_distribution: Counter[str] = Counter()
+    signature_distribution: Counter[str] = Counter()
+    sum_band_distribution: Counter[str] = Counter()
+    overlap_distribution: Counter[str] = Counter()
+    for ticket in tickets:
+        composition = ticket.get("composition") if isinstance(ticket, dict) else {}
+        if not isinstance(composition, dict):
+            continue
+        presence_distribution[str(composition.get("block_presence_signature", "unknown"))] += 1
+        signature_distribution[str(composition.get("block_signature", "unknown"))] += 1
+        sum_band_distribution[str(composition.get("sum_band", "unknown"))] += 1
+        overlap_distribution[str(composition.get("immediate_overlap_previous_draw", 0))] += 1
+    dominant_presence = presence_distribution.most_common(1)[0][0] if presence_distribution else "unknown"
+    dominant_label = _visual_structure_label_es(dominant_presence)
+    summary_es = (
+        f"El conjunto se concentra principalmente en la presencia visual {dominant_presence}: "
+        f"{dominant_label}. Esta lectura describe arquitectura visual de revision, no promesa de resultado."
+    )
+    return {
+        "ticket_count": len(tickets),
+        "block_presence_distribution": dict(presence_distribution),
+        "block_signature_distribution": dict(signature_distribution),
+        "sum_band_distribution": dict(sum_band_distribution),
+        "dominant_presence_signature": dominant_presence,
+        "dominant_presence_label_es": dominant_label,
+        "immediate_overlap_distribution": dict(overlap_distribution),
+        "pair_lag_mode": pair_lag_mode,
+        "summary_es": summary_es,
+    }
+
+
+def _apply_dominant_presence(tickets: list[dict[str, Any]], summary: dict[str, Any]) -> None:
+    dominant = summary.get("dominant_presence_signature")
+    for ticket in tickets:
+        composition = ticket.get("composition") if isinstance(ticket, dict) else {}
+        if not isinstance(composition, dict):
+            continue
+        matches = bool(dominant and composition.get("block_presence_signature") == dominant)
+        composition["matches_dominant_presence_signature"] = matches
 
 
 def _load_json(path: str | Path) -> dict[str, Any] | None:
@@ -682,6 +961,8 @@ def build_slate(
         sum_policy=sum_policy,
         pair_audit=pair_audit,
     )
+    slate_structure_summary = _slate_structure_summary(slate, pair_lag_mode)
+    _apply_dominant_presence(slate, slate_structure_summary)
     warnings = []
     if v42_warning:
         warnings.append(v42_warning)
@@ -705,6 +986,7 @@ def build_slate(
     }
     validation["sum_band_percentiles"] = sum_policy
     validation["slate_sum_distribution"] = dict(sum_distribution)
+    validation["visual_structure_contract_version"] = VISUAL_STRUCTURE_CONTRACT_VERSION
     validation["harmonic_coherence_summary"] = {
         "avg_score": _avg(harmonic_scores),
         "min_score": min(harmonic_scores) if harmonic_scores else 0.0,
@@ -726,6 +1008,8 @@ def build_slate(
         "disclaimer": DISCLAIMER,
         "latest_draw": draws[-1]["draw_id"],
         "slate": slate,
+        "slate_structure_summary": slate_structure_summary,
+        "visual_structure_contract_version": VISUAL_STRUCTURE_CONTRACT_VERSION,
         "validation_summary": validation,
         "warnings": warnings,
     }

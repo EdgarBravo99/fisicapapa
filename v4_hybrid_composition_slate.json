@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-25T19:14:25.584007+00:00",
+  "generated_at": "2026-05-26T00:14:45.679048+00:00",
   "engine_version": "V4.3-hybrid-composition",
   "source_policy": {
     "primary_source": "revancha.csv",
@@ -105,13 +105,59 @@
           "Gap echo: current gap 7, historical median gap 6.0."
         ]
       },
+      "reasons_es": {
+        "21": [
+          "Ancla la lectura del boleto dentro de la composicion.",
+          "Ubicado dentro del bloque activo 21_30 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Companion frio controlado conectado a evidencia local.",
+          "Presenta eco de gap compatible con su historial reciente."
+        ],
+        "26": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 21_30 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Refuerza la coherencia armonica interna del boleto."
+        ],
+        "28": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 21_30 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Companion frio controlado conectado a evidencia local.",
+          "Refuerza la coherencia armonica interna del boleto."
+        ],
+        "41": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 41_56 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Aporta senal V4.2 opcional como apoyo, no como fuente principal."
+        ],
+        "55": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 41_56 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Refuerza la coherencia armonica interna del boleto."
+        ],
+        "56": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 41_56 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Refuerza la coherencia armonica interna del boleto."
+        ]
+      },
       "composition": {
         "parity": {
           "even": 3,
           "odd": 3
         },
+        "parity_signature": "3 pares / 3 impares",
         "sum": 227,
         "sum_band": "high_tail",
+        "sum_band_es": "cola alta",
         "blocks": {
           "1_10": 0,
           "11_20": 0,
@@ -120,6 +166,7 @@
           "41_56": 3
         },
         "immediate_overlap_previous_draw": 0,
+        "immediate_overlap_label_es": "sin repetidos inmediatos",
         "harmonic_coherence": {
           "score": 0.386173,
           "co_travel_score": 0.0,
@@ -133,14 +180,72 @@
           "clusters": [],
           "notes": [
             "Sum band guardrail: high_tail."
+          ],
+          "notes_es": [
+            "Guardia de banda de suma: cola alta (high_tail)."
           ]
-        }
+        },
+        "block_order": [
+          "1_10",
+          "11_20",
+          "21_30",
+          "31_40",
+          "41_56"
+        ],
+        "block_vector": [
+          0,
+          0,
+          3,
+          0,
+          3
+        ],
+        "block_signature": "0-0-3-0-3",
+        "block_presence_vector": [
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        "block_presence_signature": "0-0-1-0-1",
+        "visual_structure_label_es": "Activacion media-alta: presencia en 21_30 y 41_56",
+        "matches_dominant_presence_signature": true
       },
       "reason": "Composed by V4.3 harmonic roles: block activation, pair support, gap echo, companions, and sum discipline.",
+      "reason_es": "Compuesto por roles armonicos V4.3: activacion de bloques, soporte de pares, eco de gap, companions y disciplina de suma. El pair-lag queda como soporte, no como promotor principal.",
+      "thesis_es": "Revisar una composicion de activacion media-alta: presencia en 21_30 y 41_56 con soporte de roles V4.3, sin promesa de resultado.",
+      "decision_summary_es": "Boleto activated block main con presencia visual 0-0-1-0-1, suma high_tail y soporte armonico en bloques 21_30, 41_56.",
+      "structure_summary_es": "Firma de bloques 0-0-3-0-3; presencia visual 0-0-1-0-1; Activacion media-alta: presencia en 21_30 y 41_56; sin repetidos inmediatos.",
+      "explanation_es": {
+        "headline": "activated block main con Activacion media-alta: presencia en 21_30 y 41_56",
+        "why_this_ticket": [
+          "Compuesto por roles armonicos V4.3: activacion de bloques, soporte de pares, eco de gap, companions y disciplina de suma. El pair-lag queda como soporte, no como promotor principal.",
+          "Combina roles visibles con Activacion media-alta: presencia en 21_30 y 41_56.",
+          "Mantiene disciplina de suma en cola alta y sin repetidos inmediatos."
+        ],
+        "strengths": [
+          "Estructura visual 0-0-1-0-1: Activacion media-alta: presencia en 21_30 y 41_56.",
+          "Firma de bloques 0-0-3-0-3 con presencia en 21_30, 41_56.",
+          "Banda de suma: cola alta (high_tail).",
+          "Incluye eco de gap en numeros seleccionados.",
+          "Incluye companion frio controlado con evidencia local."
+        ],
+        "risks": [
+          "Conjunto en modo revision.",
+          "Capa de revision sin promesa de resultado.",
+          "Guardia de banda de suma: cola alta (high_tail)."
+        ],
+        "review_focus": "Revisar si la estructura 0-0-1-0-1 y la banda cola alta siguen aportando coherencia historica."
+      },
       "risk_notes": [
         "Review-default composition slate.",
         "Outcome-neutral review layer.",
         "Sum band guardrail: high_tail."
+      ],
+      "risk_notes_es": [
+        "Conjunto en modo revision.",
+        "Capa de revision sin promesa de resultado.",
+        "Guardia de banda de suma: cola alta (high_tail)."
       ],
       "selection_score": 0.386173
     },
@@ -231,13 +336,59 @@
           "Supported by optional V4.2 number score ranking."
         ]
       },
+      "reasons_es": {
+        "14": [
+          "Ancla la lectura del boleto dentro de la composicion.",
+          "Ubicado dentro del bloque activo 11_20 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Companion frio controlado conectado a evidencia local.",
+          "Aporta senal V4.2 opcional como apoyo, no como fuente principal."
+        ],
+        "16": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 11_20 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Refuerza la coherencia armonica interna del boleto."
+        ],
+        "23": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 21_30 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Companion frio controlado conectado a evidencia local.",
+          "Refuerza la coherencia armonica interna del boleto."
+        ],
+        "42": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 41_56 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Refuerza la coherencia armonica interna del boleto."
+        ],
+        "49": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 41_56 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Aporta senal V4.2 opcional como apoyo, no como fuente principal."
+        ],
+        "53": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 41_56 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Aporta senal V4.2 opcional como apoyo, no como fuente principal."
+        ]
+      },
       "composition": {
         "parity": {
           "even": 3,
           "odd": 3
         },
+        "parity_signature": "3 pares / 3 impares",
         "sum": 197,
         "sum_band": "upper_core",
+        "sum_band_es": "nucleo alto",
         "blocks": {
           "1_10": 0,
           "11_20": 2,
@@ -246,6 +397,7 @@
           "41_56": 3
         },
         "immediate_overlap_previous_draw": 1,
+        "immediate_overlap_label_es": "1 repetido inmediato controlado",
         "harmonic_coherence": {
           "score": 0.37551,
           "co_travel_score": 0.0,
@@ -257,13 +409,67 @@
           "anti_pairs": [],
           "block_bridge_pairs": [],
           "clusters": [],
-          "notes": []
-        }
+          "notes": [],
+          "notes_es": []
+        },
+        "block_order": [
+          "1_10",
+          "11_20",
+          "21_30",
+          "31_40",
+          "41_56"
+        ],
+        "block_vector": [
+          0,
+          2,
+          1,
+          0,
+          3
+        ],
+        "block_signature": "0-2-1-0-3",
+        "block_presence_vector": [
+          0,
+          1,
+          1,
+          0,
+          1
+        ],
+        "block_presence_signature": "0-1-1-0-1",
+        "visual_structure_label_es": "Puente 11_20 + 21_30 + 41_56",
+        "matches_dominant_presence_signature": false
       },
       "reason": "Fallback V4.3 harmonic composition variant to keep the review slate broad and coherent.",
+      "reason_es": "Variante armonica de respaldo para mantener amplitud y coherencia del conjunto. El pair-lag queda como soporte, no como promotor principal.",
+      "thesis_es": "Revisar una composicion de puente 11_20 + 21_30 + 41_56 con soporte de roles V4.3, sin promesa de resultado.",
+      "decision_summary_es": "Boleto pair lag support con presencia visual 0-1-1-0-1, suma upper_core y soporte armonico en bloques 11_20, 21_30, 41_56.",
+      "structure_summary_es": "Firma de bloques 0-2-1-0-3; presencia visual 0-1-1-0-1; Puente 11_20 + 21_30 + 41_56; 1 repetido inmediato controlado.",
+      "explanation_es": {
+        "headline": "pair lag support con Puente 11_20 + 21_30 + 41_56",
+        "why_this_ticket": [
+          "Variante armonica de respaldo para mantener amplitud y coherencia del conjunto. El pair-lag queda como soporte, no como promotor principal.",
+          "Combina roles visibles con Puente 11_20 + 21_30 + 41_56.",
+          "Mantiene disciplina de suma en nucleo alto y 1 repetido inmediato controlado."
+        ],
+        "strengths": [
+          "Estructura visual 0-1-1-0-1: Puente 11_20 + 21_30 + 41_56.",
+          "Firma de bloques 0-2-1-0-3 con presencia en 11_20, 21_30, 41_56.",
+          "Banda de suma: nucleo alto (upper_core).",
+          "Incluye eco de gap en numeros seleccionados.",
+          "Incluye companion frio controlado con evidencia local."
+        ],
+        "risks": [
+          "Conjunto en modo revision.",
+          "Capa de revision sin promesa de resultado."
+        ],
+        "review_focus": "Revisar si la estructura 0-1-1-0-1 y la banda nucleo alto siguen aportando coherencia historica."
+      },
       "risk_notes": [
         "Review-default composition slate.",
         "Outcome-neutral review layer."
+      ],
+      "risk_notes_es": [
+        "Conjunto en modo revision.",
+        "Capa de revision sin promesa de resultado."
       ],
       "selection_score": 0.37551
     },
@@ -343,13 +549,55 @@
           "Located inside activated 41_56 block by unique activation."
         ]
       },
+      "reasons_es": {
+        "15": [
+          "Ancla la lectura del boleto dentro de la composicion.",
+          "Ubicado dentro del bloque activo 11_20 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Refuerza la coherencia armonica interna del boleto."
+        ],
+        "16": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 11_20 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Refuerza la coherencia armonica interna del boleto."
+        ],
+        "18": [
+          "Ubicado dentro del bloque activo 11_20 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Refuerza la coherencia armonica interna del boleto."
+        ],
+        "45": [
+          "Ubicado dentro del bloque activo 41_56 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Refuerza la coherencia armonica interna del boleto."
+        ],
+        "46": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 41_56 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Refuerza la coherencia armonica interna del boleto."
+        ],
+        "47": [
+          "Ubicado dentro del bloque activo 41_56 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Refuerza la coherencia armonica interna del boleto."
+        ]
+      },
       "composition": {
         "parity": {
           "even": 3,
           "odd": 3
         },
+        "parity_signature": "3 pares / 3 impares",
         "sum": 187,
         "sum_band": "upper_core",
+        "sum_band_es": "nucleo alto",
         "blocks": {
           "1_10": 0,
           "11_20": 3,
@@ -358,6 +606,7 @@
           "41_56": 3
         },
         "immediate_overlap_previous_draw": 0,
+        "immediate_overlap_label_es": "sin repetidos inmediatos",
         "harmonic_coherence": {
           "score": 0.359156,
           "co_travel_score": 0.0,
@@ -369,13 +618,66 @@
           "anti_pairs": [],
           "block_bridge_pairs": [],
           "clusters": [],
-          "notes": []
-        }
+          "notes": [],
+          "notes_es": []
+        },
+        "block_order": [
+          "1_10",
+          "11_20",
+          "21_30",
+          "31_40",
+          "41_56"
+        ],
+        "block_vector": [
+          0,
+          3,
+          0,
+          0,
+          3
+        ],
+        "block_signature": "0-3-0-0-3",
+        "block_presence_vector": [
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        "block_presence_signature": "0-1-0-0-1",
+        "visual_structure_label_es": "Puente bajo-medio con bloque alto",
+        "matches_dominant_presence_signature": false
       },
       "reason": "Fallback V4.3 harmonic composition variant to keep the review slate broad and coherent.",
+      "reason_es": "Variante armonica de respaldo para mantener amplitud y coherencia del conjunto. El pair-lag queda como soporte, no como promotor principal.",
+      "thesis_es": "Revisar una composicion de puente bajo-medio con bloque alto con soporte de roles V4.3, sin promesa de resultado.",
+      "decision_summary_es": "Boleto balanced hybrid con presencia visual 0-1-0-0-1, suma upper_core y soporte armonico en bloques 11_20, 41_56.",
+      "structure_summary_es": "Firma de bloques 0-3-0-0-3; presencia visual 0-1-0-0-1; Puente bajo-medio con bloque alto; sin repetidos inmediatos.",
+      "explanation_es": {
+        "headline": "balanced hybrid con Puente bajo-medio con bloque alto",
+        "why_this_ticket": [
+          "Variante armonica de respaldo para mantener amplitud y coherencia del conjunto. El pair-lag queda como soporte, no como promotor principal.",
+          "Combina roles visibles con Puente bajo-medio con bloque alto.",
+          "Mantiene disciplina de suma en nucleo alto y sin repetidos inmediatos."
+        ],
+        "strengths": [
+          "Estructura visual 0-1-0-0-1: Puente bajo-medio con bloque alto.",
+          "Firma de bloques 0-3-0-0-3 con presencia en 11_20, 41_56.",
+          "Banda de suma: nucleo alto (upper_core).",
+          "Incluye eco de gap en numeros seleccionados."
+        ],
+        "risks": [
+          "Conjunto en modo revision.",
+          "Capa de revision sin promesa de resultado."
+        ],
+        "review_focus": "Revisar si la estructura 0-1-0-0-1 y la banda nucleo alto siguen aportando coherencia historica."
+      },
       "risk_notes": [
         "Review-default composition slate.",
         "Outcome-neutral review layer."
+      ],
+      "risk_notes_es": [
+        "Conjunto en modo revision.",
+        "Capa de revision sin promesa de resultado."
       ],
       "selection_score": 0.359156
     },
@@ -472,13 +774,58 @@
           "Gap echo: current gap 7, historical median gap 6.0."
         ]
       },
+      "reasons_es": {
+        "21": [
+          "Ancla la lectura del boleto dentro de la composicion.",
+          "Ubicado dentro del bloque activo 21_30 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Companion frio controlado conectado a evidencia local.",
+          "Presenta eco de gap compatible con su historial reciente."
+        ],
+        "22": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 21_30 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Refuerza la coherencia armonica interna del boleto."
+        ],
+        "26": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 21_30 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Refuerza la coherencia armonica interna del boleto."
+        ],
+        "41": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 41_56 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Aporta senal V4.2 opcional como apoyo, no como fuente principal."
+        ],
+        "43": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 41_56 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Aporta senal V4.2 opcional como apoyo, no como fuente principal."
+        ],
+        "56": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 41_56 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Refuerza la coherencia armonica interna del boleto."
+        ]
+      },
       "composition": {
         "parity": {
           "even": 3,
           "odd": 3
         },
+        "parity_signature": "3 pares / 3 impares",
         "sum": 209,
         "sum_band": "high_tail",
+        "sum_band_es": "cola alta",
         "blocks": {
           "1_10": 0,
           "11_20": 0,
@@ -487,6 +834,7 @@
           "41_56": 3
         },
         "immediate_overlap_previous_draw": 0,
+        "immediate_overlap_label_es": "sin repetidos inmediatos",
         "harmonic_coherence": {
           "score": 0.37592,
           "co_travel_score": 0.0,
@@ -500,14 +848,72 @@
           "clusters": [],
           "notes": [
             "Sum band guardrail: high_tail."
+          ],
+          "notes_es": [
+            "Guardia de banda de suma: cola alta (high_tail)."
           ]
-        }
+        },
+        "block_order": [
+          "1_10",
+          "11_20",
+          "21_30",
+          "31_40",
+          "41_56"
+        ],
+        "block_vector": [
+          0,
+          0,
+          3,
+          0,
+          3
+        ],
+        "block_signature": "0-0-3-0-3",
+        "block_presence_vector": [
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        "block_presence_signature": "0-0-1-0-1",
+        "visual_structure_label_es": "Activacion media-alta: presencia en 21_30 y 41_56",
+        "matches_dominant_presence_signature": true
       },
       "reason": "Composed by V4.3 harmonic roles: block activation, pair support, gap echo, companions, and sum discipline.",
+      "reason_es": "Compuesto por roles armonicos V4.3: activacion de bloques, soporte de pares, eco de gap, companions y disciplina de suma. El pair-lag queda como soporte, no como promotor principal.",
+      "thesis_es": "Revisar una composicion de activacion media-alta: presencia en 21_30 y 41_56 con soporte de roles V4.3, sin promesa de resultado.",
+      "decision_summary_es": "Boleto contrarian controlled con presencia visual 0-0-1-0-1, suma high_tail y soporte armonico en bloques 21_30, 41_56.",
+      "structure_summary_es": "Firma de bloques 0-0-3-0-3; presencia visual 0-0-1-0-1; Activacion media-alta: presencia en 21_30 y 41_56; sin repetidos inmediatos.",
+      "explanation_es": {
+        "headline": "contrarian controlled con Activacion media-alta: presencia en 21_30 y 41_56",
+        "why_this_ticket": [
+          "Compuesto por roles armonicos V4.3: activacion de bloques, soporte de pares, eco de gap, companions y disciplina de suma. El pair-lag queda como soporte, no como promotor principal.",
+          "Combina roles visibles con Activacion media-alta: presencia en 21_30 y 41_56.",
+          "Mantiene disciplina de suma en cola alta y sin repetidos inmediatos."
+        ],
+        "strengths": [
+          "Estructura visual 0-0-1-0-1: Activacion media-alta: presencia en 21_30 y 41_56.",
+          "Firma de bloques 0-0-3-0-3 con presencia en 21_30, 41_56.",
+          "Banda de suma: cola alta (high_tail).",
+          "Incluye eco de gap en numeros seleccionados.",
+          "Incluye companion frio controlado con evidencia local."
+        ],
+        "risks": [
+          "Conjunto en modo revision.",
+          "Capa de revision sin promesa de resultado.",
+          "Guardia de banda de suma: cola alta (high_tail)."
+        ],
+        "review_focus": "Revisar si la estructura 0-0-1-0-1 y la banda cola alta siguen aportando coherencia historica."
+      },
       "risk_notes": [
         "Review-default composition slate.",
         "Outcome-neutral review layer.",
         "Sum band guardrail: high_tail."
+      ],
+      "risk_notes_es": [
+        "Conjunto en modo revision.",
+        "Capa de revision sin promesa de resultado.",
+        "Guardia de banda de suma: cola alta (high_tail)."
       ],
       "selection_score": 0.32592
     },
@@ -593,13 +999,58 @@
           "Gap echo: current gap 7, historical median gap 7."
         ]
       },
+      "reasons_es": {
+        "21": [
+          "Ancla la lectura del boleto dentro de la composicion.",
+          "Ubicado dentro del bloque activo 21_30 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Companion frio controlado conectado a evidencia local.",
+          "Presenta eco de gap compatible con su historial reciente."
+        ],
+        "26": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 21_30 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Eco de gap con soporte diagnostico 0.941."
+        ],
+        "28": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 21_30 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Companion frio controlado conectado a evidencia local."
+        ],
+        "29": [
+          "Ubicado dentro del bloque activo 21_30 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Eco de gap con soporte diagnostico 0.75."
+        ],
+        "41": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 41_56 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Aporta senal V4.2 opcional como apoyo, no como fuente principal."
+        ],
+        "55": [
+          "Aporta soporte dentro del balance armonico del boleto.",
+          "Ubicado dentro del bloque activo 41_56 por activacion unica reciente.",
+          "Completa una tesis de bloque sin modificar el motor base.",
+          "Presenta eco de gap compatible con su historial reciente.",
+          "Eco de gap con soporte diagnostico 1.0."
+        ]
+      },
       "composition": {
         "parity": {
           "even": 2,
           "odd": 4
         },
+        "parity_signature": "2 pares / 4 impares",
         "sum": 200,
         "sum_band": "upper_core",
+        "sum_band_es": "nucleo alto",
         "blocks": {
           "1_10": 0,
           "11_20": 0,
@@ -608,6 +1059,7 @@
           "41_56": 2
         },
         "immediate_overlap_previous_draw": 0,
+        "immediate_overlap_label_es": "sin repetidos inmediatos",
         "harmonic_coherence": {
           "score": 0.229502,
           "co_travel_score": 0.0,
@@ -619,17 +1071,98 @@
           "anti_pairs": [],
           "block_bridge_pairs": [],
           "clusters": [],
-          "notes": []
-        }
+          "notes": [],
+          "notes_es": []
+        },
+        "block_order": [
+          "1_10",
+          "11_20",
+          "21_30",
+          "31_40",
+          "41_56"
+        ],
+        "block_vector": [
+          0,
+          0,
+          4,
+          0,
+          2
+        ],
+        "block_signature": "0-0-4-0-2",
+        "block_presence_vector": [
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        "block_presence_signature": "0-0-1-0-1",
+        "visual_structure_label_es": "Activacion media-alta: presencia en 21_30 y 41_56",
+        "matches_dominant_presence_signature": true
       },
       "reason": "Composed by V4.3 harmonic roles: block activation, pair support, gap echo, companions, and sum discipline.",
+      "reason_es": "Compuesto por roles armonicos V4.3: activacion de bloques, soporte de pares, eco de gap, companions y disciplina de suma. El pair-lag queda como soporte, no como promotor principal.",
+      "thesis_es": "Revisar una composicion de activacion media-alta: presencia en 21_30 y 41_56 con soporte de roles V4.3, sin promesa de resultado.",
+      "decision_summary_es": "Boleto composition main con presencia visual 0-0-1-0-1, suma upper_core y soporte armonico en bloques 21_30, 41_56.",
+      "structure_summary_es": "Firma de bloques 0-0-4-0-2; presencia visual 0-0-1-0-1; Activacion media-alta: presencia en 21_30 y 41_56; sin repetidos inmediatos.",
+      "explanation_es": {
+        "headline": "composition main con Activacion media-alta: presencia en 21_30 y 41_56",
+        "why_this_ticket": [
+          "Compuesto por roles armonicos V4.3: activacion de bloques, soporte de pares, eco de gap, companions y disciplina de suma. El pair-lag queda como soporte, no como promotor principal.",
+          "Combina roles visibles con Activacion media-alta: presencia en 21_30 y 41_56.",
+          "Mantiene disciplina de suma en nucleo alto y sin repetidos inmediatos."
+        ],
+        "strengths": [
+          "Estructura visual 0-0-1-0-1: Activacion media-alta: presencia en 21_30 y 41_56.",
+          "Firma de bloques 0-0-4-0-2 con presencia en 21_30, 41_56.",
+          "Banda de suma: nucleo alto (upper_core).",
+          "Incluye eco de gap en numeros seleccionados.",
+          "Incluye companion frio controlado con evidencia local."
+        ],
+        "risks": [
+          "Conjunto en modo revision.",
+          "Capa de revision sin promesa de resultado."
+        ],
+        "review_focus": "Revisar si la estructura 0-0-1-0-1 y la banda nucleo alto siguen aportando coherencia historica."
+      },
       "risk_notes": [
         "Review-default composition slate.",
         "Outcome-neutral review layer."
       ],
+      "risk_notes_es": [
+        "Conjunto en modo revision.",
+        "Capa de revision sin promesa de resultado."
+      ],
       "selection_score": 0.229502
     }
   ],
+  "slate_structure_summary": {
+    "ticket_count": 5,
+    "block_presence_distribution": {
+      "0-0-1-0-1": 3,
+      "0-1-1-0-1": 1,
+      "0-1-0-0-1": 1
+    },
+    "block_signature_distribution": {
+      "0-0-3-0-3": 2,
+      "0-2-1-0-3": 1,
+      "0-3-0-0-3": 1,
+      "0-0-4-0-2": 1
+    },
+    "sum_band_distribution": {
+      "high_tail": 2,
+      "upper_core": 3
+    },
+    "dominant_presence_signature": "0-0-1-0-1",
+    "dominant_presence_label_es": "Activacion media-alta: presencia en 21_30 y 41_56",
+    "immediate_overlap_distribution": {
+      "0": 4,
+      "1": 1
+    },
+    "pair_lag_mode": "support_only",
+    "summary_es": "El conjunto se concentra principalmente en la presencia visual 0-0-1-0-1: Activacion media-alta: presencia en 21_30 y 41_56. Esta lectura describe arquitectura visual de revision, no promesa de resultado."
+  },
+  "visual_structure_contract_version": "v4.3-structure-signature-v1",
   "validation_summary": {
     "available": true,
     "draws_evaluated": 60,
@@ -654,6 +1187,7 @@
       "high_tail": 2,
       "upper_core": 3
     },
+    "visual_structure_contract_version": "v4.3-structure-signature-v1",
     "harmonic_coherence_summary": {
       "avg_score": 0.345252,
       "min_score": 0.229502,
