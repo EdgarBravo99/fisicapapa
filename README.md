@@ -285,6 +285,44 @@ Corre lunes, jueves y sabado a las 09:00 UTC para dar margen posterior a sorteos
 
 Todo el flujo sigue siendo de revision interna. No hay promesa de resultado.
 
+## V4.4 Video Weight Observation Lab
+
+PR #42 agrega un laboratorio separado para localizar videos de sorteos, extraer evidencia visual de pesaje de bolas y dejar observaciones auditables en modo `review_default`.
+
+Este laboratorio no afecta constructor, scores, boletos, senales, priors ni memoria. Sus salidas son evidencia visual pendiente de revision manual.
+
+Buscar video automaticamente:
+
+```powershell
+py tools\video_weight_lab\youtube_stream_finder.py --draw 4218 --channel-url https://www.youtube.com/@LN_electronicos/streams --output v4_video_weight_source.json
+```
+
+Correr el pipeline completo:
+
+```powershell
+py tools\video_weight_lab\run_video_weight_lab.py --draw 4218 --channel-url https://www.youtube.com/@LN_electronicos/streams --download true --fps-sample 1
+```
+
+Dependencias opcionales:
+
+```txt
+yt-dlp              localizar/listar/descargar videos de YouTube
+opencv-python      extraer frames y crops
+pytesseract        OCR de display y bola
+tesseract          binario del sistema usado por pytesseract
+```
+
+Limitaciones:
+
+- Si `yt-dlp` no esta disponible, el localizador falla con mensaje claro y se puede usar `--video-url` manual.
+- El detector combina heuristicas visuales simples con fallback por muestreo temporal. Si `opencv-python` no esta disponible, no se extraen frames ni crops y el detector deja razon de fallback.
+- Si `pytesseract` o Tesseract no estan disponibles, el OCR queda como revision manual.
+- La bola puede estar girada, parcial o en recuadro pequeno.
+- La primera version no garantiza lectura automatica perfecta. Todo dato `medium` o `low` requiere revision manual.
+- Los crops alternativos ayudan a revisar display y bola cuando el recuadro es pequeno o la toma no esta centrada.
+- Las observaciones se guardan como `v4_ball_weight_observations.json` y el cockpit las muestra como fuente opcional.
+- La evidencia visual no modifica constructor, scores, senales ni priors.
+
 ## Pipeline V4.3.1 de memoria tipo examen
 
 V4.3.1 no cambia el runner oficial ni crea otro programa principal. El flujo sigue entrando por:
@@ -479,7 +517,7 @@ Genera `v4_diversity_output.json` desde `top_combinations` usando MMR:
 py .\tools\v4_diversity_selector.py --input resultados.json --output v4_diversity_output.json
 ```
 
-La salida conserva los scores originales, ancla el top #1 original y calcula overlap/Jaccard para detectar boletos clonados. Es ranking diversificado, no probabilidad de ganar.
+La salida conserva los scores originales, ancla el top #1 original y calcula overlap/Jaccard para detectar boletos clonados. Es ranking diversificado, no promesa de resultado.
 
 ### Baseline Benchmark Lite
 
@@ -672,7 +710,7 @@ Frequency es el rival principal porque PR #26 mostro que supera al cruncher en a
 
 `v4_combination_repair_experiment.py` separa problema de ranking numerico vs seleccion de combinaciones. Solo reordena combinaciones existentes en cada replay record; no inventa boletos ni usa resultados reales como prediccion.
 
-No se debe hacer todavia: activar replay prior, tocar Monte Carlo, crear post-ranking layer productivo, crear nuevo runner, ni tratar una mejora diagnostica como probabilidad de ganar.
+No se debe hacer todavia: activar replay prior, tocar Monte Carlo, crear post-ranking layer productivo, crear nuevo runner, ni tratar una mejora diagnostica como promesa de resultado.
 
 ## Post-Ranking Holdout Experiment V4.4
 
