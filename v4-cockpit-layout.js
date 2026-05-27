@@ -19,11 +19,10 @@
     matrix: 'v4_visual_matrix_export_report.json',
     physicsMaintenance: 'v4_physics_maintenance_notes.json',
     videoWeightObservations: 'v4_ball_weight_observations.json',
-    videoWeights: 'v4_ball_weight_observations.json',
   };
 
   const CRITICAL_SOURCE_KEYS = ['slate', 'gapEcho', 'signatureHistory', 'pairLag', 'blockCompletion', 'winnerProfile', 'recentComposition'];
-  const OPTIONAL_SOURCE_KEYS = ['postDraw', 'matrix', 'pair', 'slateLegacy', 'physicsMaintenance', 'videoWeightObservations', 'videoWeights'];
+  const OPTIONAL_SOURCE_KEYS = ['postDraw', 'matrix', 'pair', 'slateLegacy', 'physicsMaintenance', 'videoWeightObservations'];
   const ROOT_ID = 'v44-cockpit-root';
   const LEGACY_ROOT_ID = 'v43-cockpit-root';
   const SUM_BANDS = ['low_tail', 'historical_core', 'upper_core', 'high_tail', 'extreme_high'];
@@ -120,7 +119,6 @@
       matrix: 'py tools\\v4_visual_matrix_export.py',
       physicsMaintenance: 'crear v4_physics_maintenance_notes.json manualmente',
       videoWeightObservations: 'py tools\\video_weight_lab\\run_video_weight_lab.py --draw <draw> --channel-url https://www.youtube.com/@LN_electronicos/streams --download true --fps-sample 1',
-      videoWeights: 'py tools\\video_weight_lab\\run_video_weight_lab.py --draw <draw> --channel-url https://www.youtube.com/@LN_electronicos/streams --download true --fps-sample 1',
       pair: 'py tools\\v4_pair_companion_audit.py',
       slateLegacy: 'py tools\\v4_refresh.py --game revancha --sync-history-from-pakin --export-visual-matrix --pair-companion-audit --snapshot-predraw',
     };
@@ -950,6 +948,260 @@
     </section>`;
   }
 
+  function addManualCandidate(pool, numbersSet, value, tag) {
+    const number = Number(value);
+    if (!Number.isInteger(number) || number < 1 || number > 56 || numbersSet.has(number)) return;
+    if (!pool.has(number)) pool.set(number, new Set());
+    pool.get(number).add(tag);
+  }
+
+  function topNumberValue(row) {
+    if (Number.isInteger(Number(row))) return Number(row);
+    return Number(row?.number ?? row?.ball ?? row?.candidate);
+  }
+
+  function manualCandidatePool(numbers, data) {
+    const numbersSet = new Set(safeArray(numbers).map(Number));
+    const pool = new Map();
+
+    safeArray(data.gapEcho?.active_candidates).forEach(number => addManualCandidate(pool, numbersSet, number, 'gap_echo'));
+    Object.keys(data.signatureHistory?.numbers_after || {}).forEach(number => addManualCandidate(pool, numbersSet, number, 'signature_history'));
+    safeArray(data.pairLag?.active_candidates).forEach(number => addManualCandidate(pool, numbersSet, number, 'pair_lag_candidate'));
+    safeArray(data.pairLag?.signals).forEach(row => {
+      addManualCandidate(pool, numbersSet, row.candidate, 'pair_lag_candidate');
+      addManualCandidate(pool, numbersSet, row.trigger, 'pair_lag_trigger');
+    });
+    safeArray(data.blockCompletion?.groups).forEach(group => {
+      safeArray(group.missing).forEach(number => addManualCandidate(pool, numbersSet, number, 'block_completion'));
+      safeArray(group.recent_seen).forEach(number => addManualCandidate(pool, numbersSet, number, 'structure_completion'));
+    });
+    safeArray(data.recentComposition?.top_recent_numbers).forEach(row => addManualCandidate(pool, numbersSet, topNumberValue(row), 'recent_frequency'));
+    Object.values(recentWindows(data.recentComposition) || {}).forEach(window => {
+      if (isObject(window)) safeArray(window.top_recent_numbers).forEach(row => addManualCandidate(pool, numbersSet, topNumberValue(row), 'recent_frequency'));
+    });
+    collectCompanionRows(data).forEach(row => {
+      const pair = safeArray(row.pair || row.numbers || [row.a, row.b]).map(Number).filter(Number.isFinite);
+      if (pair.length !== 2) return;
+      const [first, second] = pair;
+      if (numbersSet.has(first) && !numbersSet.has(second)) addManualCandidate(pool, numbersSet, second, 'pair_companion_bridge');
+      if (numbersSet.has(second) && !numbersSet.has(first)) addManualCandidate(pool, numbersSet, first, 'pair_companion_bridge');
+    });
+
+    return [...pool.entries()]
+      .map(([number, tags]) => ({ number, tags: [...tags].sort() }))
+      .sort((a, b) => b.tags.length - a.tags.length || a.number - b.number);
+  }
+
+  function manualSignalCount(result) {
+    return Object.values(result.numberSignals || {}).reduce((total, signals) => total + safeArray(signals).length, 0);
+  }
+
+  function manualStructureSignalCount(result) {
+    return Object.values(result.numberSignals || {}).filter(signals => safeArray(signals).some(signal => ['structure_completion', 'block_completion', 'zone_fit'].includes(signal))).length;
+  }
+
+  function manualSwapSummary(result) {
+    return {
+      pair_count: Number(result.pairCompanionCount || 0) + Number(result.pairLagCount || 0),
+      pair_companion_count: Number(result.pairCompanionCount || 0),
+      pair_lag_count: Number(result.pairLagCount || 0),
+      matches_recent: result.matchesRecent === true,
+      matches_winner: result.matchesWinner === true,
+      immediate_overlap: result.immediateOverlap ?? 0,
+      sum_band: result.band,
+      block_presence_signature: result.structure?.block_presence_signature,
+      signal_count: manualSignalCount(result),
+      structure_signal_count: manualStructureSignalCount(result),
+    };
+  }
+
+  function evaluateManualSwap(numbers, removeNumber, addNumber, data) {
+    const oldResult = evaluateManualNumbers(numbers, data);
+    const newNumbers = numbers.filter(number => number !== removeNumber).concat([addNumber]).sort((a, b) => a - b);
+    const newResult = evaluateManualNumbers(newNumbers, data);
+    const newTicket = buildManualTicket(newNumbers, newResult);
+    const pairRelations = manualPairRelations(newNumbers, data);
+    const oldSummary = manualSwapSummary(oldResult);
+    const newSummary = manualSwapSummary(newResult);
+    const poolRow = manualCandidatePool(numbers, data).find(row => row.number === addNumber);
+    const reasonTags = poolRow?.tags || [];
+    const improvements = [];
+    const tradeoffs = [];
+    let score = 0;
+
+    if (newSummary.pair_count > oldSummary.pair_count) {
+      score += (newSummary.pair_count - oldSummary.pair_count) * 3;
+      improvements.push('Refuerza lectura de pares internos.');
+    }
+    if (newSummary.signal_count > oldSummary.signal_count) {
+      score += newSummary.signal_count - oldSummary.signal_count;
+      improvements.push('Reduce numero huerfano y suma mas señales cargadas.');
+    }
+    if (newSummary.structure_signal_count > oldSummary.structure_signal_count) {
+      score += (newSummary.structure_signal_count - oldSummary.structure_signal_count) * 2;
+      improvements.push('Aporta cierre de forma o estructura.');
+    }
+    if (!oldSummary.matches_recent && newSummary.matches_recent) {
+      score += 2;
+      improvements.push('Conserva lectura de ventana reciente cargada.');
+    }
+    if (!oldSummary.matches_winner && newSummary.matches_winner) {
+      score += 1.5;
+      improvements.push('Se alinea con perfil historico cargado.');
+    }
+    if (['extreme_high', 'low_tail'].includes(oldSummary.sum_band) && !['extreme_high', 'low_tail'].includes(newSummary.sum_band)) {
+      score += 1.5;
+      improvements.push('Mueve la suma hacia una banda mas revisable.');
+    }
+    if (Number(newSummary.immediate_overlap) < Number(oldSummary.immediate_overlap)) {
+      score += 1;
+      improvements.push('Reduce repetidos inmediatos.');
+    }
+
+    if (newSummary.pair_count < oldSummary.pair_count) tradeoffs.push('Pierde una relacion interna de pares; revisar si la forma lo compensa.');
+    if (newSummary.sum_band !== oldSummary.sum_band) tradeoffs.push(`Cambia banda de suma de ${oldSummary.sum_band} a ${newSummary.sum_band}.`);
+    if (Number(newSummary.immediate_overlap) > Number(oldSummary.immediate_overlap)) tradeoffs.push('Aumenta repetidos inmediatos; requiere revision manual.');
+    if (!newSummary.matches_recent && !newSummary.matches_winner) tradeoffs.push('No queda alineado con ventana 30 ni perfil historico cargado.');
+    if (!tradeoffs.length) tradeoffs.push('Ajuste fino sin sacrificio fuerte visible en las fuentes cargadas.');
+    if (!improvements.length) improvements.push('Cambio exploratorio; revisar manualmente antes de priorizarlo.');
+
+    return {
+      remove: removeNumber,
+      add: addNumber,
+      new_numbers: newNumbers,
+      old_summary: oldSummary,
+      new_summary: newSummary,
+      improvements_es: improvements,
+      tradeoffs_es: tradeoffs,
+      reason_tags: reasonTags,
+      score,
+      pair_relations: pairRelations,
+      ticket: newTicket,
+    };
+  }
+
+  function manualEfficiencySuggestions(numbers, result, data) {
+    const pool = manualCandidatePool(numbers, data);
+    const pairRelations = manualPairRelations(numbers, data);
+    const pairNumbers = new Set([
+      ...safeArray(pairRelations.pair_companion_matches).flatMap(item => item.pair),
+      ...safeArray(pairRelations.pair_lag_matches).flatMap(item => item.pair),
+    ].map(Number));
+    const latestNumbers = new Set(safeArray(data.recentComposition?.latest_draw_numbers).map(Number));
+    const supportRows = numbers.map(number => {
+      const tags = safeArray(result.numberSignals?.[String(number)]);
+      const pairSupported = pairNumbers.has(number);
+      const structureSupported = tags.some(tag => ['block_completion', 'structure_completion', 'zone_fit'].includes(tag));
+      const recentSupported = tags.includes('recent_frequency');
+      const repeatedWithoutSupport = latestNumbers.has(number) && !pairSupported && tags.length < 2;
+      const supportScore = tags.length + (pairSupported ? 2 : 0) + (structureSupported ? 2 : 0) + (recentSupported ? 1 : 0) - (repeatedWithoutSupport ? 1 : 0);
+      return { number, tags, pairSupported, structureSupported, recentSupported, repeatedWithoutSupport, supportScore };
+    });
+    const keepNumbers = supportRows
+      .filter(row => row.supportScore >= 3)
+      .sort((a, b) => b.supportScore - a.supportScore || a.number - b.number)
+      .map(row => ({
+        number: row.number,
+        reason_es: `${row.number}: conservar por ${row.pairSupported ? 'relacion de pares, ' : ''}${row.structureSupported ? 'cierre estructural, ' : ''}${row.tags.length} señal(es) cargada(s).`.replace(/, $/, '.'),
+      }));
+    let reviewRows = supportRows
+      .filter(row => row.tags.length === 0 || row.supportScore <= 1 || row.repeatedWithoutSupport)
+      .sort((a, b) => a.supportScore - b.supportScore || a.number - b.number);
+    if (!reviewRows.length) reviewRows = supportRows.slice().sort((a, b) => a.supportScore - b.supportScore || a.number - b.number).slice(0, 2);
+    const reviewNumbers = reviewRows.map(row => ({
+      number: row.number,
+      reason_es: row.tags.length
+        ? `${row.number}: revisar porque aporta soporte limitado frente al resto de la combinacion.`
+        : `${row.number}: no tiene señales cargadas en las fuentes actuales.`,
+    }));
+    const candidateRows = pool.slice(0, 12);
+    const swaps = [];
+    reviewRows.forEach(row => {
+      candidateRows.forEach(candidate => {
+        swaps.push(evaluateManualSwap(numbers, row.number, candidate.number, data));
+      });
+    });
+    const swapSuggestions = swaps
+      .filter(swap => swap.score > 0)
+      .sort((a, b) => b.score - a.score || a.remove - b.remove || a.add - b.add)
+      .slice(0, 5);
+    const candidatePreview = pool.slice(0, 6);
+    const hasStrongSupport = keepNumbers.length >= 4 && (result.pairCompanionCount + result.pairLagCount) > 0 && (result.matchesRecent || result.matchesWinner);
+    const pairSuggestions = [];
+    if ((result.pairCompanionCount + result.pairLagCount) === 0) {
+      const pairCandidates = candidatePreview.filter(row => row.tags.includes('pair_companion_bridge') || row.tags.includes('pair_lag_candidate') || row.tags.includes('pair_lag_trigger'));
+      pairSuggestions.push(pairCandidates.length
+        ? `Revisar candidatos ${pairCandidates.map(row => row.number).join(', ')} para formar o reforzar relacion de pares.`
+        : 'No hay pares internos detectados; revisar si la forma visual compensa esa falta.');
+    } else {
+      pairSuggestions.push('Conservar al menos una relacion interna de pares al probar cambios.');
+    }
+    const sumSuggestions = [];
+    if (['extreme_high', 'low_tail'].includes(result.band)) {
+      sumSuggestions.push(`La banda ${result.band} requiere revision; prioriza swaps que mantengan pares o estructura mientras mueven la suma.`);
+    } else {
+      sumSuggestions.push('La suma queda en banda revisable; no hace falta ajustar solo por suma.');
+    }
+    const structureSuggestions = [];
+    const structureCandidates = candidatePreview.filter(row => row.tags.includes('block_completion') || row.tags.includes('structure_completion'));
+    structureSuggestions.push(structureCandidates.length
+      ? `Candidatos de cierre/forma para revisar: ${structureCandidates.map(row => row.number).join(', ')}.`
+      : 'No hay candidatos claros de cierre de forma con las fuentes cargadas.');
+
+    return {
+      has_candidate_pool: pool.length > 0,
+      candidate_numbers: candidatePreview,
+      keep_numbers: keepNumbers,
+      review_numbers: reviewNumbers,
+      swap_suggestions: swapSuggestions,
+      pair_suggestions: pairSuggestions,
+      sum_suggestions: sumSuggestions,
+      structure_suggestions: structureSuggestions,
+      well_supported_message: hasStrongSupport ? 'La combinacion ya tiene soporte estructural suficiente; las sugerencias son ajustes finos, no cambios obligatorios.' : '',
+    };
+  }
+
+  function renderManualEfficiencySuggestions(suggestions) {
+    if (!suggestions?.has_candidate_pool) {
+      return `<section class="cockpit-ticket-why">
+        <h4>Sugerencias para hacer mas eficiente la combinacion</h4>
+        <p>No hay suficientes fuentes cargadas para sugerir cambios. Ejecuta el pipeline V4.4 y vuelve a cargar el cockpit.</p>
+      </section>`;
+    }
+    return `<section class="cockpit-ticket-why">
+      <h4>Sugerencias para hacer mas eficiente la combinacion</h4>
+      ${suggestions.well_supported_message ? `<p class="cockpit-note">${esc(suggestions.well_supported_message)}</p>` : ''}
+      <div class="cockpit-human-grid">
+        <article>
+          <h4>Mantener</h4>
+          <ul>${safeArray(suggestions.keep_numbers).map(item => `<li>${esc(item.reason_es)}</li>`).join('') || '<li>No hay numeros con soporte fuerte destacado.</li>'}</ul>
+        </article>
+        <article>
+          <h4>Revisar</h4>
+          <ul>${safeArray(suggestions.review_numbers).map(item => `<li>${esc(item.reason_es)}</li>`).join('') || '<li>Sin numeros debiles claros; revisar solo duplicidad y tesis.</li>'}</ul>
+        </article>
+      </div>
+      <article class="cockpit-panel">
+        <h4>Cambios sugeridos</h4>
+        <ul>${safeArray(suggestions.swap_suggestions).map(swap => `<li>
+          <b>Cambiar ${esc(swap.remove)} por ${esc(swap.add)}</b>: ${esc(swap.improvements_es.join(' '))}
+          <br><span>Nueva combinacion: <code>${esc(swap.new_numbers.join(' '))}</code></span>
+          <br><span>Revisar: ${esc(swap.tradeoffs_es.join(' '))}</span>
+          <br><span>Tags: ${esc(swap.reason_tags.join(', ') || 'no disponible')}</span>
+        </li>`).join('') || '<li>No se encontraron swaps con mejora clara desde las fuentes cargadas.</li>'}</ul>
+      </article>
+      <article class="cockpit-panel">
+        <h4>Ajustes de pares / forma / suma</h4>
+        <ul>
+          ${safeArray(suggestions.pair_suggestions).map(item => `<li>${esc(item)}</li>`).join('')}
+          ${safeArray(suggestions.sum_suggestions).map(item => `<li>${esc(item)}</li>`).join('')}
+          ${safeArray(suggestions.structure_suggestions).map(item => `<li>${esc(item)}</li>`).join('')}
+        </ul>
+        <p class="cockpit-note">Candidatos revisables: ${esc(suggestions.candidate_numbers.map(row => `${row.number} (${row.tags.join(', ')})`).join('; ') || 'no disponible')}.</p>
+      </article>
+    </section>`;
+  }
+
   function weightObservationsForNumbers(numbers, data) {
     const numberSet = new Set(safeArray(numbers).map(Number));
     const source = data.videoWeights || data.videoWeightObservations || {};
@@ -1007,6 +1259,7 @@
       const manualTicket = buildManualTicket(numbers, result);
       const decision = humanTicketDecision(manualTicket, data);
       const pairRelations = manualPairRelations(numbers, data);
+      const suggestions = manualEfficiencySuggestions(numbers, result, data);
       output.innerHTML = `<h3>Diagnóstico manual V4.4</h3>
         ${numberBalls(numbers)}
         <div class="cockpit-mini-grid">
@@ -1026,6 +1279,7 @@
         ${renderManualPairRelations(pairRelations)}
         ${renderManualSumThesis(result, data)}
         ${renderManualStructureCompletion(numbers, result, data)}
+        ${renderManualEfficiencySuggestions(suggestions)}
         <h4>Señales por número</h4>
         <div class="cockpit-diagnostics-grid">${numbers.map(number => `<article class="cockpit-panel"><h5>${esc(number)}</h5><div class="cockpit-role-pills">${signalChips(result.numberSignals[String(number)]) || '<span class="cockpit-pill">sin señal cargada</span>'}</div></article>`).join('')}</div>
         <h4>Lectura por ventanas</h4>
