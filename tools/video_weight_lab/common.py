@@ -6,6 +6,8 @@ import hashlib
 import json
 import math
 import re
+import shutil
+import sys
 import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
@@ -13,6 +15,16 @@ from typing import Any
 
 
 PRODUCTION_STATUS = "review_default"
+
+
+def yt_dlp_command() -> list[str] | None:
+    if shutil.which("yt-dlp"):
+        return ["yt-dlp"]
+    try:
+        import yt_dlp  # noqa: F401
+        return [sys.executable, "-m", "yt_dlp"]
+    except ImportError:
+        return None
 
 
 def now_iso() -> str:

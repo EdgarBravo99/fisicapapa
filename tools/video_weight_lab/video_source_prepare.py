@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import argparse
-import shutil
 import subprocess
 from pathlib import Path
 
-from common import PRODUCTION_STATUS, parse_bool, read_json, video_id_from_url, write_json
+from common import PRODUCTION_STATUS, parse_bool, read_json, video_id_from_url, write_json, yt_dlp_command
 
 
 def source_from_inputs(source_json: str, manual_url: str | None) -> tuple[str, str, str, str]:
@@ -18,11 +17,12 @@ def source_from_inputs(source_json: str, manual_url: str | None) -> tuple[str, s
 
 
 def download_video(video_url: str, output_path: Path) -> tuple[bool, str]:
-    if not shutil.which("yt-dlp"):
-        return False, "yt-dlp no disponible. No se descargó el video."
+    yt_dlp = yt_dlp_command()
+    if yt_dlp is None:
+        return False, "yt-dlp no disponible. Instala yt-dlp o proporciona --video-url manualmente."
     output_path.parent.mkdir(parents=True, exist_ok=True)
     command = [
-        "yt-dlp",
+        *yt_dlp,
         "-f",
         "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/best",
         "--merge-output-format",
