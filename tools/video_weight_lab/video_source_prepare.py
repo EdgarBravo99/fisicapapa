@@ -8,13 +8,13 @@ from pathlib import Path
 from common import PRODUCTION_STATUS, parse_bool, read_json, video_id_from_url, write_json
 
 
-def source_from_inputs(source_json: str, manual_url: str | None) -> tuple[str, str, str]:
+def source_from_inputs(source_json: str, manual_url: str | None) -> tuple[str, str, str, str]:
     if manual_url:
-        return manual_url, video_id_from_url(manual_url), "manual_url"
+        return manual_url, video_id_from_url(manual_url), "manual_url", ""
     source = read_json(source_json, {}) or {}
     video = source.get("source_video") or {}
     url = video.get("url") or ""
-    return url, video.get("video_id") or video_id_from_url(url), "youtube_auto"
+    return url, video.get("video_id") or video_id_from_url(url), "youtube_auto", video.get("title") or ""
 
 
 def download_video(video_url: str, output_path: Path) -> tuple[bool, str]:
@@ -46,7 +46,7 @@ def main() -> int:
     parser.add_argument("--output-dir", default="data/video_weight_lab/videos")
     args = parser.parse_args()
 
-    video_url, video_id, source_type = source_from_inputs(args.source_json, args.video_url)
+    video_url, video_id, source_type, title = source_from_inputs(args.source_json, args.video_url)
     output_dir = Path(args.output_dir)
     video_path = output_dir / f"revancha_{args.draw}.mp4"
     downloaded = False
@@ -61,6 +61,7 @@ def main() -> int:
         "draw": args.draw,
         "video_url": video_url,
         "video_id": video_id,
+        "title": title,
         "downloaded": downloaded,
         "downloaded_video_path": str(video_path) if downloaded else "",
         "source": source_type if video_url else "unavailable",

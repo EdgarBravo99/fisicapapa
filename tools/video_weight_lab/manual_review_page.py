@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from html import escape
 from pathlib import Path
 
 from common import read_json
@@ -8,8 +9,10 @@ from common import read_json
 
 def img(path: str, label: str) -> str:
     if not path:
-        return f"<p>{label}: no disponible</p>"
-    return f'<figure><figcaption>{label}</figcaption><img src="{Path(path).as_posix()}" alt="{label}"></figure>'
+        return f"<p>{escape(label)}: no disponible</p>"
+    safe_label = escape(label)
+    safe_path = escape(Path(path).as_posix(), quote=True)
+    return f'<figure><figcaption>{safe_label}</figcaption><img src="{safe_path}" alt="{safe_label}"></figure>'
 
 
 def main() -> int:
@@ -22,18 +25,26 @@ def main() -> int:
     observations = data.get("observations", [])
     cards = []
     for row in observations:
+        event_id = escape(str(row.get("event_id") or "observación"))
+        timestamp = escape(str(row.get("timestamp_text") or "no disponible"))
+        ball = escape(str(row.get("ball") or "revisión manual"))
+        weight = escape(str(row.get("weight_g") or "revisión manual"))
+        confidence = escape(str(row.get("confidence") or "low"))
+        review_status = escape(str(row.get("review_status") or "pending"))
+        notes = escape(str(row.get("notes_es") or "Sin notas."))
         cards.append(f"""
         <article>
-          <h2>{row.get('event_id')}</h2>
-          <p><b>Timestamp:</b> {row.get('timestamp_text')}</p>
-          <p><b>Bola propuesta:</b> {row.get('ball')}</p>
-          <p><b>Peso propuesto:</b> {row.get('weight_g')}</p>
-          <p><b>Confianza:</b> {row.get('confidence')} · <b>review_status:</b> {row.get('review_status')}</p>
-          <p>{row.get('notes_es')}</p>
+          <h2>{event_id}</h2>
+          <p><b>Timestamp:</b> {timestamp}</p>
+          <p><b>Bola propuesta:</b> {ball}</p>
+          <p><b>Peso propuesto:</b> {weight}</p>
+          <p><b>Confianza:</b> {confidence} · <b>review_status:</b> {review_status}</p>
+          <p>{notes}</p>
           {img(row.get('scale_display_crop_path', ''), 'Display de báscula')}
           {img(row.get('ball_crop_path', ''), 'Bola')}
         </article>
         """)
+    draw = escape(str(data.get("draw", "N/D")))
     html = f"""<!doctype html>
 <html lang="es">
 <head>
@@ -47,7 +58,7 @@ def main() -> int:
   </style>
 </head>
 <body>
-  <h1>Revisión manual de pesaje visual, sorteo {data.get('draw', 'N/D')}</h1>
+  <h1>Revisión manual de pesaje visual, sorteo {draw}</h1>
   <p>Observaciones review_default. Aceptar, corregir o descartar debe hacerse manualmente fuera de esta primera versión.</p>
   {''.join(cards) if cards else '<p>No hay observaciones para revisar.</p>'}
 </body>

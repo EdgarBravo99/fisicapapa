@@ -315,9 +315,11 @@ tesseract          binario del sistema usado por pytesseract
 Limitaciones:
 
 - Si `yt-dlp` no esta disponible, el localizador falla con mensaje claro y se puede usar `--video-url` manual.
-- Si `opencv-python` no esta disponible, no se extraen frames ni crops.
+- El detector combina heuristicas visuales simples con fallback por muestreo temporal. Si `opencv-python` no esta disponible, no se extraen frames ni crops y el detector deja razon de fallback.
 - Si `pytesseract` o Tesseract no estan disponibles, el OCR queda como revision manual.
 - La bola puede estar girada, parcial o en recuadro pequeno.
+- La primera version no garantiza lectura automatica perfecta. Todo dato `medium` o `low` requiere revision manual.
+- Los crops alternativos ayudan a revisar display y bola cuando el recuadro es pequeno o la toma no esta centrada.
 - Las observaciones se guardan como `v4_ball_weight_observations.json` y el cockpit las muestra como fuente opcional.
 - La evidencia visual no modifica constructor, scores, senales ni priors.
 

@@ -36,6 +36,34 @@ def candidates_from_text(raw: str | None) -> list[dict]:
     return candidates
 
 
+def crop_paths(crop: dict) -> list[str]:
+    paths = [path for path in crop.get("ball_crop_candidates", []) if path]
+    fallback = crop.get("ball_crop_path", "")
+    if fallback and fallback not in paths:
+        paths.append(fallback)
+    return paths
+
+
+def best_ball_result(paths: list[str]) -> tuple[int | None, list[dict], str, str | None, str]:
+    best_selected = None
+    best_candidates: list[dict] = []
+    best_score = -1.0
+    best_raw = None
+    best_path = ""
+    for path in paths:
+        raw = read_ball_text(path)
+        candidates = candidates_from_text(raw)
+        score = max([float(row.get("confidence", 0)) for row in candidates], default=0.0)
+        if score > best_score:
+            best_score = score
+            best_candidates = candidates
+            best_selected = candidates[0]["ball"] if candidates and candidates[0]["confidence"] >= 0.6 else None
+            best_raw = raw
+            best_path = path
+    confidence = "medium" if best_selected else "low"
+    return best_selected, best_candidates, confidence, best_raw, best_path
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--draw", type=int, required=True)
@@ -46,18 +74,19 @@ def main() -> int:
     manifest = read_json(args.crops, {}) or {}
     results = []
     for crop in manifest.get("crops", []):
-        raw = read_ball_text(crop.get("ball_crop_path", ""))
-        candidates = candidates_from_text(raw)
-        selected = candidates[0]["ball"] if candidates and candidates[0]["confidence"] >= 0.6 else None
-        confidence = "medium" if selected else "low"
+        attempted = crop_paths(crop)
+        selected, candidates, confidence, raw, selected_path = best_ball_result(attempted)
         results.append({
             "frame_index": crop.get("frame_index"),
             "timestamp_text": crop.get("timestamp_text"),
             "selected_ball": selected,
             "ball_candidates": candidates,
+            "raw_ocr": raw,
             "confidence": confidence,
             "needs_manual_review": True,
-            "ball_crop_path": crop.get("ball_crop_path", ""),
+            "ball_crop_path": selected_path or crop.get("ball_crop_path", ""),
+            "selected_crop_path": selected_path,
+            "attempted_crop_paths": attempted,
         })
     payload = {"production_status": PRODUCTION_STATUS, "draw": args.draw, "ball_results": results}
     write_json(args.output, payload)

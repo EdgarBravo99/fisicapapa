@@ -4,11 +4,29 @@ import argparse
 import shutil
 import sys
 from pathlib import Path
+from typing import Any
 
 from common import PRODUCTION_STATUS, read_json, write_json
 
 
-def crop_with_cv2(candidate: dict, output_dir: Path) -> dict:
+def save_crop(cv2: Any, image: Any, path: Path) -> str:
+    if image is None or image.size == 0:
+        return ""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    cv2.imwrite(str(path), image)
+    return str(path)
+
+
+def crop_region(image: Any, left: float, top: float, right: float, bottom: float) -> Any:
+    height, width = image.shape[:2]
+    x1 = max(0, min(width - 1, int(width * left)))
+    y1 = max(0, min(height - 1, int(height * top)))
+    x2 = max(x1 + 1, min(width, int(width * right)))
+    y2 = max(y1 + 1, min(height, int(height * bottom)))
+    return image[y1:y2, x1:x2]
+
+
+def crop_with_cv2(candidate: dict[str, Any], output_dir: Path) -> dict[str, Any]:
     import cv2  # type: ignore
 
     frame_path = Path(candidate.get("frame_path") or "")
@@ -22,31 +40,40 @@ def crop_with_cv2(candidate: dict, output_dir: Path) -> dict:
     full_path = base / "full_frame_reference.jpg"
     shutil.copyfile(frame_path, full_path)
 
+    inset_path = ""
     if candidate.get("scene_type") == "scale_inset_top_left":
         inset = frame[0:int(height * 0.45), 0:int(width * 0.45)]
-        inset = cv2.resize(inset, None, fx=2.5, fy=2.5, interpolation=cv2.INTER_CUBIC)
-        inset_path = base / "inset_crop.jpg"
-        cv2.imwrite(str(inset_path), inset)
-        crop_source = inset
+        crop_source = cv2.resize(inset, None, fx=2.8, fy=2.8, interpolation=cv2.INTER_CUBIC)
+        inset_path = save_crop(cv2, crop_source, base / "inset_crop.jpg")
+        display_regions = [(0.48, 0.08, 0.98, 0.34), (0.38, 0.28, 0.98, 0.55), (0.18, 0.55, 0.96, 0.86)]
+        ball_regions = [(0.12, 0.12, 0.68, 0.58), (0.18, 0.28, 0.82, 0.76)]
     else:
-        inset_path = ""
         crop_source = frame
+        display_regions = [(0.20, 0.48, 0.86, 0.82), (0.05, 0.38, 0.95, 0.92), (0.34, 0.58, 0.96, 0.90)]
+        ball_regions = [(0.18, 0.10, 0.82, 0.62), (0.05, 0.05, 0.95, 0.72)]
 
-    ch, cw = crop_source.shape[:2]
-    display = crop_source[int(ch * 0.55):int(ch * 0.85), int(cw * 0.25):int(cw * 0.85)]
-    ball = crop_source[int(ch * 0.15):int(ch * 0.65), int(cw * 0.25):int(cw * 0.75)]
-    display_path = base / "scale_display_crop.jpg"
-    ball_path = base / "ball_crop.jpg"
-    cv2.imwrite(str(display_path), display)
-    cv2.imwrite(str(ball_path), ball)
+    display_paths = []
+    for index, region in enumerate(display_regions):
+        name = "scale_display_crop_primary.jpg" if index == 0 else f"scale_display_crop_alt_{index}.jpg"
+        display_paths.append(save_crop(cv2, crop_region(crop_source, *region), base / name))
+    ball_paths = []
+    for index, region in enumerate(ball_regions):
+        name = "ball_crop_primary.jpg" if index == 0 else f"ball_crop_alt_{index}.jpg"
+        ball_paths.append(save_crop(cv2, crop_region(crop_source, *region), base / name))
+
+    display_paths = [path for path in display_paths if path]
+    ball_paths = [path for path in ball_paths if path]
     return {
         "frame_index": frame_index,
         "timestamp_text": candidate.get("timestamp_text"),
         "scene_type": candidate.get("scene_type"),
         "frame_path": str(full_path),
-        "inset_crop_path": str(inset_path),
-        "scale_display_crop_path": str(display_path),
-        "ball_crop_path": str(ball_path),
+        "full_frame_reference_path": str(full_path),
+        "inset_crop_path": inset_path,
+        "scale_display_crop_path": display_paths[0] if display_paths else "",
+        "ball_crop_path": ball_paths[0] if ball_paths else "",
+        "scale_display_crop_candidates": display_paths,
+        "ball_crop_candidates": ball_paths,
         "confidence": candidate.get("confidence", "low"),
         "needs_manual_review": True,
     }
@@ -69,7 +96,7 @@ def main() -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
     source = read_json(args.candidates, {}) or {}
     crops = []
-    for candidate in source.get("candidates", [])[:80]:
+    for candidate in source.get("candidates", [])[:120]:
         try:
             crops.append(crop_with_cv2(candidate, output_dir))
         except Exception as exc:  # pragma: no cover - diagnostic path.
@@ -81,6 +108,8 @@ def main() -> int:
                 "inset_crop_path": "",
                 "scale_display_crop_path": "",
                 "ball_crop_path": "",
+                "scale_display_crop_candidates": [],
+                "ball_crop_candidates": [],
                 "confidence": "low",
                 "needs_manual_review": True,
                 "notes_es": str(exc),
