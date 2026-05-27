@@ -33,6 +33,12 @@ def ocr_image(path: str) -> str | None:
         from PIL import Image  # type: ignore
     except ImportError:
         return None
+    if not path:
+        return None
+    try:
+        return pytesseract.image_to_string(Image.open(path), config="--psm 7")
+    except Exception:
+        return None
 
 
 def crop_paths(crop: dict) -> list[str]:
@@ -51,12 +57,6 @@ def best_ocr_result(paths: list[str]) -> tuple[str | None, float | None, str, bo
         if confidence_rank(confidence) > confidence_rank(best[2]):
             best = (raw, weight, confidence, review or raw is None, path)
     return best
-    if not path:
-        return None
-    try:
-        return pytesseract.image_to_string(Image.open(path), config="--psm 7")
-    except Exception:
-        return None
 
 
 def main() -> int:
