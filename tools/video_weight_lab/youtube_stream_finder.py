@@ -12,19 +12,38 @@ from common import PRODUCTION_STATUS, normalize_text, now_iso, write_json, yt_dl
 ENGINE_VERSION = "v4.4-video-weight-source-finder"
 
 
-def title_match_score(title: str, draw: int) -> tuple[bool, str, str]:
+def has_generic_draw_placeholder(normalized: str) -> bool:
+    tokens = normalized.split()
+    if "xxxx" in tokens:
+        return True
+    return any(tokens[index] == "no" and index + 1 < len(tokens) and tokens[index + 1] == "xxxx" for index in range(len(tokens)))
+
+
+def candidate_date_rank(row: dict[str, Any]) -> int:
+    value = row.get("timestamp") or row.get("upload_date") or 0
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return 0
+
+
+def title_match_score(title: str, draw: int) -> tuple[bool, str, bool, str]:
     normalized = normalize_text(title)
     has_draw = str(draw) in normalized.split() or str(draw) in normalized
     has_melate = "melate" in normalized
     has_revancha = "revancha" in normalized
     has_revanchita = "revanchita" in normalized
-    if has_draw and has_melate and has_revancha and has_revanchita:
-        return True, "high", "Título contiene Melate, Revancha, Revanchita y el número de sorteo."
+    has_game_family = has_melate and has_revancha and has_revanchita
+    has_generic_no = has_generic_draw_placeholder(normalized)
+    if has_draw and has_game_family:
+        return True, "high", False, "Título contiene Melate, Revancha, Revanchita y el número de sorteo."
     if has_draw and has_melate and has_revancha:
-        return True, "medium", "Título contiene Melate, Revancha y el número de sorteo."
+        return True, "medium", False, "Título contiene Melate, Revancha y el número de sorteo."
+    if has_game_family and has_generic_no:
+        return True, "medium", True, "Título genérico con No.xxxx; requiere confirmar por fecha, descripción o revisión manual."
     if has_draw:
-        return True, "low", "Título contiene el número de sorteo, pero requiere revisión manual."
-    return False, "low", "Título no contiene el sorteo solicitado."
+        return True, "low", False, "Título contiene el número de sorteo, pero requiere revisión manual."
+    return False, "low", False, "Título no contiene el sorteo solicitado."
 
 
 def list_channel_candidates(channel_url: str) -> list[dict[str, Any]]:
@@ -57,10 +76,10 @@ def build_payload(draw: int, channel_url: str, candidates: list[dict[str, Any]],
     query_title = f"MELATE REVANCHA Y REVANCHITA No.{draw}"
     normalized_candidates = []
     best: dict[str, Any] | None = None
-    best_rank = 0
-    for row in candidates:
+    best_score = (-1, -1)
+    for row in sorted(candidates, key=candidate_date_rank, reverse=True):
         title = row.get("title") or ""
-        matched, confidence, reason = title_match_score(title, draw)
+        matched, confidence, generic_title_match, reason = title_match_score(title, draw)
         url = row.get("url") or row.get("webpage_url") or ""
         video_id = row.get("id") or ""
         if url and not url.startswith("http"):
@@ -71,15 +90,20 @@ def build_payload(draw: int, channel_url: str, candidates: list[dict[str, Any]],
             "video_id": video_id,
             "published_at": row.get("timestamp") or row.get("upload_date") or "",
             "match_confidence": confidence if matched else "low",
+            "generic_title_match": generic_title_match,
             "match_reason_es": reason,
         }
         normalized_candidates.append(candidate)
         rank = {"low": 1, "medium": 2, "high": 3}[candidate["match_confidence"]] if matched else 0
-        if matched and rank > best_rank:
+        score = (rank, candidate_date_rank(row))
+        if matched and score > best_score:
             best = candidate
-            best_rank = rank
+            best_score = score
     matched = best is not None
+    needs_manual_review = (not matched) or bool(best and best.get("generic_title_match"))
     notes = "Video localizado automáticamente. Requiere revisión visual antes de usar observaciones." if matched else "No se encontró video con título compatible. Revisar manualmente el canal."
+    if best and best.get("generic_title_match"):
+        notes = "Título genérico con No.xxxx; requiere confirmar por fecha, descripción o revisión manual."
     if error:
         notes = error
     return {
@@ -92,7 +116,7 @@ def build_payload(draw: int, channel_url: str, candidates: list[dict[str, Any]],
         "matched": matched,
         "source_video": best,
         "candidates": normalized_candidates,
-        "needs_manual_review": not matched,
+        "needs_manual_review": needs_manual_review,
         "notes_es": notes,
     }
 
