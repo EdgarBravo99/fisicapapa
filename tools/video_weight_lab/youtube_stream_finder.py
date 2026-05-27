@@ -2,12 +2,11 @@ from __future__ import annotations
 
 import argparse
 import json
-import shutil
 import subprocess
 import sys
 from typing import Any
 
-from common import PRODUCTION_STATUS, normalize_text, now_iso, write_json
+from common import PRODUCTION_STATUS, normalize_text, now_iso, write_json, yt_dlp_command
 
 
 ENGINE_VERSION = "v4.4-video-weight-source-finder"
@@ -29,10 +28,11 @@ def title_match_score(title: str, draw: int) -> tuple[bool, str, str]:
 
 
 def list_channel_candidates(channel_url: str) -> list[dict[str, Any]]:
-    if not shutil.which("yt-dlp"):
+    yt_dlp = yt_dlp_command()
+    if yt_dlp is None:
         raise RuntimeError("yt-dlp no disponible. Instala yt-dlp o proporciona --video-url manualmente.")
     command = [
-        "yt-dlp",
+        *yt_dlp,
         "--dump-json",
         "--flat-playlist",
         "--playlist-end",
