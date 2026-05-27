@@ -960,9 +960,77 @@
     return Number(row?.number ?? row?.ball ?? row?.candidate);
   }
 
+  function diagnosticoIntegrado(numbers, result, data) {
+    const problemas = [];
+    const sumaCola = result.band === 'extreme_high' || result.band === 'low_tail';
+    const sinPares = (Number(result.pairCompanionCount || 0) + Number(result.pairLagCount || 0)) === 0;
+    const repetidosAltos = Number(result.immediateOverlap || 0) >= 2;
+    const desalineadoTotal = result.matchesRecent === false && result.matchesWinner === false;
+    const formaDebil = manualStructureSignalCount(result) < 2;
+
+    if (sumaCola) problemas.push('suma_cola');
+    if (sinPares) problemas.push('sin_pares');
+    if (repetidosAltos) problemas.push('repetidos_altos');
+    if (desalineadoTotal) problemas.push('desalineado_total');
+    if (formaDebil) problemas.push('forma_debil');
+
+    if (sumaCola && sinPares) {
+      return {
+        problemas,
+        diagnostico_es: 'La combinación combina suma en cola con falta de pares internos; conviene revisar primero un cambio que aporte relación interna y mueva la suma a una banda más revisable.',
+        punto_de_entrada_es: 'Buscar swap que aporte par interno y mueva la suma fuera de cola.',
+      };
+    }
+    if (desalineadoTotal && formaDebil) {
+      return {
+        problemas,
+        diagnostico_es: 'La combinación no queda alineada con ventana reciente ni perfil histórico cargado, y además tiene poca estructura visible; requiere revisar si funciona como cobertura contraria o si conviene reemplazarla.',
+        punto_de_entrada_es: 'Revisar si tiene sentido como cobertura contraria o reemplazar la combinación.',
+      };
+    }
+    if (repetidosAltos && sinPares) {
+      return {
+        problemas,
+        diagnostico_es: 'La combinación carga repetidos inmediatos sin una relación interna que los sostenga; conviene revisar el número repetido con menor soporte.',
+        punto_de_entrada_es: 'Reducir repetidos inmediatos o agregar relación interna clara.',
+      };
+    }
+    if (problemas.length === 1) {
+      return {
+        problemas,
+        diagnostico_es: 'La combinación tiene una alerta principal de revisión.',
+        punto_de_entrada_es: 'Un ajuste puntual puede resolver la combinación. Ver swap sugerido.',
+      };
+    }
+    if (!problemas.length) {
+      return {
+        problemas,
+        diagnostico_es: 'Sin alertas críticas.',
+        punto_de_entrada_es: 'Revisión de ajuste fino.',
+      };
+    }
+    return {
+      problemas,
+      diagnostico_es: 'La combinación acumula alertas que conviene revisar juntas.',
+      punto_de_entrada_es: 'Priorizar swaps que atiendan pares, suma y forma al mismo tiempo.',
+    };
+  }
+
   function manualCandidatePool(numbers, data) {
     const numbersSet = new Set(safeArray(numbers).map(Number));
     const pool = new Map();
+    const companionKeys = new Set();
+    const lagKeys = new Set();
+
+    collectCompanionRows(data).forEach(row => {
+      const key = pairKey(row.pair || row.numbers || [row.a, row.b]);
+      if (key) companionKeys.add(key);
+    });
+    safeArray(data.pairLag?.signals).forEach(row => {
+      const trigger = Number(row.trigger);
+      const candidate = Number(row.candidate);
+      if (Number.isFinite(trigger) && Number.isFinite(candidate)) lagKeys.add(`${trigger}-${candidate}`);
+    });
 
     safeArray(data.gapEcho?.active_candidates).forEach(number => addManualCandidate(pool, numbersSet, number, 'gap_echo'));
     Object.keys(data.signatureHistory?.numbers_after || {}).forEach(number => addManualCandidate(pool, numbersSet, number, 'signature_history'));
@@ -987,9 +1055,32 @@
       if (numbersSet.has(second) && !numbersSet.has(first)) addManualCandidate(pool, numbersSet, first, 'pair_companion_bridge');
     });
 
+    const compatibilityByNumber = new Map();
+    const compatibilityFor = candidate => {
+      let compatibility = 0;
+      numbers.forEach(number => {
+        const sorted = pairKey([number, candidate]);
+        if (companionKeys.has(sorted)) compatibility += 1;
+        if (lagKeys.has(`${number}-${candidate}`) || lagKeys.has(`${candidate}-${number}`)) compatibility += 1;
+      });
+      const candidateBlock = blockName(candidate);
+      const blockNumbers = [...numbers, candidate].filter(number => blockName(number) === candidateBlock);
+      const hasBlockSupport = blockNumbers.some(number => {
+        const tags = signalsForNumber(number, data);
+        return tags.includes('block_completion') || tags.includes('structure_completion');
+      });
+      const expandedResult = evaluateManualNumbers([...numbers, candidate], data);
+      const expandedPairCount = Number(expandedResult.pairCompanionCount || 0) + Number(expandedResult.pairLagCount || 0);
+      if (blockNumbers.length >= 3 && !hasBlockSupport && expandedPairCount === 0) compatibility -= 1;
+      return compatibility;
+    };
+
     return [...pool.entries()]
-      .map(([number, tags]) => ({ number, tags: [...tags].sort() }))
-      .sort((a, b) => b.tags.length - a.tags.length || a.number - b.number);
+      .map(([number, tags]) => {
+        compatibilityByNumber.set(number, compatibilityFor(number));
+        return { number, tags: [...tags].sort() };
+      })
+      .sort((a, b) => (compatibilityByNumber.get(b.number) || 0) - (compatibilityByNumber.get(a.number) || 0) || b.tags.length - a.tags.length || a.number - b.number);
   }
 
   function manualSignalCount(result) {
@@ -1016,6 +1107,19 @@
   }
 
   function evaluateManualSwap(numbers, removeNumber, addNumber, data) {
+    function tesisSwap(swap, contexto) {
+      const partes = [];
+      if (swap.new_summary.pair_lag_count > swap.old_summary.pair_lag_count) partes.push('agrega relación pair-lag');
+      else if (swap.new_summary.pair_companion_count > swap.old_summary.pair_companion_count) partes.push('agrega relación companion');
+      else if (swap.new_summary.pair_count > swap.old_summary.pair_count) partes.push('agrega relación interna');
+      if (['extreme_high', 'low_tail'].includes(swap.old_summary.sum_band) && !['extreme_high', 'low_tail'].includes(swap.new_summary.sum_band)) partes.push('reduce cola de suma');
+      if (swap.new_summary.structure_signal_count > swap.old_summary.structure_signal_count) partes.push('aporta lectura de forma');
+      if (contexto.diversidad_banda) partes.push('aporta diversidad de banda frente al slate cargado');
+      if (contexto.diversidad_forma) partes.push('aporta diversidad de forma frente al slate cargado');
+      if (contexto.concentracion_banda) partes.push('requiere revisar concentración de banda');
+      return `Este cambio ${partes.length ? partes.join(' y ') : 'es exploratorio con señales cargadas'}, pero requiere revisar la forma resultante.`;
+    }
+
     const oldResult = evaluateManualNumbers(numbers, data);
     const newNumbers = numbers.filter(number => number !== removeNumber).concat([addNumber]).sort((a, b) => a - b);
     const newResult = evaluateManualNumbers(newNumbers, data);
@@ -1027,6 +1131,7 @@
     const reasonTags = poolRow?.tags || [];
     const improvements = [];
     const tradeoffs = [];
+    const contexto = {};
     let score = 0;
 
     if (newSummary.pair_count > oldSummary.pair_count) {
@@ -1058,6 +1163,26 @@
       improvements.push('Reduce repetidos inmediatos.');
     }
 
+    const slateTickets = safeArray(data.slate?.tickets);
+    if (slateTickets.length) {
+      const slateBands = slateTickets.map(ticket => ticket?.composition?.sum_band).filter(Boolean);
+      const slatePresence = slateTickets.map(ticket => ticket?.composition?.block_presence_signature).filter(Boolean);
+      if (!slateBands.includes(newSummary.sum_band)) {
+        score += 1;
+        contexto.diversidad_banda = true;
+      }
+      if (!slatePresence.includes(newSummary.block_presence_signature)) {
+        score += 1;
+        contexto.diversidad_forma = true;
+      }
+      if (slateBands.filter(band => band === newSummary.sum_band).length >= 3) {
+        score -= 1;
+        contexto.concentracion_banda = true;
+      }
+    } else {
+      contexto.slate_disponible = false;
+    }
+
     if (newSummary.pair_count < oldSummary.pair_count) tradeoffs.push('Pierde una relacion interna de pares; revisar si la forma lo compensa.');
     if (newSummary.sum_band !== oldSummary.sum_band) tradeoffs.push(`Cambia banda de suma de ${oldSummary.sum_band} a ${newSummary.sum_band}.`);
     if (Number(newSummary.immediate_overlap) > Number(oldSummary.immediate_overlap)) tradeoffs.push('Aumenta repetidos inmediatos; requiere revision manual.');
@@ -1065,7 +1190,7 @@
     if (!tradeoffs.length) tradeoffs.push('Ajuste fino sin sacrificio fuerte visible en las fuentes cargadas.');
     if (!improvements.length) improvements.push('Cambio exploratorio; revisar manualmente antes de priorizarlo.');
 
-    return {
+    const swap = {
       remove: removeNumber,
       add: addNumber,
       new_numbers: newNumbers,
@@ -1074,13 +1199,17 @@
       improvements_es: improvements,
       tradeoffs_es: tradeoffs,
       reason_tags: reasonTags,
+      tesis_es: '',
       score,
       pair_relations: pairRelations,
       ticket: newTicket,
     };
+    swap.tesis_es = tesisSwap(swap, contexto);
+    return swap;
   }
 
   function manualEfficiencySuggestions(numbers, result, data) {
+    const diagnostico = diagnosticoIntegrado(numbers, result, data);
     const pool = manualCandidatePool(numbers, data);
     const pairRelations = manualPairRelations(numbers, data);
     const pairNumbers = new Set([
@@ -1149,6 +1278,7 @@
       : 'No hay candidatos claros de cierre de forma con las fuentes cargadas.');
 
     return {
+      diagnostico_integrado: diagnostico,
       has_candidate_pool: pool.length > 0,
       candidate_numbers: candidatePreview,
       keep_numbers: keepNumbers,
@@ -1162,14 +1292,20 @@
   }
 
   function renderManualEfficiencySuggestions(suggestions) {
+    const diagnostico = suggestions?.diagnostico_integrado || {};
+    const diagnosticoHtml = safeArray(diagnostico.problemas).length
+      ? `<p>${esc(diagnostico.diagnostico_es || 'Revisión manual requerida.')}</p><p class="cockpit-note">${esc(diagnostico.punto_de_entrada_es || 'Revisar ajuste puntual.')}</p>`
+      : `<p class="cockpit-note">${esc(diagnostico.punto_de_entrada_es || 'Revisión de ajuste fino.')}</p>`;
     if (!suggestions?.has_candidate_pool) {
       return `<section class="cockpit-ticket-why">
         <h4>Sugerencias para hacer mas eficiente la combinacion</h4>
+        ${diagnosticoHtml}
         <p>No hay suficientes fuentes cargadas para sugerir cambios. Ejecuta el pipeline V4.4 y vuelve a cargar el cockpit.</p>
       </section>`;
     }
     return `<section class="cockpit-ticket-why">
       <h4>Sugerencias para hacer mas eficiente la combinacion</h4>
+      ${diagnosticoHtml}
       ${suggestions.well_supported_message ? `<p class="cockpit-note">${esc(suggestions.well_supported_message)}</p>` : ''}
       <div class="cockpit-human-grid">
         <article>
@@ -1187,8 +1323,9 @@
           <b>Cambiar ${esc(swap.remove)} por ${esc(swap.add)}</b>: ${esc(swap.improvements_es.join(' '))}
           <br><span>Nueva combinacion: <code>${esc(swap.new_numbers.join(' '))}</code></span>
           <br><span>Revisar: ${esc(swap.tradeoffs_es.join(' '))}</span>
+          ${swap.tesis_es ? `<br><span>${esc(swap.tesis_es)}</span>` : ''}
           <br><span>Tags: ${esc(swap.reason_tags.join(', ') || 'no disponible')}</span>
-        </li>`).join('') || '<li>No se encontraron swaps con mejora clara desde las fuentes cargadas.</li>'}</ul>
+        </li>`).join('') || '<li>No se encontraron swaps con ajuste claro desde las fuentes cargadas.</li>'}</ul>
       </article>
       <article class="cockpit-panel">
         <h4>Ajustes de pares / forma / suma</h4>
