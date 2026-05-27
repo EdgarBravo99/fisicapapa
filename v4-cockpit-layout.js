@@ -19,10 +19,11 @@
     matrix: 'v4_visual_matrix_export_report.json',
     physicsMaintenance: 'v4_physics_maintenance_notes.json',
     videoWeightObservations: 'v4_ball_weight_observations.json',
+    videoWeights: 'v4_ball_weight_observations.json',
   };
 
   const CRITICAL_SOURCE_KEYS = ['slate', 'gapEcho', 'signatureHistory', 'pairLag', 'blockCompletion', 'winnerProfile', 'recentComposition'];
-  const OPTIONAL_SOURCE_KEYS = ['postDraw', 'matrix', 'pair', 'slateLegacy', 'physicsMaintenance', 'videoWeightObservations'];
+  const OPTIONAL_SOURCE_KEYS = ['postDraw', 'matrix', 'pair', 'slateLegacy', 'physicsMaintenance', 'videoWeightObservations', 'videoWeights'];
   const ROOT_ID = 'v44-cockpit-root';
   const LEGACY_ROOT_ID = 'v43-cockpit-root';
   const SUM_BANDS = ['low_tail', 'historical_core', 'upper_core', 'high_tail', 'extreme_high'];
@@ -119,6 +120,7 @@
       matrix: 'py tools\\v4_visual_matrix_export.py',
       physicsMaintenance: 'crear v4_physics_maintenance_notes.json manualmente',
       videoWeightObservations: 'py tools\\video_weight_lab\\run_video_weight_lab.py --draw <draw> --channel-url https://www.youtube.com/@LN_electronicos/streams --download true --fps-sample 1',
+      videoWeights: 'py tools\\video_weight_lab\\run_video_weight_lab.py --draw <draw> --channel-url https://www.youtube.com/@LN_electronicos/streams --download true --fps-sample 1',
       pair: 'py tools\\v4_pair_companion_audit.py',
       slateLegacy: 'py tools\\v4_refresh.py --game revancha --sync-history-from-pakin --export-visual-matrix --pair-companion-audit --snapshot-predraw',
     };
@@ -747,6 +749,7 @@
       return aligned ? `Esta combinación coincide con perfil ventana ${key}.` : `Esta combinación se aleja del perfil de últimos ${key}.`;
     });
     return {
+      numbers,
       total,
       band,
       parity,
@@ -759,6 +762,219 @@
       immediateOverlap,
       windowNotes,
     };
+  }
+
+  function buildManualTicket(numbers, manualEvaluation) {
+    const result = manualEvaluation || {};
+    return {
+      numbers: safeArray(numbers).map(Number),
+      ticket_type: 'manual_review',
+      production_status: 'review_default',
+      composition: {
+        sum: result.total,
+        sum_band: result.band,
+        sum_band_es: manualSumBandEs(result.band),
+        parity: result.parity,
+        block_signature: result.structure?.block_signature,
+        block_presence_signature: result.structure?.block_presence_signature,
+        visual_structure_label_es: manualVisualLabel(result.structure?.block_presence_signature),
+        immediate_overlap_previous_draw: result.immediateOverlap ?? 0,
+        pair_companion_count: result.pairCompanionCount || 0,
+        pair_lag_relation_count: result.pairLagCount || 0,
+        matches_recent_profile: result.matchesRecent === true,
+        matches_winner_profile: result.matchesWinner === true,
+      },
+      signals: result.numberSignals || {},
+    };
+  }
+
+  function pairKey(pair) {
+    const values = safeArray(pair).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
+    return values.length === 2 ? values.join('-') : '';
+  }
+
+  function internalPairs(numbers) {
+    const pairs = [];
+    for (let i = 0; i < numbers.length; i += 1) {
+      for (let j = i + 1; j < numbers.length; j += 1) {
+        pairs.push([numbers[i], numbers[j]].sort((a, b) => a - b));
+      }
+    }
+    return pairs;
+  }
+
+  function collectCompanionRows(data) {
+    const recent = data.recentComposition || {};
+    const pairAudit = data.pair || {};
+    return [
+      ...safeArray(recent.pair_companion_profile?.pair_companion_candidates),
+      ...safeArray(recent.pair_companion_profile?.top_pair_companions),
+      ...safeArray(pairAudit.top_co_travel_pairs),
+      ...safeArray(pairAudit.top_block_bridge_pairs),
+    ];
+  }
+
+  function manualPairRelations(numbers, data) {
+    const companionByKey = new Map();
+    collectCompanionRows(data).forEach(row => {
+      const key = pairKey(row.pair || row.numbers || [row.a, row.b]);
+      if (key && !companionByKey.has(key)) companionByKey.set(key, row);
+    });
+
+    const lagByKey = new Map();
+    safeArray(data.pairLag?.signals).forEach(row => {
+      const trigger = Number(row.trigger);
+      const candidate = Number(row.candidate);
+      if (Number.isFinite(trigger) && Number.isFinite(candidate)) lagByKey.set(`${trigger}-${candidate}`, row);
+    });
+
+    const pairLagActive = new Set(safeArray(data.pairLag?.active_candidates).map(Number));
+    const pairCompanionMatches = [];
+    const pairLagMatches = [];
+    const neutralPairs = [];
+
+    internalPairs(numbers).forEach(pair => {
+      const sortedKey = pairKey(pair);
+      const forward = `${pair[0]}-${pair[1]}`;
+      const reverse = `${pair[1]}-${pair[0]}`;
+      const companion = companionByKey.get(sortedKey);
+      const lag = lagByKey.get(forward) || lagByKey.get(reverse);
+      if (companion) {
+        pairCompanionMatches.push({
+          pair,
+          relation_type: 'pair_companion',
+          explanation_es: `Par ${pair.join('-')} aparece como relacion interna companion en perfiles cargados.`,
+        });
+      }
+      if (lag) {
+        pairLagMatches.push({
+          pair,
+          relation_type: 'pair_lag',
+          explanation_es: `Par ${Number(lag.trigger)} -> ${Number(lag.candidate)} aparece como relacion temporal pair-lag.`,
+        });
+      }
+      if (!companion && !lag) {
+        const active = pair.filter(number => pairLagActive.has(number));
+        neutralPairs.push({
+          pair,
+          relation_type: active.length ? 'neutral_con_alerta_pair_lag' : 'neutral',
+          explanation_es: active.length
+            ? `Sin relacion interna directa; ${active.join(', ')} aparece como candidato activo pair-lag.`
+            : 'Sin relacion interna cargada en las fuentes disponibles.',
+        });
+      }
+    });
+
+    return {
+      pair_companion_matches: pairCompanionMatches,
+      pair_lag_matches: pairLagMatches,
+      neutral_pairs: neutralPairs,
+    };
+  }
+
+  function renderManualPairRelations(relations) {
+    const companion = safeArray(relations?.pair_companion_matches);
+    const lag = safeArray(relations?.pair_lag_matches);
+    const neutral = safeArray(relations?.neutral_pairs);
+    const relationRows = [
+      ...companion.map(item => ({ ...item, label: 'Pair companion' })),
+      ...lag.map(item => ({ ...item, label: 'Pair-lag' })),
+    ];
+    return `<section class="cockpit-ticket-why">
+      <h4>Relacion de pares</h4>
+      ${relationRows.length
+        ? `<ul>${relationRows.map(item => `<li><b>${esc(item.pair.join('-'))}</b> - ${esc(item.label)}. ${esc(item.explanation_es)}</li>`).join('')}</ul>`
+        : '<p>No se detectaron relaciones internas de pares en las fuentes cargadas.</p>'}
+      <p class="cockpit-note">Pares neutrales: ${esc(neutral.length)} de 15. Lectura review_default; no modifica constructor, scores ni priors.</p>
+    </section>`;
+  }
+
+  function windowAlignmentLabel(ticket, data, key) {
+    const windows = recentWindows(data.recentComposition);
+    if (!windows?.[String(key)]) return 'no disponible';
+    return matchesRecentWindow(ticket, data.recentComposition, key) ? 'alineado' : 'requiere revision';
+  }
+
+  function renderManualSumThesis(result, data) {
+    const ticket = buildManualTicket(result.numbers || [], result);
+    const hasPairSupport = Number(result.pairCompanionCount || 0) + Number(result.pairLagCount || 0) > 0;
+    const structureCount = Object.values(result.numberSignals || {}).filter(items => safeArray(items).some(signal => ['structure_completion', 'block_completion', 'zone_fit'].includes(signal))).length;
+    const warnings = [];
+    if ((result.band === 'extreme_high' || result.band === 'low_tail') && !hasPairSupport && structureCount < 3) {
+      warnings.push('Banda de suma en cola sin soporte suficiente de pares o estructura; no usar como unica tesis.');
+    }
+    if (!matchesRecentWindow(ticket, data.recentComposition, '5') && (matchesRecentWindow(ticket, data.recentComposition, '20') || matchesRecentWindow(ticket, data.recentComposition, '30'))) {
+      warnings.push('Se aleja de ventana corta, pero conserva lectura en ventanas mayores.');
+    }
+    if (!warnings.length) warnings.push('La suma queda como tesis de revision junto con pares, forma visual y ventanas recientes.');
+    return `<section class="cockpit-ticket-why">
+      <h4>Suma y tesis</h4>
+      <div class="cockpit-mini-grid">
+        ${metric('Suma total', result.total, 'mono')}
+        ${metric('Banda', `${manualSumBandEs(result.band)} (${result.band})`)}
+        ${metric('Ventana 5', windowAlignmentLabel(ticket, data, '5'))}
+        ${metric('Ventana 20', windowAlignmentLabel(ticket, data, '20'))}
+        ${metric('Ventana 30', windowAlignmentLabel(ticket, data, '30'))}
+        ${metric('Perfil historico', result.matchesWinner ? 'alineado' : 'requiere revision')}
+      </div>
+      <ul>${warnings.map(item => `<li>${esc(item)}</li>`).join('')}</ul>
+    </section>`;
+  }
+
+  function renderManualStructureCompletion(numbers, result, data) {
+    const groups = safeArray(data.blockCompletion?.groups);
+    const closing = new Set();
+    const recentSeen = new Set();
+    groups.forEach(group => {
+      const missing = new Set(safeArray(group.missing).map(Number));
+      const seen = new Set(safeArray(group.recent_seen).map(Number));
+      numbers.forEach(number => {
+        if (missing.has(number)) closing.add(number);
+        if (seen.has(number)) recentSeen.add(number);
+      });
+    });
+    const blocks = result.structure?.blocks || {};
+    return `<section class="cockpit-ticket-why">
+      <h4>Completar forma / estructura</h4>
+      <div class="cockpit-mini-grid">
+        ${Object.entries(blocks).map(([block, count]) => metric(block, count, 'mono')).join('')}
+        ${metric('Firma de bloques', result.structure?.block_signature || 'no disponible', 'mono')}
+        ${metric('Presencia visual', result.structure?.block_presence_signature || 'no disponible', 'mono')}
+      </div>
+      <p>${esc(manualVisualLabel(result.structure?.block_presence_signature))}. Esta forma se revisa contra cierres de bloque y perfiles cargados.</p>
+      <ul>
+        <li>Numeros como cierre de bloque: ${esc([...closing].sort((a, b) => a - b).join(', ') || 'no disponible')}</li>
+        <li>Numeros ya vistos en grupos activos: ${esc([...recentSeen].sort((a, b) => a - b).join(', ') || 'no disponible')}</li>
+        <li>Grupos de block completion cargados: ${esc(groups.length || 'no disponible')}</li>
+      </ul>
+    </section>`;
+  }
+
+  function weightObservationsForNumbers(numbers, data) {
+    const numberSet = new Set(safeArray(numbers).map(Number));
+    const source = data.videoWeights || data.videoWeightObservations || {};
+    return safeArray(source.observations).filter(item => {
+      const ball = Number(item.ball ?? item.number);
+      return Number.isFinite(ball) && numberSet.has(ball);
+    });
+  }
+
+  function renderManualWeightObservations(numbers, data) {
+    const observations = weightObservationsForNumbers(numbers, data);
+    if (!observations.length) return '';
+    return `<section class="cockpit-ticket-why">
+      <h4>Pesaje visual observado</h4>
+      <p class="cockpit-note">Fuente auxiliar visual. No afecta constructor, scores ni priors.</p>
+      <div class="cockpit-diagnostics-grid">
+        ${observations.slice(0, 6).map(item => `<article class="cockpit-panel">
+          ${metric('Bola', item.ball ?? item.number ?? 'revision manual', 'mono')}
+          ${metric('Peso g', item.weight_g ?? 'revision manual', 'mono')}
+          ${metric('Confianza', item.confidence || 'no disponible')}
+          ${metric('Review status', item.review_status || 'pending')}
+          ${metric('Timestamp', item.timestamp_text || 'no disponible')}
+        </article>`).join('')}
+      </div>
+    </section>`;
   }
 
   function renderManualEvaluator() {
@@ -788,6 +1004,9 @@
         return;
       }
       const result = evaluateManualNumbers(numbers, data);
+      const manualTicket = buildManualTicket(numbers, result);
+      const decision = humanTicketDecision(manualTicket, data);
+      const pairRelations = manualPairRelations(numbers, data);
       output.innerHTML = `<h3>Diagnóstico manual V4.4</h3>
         ${numberBalls(numbers)}
         <div class="cockpit-mini-grid">
@@ -803,10 +1022,15 @@
           ${metric('Perfil ventana 30', result.matchesRecent ? 'alineado' : 'revisar')}
           ${metric('Perfil histórico', result.matchesWinner ? 'alineado' : 'revisar')}
         </div>
+        ${renderHumanDecisionBlock(decision)}
+        ${renderManualPairRelations(pairRelations)}
+        ${renderManualSumThesis(result, data)}
+        ${renderManualStructureCompletion(numbers, result, data)}
         <h4>Señales por número</h4>
         <div class="cockpit-diagnostics-grid">${numbers.map(number => `<article class="cockpit-panel"><h5>${esc(number)}</h5><div class="cockpit-role-pills">${signalChips(result.numberSignals[String(number)]) || '<span class="cockpit-pill">sin señal cargada</span>'}</div></article>`).join('')}</div>
         <h4>Lectura por ventanas</h4>
         <ul>${result.windowNotes.map(note => `<li>${esc(note)}</li>`).join('')}</ul>
+        ${renderManualWeightObservations(numbers, data)}
         <p class="cockpit-note">Relaciones internas detectadas: ${esc(result.pairCompanionCount + result.pairLagCount)}. Estado: review_default. Este diagnóstico es revisión interna.</p>`;
     });
   }
