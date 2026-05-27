@@ -27,6 +27,7 @@ def main() -> int:
     parser.add_argument("--video-url")
     parser.add_argument("--download", default="false")
     parser.add_argument("--fps-sample", default="1")
+    parser.add_argument("--allow-generic-fallback", choices=["true", "false"], default="false")
     args = parser.parse_args()
 
     draw = str(args.draw)
@@ -38,7 +39,17 @@ def main() -> int:
     crops_dir = Path("data/video_weight_lab/crops") / draw
     review_dir.mkdir(parents=True, exist_ok=True)
 
-    run_step([str(HERE / "youtube_stream_finder.py"), "--draw", draw, "--channel-url", args.channel_url, "--output", source_json], allow_failure=True)
+    run_step([
+        str(HERE / "youtube_stream_finder.py"),
+        "--draw",
+        draw,
+        "--channel-url",
+        args.channel_url,
+        "--allow-generic-fallback",
+        args.allow_generic_fallback,
+        "--output",
+        source_json,
+    ], allow_failure=True)
     prepare_args = [str(HERE / "video_source_prepare.py"), "--draw", draw, "--source-json", source_json, "--download", args.download, "--output-dir", str(video_dir)]
     if args.video_url:
         prepare_args.extend(["--video-url", args.video_url])
